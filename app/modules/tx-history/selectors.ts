@@ -20,6 +20,17 @@ export const selectModuleStatus = createSelector(
   state => state.status,
 );
 
+// TODO: make it better
+export const selectTXById = (id: string, state: IAppState) => {
+  const txHistoryRoot = selectTxHistoryRoot(state);
+
+  if (txHistoryRoot.transactionsByHash) {
+    return txHistoryRoot.transactionsByHash[id];
+  }
+
+  return undefined;
+};
+
 export const selectTxByOrder = createSelector(
   selectTxHistoryState,
   ({ transactionsOrder, transactionsByHash }) => {

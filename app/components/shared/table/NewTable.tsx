@@ -26,6 +26,8 @@ interface INewTableHeader {
 interface INewTableRow {
   children: React.ReactNode[];
   cellLayout?: ENewTableCellLayout;
+  // TODO: add event
+  onClick?: () => void;
 }
 
 interface IPlaceholderTableRow {
@@ -52,8 +54,9 @@ const NewTableRow: React.FunctionComponent<INewTableRow & TDataTestId & CommonHt
   ["data-test-id"]: dataTestId,
   cellLayout,
   className,
+  onClick,
 }) => (
-  <tr className={cn(styles.row, className)} data-test-id={dataTestId}>
+  <tr className={cn(styles.row, className)} data-test-id={dataTestId} onClick={onClick}>
     {React.Children.toArray(children).map((child, index) => (
       <td className={cn(styles.cell, cellLayout)} key={index}>
         {child}

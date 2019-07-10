@@ -3,15 +3,17 @@ import { fork, put, select } from "redux-saga/effects";
 
 import { ETxHistoryMessage } from "../../components/translatedMessages/messages";
 import { createMessage } from "../../components/translatedMessages/utils";
+import { TransactionDetailsModal } from "../../components/wallet/transaction-list/TransactionDetailsModal";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import {
   TAnalyticsTransaction,
   TAnalyticsTransactionsResponse,
 } from "../../lib/api/analytics-api/interfaces";
-import { actions } from "../actions";
+import { IAppState } from "../../store";
+import { actions, TActionFromCreator } from "../actions";
 import { neuCall, neuTakeLatest, neuTakeUntil } from "../sagasUtils";
 import { TX_LIMIT, TX_POLLING_INTERVAL } from "./constants";
-import { selectLastTransactionId, selectTimestampOfLastChange } from "./selectors";
+import { selectLastTransactionId, selectTimestampOfLastChange, selectTXById } from "./selectors";
 import { TTxHistory } from "./types";
 import { mapAnalyticsTransaction } from "./utils";
 
@@ -134,9 +136,27 @@ export function* watchTransactions({ analyticsApi, logger }: TGlobalDependencies
   }
 }
 
+function* showTransactionDetails(
+  _: TGlobalDependencies,
+  action: TActionFromCreator<typeof actions.txHistory.showTransactionDetails>,
+): Iterator<any> {
+  const transaction = yield select((state: IAppState) => selectTXById(action.payload.id, state));
+
+  if (!transaction) {
+    throw new Error(`Transaction should be defined for ${action.payload.id}`);
+  }
+
+  yield put(
+    actions.genericModal.showModal(TransactionDetailsModal, {
+      transaction,
+    }),
+  );
+}
+
 export function* txHistorySaga(): Iterator<any> {
   yield fork(neuTakeLatest, actions.txHistory.loadTransactions, loadTransactionsHistory);
   yield fork(neuTakeLatest, actions.txHistory.loadNextTransactions, loadTransactionsHistoryNext);
+  yield fork(neuTakeLatest, actions.txHistory.showTransactionDetails, showTransactionDetails);
   yield fork(
     neuTakeUntil,
     actions.txHistory.startWatchingForNewTransactions,
