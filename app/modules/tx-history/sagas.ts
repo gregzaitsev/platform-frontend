@@ -3,7 +3,7 @@ import { fork, put, select } from "redux-saga/effects";
 
 import { ETxHistoryMessage } from "../../components/translatedMessages/messages";
 import { createMessage } from "../../components/translatedMessages/utils";
-import { TransactionDetailsModal } from "../../components/wallet/transaction-list/TransactionDetailsModal";
+import { TransactionDetailsModal } from "../../components/wallet/transactions-history/TransactionDetailsModal";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import {
   TAnalyticsTransaction,

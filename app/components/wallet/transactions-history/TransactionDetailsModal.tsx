@@ -7,7 +7,7 @@ interface IExternalProps {
   transaction: TTxHistory;
 }
 
-const TransactionDetailsModal: React.FunctionComponent<IExternalProps & IDispatchProps> = ({
+const TransactionDetailsModal: React.FunctionComponent<IExternalProps> = ({
   closeModal,
   transaction,
 }) => <>{transaction.type}</>;

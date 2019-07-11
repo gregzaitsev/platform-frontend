@@ -22,7 +22,7 @@ export const selectModuleStatus = createSelector(
 
 // TODO: make it better
 export const selectTXById = (id: string, state: IAppState) => {
-  const txHistoryRoot = selectTxHistoryRoot(state);
+  const txHistoryRoot = selectTxHistoryState(state);
 
   if (txHistoryRoot.transactionsByHash) {
     return txHistoryRoot.transactionsByHash[id];

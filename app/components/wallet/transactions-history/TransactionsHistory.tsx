@@ -25,13 +25,16 @@ import * as styles from "./TransactionsHistory.module.scss";
 type TStateProps = {
   transactionsHistoryPaginated: ReturnType<typeof selectTxHistoryPaginated>;
 };
+
 type TDispatchProps = {
   loadTxHistoryNext: () => void;
+  showTransactionDetails: (id: string) => void;
 };
 
 const TransactionListLayout: React.FunctionComponent<TStateProps & TDispatchProps> = ({
   transactionsHistoryPaginated,
   loadTxHistoryNext,
+  showTransactionDetails,
 }) => (
   <Panel>
     {transactionsHistoryPaginated.transactions && (
@@ -48,7 +51,10 @@ const TransactionListLayout: React.FunctionComponent<TStateProps & TDispatchProp
           const isIncomeTransaction = transaction.transactionDirection === ETransactionDirection.IN;
 
           return (
-            <NewTableRow key={transaction.id}>
+            <NewTableRow
+              key={transaction.id}
+              onClick={() => showTransactionDetails(transaction.id)}
+            >
               <TransactionData
                 top={<TransactionName transaction={transaction} />}
                 bottom={
@@ -103,6 +109,8 @@ const TransactionsList = compose<TStateProps & TDispatchProps, {}>(
     }),
     dispatchToProps: dispatch => ({
       loadTxHistoryNext: () => dispatch(actions.txHistory.loadNextTransactions()),
+      showTransactionDetails: (id: string) =>
+        dispatch(actions.txHistory.showTransactionDetails(id)),
     }),
   }),
   branch<TStateProps>(
