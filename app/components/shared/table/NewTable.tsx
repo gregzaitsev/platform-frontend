@@ -112,7 +112,7 @@ const PlaceholderTableRow: React.FunctionComponent<IPlaceholderTableRow> = ({
   </tr>
 );
 
-const Table: React.FunctionComponent<TProps> = ({
+const TableLayout: React.FunctionComponent<TProps> = ({
   titles,
   children,
   className,
@@ -125,38 +125,45 @@ const Table: React.FunctionComponent<TProps> = ({
   const isEmpty = React.Children.toArray(children).filter(React.isValidElement).length === 0;
 
   return (
-    <div className={cn(styles.tableWrapper, className, { "keep-rhythm": keepRhythm })}>
-      <table className={styles.table} {...props}>
-        <thead className={cn(styles.header, { "sr-only": titlesVisuallyHidden })}>
-          <tr className={styles.headerRow}>
-            {titles.map((value, index) =>
-              value && typeof value === "object" && "width" in value ? (
-                <th className={styles.cell} key={index} style={{ width: value.width }}>
-                  {value.title}
-                </th>
-              ) : (
-                <th className={styles.cell} key={index}>
-                  {value}
-                </th>
-              ),
-            )}
-          </tr>
-        </thead>
-        <tbody>
-          {isEmpty ? (
-            <PlaceholderTableRow numberOfCells={titles.length}>{placeholder}</PlaceholderTableRow>
-          ) : (
-            children
+    <table
+      className={cn(styles.tableWrapper, className, { [styles.tableKeepRhythm]: keepRhythm })}
+      {...props}
+    >
+      <thead className={cn(styles.header, { "sr-only": titlesVisuallyHidden })}>
+        <tr className={styles.headerRow}>
+          {titles.map((value, index) =>
+            value && typeof value === "object" && "width" in value ? (
+              <th className={styles.cell} key={index} style={{ width: value.width }}>
+                {value.title}
+              </th>
+            ) : (
+              <th className={styles.cell} key={index}>
+                {value}
+              </th>
+            ),
           )}
-        </tbody>
-      </table>
-    </div>
+        </tr>
+      </thead>
+      <tbody>
+        {isEmpty ? (
+          <PlaceholderTableRow numberOfCells={titles.length}>{placeholder}</PlaceholderTableRow>
+        ) : (
+          children
+        )}
+      </tbody>
+    </table>
   );
 };
 
+const Table: React.FunctionComponent<TProps> = props => (
+  <div className={styles.wrapper}>
+    <TableLayout {...props} />
+  </div>
+);
+
 const NewTable: React.FunctionComponent<TProps> = props => (
-  <Panel narrow={true} className={styles.panel}>
-    <Table {...props} />
+  <Panel narrow={true} className={styles.wrapper}>
+    <TableLayout {...props} />
   </Panel>
 );
 

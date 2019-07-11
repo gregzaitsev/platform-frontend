@@ -1,3 +1,4 @@
+import { action } from "@storybook/addon-actions";
 import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
@@ -17,6 +18,25 @@ storiesOf("NewTable", module)
         <>Developer</>
       </NewTableRow>
       <NewTableRow>
+        <>Thomas</>
+        <>Gorny</>
+        <>Developer</>
+      </NewTableRow>
+    </Table>
+  ))
+  .add("without panel clickable", () => (
+    <Table titles={["Name", "Surname", "Role"]}>
+      <NewTableRow onClick={action("onClick")}>
+        <>Pawel</>
+        <>Lula</>
+        <>Developer</>
+      </NewTableRow>
+      <NewTableRow onClick={action("onClick")}>
+        <>Wiktor</>
+        <>Furman</>
+        <>Developer</>
+      </NewTableRow>
+      <NewTableRow onClick={action("onClick")}>
         <>Thomas</>
         <>Gorny</>
         <>Developer</>

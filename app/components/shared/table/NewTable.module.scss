@@ -1,19 +1,5 @@
-.table-wrapper {
-  overflow: auto;
-
-  &:not(:global(.keep-rhythm)) {
-    .cell {
-      &:not(.cell--placeholder) {
-        &:last-of-type {
-          text-align: end;
-        }
-      }
-    }
-  }
-}
-
 .table {
-  @include media-breakpoint-up (md) {
+  @include media-breakpoint-up(md) {
     width: 100%;
     min-width: 0;
   }
@@ -26,6 +12,16 @@
     @include rect(20px);
 
     margin-right: 12px;
+  }
+
+  &:not(&--keep-rhythm) {
+    .cell {
+      &:not(.cell--placeholder) {
+        &:last-of-type {
+          text-align: end;
+        }
+      }
+    }
   }
 }
 
@@ -40,6 +36,23 @@
 .row {
   border-bottom: 1px solid $neu-silver;
   padding: 10px 0;
+
+  &:hover {
+    .cell {
+      position: relative;
+
+      &:first-child {
+        &:before {
+          content: " ";
+          border-left: 8px $neu-piss-yellow solid;
+          position: absolute;
+          left: -15px;
+          top: 0;
+          bottom: 0;
+        }
+      }
+    }
+  }
 
   &:last-child {
     border: 0;
@@ -67,7 +80,9 @@
   }
 }
 
-.panel {
+.wrapper {
   margin-bottom: 1.5rem;
+  overflow: auto;
 
+  padding: $padding;
 }
