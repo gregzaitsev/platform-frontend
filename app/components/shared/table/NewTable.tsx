@@ -26,8 +26,7 @@ interface INewTableHeader {
 interface INewTableRow {
   children: React.ReactNode[];
   cellLayout?: ENewTableCellLayout;
-  // TODO: add event
-  onClick?: () => void;
+  onClick?: (event: React.KeyboardEvent<unknown> | React.MouseEvent<unknown>) => void;
 }
 
 interface IPlaceholderTableRow {
@@ -49,21 +48,58 @@ interface INewTable {
 
 type TProps = INewTable & INewTableHeader;
 
+/**
+ * Maps key name to key value
+ * see https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values
+ */
+export enum Keys {
+  ENTER = "Enter",
+  SPACE = " ",
+}
+
+const useButtonRole = <T extends unknown = unknown>(
+  onClick: ((event: React.KeyboardEvent<T> | React.MouseEvent<T>) => void) | undefined,
+) =>
+  React.useMemo(() => {
+    if (onClick) {
+      return {
+        tabIndex: 0,
+        role: "button",
+        onClick,
+        onKeyDown: (event: React.KeyboardEvent<T>) => {
+          // Check to see if space or enter were pressed
+          if (event.key === Keys.SPACE || event.key === Keys.ENTER) {
+            // Prevent the default action to stop scrolling when space is pressed
+            event.preventDefault();
+            onClick(event);
+          }
+        },
+      };
+    }
+
+    // in case onClick was not provided return empty props
+    return {};
+  }, [onClick]);
+
 const NewTableRow: React.FunctionComponent<INewTableRow & TDataTestId & CommonHtmlProps> = ({
   children,
   ["data-test-id"]: dataTestId,
   cellLayout,
   className,
   onClick,
-}) => (
-  <tr className={cn(styles.row, className)} data-test-id={dataTestId} onClick={onClick}>
-    {React.Children.toArray(children).map((child, index) => (
-      <td className={cn(styles.cell, cellLayout)} key={index}>
-        {child}
-      </td>
-    ))}
-  </tr>
-);
+}) => {
+  const buttonRoleProps = useButtonRole(onClick);
+
+  return (
+    <tr className={cn(styles.row, className)} data-test-id={dataTestId} {...buttonRoleProps}>
+      {React.Children.toArray(children).map((child, index) => (
+        <td className={cn(styles.cell, cellLayout)} key={index}>
+          {child}
+        </td>
+      ))}
+    </tr>
+  );
+};
 
 const PlaceholderTableRow: React.FunctionComponent<IPlaceholderTableRow> = ({
   children,
