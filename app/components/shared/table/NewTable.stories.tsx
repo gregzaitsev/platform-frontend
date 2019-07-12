@@ -5,44 +5,6 @@ import * as React from "react";
 import { NewTable, NewTableRow, Table } from "./NewTable";
 
 storiesOf("NewTable", module)
-  .add("without panel", () => (
-    <Table titles={["Name", "Surname", "Role"]}>
-      <NewTableRow>
-        <>Pawel</>
-        <>Lula</>
-        <>Developer</>
-      </NewTableRow>
-      <NewTableRow>
-        <>Wiktor</>
-        <>Furman</>
-        <>Developer</>
-      </NewTableRow>
-      <NewTableRow>
-        <>Thomas</>
-        <>Gorny</>
-        <>Developer</>
-      </NewTableRow>
-    </Table>
-  ))
-  .add("without panel clickable", () => (
-    <Table titles={["Name", "Surname", "Role"]}>
-      <NewTableRow onClick={action("onClick")}>
-        <>Pawel</>
-        <>Lula</>
-        <>Developer</>
-      </NewTableRow>
-      <NewTableRow onClick={action("onClick")}>
-        <>Wiktor</>
-        <>Furman</>
-        <>Developer</>
-      </NewTableRow>
-      <NewTableRow onClick={action("onClick")}>
-        <>Thomas</>
-        <>Gorny</>
-        <>Developer</>
-      </NewTableRow>
-    </Table>
-  ))
   .add("default", () => (
     <NewTable titles={["Name", "Surname", "Role"]}>
       <NewTableRow>
@@ -56,6 +18,25 @@ storiesOf("NewTable", module)
         <>Developer</>
       </NewTableRow>
       <NewTableRow>
+        <>Thomas</>
+        <>Gorny</>
+        <>Developer</>
+      </NewTableRow>
+    </NewTable>
+  ))
+  .add("clickable", () => (
+    <NewTable titles={["Name", "Surname", "Role"]}>
+      <NewTableRow onClick={action("onClick")}>
+        <>Pawel</>
+        <>Lula</>
+        <>Developer</>
+      </NewTableRow>
+      <NewTableRow onClick={action("onClick")}>
+        <>Wiktor</>
+        <>Furman</>
+        <>Developer</>
+      </NewTableRow>
+      <NewTableRow onClick={action("onClick")}>
         <>Thomas</>
         <>Gorny</>
         <>Developer</>
@@ -94,4 +75,42 @@ storiesOf("NewTable", module)
     <NewTable titles={["Name", "Surname", "Role"]} keepRhythm>
       {[]}
     </NewTable>
+  ))
+  .add("without panel", () => (
+    <Table titles={["Name", "Surname", "Role"]}>
+      <NewTableRow>
+        <>Pawel</>
+        <>Lula</>
+        <>Developer</>
+      </NewTableRow>
+      <NewTableRow>
+        <>Wiktor</>
+        <>Furman</>
+        <>Developer</>
+      </NewTableRow>
+      <NewTableRow>
+        <>Thomas</>
+        <>Gorny</>
+        <>Developer</>
+      </NewTableRow>
+    </Table>
+  ))
+  .add("without panel clickable", () => (
+    <Table titles={["Name", "Surname", "Role"]}>
+      <NewTableRow onClick={action("onClick")}>
+        <>Pawel</>
+        <>Lula</>
+        <>Developer</>
+      </NewTableRow>
+      <NewTableRow onClick={action("onClick")}>
+        <>Wiktor</>
+        <>Furman</>
+        <>Developer</>
+      </NewTableRow>
+      <NewTableRow onClick={action("onClick")}>
+        <>Thomas</>
+        <>Gorny</>
+        <>Developer</>
+      </NewTableRow>
+    </Table>
   ));

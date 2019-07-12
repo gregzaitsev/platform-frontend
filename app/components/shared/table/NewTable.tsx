@@ -4,7 +4,6 @@ import { FormattedMessage } from "react-intl-phraseapp";
 
 import { CommonHtmlProps, TDataTestId, TTranslatedString } from "../../../types";
 import { useButtonRole } from "../hooks/useButtonRole";
-import { Panel } from "../Panel";
 
 import * as styles from "./NewTable.module.scss";
 
@@ -134,9 +133,9 @@ const Table: React.FunctionComponent<TProps> = props => (
 );
 
 const NewTable: React.FunctionComponent<TProps> = props => (
-  <Panel narrow={true} className={styles.wrapper}>
-    <TableLayout {...props} />
-  </Panel>
+  <div className={styles.panel}>
+    <Table {...props} />
+  </div>
 );
 
 export { NewTable, NewTableRow, Table, ENewTableCellLayout };

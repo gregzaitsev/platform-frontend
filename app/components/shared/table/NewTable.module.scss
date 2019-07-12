@@ -1,3 +1,49 @@
+@mixin hover-and-focus {
+  &:hover,
+  &:focus {
+    .cell {
+      position: relative;
+
+      &:first-child {
+        &::before {
+          bottom: 0;
+          content: "";
+          position: absolute;
+          top: 0;
+
+          @content;
+        }
+      }
+    }
+  }
+}
+
+.wrapper {
+  margin-right: $padding;
+  overflow: auto;
+  padding-left: $padding;
+}
+
+.panel {
+  background-color: $neu-white-two;
+  box-shadow: $shadow-bottom-black;
+  overflow: hidden;
+  padding-bottom: $narrow-padding;
+  padding-top: $narrow-padding;
+
+  .wrapper {
+    padding-left: $narrow-padding;
+    margin-right: $narrow-padding;
+
+    .row {
+      @include hover-and-focus {
+        border-left-width: 4px;
+        left: -$narrow-padding;
+      }
+    }
+  }
+}
+
 .table {
   @include media-breakpoint-up(md) {
     width: 100%;
@@ -27,10 +73,10 @@
 
 .header {
   @include font-label;
-}
 
-.header-row {
-  border-bottom: 1px solid $neu-silver;
+  .header-row {
+    border-bottom: 1px solid $neu-silver;
+  }
 }
 
 .row {
@@ -49,22 +95,9 @@
       outline: 0;
     }
 
-    &:hover,
-    &:focus {
-      .cell {
-        position: relative;
-
-        &:first-child {
-          &::before {
-            border-left: 8px $neu-piss-yellow solid;
-            bottom: 0;
-            content: "";
-            left: -$padding;
-            position: absolute;
-            top: 0;
-          }
-        }
-      }
+    @include hover-and-focus {
+      border-left: 8px $neu-piss-yellow solid;
+      left: -$padding;
     }
   }
 }
@@ -88,11 +121,4 @@
   &--placeholder {
     text-align: center;
   }
-}
-
-.wrapper {
-  overflow: auto;
-
-  padding-left: $padding;
-  padding-right: $padding;
 }
