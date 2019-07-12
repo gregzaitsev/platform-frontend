@@ -37,25 +37,35 @@
   border-bottom: 1px solid $neu-silver;
   padding: 10px 0;
 
-  &:hover {
-    .cell {
-      position: relative;
+  &:last-child {
+    border: 0;
+  }
 
-      &:first-child {
-        &:before {
-          content: " ";
-          border-left: 8px $neu-piss-yellow solid;
-          position: absolute;
-          left: -15px;
-          top: 0;
-          bottom: 0;
+  &--clickable {
+    cursor: pointer;
+
+    &:focus {
+      // remove default outline
+      outline: 0;
+    }
+
+    &:hover,
+    &:focus {
+      .cell {
+        position: relative;
+
+        &:first-child {
+          &::before {
+            border-left: 8px $neu-piss-yellow solid;
+            bottom: 0;
+            content: "";
+            left: -$padding;
+            position: absolute;
+            top: 0;
+          }
         }
       }
     }
-  }
-
-  &:last-child {
-    border: 0;
   }
 }
 
@@ -81,8 +91,8 @@
 }
 
 .wrapper {
-  margin-bottom: 1.5rem;
   overflow: auto;
 
-  padding: $padding;
+  padding-left: $padding;
+  padding-right: $padding;
 }

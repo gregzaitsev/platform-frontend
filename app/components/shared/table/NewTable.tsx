@@ -3,6 +3,7 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
 import { CommonHtmlProps, TDataTestId, TTranslatedString } from "../../../types";
+import { useButtonRole } from "../hooks/useButtonRole";
 import { Panel } from "../Panel";
 
 import * as styles from "./NewTable.module.scss";
@@ -48,39 +49,6 @@ interface INewTable {
 
 type TProps = INewTable & INewTableHeader;
 
-/**
- * Maps key name to key value
- * see https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values
- */
-export enum Keys {
-  ENTER = "Enter",
-  SPACE = " ",
-}
-
-const useButtonRole = <T extends unknown = unknown>(
-  onClick: ((event: React.KeyboardEvent<T> | React.MouseEvent<T>) => void) | undefined,
-) =>
-  React.useMemo(() => {
-    if (onClick) {
-      return {
-        tabIndex: 0,
-        role: "button",
-        onClick,
-        onKeyDown: (event: React.KeyboardEvent<T>) => {
-          // Check to see if space or enter were pressed
-          if (event.key === Keys.SPACE || event.key === Keys.ENTER) {
-            // Prevent the default action to stop scrolling when space is pressed
-            event.preventDefault();
-            onClick(event);
-          }
-        },
-      };
-    }
-
-    // in case onClick was not provided return empty props
-    return {};
-  }, [onClick]);
-
 const NewTableRow: React.FunctionComponent<INewTableRow & TDataTestId & CommonHtmlProps> = ({
   children,
   ["data-test-id"]: dataTestId,
@@ -91,7 +59,11 @@ const NewTableRow: React.FunctionComponent<INewTableRow & TDataTestId & CommonHt
   const buttonRoleProps = useButtonRole(onClick);
 
   return (
-    <tr className={cn(styles.row, className)} data-test-id={dataTestId} {...buttonRoleProps}>
+    <tr
+      className={cn(styles.row, { [styles.rowClickable]: !!onClick }, className)}
+      data-test-id={dataTestId}
+      {...buttonRoleProps}
+    >
       {React.Children.toArray(children).map((child, index) => (
         <td className={cn(styles.cell, cellLayout)} key={index}>
           {child}
@@ -126,7 +98,7 @@ const TableLayout: React.FunctionComponent<TProps> = ({
 
   return (
     <table
-      className={cn(styles.tableWrapper, className, { [styles.tableKeepRhythm]: keepRhythm })}
+      className={cn(styles.table, className, { [styles.tableKeepRhythm]: keepRhythm })}
       {...props}
     >
       <thead className={cn(styles.header, { "sr-only": titlesVisuallyHidden })}>

@@ -1,3 +1,12 @@
+@import "../../shared/Panel.module";
+
+.table {
+  @include remove-panel-padding;
+
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
 .amount {
   @include font-headline-medium;
 

@@ -50,35 +50,6 @@ export type DeepWritable<T> = T extends Primitive | WhitelistedWritableTypes | F
 type DeepWritableObject<T> = { -readonly [P in keyof T]: DeepWritable<T[P]> };
 interface IWritableArray<T> extends Array<DeepWritable<T>> {}
 
-// Taken from @types/reactstrap
-// @see https://github.com/DefinitelyTyped/DefinitelyTyped/pull/23700
-export type InputType =
-  | "text"
-  | "email"
-  | "select"
-  | "file"
-  | "radio"
-  | "checkbox"
-  | "textarea"
-  | "button"
-  | "reset"
-  | "submit"
-  | "date"
-  | "datetime-local"
-  | "hidden"
-  | "image"
-  | "month"
-  | "number"
-  | "range"
-  | "search"
-  | "tel"
-  | "url"
-  | "week"
-  | "password"
-  | "datetime"
-  | "time"
-  | "color";
-
 // we dont use AllHtmlAttributes because they include many more fields which can collide easily with components props (like data)
 export type CommonHtmlProps = {
   className?: string;
