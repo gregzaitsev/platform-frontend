@@ -234,6 +234,10 @@ export class Web3Adapter {
 
     return getBlockNumber();
   }
+
+  public async isSmartContract(address: string): Promise<boolean> {
+    return promisify<string>(this.web3.eth.getCode)(address).then(v => v !== "0x");
+  }
 }
 
 interface IWaitForTxOptions {

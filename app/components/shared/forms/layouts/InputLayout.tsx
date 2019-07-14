@@ -92,13 +92,15 @@ const InputLayout: React.FunctionComponent<TProps> = ({
         </InputGroupAddon>
       )}
     </InputGroup>
-    <FormFieldError
-      invalid={invalid}
-      name={name}
-      defaultMessage={errorMsg}
-      ignoreTouched={ignoreTouched}
-    />
-    {charactersLimit && <div>{withCountedCharacters(value, charactersLimit)}</div>}
+    <div className={styles.inputMeta}>
+      {charactersLimit && <div>{withCountedCharacters(value, charactersLimit)}</div>}
+      <FormFieldError
+        invalid={invalid}
+        name={name}
+        defaultMessage={errorMsg}
+        ignoreTouched={ignoreTouched}
+      />
+    </div>
   </>
 );
 

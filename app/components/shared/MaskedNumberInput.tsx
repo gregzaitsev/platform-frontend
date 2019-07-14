@@ -33,6 +33,7 @@ interface IProps {
   errorMsg?: TTranslatedString;
   invalid?: boolean;
   disabled?: boolean;
+  className?: string;
 }
 
 export class MaskedNumberInput extends React.Component<IProps> {
@@ -132,6 +133,7 @@ export class MaskedNumberInput extends React.Component<IProps> {
   render(): React.ReactNode {
     return (
       <InputLayout
+        className={this.props.className}
         value={this.state.value}
         name={this.props.name}
         data-test-id={this.props["data-test-id"]}

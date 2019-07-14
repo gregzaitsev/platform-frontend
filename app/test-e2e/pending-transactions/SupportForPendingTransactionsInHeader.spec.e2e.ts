@@ -38,7 +38,7 @@ describe("Pending Transactions In Header", () => {
       // assert correct behavior of transaction monitor
       cy.get(tid("pending-transactions-status.mining")).click();
 
-      assertPendingWithdrawModal(address, amount);
+      assertPendingWithdrawModal();
 
       assertSuccessWithdrawModal(address, amount);
 
@@ -61,7 +61,7 @@ describe("Pending Transactions In Header", () => {
 
       cy.get(tid("pending-transactions-status.mining")).click();
 
-      assertPendingWithdrawModal(address, amount);
+      assertPendingWithdrawModal();
 
       closeModal();
 

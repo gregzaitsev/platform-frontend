@@ -12,13 +12,19 @@ enum ETheme {
   FRAMED = styles.framed,
 }
 
+export enum ETextPosition {
+  LEFT = "text-left",
+  RIGHT = "text-right",
+}
+
 enum ESize {
   LARGE = styles.large,
+  MEDIUM = styles.medium,
   NORMAL = styles.normal,
 }
 
 interface IMoneySuiteWidgetProps {
-  icon: string;
+  icon?: string;
   currency: ECurrency;
   currencyTotal: ECurrency;
   largeNumber: string;
@@ -27,6 +33,7 @@ interface IMoneySuiteWidgetProps {
   theme?: ETheme;
   size?: ESize;
   walletName?: TTranslatedString;
+  textPosition?: ETextPosition;
 }
 
 const MoneySuiteWidget: React.FunctionComponent<IMoneySuiteWidgetProps & TDataTestId> = ({
@@ -40,12 +47,15 @@ const MoneySuiteWidget: React.FunctionComponent<IMoneySuiteWidgetProps & TDataTe
   theme,
   size,
   walletName,
+  textPosition = ETextPosition.LEFT,
 }) => (
-  <div className={cn(styles.moneySuiteWidget, theme, size)}>
-    <div>
-      <img className={styles.icon} src={icon} alt="" />
-      {walletName}
-    </div>
+  <div className={cn(styles.moneySuiteWidget, theme, size, textPosition)}>
+    {icon && (
+      <div>
+        <img className={styles.icon} src={icon} alt="" />
+        {walletName}
+      </div>
+    )}
     <TransactionData
       size={size === ESize.LARGE ? ETransactionDataSize.LARGE : undefined}
       data-test-id={dataTestId}

@@ -1,6 +1,5 @@
 import * as cn from "classnames";
 import * as React from "react";
-import { FormattedDate } from "react-intl";
 import { FormattedMessage } from "react-intl-phraseapp";
 
 import { selectTxAdditionalData } from "../../../../modules/tx/sender/selectors";
@@ -15,7 +14,6 @@ import * as styles from "./Withdraw.module.scss";
 
 interface IExternalProps {
   txHash: string;
-  txTimestamp: number;
 }
 
 interface IStateProps {
@@ -24,12 +22,11 @@ interface IStateProps {
 
 type TComponentProps = IStateProps & IExternalProps;
 
-export const WithdrawSuccessLayout: React.FunctionComponent<TComponentProps> = ({
+export const WithdrawPendingComponent: React.FunctionComponent<TComponentProps> = ({
   additionalData,
   txHash,
-  txTimestamp,
 }) => (
-  <section className={styles.contentWrapper} data-test-id="modals.tx-sender.withdraw-flow.success">
+  <section className={styles.contentWrapper}>
     <Heading
       className="mb-4"
       size={EHeadingSize.HUGE}
@@ -41,40 +38,20 @@ export const WithdrawSuccessLayout: React.FunctionComponent<TComponentProps> = (
     </Heading>
 
     <WithdrawTransactionDetails additionalData={additionalData}>
-      <FormattedMessage id="withdraw-flow.success" />
+      <FormattedMessage id="withdraw-flow.pending" />
     </WithdrawTransactionDetails>
 
     <section className={cn(styles.section, "mb-4")}>
       <FormattedMessage id="tx-monitor.details.hash-label" />
-      <EtherscanTxLink
-        txHash={txHash}
-        className={styles.txHash}
-        data-test-id="modals.tx-sender.withdraw-flow.tx-hash"
-      >
+      <EtherscanTxLink txHash={txHash} className={styles.txHash}>
         <small>{txHash}</small>
       </EtherscanTxLink>
-    </section>
-    <section className={cn(styles.section, "mb-4")}>
-      <FormattedMessage id="tx-monitor.details.timestamp" />
-      {": "}
-      <span>
-        <FormattedDate
-          value={txTimestamp}
-          timeZone="UTC"
-          timeZoneName="short"
-          year="numeric"
-          month="short"
-          day="numeric"
-          hour="numeric"
-          minute="numeric"
-        />
-      </span>
     </section>
   </section>
 );
 
-export const WithdrawSuccess = appConnect<IStateProps, {}>({
+export const WithdrawPending = appConnect<IStateProps, {}>({
   stateToProps: state => ({
     additionalData: selectTxAdditionalData<ETxSenderType.WITHDRAW>(state)!,
   }),
-})(WithdrawSuccessLayout);
+})(WithdrawPendingComponent);
