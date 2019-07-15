@@ -1,0 +1,10 @@
+.section {
+  display: flex;
+  justify-content: space-between;
+
+  &:last-child {
+    overflow-wrap: break-word;
+    overflow-y: auto;
+    text-align: right;
+  }
+}

@@ -20,13 +20,10 @@
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-}
 
-.section-big {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  font-size: px-to-rem(20px);
+  &--big {
+    font-size: px-to-rem(20px);
+  }
 }
 
 .wallet-label {
@@ -42,18 +39,10 @@
   align-self: flex-end;
 }
 
-
 .label {
   color: inherit;
   font-size: inherit;
   text-transform: none;
-}
-
-.with-etherscan {
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-  position: relative;
 }
 
 .full-width {
@@ -87,4 +76,12 @@
 .separator {
   margin: 1.5rem 0;
   border-color: $neu-gull-gray;
+}
+
+.tx-hash {
+  font-size: 80%;
+}
+
+.with-spacing {
+  margin-bottom: 1.5rem;
 }

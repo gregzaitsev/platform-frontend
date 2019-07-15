@@ -35,7 +35,6 @@ import { UnlockWalletSummary } from "./unlock-wallet-flow/Summary.unsafe";
 import { UpgradeSummary } from "./upgrade-flow/Summary.unsafe";
 import { UserClaimSuccess } from "./user-claim/Success";
 import { UserClaimSummary } from "./user-claim/Summary";
-import { WithdrawPending } from "./withdraw-flow/Pending";
 import { WithdrawSuccess } from "./withdraw-flow/Success";
 import { WithdrawSummary } from "./withdraw-flow/Summary";
 import { Withdraw } from "./withdraw-flow/Withdraw.unsafe";
@@ -134,19 +133,6 @@ const SummaryComponent: React.FunctionComponent<{ type?: ETxSenderType }> = ({ t
   }
 };
 
-const PendingComponent: React.FunctionComponent<{
-  type: ETxSenderType;
-  txHash: string;
-  blockId: number;
-}> = props => {
-  switch (props.type) {
-    case ETxSenderType.WITHDRAW:
-      return <WithdrawPending {...props} />;
-    default:
-      return <TxExternalPending {...props} />;
-  }
-};
-
 const SuccessComponent: React.FunctionComponent<{
   type: ETxSenderType;
   txHash: string;
@@ -180,7 +166,7 @@ const TxSenderBody: React.FunctionComponent<Props> = ({
 }) => {
   switch (state) {
     case ETxSenderState.WATCHING_PENDING_TXS:
-      return <PendingComponent type={type!} txHash={txHash!} blockId={blockId!} />;
+      return <TxExternalPending txHash={txHash!} blockId={blockId} />;
 
     case ETxSenderState.INIT:
       if (!type) {

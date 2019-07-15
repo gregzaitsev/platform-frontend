@@ -7,24 +7,31 @@ import { makeTid } from "../../utils/tidUtils";
 import * as styles from "./TransactionData.module.scss";
 
 enum ESize {
+  HUGE = styles.huge,
   LARGE = styles.large,
   MEDIUM = styles.medium,
   NORMAL = styles.normal,
+}
+
+enum ETheme {
+  BLACK = styles.black,
 }
 
 type TExternalProps = {
   bottom: React.ReactNode;
   top: React.ReactNode;
   size?: ESize;
+  theme?: ETheme;
 };
 
 const TransactionData: React.FunctionComponent<TExternalProps & TDataTestId> = ({
   bottom,
   "data-test-id": dataTestId,
   size = ESize.NORMAL,
+  theme,
   top,
 }) => (
-  <div className={cn(styles.transactionData, size)}>
+  <div className={cn(styles.transactionData, size, theme)}>
     <div className={styles.top} data-test-id={makeTid(dataTestId, "large-value")}>
       {top}
     </div>
@@ -34,4 +41,4 @@ const TransactionData: React.FunctionComponent<TExternalProps & TDataTestId> = (
   </div>
 );
 
-export { TransactionData, ESize };
+export { TransactionData, ESize, ETheme };

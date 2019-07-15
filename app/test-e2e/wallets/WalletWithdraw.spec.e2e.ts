@@ -136,11 +136,11 @@ describe("Wallet Withdraw", () => {
         /*Test flow*/
 
         cy.get(tid("modals.tx-sender.withdraw-flow.summary.to")).should("contain", testAddress);
-        cy.get(tid("modals.tx-sender.withdraw-flow.summary.value"))
+        cy.get(tid("modals.tx-sender.withdraw-flow.summary.value.large-value"))
           .then(e => parseAmount(e.text()).toNumber())
           .should("eq", testValue);
 
-        cy.get(tid("modals.tx-sender.withdraw-flow.summary.cost")).contains(/0\.\d{4}/);
+        cy.get(tid("modals.tx-sender.withdraw-flow.summary.cost.large-value")).contains(/0\.\d{4}/);
 
         cy.get(tid("modals.tx-sender.withdraw-flow.summary.accept")).awaitedClick();
 
@@ -234,11 +234,11 @@ describe("Wallet Withdraw", () => {
         /*Test flow*/
 
         cy.get(tid("modals.tx-sender.withdraw-flow.summary.to")).should("contain", testAddress);
-        cy.get(tid("modals.tx-sender.withdraw-flow.summary.value"))
+        cy.get(tid("modals.tx-sender.withdraw-flow.summary.value.large-value"))
           .then(e => parseAmount(e.text()).toNumber())
           .should("eq", testValue);
 
-        cy.get(tid("modals.tx-sender.withdraw-flow.summary.cost")).contains(/0\.\d{4}/);
+        cy.get(tid("modals.tx-sender.withdraw-flow.summary.cost.large-value")).contains(/0\.\d{4}/);
 
         cy.get(tid("modals.tx-sender.withdraw-flow.summary.accept")).awaitedClick();
 
@@ -324,11 +324,11 @@ describe("Wallet Withdraw", () => {
         /*Test flow*/
 
         cy.get(tid("modals.tx-sender.withdraw-flow.summary.to")).should("contain", testAddress);
-        cy.get(tid("modals.tx-sender.withdraw-flow.summary.value"))
+        cy.get(tid("modals.tx-sender.withdraw-flow.summary.value.large-value"))
           .then(e => parseAmount(e.text()).toNumber())
           .should("eq", testValue);
 
-        cy.get(tid("modals.tx-sender.withdraw-flow.summary.cost")).contains(/0\.\d{4}/);
+        cy.get(tid("modals.tx-sender.withdraw-flow.summary.cost.large-value")).contains(/0\.\d{4}/);
 
         cy.get(tid("modals.tx-sender.withdraw-flow.summary.accept")).awaitedClick();
 

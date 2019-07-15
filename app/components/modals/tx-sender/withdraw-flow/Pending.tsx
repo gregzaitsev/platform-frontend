@@ -8,6 +8,7 @@ import { ETxSenderType } from "../../../../modules/tx/types";
 import { appConnect } from "../../../../store";
 import { EHeadingSize, Heading } from "../../../shared/Heading";
 import { EtherscanTxLink } from "../../../shared/links/EtherscanLink";
+import { DataRow } from "../shared/DataRow";
 import { WithdrawTransactionDetails } from "./WithdrawTransactionDetails";
 
 import * as styles from "./Withdraw.module.scss";
@@ -41,12 +42,17 @@ export const WithdrawPendingComponent: React.FunctionComponent<TComponentProps> 
       <FormattedMessage id="withdraw-flow.pending" />
     </WithdrawTransactionDetails>
 
-    <section className={cn(styles.section, "mb-4")}>
-      <FormattedMessage id="tx-monitor.details.hash-label" />
-      <EtherscanTxLink txHash={txHash} className={styles.txHash}>
-        <small>{txHash}</small>
-      </EtherscanTxLink>
-    </section>
+    <DataRow
+      className="mb-4"
+      caption={<FormattedMessage id="tx-monitor.details.hash-label" />}
+      value={
+        <EtherscanTxLink txHash={txHash} className={styles.txHash}>
+          {txHash}
+        </EtherscanTxLink>
+      }
+    />
+
+    <section className={cn(styles.section, "mb-4")} />
   </section>
 );
 

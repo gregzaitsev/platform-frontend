@@ -43,6 +43,7 @@ export enum ButtonWidth {
   NORMAL = "",
   WIDE = "wide",
   BLOCK = "block",
+  NO_PADDING = "no-padding",
 }
 
 export enum ButtonTextPosition {

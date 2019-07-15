@@ -91,7 +91,7 @@ export function* validateGas(txDetails: ITxData): any {
 export function* txProcessAdditionalData(
   { web3Manager }: TGlobalDependencies,
   payload: IDraftType,
-): any {
+): Iterator<any> {
   // Process additional data for withdrawal transaction
 
   if (payload.type === ETxSenderType.WITHDRAW) {

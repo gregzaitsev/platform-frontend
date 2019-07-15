@@ -3,13 +3,23 @@ import * as React from "react";
 
 import { TDataTestId, TTranslatedString } from "../../types";
 import { MoneyNew } from "./formatters/Money";
-import { ECurrency, ENumberInputFormat, ENumberOutputFormat } from "./formatters/utils";
-import { ESize as ETransactionDataSize, TransactionData } from "./TransactionData";
+import {
+  ECurrency,
+  ENumberInputFormat,
+  ENumberOutputFormat,
+  THumanReadableFormat,
+} from "./formatters/utils";
+import {
+  ESize as ETransactionDataSize,
+  ETheme as ETransactionDataTheme,
+  TransactionData,
+} from "./TransactionData";
 
 import * as styles from "./MoneySuiteWidget.module.scss";
 
 enum ETheme {
   FRAMED = styles.framed,
+  BLACK = styles.black,
 }
 
 export enum ETextPosition {
@@ -18,6 +28,7 @@ export enum ETextPosition {
 }
 
 enum ESize {
+  HUGE = styles.huge,
   LARGE = styles.large,
   MEDIUM = styles.medium,
   NORMAL = styles.normal,
@@ -34,7 +45,30 @@ interface IMoneySuiteWidgetProps {
   size?: ESize;
   walletName?: TTranslatedString;
   textPosition?: ETextPosition;
+  outputFormat?: THumanReadableFormat;
 }
+
+const getSize = (size: ESize | undefined) => {
+  switch (size) {
+    case ESize.HUGE:
+      return ETransactionDataSize.HUGE;
+    case ESize.LARGE:
+      return ETransactionDataSize.LARGE;
+    case ESize.MEDIUM:
+      return ETransactionDataSize.MEDIUM;
+    default:
+      return undefined;
+  }
+};
+
+const getTheme = (theme: ETheme | undefined) => {
+  switch (theme) {
+    case ETheme.BLACK:
+      return ETransactionDataTheme.BLACK;
+    default:
+      return undefined;
+  }
+};
 
 const MoneySuiteWidget: React.FunctionComponent<IMoneySuiteWidgetProps & TDataTestId> = ({
   icon,
@@ -48,6 +82,7 @@ const MoneySuiteWidget: React.FunctionComponent<IMoneySuiteWidgetProps & TDataTe
   size,
   walletName,
   textPosition = ETextPosition.LEFT,
+  outputFormat = ENumberOutputFormat.ONLY_NONZERO_DECIMALS,
 }) => (
   <div className={cn(styles.moneySuiteWidget, theme, size, textPosition)}>
     {icon && (
@@ -57,13 +92,14 @@ const MoneySuiteWidget: React.FunctionComponent<IMoneySuiteWidgetProps & TDataTe
       </div>
     )}
     <TransactionData
-      size={size === ESize.LARGE ? ETransactionDataSize.LARGE : undefined}
+      theme={getTheme(theme)}
+      size={getSize(size)}
       data-test-id={dataTestId}
       top={
         <MoneyNew
           value={largeNumber}
           inputFormat={ENumberInputFormat.ULPS}
-          outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
+          outputFormat={outputFormat}
           valueType={currency}
         />
       }
@@ -73,7 +109,7 @@ const MoneySuiteWidget: React.FunctionComponent<IMoneySuiteWidgetProps & TDataTe
           <MoneyNew
             value={value}
             inputFormat={ENumberInputFormat.ULPS}
-            outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
+            outputFormat={outputFormat}
             valueType={currencyTotal}
           />
           {percentage && (

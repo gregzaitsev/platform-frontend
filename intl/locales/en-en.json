@@ -762,6 +762,7 @@
   "modal.sent-eth.amount": "For amount of:",
   "modal.sent-eth.available-balance": "Available Ether Balance",
   "modal.sent-eth.button": "Continue",
+  "modal.sent-eth.button-loading": "Processing data",
   "modal.sent-eth.change": "EDIT TRANSFER",
   "modal.sent-eth.new-address": "Nominated address has never recieved a payment before. Proceed anyway?",
   "modal.sent-eth.not-accepting-ether": "You are sending Ether to Smart Contract that does not accept Ether transfers.",
