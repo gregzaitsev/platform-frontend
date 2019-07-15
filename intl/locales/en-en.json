@@ -767,7 +767,7 @@
   "modal.sent-eth.new-address": "Nominated address has never recieved a payment before. Proceed anyway?",
   "modal.sent-eth.not-accepting-ether": "You are sending Ether to Smart Contract that does not accept Ether transfers.",
   "modal.sent-eth.smart-contract-address": "Nominated address is a Smart Contract. Proceed anyway?",
-  "modal.sent-eth.title": "New Eth Transfer",
+  "modal.sent-eth.title": "New Eth Withdraw",
   "modal.sent-eth.to-address": "Transfer to:",
   "modal.sent-eth.total": "Total:",
   "modal.sent-eth.transaction-fee": "+ Transaction fee:",
