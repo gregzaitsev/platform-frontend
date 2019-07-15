@@ -324,7 +324,11 @@ const WithdrawLayout: React.FunctionComponent<TProps> = ({
               }
               data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.send-transaction-button"
             >
-              {isValidating || (!validationState && !values.acceptWarnings) ? <FormattedMessage id="modal.sent-eth.button-loading" /> : <FormattedMessage id="modal.sent-eth.button" />}
+              {isValidating || (!validationState && !values.acceptWarnings) ? (
+                <FormattedMessage id="modal.sent-eth.button-loading" />
+              ) : (
+                <FormattedMessage id="modal.sent-eth.button" />
+              )}
             </Button>
           </section>
         </Form>
