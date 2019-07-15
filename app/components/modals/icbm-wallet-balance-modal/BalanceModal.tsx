@@ -6,10 +6,10 @@ import { DocumentTemplateButton } from "../../shared/DocumentLink";
 import { MoneyNew } from "../../shared/formatters/Money";
 import { ECurrency, ENumberInputFormat, ENumberOutputFormat } from "../../shared/formatters/utils";
 import { Heading } from "../../shared/Heading";
-import { HighlightedField } from "../../shared/HighlightedField";
+import { CurrencyIcon } from "../../shared/icons/CurrencyIcon";
+import { InfoList } from "../tx-sender/shared/InfoList";
+import { InfoRow } from "../tx-sender/shared/InfoRow";
 
-import * as iconEth from "../../../assets/img/eth_icon.svg";
-import * as iconNeu from "../../../assets/img/neu_icon.svg";
 import * as styles from "./IcbmWalletBalanceModal.module.scss";
 
 interface IBalanceModal {
@@ -63,36 +63,52 @@ export const BalanceModal: React.FunctionComponent<IBalanceModal> = ({
     <Heading level={3} className={styles.header}>
       <FormattedMessage id="settings.modal.icbm-wallet-balance.title.balance" />
     </Heading>
-    <HighlightedField
-      label={<FormattedMessage id="settings.modal.icbm-wallet-balance.icbm-wallet-address.label" />}
-      value={ethAddress}
-    />
-    <HighlightedField
-      label={<FormattedMessage id="settings.modal.icbm-wallet-balance.neu-balance.label" />}
-      dataTestId="profile.modal.icbm-wallet-balance.neu-balance"
-      value={
-        <MoneyNew
-          value={neumarksDue}
-          inputFormat={ENumberInputFormat.ULPS}
-          valueType={ECurrency.NEU}
-          outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
-        />
-      }
-      icon={iconNeu}
-    />
-    <HighlightedField
-      label={<FormattedMessage id="settings.modal.icbm-wallet-balance.eth-balance.label" />}
-      dataTestId="profile.modal.icbm-wallet-balance.eth-balance"
-      value={
-        <MoneyNew
-          value={etherBalance}
-          inputFormat={ENumberInputFormat.ULPS}
-          outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
-          valueType={ECurrency.ETH}
-        />
-      }
-      icon={iconEth}
-    />
+
+    <InfoList className="mb-4">
+      <InfoRow
+        caption={
+          <FormattedMessage id="settings.modal.icbm-wallet-balance.icbm-wallet-address.label" />
+        }
+        value={ethAddress}
+      />
+
+      <InfoRow
+        data-test-id="profile.modal.icbm-wallet-balance.neu-balance"
+        caption={
+          <>
+            <CurrencyIcon currency={ECurrency.NEU} />
+            <FormattedMessage id="settings.modal.icbm-wallet-balance.neu-balance.label" />
+          </>
+        }
+        value={
+          <MoneyNew
+            value={neumarksDue}
+            inputFormat={ENumberInputFormat.ULPS}
+            valueType={ECurrency.NEU}
+            outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
+          />
+        }
+      />
+
+      <InfoRow
+        data-test-id="profile.modal.icbm-wallet-balance.eth-balance"
+        caption={
+          <>
+            <CurrencyIcon currency={ECurrency.ETH} />
+            <FormattedMessage id="settings.modal.icbm-wallet-balance.eth-balance.label" />
+          </>
+        }
+        value={
+          <MoneyNew
+            value={etherBalance}
+            inputFormat={ENumberInputFormat.ULPS}
+            outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
+            valueType={ECurrency.ETH}
+          />
+        }
+      />
+    </InfoList>
+
     <BalanceFooter
       disabled={!isVerificationFullyDone}
       startMigration={startMigration}

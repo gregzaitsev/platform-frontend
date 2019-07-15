@@ -1008,6 +1008,7 @@
   "shared-component.account-balance.withdraw": "Withdraw",
   "shared-component.copy-to-clipboard.alt": "Copy to clipboard",
   "shared-component.copy-to-clipboard.copied": "The information is saved in your clipboard",
+  "shared-component.copy-to-clipboard.failed": "Copying to clipboard is not supported on your device",
   "shared-component.eth-wallet-balance.explanation": "This is your ETH balance which you may use to invest in opportunities on the platform. You can manage your balance by adding or withdrawing funds. Go to your dashboard to view available investment opportunities.",
   "shared-component.eto-form-progress-widget.complete": "Complete",
   "shared-component.eto-form-progress-widget.edit": "Edit",

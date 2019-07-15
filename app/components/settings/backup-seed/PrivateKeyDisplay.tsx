@@ -3,10 +3,9 @@ import * as React from "react";
 import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 
 import { IS_CYPRESS } from "../../../config/constants";
-import { copyToClipboard } from "../../../utils/copyToClipboard";
 import { Button, ButtonGroup, EButtonLayout, EIconPosition } from "../../shared/buttons";
 import { Heading } from "../../shared/Heading";
-import { showInfoToast } from "../../shared/Toast";
+import { useCopyClipboard } from "../../shared/hooks/useCopyToClipboard";
 
 import * as blindIcon from "../../../assets/img/inline_icons/blind.svg";
 import * as eyeIcon from "../../../assets/img/inline_icons/eye.svg";
@@ -17,80 +16,70 @@ type TProps = {
   privateKey: string;
 };
 
-type TState = {
-  showPrivateKey: boolean;
-};
+const PrivateKeyDisplay: React.FunctionComponent<TProps> = ({ privateKey }) => {
+  const [showPrivateKey, setShowPrivateKey] = React.useState(false);
+  const [, copyToClipboard] = useCopyClipboard();
 
-class PrivateKeyDisplay extends React.Component<TProps, TState> {
-  state = {
-    showPrivateKey: false,
+  const togglePrivateKeyVisibility = () => {
+    setShowPrivateKey(show => !show);
   };
 
-  togglePrivateKeyVisibility = () => {
-    this.setState(state => ({ showPrivateKey: !state.showPrivateKey }));
+  const copyPrivateKeyToClipboard = () => {
+    copyToClipboard(privateKey, {
+      message: (
+        <FormattedMessage id="components.settings.private-key-display.copied-to-clipboard" />
+      ),
+      "data-test-id": "private-key-display-copied-to-clipboard",
+    });
   };
 
-  copyPrivateKeyToClipboard = () => {
-    copyToClipboard(this.props.privateKey);
-
-    showInfoToast(
-      <FormattedMessage id="components.settings.private-key-display.copied-to-clipboard" />,
-      { "data-test-id": "private-key-display-copied-to-clipboard" },
-    );
-  };
-
-  render(): React.ReactNode {
-    const { privateKey } = this.props;
-    const { showPrivateKey } = this.state;
-
-    return (
-      <section className="mb-4">
-        <Heading level={3} className="mb-3">
-          <FormattedMessage id="components.settings.private-key-display.header" />
-        </Heading>
-        <p>
-          <FormattedHTMLMessage
-            tagName="span"
-            id="components.settings.private-key-display.description"
-          />
-        </p>
-        <ButtonGroup>
-          <Button
-            data-test-id="private-key-display.copy-to-clipboard"
-            className={styles.button}
-            innerClassName={styles.content}
-            layout={EButtonLayout.SIMPLE}
-            onClick={this.copyPrivateKeyToClipboard}
-            type="button"
-            svgIcon={clipboardIcon}
-            iconPosition={EIconPosition.ICON_AFTER}
-          >
-            <FormattedMessage id="components.settings.private-key-display.copy-private-key" />
-          </Button>
-          <Button
-            aria-live="polite"
-            data-test-id="private-key-display.view-private-key"
-            className={styles.button}
-            innerClassName={cn(styles.content, { [styles.contentActive]: showPrivateKey })}
-            layout={EButtonLayout.SIMPLE}
-            onClick={this.togglePrivateKeyVisibility}
-            svgIcon={showPrivateKey ? blindIcon : eyeIcon}
-            iconPosition={EIconPosition.ICON_AFTER}
-          >
-            {showPrivateKey ? (
-              IS_CYPRESS ? (
-                <div data-test-id="private-key-display.content">{privateKey}</div>
-              ) : (
-                privateKey
-              )
+  return (
+    <section className="mb-4">
+      <Heading level={3} className="mb-3">
+        <FormattedMessage id="components.settings.private-key-display.header" />
+      </Heading>
+      <p>
+        <FormattedHTMLMessage
+          tagName="span"
+          id="components.settings.private-key-display.description"
+        />
+      </p>
+      <ButtonGroup>
+        <Button
+          data-test-id="private-key-display.copy-to-clipboard"
+          className={styles.button}
+          innerClassName={styles.content}
+          layout={EButtonLayout.SIMPLE}
+          onClick={copyPrivateKeyToClipboard}
+          type="button"
+          svgIcon={clipboardIcon}
+          iconPosition={EIconPosition.ICON_AFTER}
+        >
+          <FormattedMessage id="components.settings.private-key-display.copy-private-key" />
+        </Button>
+        <Button
+          aria-live="polite"
+          data-test-id="private-key-display.view-private-key"
+          className={styles.button}
+          innerClassName={cn(styles.content, { [styles.contentActive]: showPrivateKey })}
+          layout={EButtonLayout.SIMPLE}
+          onClick={togglePrivateKeyVisibility}
+          svgIcon={showPrivateKey ? blindIcon : eyeIcon}
+          iconPosition={EIconPosition.ICON_AFTER}
+        >
+          {showPrivateKey ? (
+            IS_CYPRESS ? (
+              <div data-test-id="private-key-display.content">{privateKey}</div>
             ) : (
-              <FormattedMessage id="components.settings.private-key-display.view-private-key" />
-            )}
-          </Button>
-        </ButtonGroup>
-      </section>
-    );
-  }
-}
+              privateKey
+            )
+          ) : (
+            <FormattedMessage id="components.settings.private-key-display.view-private-key" />
+          )}
+        </Button>
+      </ButtonGroup>
+    </section>
+  );
+};
 
 export { PrivateKeyDisplay };
