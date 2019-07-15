@@ -3,7 +3,7 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
 import { ETxSenderType } from "../../../../modules/tx/types";
-import { ECurrency } from "../../../shared/formatters/utils";
+import { ECurrency, ENumberOutputFormat } from "../../../shared/formatters/utils";
 import { ESize, ETextPosition, ETheme, MoneySuiteWidget } from "../../../shared/MoneySuiteWidget";
 import { DataRow } from "../shared/DataRow";
 import { TransactionDetailsComponent } from "../types";
@@ -58,6 +58,7 @@ const WithdrawTransactionDetails: TransactionDetailsComponent<ETxSenderType.WITH
           theme={ETheme.BLACK}
           size={ESize.MEDIUM}
           textPosition={ETextPosition.RIGHT}
+          outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS_ROUND_UP}
         />
       }
     />
@@ -77,6 +78,7 @@ const WithdrawTransactionDetails: TransactionDetailsComponent<ETxSenderType.WITH
           theme={ETheme.BLACK}
           size={ESize.HUGE}
           textPosition={ETextPosition.RIGHT}
+          outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS_ROUND_UP}
         />
       }
     />
