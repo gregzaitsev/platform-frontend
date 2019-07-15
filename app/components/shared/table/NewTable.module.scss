@@ -1,19 +1,51 @@
-.table-wrapper {
-  overflow: auto;
-
-  &:not(:global(.keep-rhythm)) {
+@mixin hover-and-focus {
+  &:hover,
+  &:focus {
     .cell {
-      &:not(.cell--placeholder) {
-        &:last-of-type {
-          text-align: end;
+      position: relative;
+
+      &:first-child {
+        &::before {
+          bottom: 0;
+          content: "";
+          position: absolute;
+          top: 0;
+
+          @content;
         }
       }
     }
   }
 }
 
+.wrapper {
+  margin-right: $padding;
+  overflow: auto;
+  padding-left: $padding;
+}
+
+.panel {
+  background-color: $neu-white-two;
+  box-shadow: $shadow-bottom-black;
+  overflow: hidden;
+  padding-bottom: $narrow-padding;
+  padding-top: $narrow-padding;
+
+  .wrapper {
+    padding-left: $narrow-padding;
+    margin-right: $narrow-padding;
+
+    .row {
+      @include hover-and-focus {
+        border-left-width: 4px;
+        left: -$narrow-padding;
+      }
+    }
+  }
+}
+
 .table {
-  @include media-breakpoint-up (md) {
+  @include media-breakpoint-up(md) {
     width: 100%;
     min-width: 0;
   }
@@ -27,14 +59,24 @@
 
     margin-right: 12px;
   }
+
+  &:not(&--keep-rhythm) {
+    .cell {
+      &:not(.cell--placeholder) {
+        &:last-of-type {
+          text-align: end;
+        }
+      }
+    }
+  }
 }
 
 .header {
   @include font-label;
-}
 
-.header-row {
-  border-bottom: 1px solid $neu-silver;
+  .header-row {
+    border-bottom: 1px solid $neu-silver;
+  }
 }
 
 .row {
@@ -43,6 +85,20 @@
 
   &:last-child {
     border: 0;
+  }
+
+  &--clickable {
+    cursor: pointer;
+
+    &:focus {
+      // remove default outline
+      outline: 0;
+    }
+
+    @include hover-and-focus {
+      border-left: 8px $neu-piss-yellow solid;
+      left: -$padding;
+    }
   }
 }
 
@@ -65,9 +121,4 @@
   &--placeholder {
     text-align: center;
   }
-}
-
-.panel {
-  margin-bottom: 1.5rem;
-
 }

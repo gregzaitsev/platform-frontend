@@ -1,9 +1,9 @@
 import * as cn from "classnames";
 import { Field, FieldAttributes, FieldProps, FormikConsumer } from "formik";
 import * as React from "react";
-import { FormGroup, Input } from "reactstrap";
+import { FormGroup, Input, InputProps } from "reactstrap";
 
-import { CommonHtmlProps, InputType, TTranslatedString } from "../../../../types";
+import { CommonHtmlProps, TTranslatedString } from "../../../../types";
 import { Avatar } from "../../Avatar";
 import { FormFieldError, generateErrorId } from "./FormFieldError";
 import { FormFieldLabel } from "./FormFieldLabel";
@@ -14,7 +14,7 @@ import * as styles from "./FormFieldColorful.module.scss";
 interface IFieldGroup {
   label?: string | React.ReactNode;
   placeholder?: string | React.ReactNode;
-  type?: InputType;
+  type?: InputProps["type"];
   maxLength?: string;
   showAvatar?: boolean;
   errorMessage?: TTranslatedString;
