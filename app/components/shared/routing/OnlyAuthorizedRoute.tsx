@@ -5,7 +5,7 @@ import { Redirect, Route } from "react-router-dom";
 import { branch, compose, renderComponent } from "recompose";
 
 import { EUserType } from "../../../lib/api/users/interfaces";
-import { selectIsAuthorized, selectUserType } from "../../../modules/auth/selectors";
+import { selectUserType } from "../../../modules/auth/selectors";
 import { selectWalletTypeFromQueryString } from "../../../modules/routing/selectors";
 import { EWalletType } from "../../../modules/web3/types";
 import { appConnect } from "../../../store";
@@ -13,20 +13,26 @@ import { appRoutes } from "../../appRoutes";
 import { loginWalletRoutes } from "../../wallet-selector/walletRoutes";
 
 interface IStateProps {
-  isAuthorized: boolean;
   userType?: EUserType;
   walletType: EWalletType;
   routerState: RouterState;
 }
 
-interface IOwnProps {
+interface IExternalProps {
   path: string;
   exact?: boolean;
-  investorComponent?: React.ReactType;
-  issuerComponent?: React.ReactType;
+  investorComponent?: React.ElementType;
+  issuerComponent?: React.ElementType;
+  nomineeComponent?: React.ElementType;
 }
 
-type TProps = IOwnProps & IStateProps;
+interface IComponentProps {
+  walletType: EWalletType;
+  userType: EUserType,
+  routerState: RouterState;
+}
+
+type TProps = IExternalProps & IStateProps;
 
 const selectRouteBasedOnWalletType = (walletType: EWalletType): string => {
   switch (walletType) {
@@ -54,55 +60,49 @@ const OnlyAuthorizedRouteRedirectionComponent: React.FunctionComponent<TProps> =
   return <Route {...rest} render={() => <Redirect to={redirectionPath} />} />;
 };
 
+
 /**
  * This component will only attempt to redirect on entering the route. So when user gets logged in you need to trigger redirection on your own.
  */
-const OnlyAuthorizedRouteComponent: React.FunctionComponent<TProps> = ({
+const OnlyAuthorizedRouteComponent: React.FunctionComponent<IComponentProps & IExternalProps> = ({
   investorComponent: InvestorComponent,
   issuerComponent: IssuerComponent,
+  nomineeComponent: NomineeComponent,
   userType,
   ...rest
 }) => {
-  switch (userType) {
-    case EUserType.INVESTOR:
-      return (
-        <Route
-          {...rest}
-          render={props =>
-            InvestorComponent ? (
-              <InvestorComponent {...props} />
-            ) : (
-              <Redirect to={appRoutes.dashboard} />
-            )
-          }
-        />
-      );
+  const selectComponent = (userType:EUserType): React.ElementType | undefined => {
+    switch (userType) {
+      case EUserType.INVESTOR:
+        return InvestorComponent;
+      case EUserType.ISSUER:
+        return IssuerComponent;
+      case EUserType.NOMINEE:
+        return NomineeComponent;
+      default:
+        return () => <div />;
+    }
+  };
+  const Component = selectComponent(userType);
 
-    case EUserType.ISSUER:
-      return (
-        <Route
-          {...rest}
-          render={props =>
-            IssuerComponent ? <IssuerComponent {...props} /> : <Redirect to={appRoutes.dashboard} />
-          }
-        />
-      );
-    default:
-      return <div />;
-  }
+  return <Route {...rest}
+                render={props => Component
+                  ? <Component {...props} />
+                  : <Redirect to={appRoutes.dashboard} />
+                }
+  />;
 };
 
-export const OnlyAuthorizedRoute = compose<IStateProps & IOwnProps, IOwnProps>(
-  appConnect<IStateProps, {}, IOwnProps>({
+export const OnlyAuthorizedRoute = compose<IComponentProps & IExternalProps, IExternalProps>(
+  appConnect<IStateProps, {}, IExternalProps>({
     stateToProps: state => ({
-      isAuthorized: selectIsAuthorized(state.auth),
       userType: selectUserType(state),
       walletType: selectWalletTypeFromQueryString(state),
       routerState: state.router,
     }),
   }),
   branch<IStateProps>(
-    (props: IStateProps) => !props.isAuthorized,
+    (props: IStateProps) => props.userType === undefined,
     renderComponent(OnlyAuthorizedRouteRedirectionComponent),
   ),
 )(OnlyAuthorizedRouteComponent);

@@ -32,6 +32,7 @@ import { EmbeddedWidget } from "./testing/embeded-widget/TestEmbededWidget";
 import { WalletRecoverMain } from "./wallet-selector/wallet-recover/WalletRecoverMain";
 import { WalletSelector } from "./wallet-selector/WalletSelector";
 import { Wallet } from "./wallet/Wallet";
+import { NomineeDashboard } from "./nominee-dashboard/NomineeDashboard";
 
 export const AppRouter: React.FunctionComponent = () => (
   <SwitchConnected>
@@ -148,6 +149,7 @@ export const AppRouter: React.FunctionComponent = () => (
       path={appRoutes.dashboard}
       investorComponent={Dashboard}
       issuerComponent={EtoDashboard}
+      nomineeComponent={NomineeDashboard}
       exact
     />
     <OnlyAuthorizedRoute
