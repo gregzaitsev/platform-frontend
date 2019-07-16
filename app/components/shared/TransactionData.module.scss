@@ -32,15 +32,21 @@
     }
   }
 
+  &.silver {
+    .top {
+      color: $neu-slate-grey;
+    }
+
+    .bottom {
+      color: $neu-silver;
+    }
+  }
+
   .top {
     @include font-default;
-
-    color: $neu-slate-grey;
   }
 
   .bottom {
     @include font-tab;
-
-    color: $neu-silver;
   }
 }

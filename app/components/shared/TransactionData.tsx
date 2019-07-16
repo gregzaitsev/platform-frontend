@@ -15,6 +15,7 @@ enum ESize {
 
 enum ETheme {
   BLACK = styles.black,
+  SILVER = styles.silver,
 }
 
 type TExternalProps = {
@@ -28,7 +29,7 @@ const TransactionData: React.FunctionComponent<TExternalProps & TDataTestId> = (
   bottom,
   "data-test-id": dataTestId,
   size = ESize.NORMAL,
-  theme,
+  theme = ETheme.SILVER,
   top,
 }) => (
   <div className={cn(styles.transactionData, size, theme)}>
