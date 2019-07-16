@@ -2,7 +2,6 @@ import * as moment from "moment";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
-import { IS_CYPRESS, IS_DEV } from "../../config/constants";
 import { TDataTestId } from "../../types";
 import { DatetimeProps, TypedDatetime } from "./forms/fields/FormFieldDatePicker.unsafe";
 import { InlineIcon } from "./icons";
@@ -26,7 +25,7 @@ const TestInput: React.ComponentType<ITestInputProps & TDataTestId> = ({
 }) => (
   //hidden input for e2e tests
   <>
-    {IS_CYPRESS || IS_DEV ? (
+    {!!process.env.IS_CYPRESS || process.env.NODE_ENV === "development" ? (
       <input
         data-test-id={dataTestId}
         autoComplete="off"

@@ -2,7 +2,6 @@ import * as cn from "classnames";
 import * as React from "react";
 import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 
-import { IS_CYPRESS } from "../../../config/constants";
 import { Button, ButtonGroup, EButtonLayout, EIconPosition } from "../../shared/buttons";
 import { Heading } from "../../shared/Heading";
 import { useCopyClipboard } from "../../shared/hooks/useCopyToClipboard";
@@ -68,7 +67,7 @@ const PrivateKeyDisplay: React.FunctionComponent<TProps> = ({ privateKey }) => {
           iconPosition={EIconPosition.ICON_AFTER}
         >
           {showPrivateKey ? (
-            IS_CYPRESS ? (
+            process.env.IS_CYPRESS ? (
               <div data-test-id="private-key-display.content">{privateKey}</div>
             ) : (
               privateKey

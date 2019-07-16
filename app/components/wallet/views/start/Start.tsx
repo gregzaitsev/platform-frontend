@@ -106,9 +106,11 @@ export const WalletStartComponent: React.FunctionComponent<TProps> = ({
       />
     )}
 
-    <Container columnSpan={EColumnSpan.THREE_COL}>
-      <TransactionsHistory />
-    </Container>
+    {process.env.NF_TRANSACTIONS_HISTORY_VISIBLE === "1" && (
+      <Container columnSpan={EColumnSpan.THREE_COL}>
+        <TransactionsHistory />
+      </Container>
+    )}
   </>
 );
 

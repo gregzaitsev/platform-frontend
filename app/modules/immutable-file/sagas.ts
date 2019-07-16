@@ -4,7 +4,6 @@ import { call, fork } from "redux-saga/effects";
 
 import { IpfsMessage } from "../../components/translatedMessages/messages";
 import { createMessage } from "../../components/translatedMessages/utils";
-import { IS_CYPRESS } from "../../config/constants";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { actions, TAction } from "../actions";
 import { neuTakeEvery } from "../sagasUtils";
@@ -20,7 +19,7 @@ export function* downloadFile(
     const downloadedFile = yield apiImmutableStorage.getFile(immutableFileId);
     const extension = immutableFileId.asPdf ? ".pdf" : ".doc";
 
-    if (IS_CYPRESS) {
+    if (process.env.IS_CYPRESS) {
       // required for cypress to be able to simulate generating time
       yield delay(0);
     }
