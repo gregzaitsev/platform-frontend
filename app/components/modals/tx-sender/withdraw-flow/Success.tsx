@@ -47,13 +47,18 @@ export const WithdrawSuccessLayout: React.FunctionComponent<TComponentProps> = (
       className="mb-4"
       caption={<FormattedMessage id="tx-monitor.details.hash-label" />}
       value={
-        <EtherscanTxLink txHash={txHash} className={styles.txHash}>
+        <EtherscanTxLink
+          txHash={txHash}
+          className={styles.txHash}
+          data-test-id="modals.tx-sender.withdraw-flow.tx-hash"
+        >
           {txHash}
         </EtherscanTxLink>
       }
     />
 
     <DataRow
+      data-test-id="timestamp-row.timestamp"
       className="mb-4"
       caption={
         <>

@@ -1265,6 +1265,7 @@
   "wallet.tx-list.transaction": "Transaction",
   "withdraw-flow.awaiting-confirmation": "Awaiting Confirmation",
   "withdraw-flow.confirm": "Confirm",
+  "withdraw-flow.error": "Error",
   "withdraw-flow.name": "Withdraw",
   "withdraw-flow.pending": "Pending...",
   "withdraw-flow.success": "Complete",

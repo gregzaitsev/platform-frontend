@@ -29,9 +29,10 @@ const StatusLabel: React.FunctionComponent<TStatusLabel> = ({ status }) => {
       return <FormattedMessage id="withdraw-flow.pending" />;
     case ETxStatus.COMPLETE:
       return <FormattedMessage id="withdraw-flow.success" />;
+    case ETxStatus.ERROR:
+      return <FormattedMessage id="withdraw-flow.error" />;
     default:
-      assertNever(status);
-      return null;
+      return assertNever(status);
   }
 };
 
@@ -61,7 +62,7 @@ const WithdrawTransactionDetails: React.FunctionComponent<TComponentProps> = ({
       value={
         <MoneySuiteWidget
           currency={ECurrency.ETH}
-          largeNumber={additionalData.amount}
+          largeNumber={additionalData.value}
           value={additionalData.amountEur}
           currencyTotal={ECurrency.EUR}
           data-test-id="modals.tx-sender.withdraw-flow.summary.value"

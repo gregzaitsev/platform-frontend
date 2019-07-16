@@ -67,7 +67,6 @@ export const assertPendingWithdrawModal = (address: string, amount: string) => {
   cy.get(tid("modals.tx-sender.withdraw-flow.summary.to")).contains(address);
   cy.get(tid("modals.tx-sender.withdraw-flow.summary.value.large-value")).contains(amount);
   cy.get(tid("modals.tx-sender.withdraw-flow.summary.cost.large-value")).contains(/0\.\d{4}/);
-  cy.get(tid("timestamp-row.timestamp")).should("exist");
 };
 
 export const assertSuccessWithdrawModal = (address: string, amount: string) => {

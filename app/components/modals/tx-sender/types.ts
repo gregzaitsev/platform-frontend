@@ -20,4 +20,5 @@ export enum ETxStatus {
   AWAITING_CONFIRMATION = "awaiting_confirmation",
   PENDING = "pending",
   COMPLETE = "complete",
+  ERROR = "error",
 }
