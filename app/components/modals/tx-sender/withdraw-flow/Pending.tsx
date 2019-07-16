@@ -1,4 +1,3 @@
-import * as cn from "classnames";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
@@ -9,6 +8,7 @@ import { appConnect } from "../../../../store";
 import { EHeadingSize, Heading } from "../../../shared/Heading";
 import { EtherscanTxLink } from "../../../shared/links/EtherscanLink";
 import { DataRow } from "../shared/DataRow";
+import { ETxStatus } from "../types";
 import { WithdrawTransactionDetails } from "./WithdrawTransactionDetails";
 
 import * as styles from "./Withdraw.module.scss";
@@ -38,9 +38,7 @@ export const WithdrawPendingComponent: React.FunctionComponent<TComponentProps> 
       <FormattedMessage id="withdraw-flow.summary" />
     </Heading>
 
-    <WithdrawTransactionDetails additionalData={additionalData}>
-      <FormattedMessage id="withdraw-flow.pending" />
-    </WithdrawTransactionDetails>
+    <WithdrawTransactionDetails additionalData={additionalData} status={ETxStatus.PENDING} />
 
     <DataRow
       className="mb-4"
@@ -51,8 +49,6 @@ export const WithdrawPendingComponent: React.FunctionComponent<TComponentProps> 
         </EtherscanTxLink>
       }
     />
-
-    <section className={cn(styles.section, "mb-4")} />
   </section>
 );
 

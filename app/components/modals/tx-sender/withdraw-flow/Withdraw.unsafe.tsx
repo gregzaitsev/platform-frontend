@@ -183,16 +183,18 @@ const WithdrawLayout: React.FunctionComponent<TProps> = ({
             )}
           </section>
 
-          <section className={styles.section}>
-            <FormattedMessage id="modal.sent-eth.available-balance" />
-            <MoneyNew
-              className={styles.money}
-              value={ethAmount}
-              inputFormat={ENumberInputFormat.ULPS}
-              outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
-              valueType={ECurrency.ETH}
-            />
-          </section>
+          <DataRow
+            caption={<FormattedMessage id="modal.sent-eth.available-balance" />}
+            value={
+              <MoneyNew
+                className={styles.money}
+                value={ethAmount}
+                inputFormat={ENumberInputFormat.ULPS}
+                outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
+                valueType={ECurrency.ETH}
+              />
+            }
+          />
 
           <section className="text-right small mb-4">
             <Button

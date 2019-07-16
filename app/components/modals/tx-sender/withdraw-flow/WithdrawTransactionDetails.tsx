@@ -2,17 +2,42 @@ import * as cn from "classnames";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
-import { ETxSenderType } from "../../../../modules/tx/types";
+import { ETxSenderType, TAdditionalDataByType } from "../../../../modules/tx/types";
+import { CommonHtmlProps } from "../../../../types";
+import { assertNever } from "../../../../utils/assertNever";
 import { ECurrency, ENumberOutputFormat } from "../../../shared/formatters/utils";
 import { ESize, ETextPosition, ETheme, MoneySuiteWidget } from "../../../shared/MoneySuiteWidget";
 import { DataRow } from "../shared/DataRow";
-import { TransactionDetailsComponent } from "../types";
+import { ETxStatus } from "../types";
 
 import * as styles from "./Withdraw.module.scss";
 
-const WithdrawTransactionDetails: TransactionDetailsComponent<ETxSenderType.WITHDRAW> = ({
+interface IExternalProps {
+  additionalData: TAdditionalDataByType<ETxSenderType.WITHDRAW>;
+  status: ETxStatus;
+}
+
+type TComponentProps = IExternalProps & CommonHtmlProps;
+
+type TStatusLabel = Pick<IExternalProps, "status">;
+
+const StatusLabel: React.FunctionComponent<TStatusLabel> = ({ status }) => {
+  switch (status) {
+    case ETxStatus.AWAITING_CONFIRMATION:
+      return <FormattedMessage id="withdraw-flow.awaiting-confirmation" />;
+    case ETxStatus.PENDING:
+      return <FormattedMessage id="withdraw-flow.pending" />;
+    case ETxStatus.COMPLETE:
+      return <FormattedMessage id="withdraw-flow.success" />;
+    default:
+      assertNever(status);
+      return null;
+  }
+};
+
+const WithdrawTransactionDetails: React.FunctionComponent<TComponentProps> = ({
   additionalData,
-  children,
+  status,
 }) => (
   <>
     <p className="mb-0">
@@ -24,7 +49,9 @@ const WithdrawTransactionDetails: TransactionDetailsComponent<ETxSenderType.WITH
     <p className="mb-0">
       <FormattedMessage id="modal.sent-eth.transfer-status" />
     </p>
-    <p className={styles.moneyBig}>{children}</p>
+    <p className={cn(styles.money, styles.moneyBig)}>
+      <StatusLabel status={status} />
+    </p>
 
     <hr className={styles.separator} />
 

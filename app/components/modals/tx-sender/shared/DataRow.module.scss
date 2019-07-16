@@ -2,7 +2,7 @@
   display: flex;
   justify-content: space-between;
 
-  &:last-child {
+  & > .value {
     overflow-wrap: break-word;
     overflow-y: auto;
     text-align: right;

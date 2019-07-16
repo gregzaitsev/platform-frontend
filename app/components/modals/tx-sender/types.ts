@@ -15,3 +15,9 @@ export type TransactionDetailsComponent<T extends ETxSenderType> = React.Compone
     additionalData: TAdditionalDataByType<T>;
   } & CommonHtmlProps
 >;
+
+export enum ETxStatus {
+  AWAITING_CONFIRMATION = "awaiting_confirmation",
+  PENDING = "pending",
+  COMPLETE = "complete",
+}

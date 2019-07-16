@@ -1,6 +1,6 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
-import { branch, compose, renderNothing } from "recompose";
+import { branch, compose } from "recompose";
 
 import { actions } from "../../../../modules/actions";
 import { selectTxAdditionalData } from "../../../../modules/tx/sender/selectors";
@@ -11,6 +11,7 @@ import { RequiredByKeys } from "../../../../types";
 import { Button } from "../../../shared/buttons";
 import { ButtonArrowLeft, ButtonWidth } from "../../../shared/buttons/Button";
 import { EHeadingSize, Heading } from "../../../shared/Heading";
+import { ETxStatus } from "../types";
 import { WithdrawTransactionDetails } from "./WithdrawTransactionDetails";
 
 import * as styles from "./Withdraw.module.scss";
@@ -50,9 +51,11 @@ export const WithdrawSummaryComponent: React.FunctionComponent<TComponentProps> 
       <FormattedMessage id="modal.sent-eth.change" />
     </ButtonArrowLeft>
 
-    <WithdrawTransactionDetails additionalData={additionalData} className={styles.withSpacing}>
-      <FormattedMessage id="withdraw-flow.awaiting-confirmation" />
-    </WithdrawTransactionDetails>
+    <WithdrawTransactionDetails
+      additionalData={additionalData}
+      className={styles.withSpacing}
+      status={ETxStatus.AWAITING_CONFIRMATION}
+    />
 
     <section className="text-center">
       <Button onClick={onAccept} data-test-id="modals.tx-sender.withdraw-flow.summary.accept">
@@ -72,5 +75,10 @@ export const WithdrawSummary = compose<TComponentProps, {}>(
       onChange: () => d(actions.txSender.txSenderChange(ETxSenderType.WITHDRAW)),
     }),
   }),
-  branch<IStateProps>(props => props.additionalData === undefined, renderNothing),
+  branch<IStateProps>(
+    props => props.additionalData === undefined,
+    () => {
+      throw new Error("Additional transaction data is empty");
+    },
+  ),
 )(WithdrawSummaryComponent);

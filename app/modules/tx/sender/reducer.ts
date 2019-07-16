@@ -2,12 +2,7 @@ import { ITxData } from "../../../lib/web3/types";
 import { AppReducer } from "../../../store";
 import { Overwrite } from "../../../types";
 import { actions } from "../../actions";
-import {
-  ETxSenderType,
-  ITxTypeWithData,
-  TAdditionalDataByType,
-  TSpecificTransactionState,
-} from "../types";
+import { ITxTypeWithData, TSpecificTransactionState } from "../types";
 
 export enum ETransactionErrorType {
   // Flow Specific Errors
@@ -166,9 +161,9 @@ export const txSenderReducer: AppReducer<ITxSenderState> = (
       return {
         ...state,
         additionalData: {
-          ...state.additionalData,
+          ...state.additionalData!,
           ...action.payload.additionalData,
-        } as TAdditionalDataByType<typeof ETxSenderType.WITHDRAW>,
+        },
       };
   }
 
