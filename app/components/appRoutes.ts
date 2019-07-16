@@ -11,36 +11,19 @@ export const appRoutes = {
 
   registerNominee: "/nominee/register",
   login: "/login",
-  loginEto: "/eto/login",
-  /*
-  * @deprecated
-  * */
-  loginNominee: "/nominee/login",
+
+
 
   restore: "/restore",
 
-  /*
-  @deprecated
-   */
-  restoreIssuer: "/eto/restore",
-  /*
-  * @deprecated
-  * */
-  restoreNominee: "/nominee/restore",
+
 
   etoIssuerView: "/eto/view",
 
   etoPublicView: "/eto/view/:jurisdiction/:previewCode",
   etoPublicViewById: "/eto/by-id/:jurisdiction/:etoId",
 
-  /*
-   * @deprecated Route with eto jurisdiction should be used instead. This is only for backward compatibility.
-   */
-  etoPublicViewByIdLegacyRoute: "/eto/by-id/:etoId",
-  /*
-   * @deprecated Route with eto jurisdiction should be used instead. This is only for backward compatibility.
-   */
-  etoPublicViewLegacyRoute: "/eto/view/:previewCode",
+
 
   etoWidgetView: "/embed/eto/widget/:previewCode",
 
@@ -56,4 +39,35 @@ export const appRoutes = {
   etoRegister: "/eto/registration",
 
   portfolio: "/portfolio",
+
+  /*
+  * the following routes shouldn't be used in the code,
+  * they are only there to catch accidental user input
+  * or for backward compatibility
+  */
+
+  /*
+  * @deprecated
+  * */
+  loginIssuer: "/eto/login",
+  /*
+  * @deprecated
+  * */
+  loginNominee: "/nominee/login",
+  /*
+  @deprecated
+   */
+  restoreIssuer: "/eto/restore",
+  /*
+  * @deprecated
+  * */
+  restoreNominee: "/nominee/restore",
+  /*
+   * @deprecated Route with eto jurisdiction should be used instead. This is only for backward compatibility.
+   */
+  etoPublicViewByIdLegacyRoute: "/eto/by-id/:etoId",
+  /*
+   * @deprecated Route with eto jurisdiction should be used instead. This is only for backward compatibility.
+   */
+  etoPublicViewLegacyRoute: "/eto/view/:previewCode",
 };

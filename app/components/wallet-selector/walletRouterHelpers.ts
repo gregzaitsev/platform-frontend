@@ -1,10 +1,10 @@
 import { appRoutes } from "../appRoutes";
 
 export function getRedirectionUrl(rootPath: string): string {
-  const { loginEto, registerIssuer, registerNominee } = appRoutes;
+  const { loginIssuer, registerIssuer, registerNominee } = appRoutes;
 
   switch (rootPath) {
-    case loginEto:
+    case loginIssuer:
     case registerIssuer:
       return `${rootPath}/ledger`;
     case registerNominee:

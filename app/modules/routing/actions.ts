@@ -35,7 +35,7 @@ export const routingActions = {
 
   // login
   goToLogin: (state: TLoginRouterState) => push(appRoutes.login, state),
-  goToEtoLogin: (state: TLoginRouterState) => push(appRoutes.loginEto, state),
+  goToEtoLogin: (state: TLoginRouterState) => push(appRoutes.loginIssuer, state),
 
   // Successful password recovery
   goToSuccessfulRecovery: () => push(recoverRoutes.success),

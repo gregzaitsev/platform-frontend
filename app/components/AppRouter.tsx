@@ -93,9 +93,9 @@ export const AppRouter: React.FunctionComponent = () => (
         component={EtoSecretProtectedWalletSelector}
       />,
       <OnlyPublicRoute
-        key={appRoutes.loginEto}
-        path={appRoutes.loginEto}
-        component={EtoSecretProtectedWalletSelector}
+        key={appRoutes.loginIssuer}
+        path={appRoutes.loginIssuer}
+        render={() => <Redirect to={appRoutes.login} />}
       />,
       <OnlyPublicRoute
         key={appRoutes.restoreIssuer}

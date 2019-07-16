@@ -20,7 +20,7 @@ export const selectIsLoginRoute = (state: RouterState): boolean =>
 export const selectRootPath = (state: RouterState): string => {
   switch(selectUrlUserType(state)){
     case EUserType.ISSUER:
-      return selectIsLoginRoute(state) ? appRoutes.loginEto : appRoutes.registerIssuer;
+      return selectIsLoginRoute(state) ? appRoutes.loginIssuer : appRoutes.registerIssuer;
     case EUserType.NOMINEE:
       return selectIsLoginRoute(state) ? appRoutes.login : appRoutes.registerNominee;
     case EUserType.INVESTOR:
@@ -33,7 +33,7 @@ export const selectOppositeRootPath = (state: RouterState): string => {
   if (selectUrlUserType(state) === EUserType.INVESTOR) {
     return selectIsLoginRoute(state) ? appRoutes.register : appRoutes.login;
   } else {
-    return selectIsLoginRoute(state) ? appRoutes.registerIssuer : appRoutes.loginEto;
+    return selectIsLoginRoute(state) ? appRoutes.registerIssuer : appRoutes.loginIssuer;
   }
 };
 

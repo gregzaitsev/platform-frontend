@@ -70,7 +70,7 @@ export const LoginButton: React.FunctionComponent<IHeaderButton> = ({
     innerClassName={cn(styles.buttonInner)}
     data-test-id={isIssuerLocation ? "Header-login-eto" : "Header-login"}
     isActive={false}
-    to={isIssuerLocation ? appRoutes.loginEto : loginWalletRoutes.light}
+    to={isIssuerLocation ? appRoutes.loginIssuer : loginWalletRoutes.light}
   >
     <FormattedMessage id="header.login-button" />
   </ButtonLink>
