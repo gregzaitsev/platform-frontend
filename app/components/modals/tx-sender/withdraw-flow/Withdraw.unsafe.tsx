@@ -313,6 +313,15 @@ const WithdrawLayout: React.FunctionComponent<TProps> = ({
             </section>
           )}
 
+          {isValid && validationState === EValidationState.IS_NOT_ACCEPTING_ETHER && (
+            <span
+              className="text-warning"
+              data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.not-accepting-ether"
+            >
+              <FormattedMessage id="modal.sent-eth.not-accepting-ether" />
+            </span>
+          )}
+
           <section className="mt-4 text-center">
             <Button
               type="submit"

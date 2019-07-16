@@ -54,7 +54,7 @@ export const WithdrawSuccessLayout: React.FunctionComponent<TComponentProps> = (
         <small>{txHash}</small>
       </EtherscanTxLink>
     </section>
-    <section className={cn(styles.section, "mb-4")}>
+    <section className={cn(styles.section, "mb-4")} data-test-id="timestamp-row.timestamp">
       <FormattedMessage id="tx-monitor.details.timestamp" />
       {": "}
       <span>

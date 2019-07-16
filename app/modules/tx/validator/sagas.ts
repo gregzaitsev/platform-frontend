@@ -49,21 +49,24 @@ export function* txValidateSaga({ logger }: TGlobalDependencies, action: TAction
       additionalVerificationData &&
       additionalVerificationData.warning === EAdditionalValidationDataWarrning.IS_SMART_CONTRACT
     ) {
-      yield put(
-        actions.txSender.setAdditionalData({
-          warning: EAdditionalValidationDataWarrning.IS_NOT_ACCEPTING_ETHER,
-        }),
-      );
+      yield put(actions.txValidator.setValidationState(EValidationState.IS_NOT_ACCEPTING_ETHER));
       return;
     }
 
     if (error instanceof NotEnoughEtherForGasError) {
       logger.info(error);
-      yield put(
-        actions.txSender.setAdditionalData({
-          warning: EAdditionalValidationDataWarrning.IS_NOT_ENOUGH_ETHER,
-        }),
-      );
+      // If transaction type is Withdraw set warning instead of error
+      if (action.payload.type === ETxSenderType.WITHDRAW) {
+        yield put(
+          actions.txSender.setAdditionalData({
+            warning: EAdditionalValidationDataWarrning.IS_NOT_ENOUGH_ETHER,
+          }),
+        );
+      } else {
+        yield put(
+          actions.txValidator.setValidationState(EValidationState.NOT_ENOUGH_ETHER_FOR_GAS),
+        );
+      }
     } else {
       logger.error(error);
     }

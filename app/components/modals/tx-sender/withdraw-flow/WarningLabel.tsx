@@ -26,12 +26,6 @@ const WarningLabel: React.FunctionComponent<{
           <FormattedMessage id="modal.sent-eth.new-address" />
         </span>
       );
-    case EAdditionalValidationDataWarrning.IS_NOT_ACCEPTING_ETHER:
-      return (
-        <span data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.not-accepting-ether">
-          <FormattedMessage id="modal.sent-eth.not-accepting-ether" />
-        </span>
-      );
     default:
       return assertNever(warning);
   }

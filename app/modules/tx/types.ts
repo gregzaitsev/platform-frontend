@@ -19,7 +19,6 @@ export interface IWithdrawDraftType {
 export enum EAdditionalValidationDataWarrning {
   IS_SMART_CONTRACT = "is_smart_contract",
   IS_NEW_ADDRESS = "is_new_address",
-  IS_NOT_ACCEPTING_ETHER = "is_not_accepting_ether",
   IS_NOT_ENOUGH_ETHER = "is_not_enough_ether",
 }
 

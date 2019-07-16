@@ -390,11 +390,9 @@ describe("Wallet Withdraw", () => {
       );
 
       cy.get(tid("modals.tx-sender.withdraw-flow.withdraw-component.not-accepting-ether"));
-
-      /* Address is smart contract so we need to accept warnings */
-      cy.get(tid("modals.tx-sender.withdraw-flow.withdraw-component.accept-warnings")).should(
-        "be.disabled",
-      );
+      cy.get(
+        tid("modals.tx-sender.withdraw-flow.withdraw-component.send-transaction-button"),
+      ).should("be.disabled");
     });
   });
 });
