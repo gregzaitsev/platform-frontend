@@ -1217,7 +1217,7 @@
   "wallet-selector.tabs.neuwallet-login": "LIGHT WALLET",
   "wallet-selector.tabs.neuwallet-register": "LIGHT WALLET",
   "wallet-selector.tabs.register.title": "Choose your wallet to register",
-  "wallet-selector.tabs.register.title.issuer-only-ledger": "Welcome Issuer!",
+  "wallet-selector.tabs.register.title.no-wallet-selection": "Welcome!",
   "wallet.deposit-funds.eth.email-notification": "You will receive an e-mail notification once your funds have been successfully transferred.",
   "wallet.deposit-funds.eth.header": "Send {icon} ETH to your Light Wallet",
   "wallet.deposit-funds.eth.your-eth-address": "Your ETH address",

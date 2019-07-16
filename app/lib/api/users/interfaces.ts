@@ -10,6 +10,7 @@ export const OOO_TRANSACTION_TYPE = "mempool";
 export enum EUserType {
   INVESTOR = "investor",
   ISSUER = "issuer",
+  NOMINEE = "nominee"
 }
 
 export interface IUser {

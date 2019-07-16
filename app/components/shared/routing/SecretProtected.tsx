@@ -12,12 +12,11 @@ const SecretProtected = <T extends {}>(Component: React.ComponentType<T>): React
     }
 
     render(): React.ReactNode {
-      const props = this.props;
       const params = queryString.parse(window.location.search);
       const isIssuersSecret = process.env.NF_ISSUERS_SECRET;
 
       if (isIssuersSecret === undefined || params.etoSecret === isIssuersSecret) {
-        return <Component isSecretProtected={Boolean(isIssuersSecret)} {...props} />;
+        return <Component isSecretProtected={Boolean(isIssuersSecret)} {...this.props} />;
       }
 
       return <Redirect to={appRoutes.root} />;

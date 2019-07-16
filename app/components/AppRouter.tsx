@@ -87,8 +87,8 @@ export const AppRouter: React.FunctionComponent = () => (
         component={LandingEto}
       />,
       <OnlyPublicRoute
-        key={appRoutes.registerEto}
-        path={appRoutes.registerEto}
+        key={appRoutes.registerIssuer}
+        path={appRoutes.registerIssuer}
         component={EtoSecretProtectedWalletSelector}
       />,
       <OnlyPublicRoute
@@ -97,10 +97,30 @@ export const AppRouter: React.FunctionComponent = () => (
         component={EtoSecretProtectedWalletSelector}
       />,
       <OnlyPublicRoute
-        key={appRoutes.restoreEto}
-        path={appRoutes.restoreEto}
-        component={WalletRecoverMain}
+        key={appRoutes.restoreIssuer}
+        path={appRoutes.restoreIssuer}
+        render={() => <Redirect to={appRoutes.restore} />}
+        exact
       />,
+    ]}
+    {process.env.NF_NOMINEE_ENABLED === "1" && [
+      <OnlyPublicRoute
+        key={appRoutes.registerNominee}
+        path={appRoutes.registerNominee}
+        component={WalletSelector}
+      />,
+      <OnlyPublicRoute
+        key={appRoutes.loginNominee}
+        path={appRoutes.loginNominee}
+        render={() => <Redirect to={appRoutes.login} />}
+        exact
+      />,
+      <OnlyPublicRoute
+        key={appRoutes.restoreNominee}
+        path={appRoutes.restoreNominee}
+        render={() => <Redirect to={appRoutes.restore} />}
+        exact
+      />
     ]}
 
     {/* only investors routes */}

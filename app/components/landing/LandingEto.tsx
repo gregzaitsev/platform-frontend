@@ -23,7 +23,7 @@ export const LandingEtoComponent: React.FunctionComponent<IIntlProps> = ({
     <RegisterCta
       text={formatIntlMessage("eto-landing.register.cta")}
       ctaText={formatIntlMessage("eto-landing.register.buttonText")}
-      ctaLink={appRoutes.registerEto}
+      ctaLink={appRoutes.registerIssuer}
     />
     <section className={cn(styles.landingContainer, "t-white")}>
       <Container>

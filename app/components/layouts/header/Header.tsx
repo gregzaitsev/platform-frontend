@@ -86,7 +86,7 @@ export const GetStartedButton: React.FunctionComponent<IHeaderButton> = ({
     innerClassName={styles.buttonInner}
     data-test-id={isIssuerLocation ? "Header-register-eto" : "Header-register"}
     isActive={false}
-    to={isIssuerLocation ? appRoutes.registerEto : walletRegisterRoutes.light}
+    to={isIssuerLocation ? appRoutes.registerIssuer : walletRegisterRoutes.light}
   >
     <FormattedMessage id="header.get-started-button" />
   </ButtonLink>

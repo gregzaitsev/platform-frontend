@@ -6,11 +6,28 @@ export const appRoutes = {
   root: "/",
 
   register: "/register",
-  registerEto: "/eto/register",
+
+  registerIssuer: "/eto/register",
+
+  registerNominee: "/nominee/register",
   login: "/login",
   loginEto: "/eto/login",
+  /*
+  * @deprecated
+  * */
+  loginNominee: "/nominee/login",
+
   restore: "/restore",
-  restoreEto: "/eto/restore",
+
+  /*
+  @deprecated
+   */
+  restoreIssuer: "/eto/restore",
+  /*
+  * @deprecated
+  * */
+  restoreNominee: "/nominee/restore",
+
   etoIssuerView: "/eto/view",
 
   etoPublicView: "/eto/view/:jurisdiction/:previewCode",
