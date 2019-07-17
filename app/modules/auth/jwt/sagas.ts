@@ -89,7 +89,7 @@ export function* createJwt(
 
   yield neuCall(setJwt, jwt);
 
-  logger.info("Jwt escalated successfully");
+  logger.info("Jwt created successfully");
 }
 
 /**
@@ -132,6 +132,8 @@ export function* refreshJWT({ signatureAuthApi, logger }: TGlobalDependencies): 
   const { jwt }: ICreateJwtEndpointResponse = yield signatureAuthApi.refreshJwt();
 
   yield neuCall(setJwt, jwt);
+
+  logger.info("Jwt refreshed successfully");
 }
 
 /**

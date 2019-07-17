@@ -51,7 +51,7 @@ export const UserValidator = Yup.object()
     language: Yup.string(),
     unverifiedEmail: Yup.string(),
     verifiedEmail: Yup.string(),
-    type: Yup.string().oneOf(["investor", "issuer"]),
+    type: Yup.string().oneOf(["investor", "issuer","nominee"]),
     walletType: Yup.string().oneOf(Object.keys(EWalletType).map(type => type.toLowerCase())),
     walletSubtype: Yup.string().oneOf(Object.keys(EWalletSubType).map(type => type.toLowerCase())),
   })
