@@ -1,10 +1,12 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
+import { branch, compose } from "recompose";
 
 import { selectTxAdditionalData } from "../../../../modules/tx/sender/selectors";
 import { TWithdrawAdditionalData } from "../../../../modules/tx/transactions/withdraw/types";
 import { ETxSenderType } from "../../../../modules/tx/types";
 import { appConnect } from "../../../../store";
+import { RequiredByKeys } from "../../../../types";
 import { EHeadingSize, Heading } from "../../../shared/Heading";
 import { EtherscanTxLink } from "../../../shared/links/EtherscanLink";
 import { DataRow } from "../shared/DataRow";
@@ -18,10 +20,10 @@ interface IExternalProps {
 }
 
 interface IStateProps {
-  additionalData: TWithdrawAdditionalData;
+  additionalData?: TWithdrawAdditionalData;
 }
 
-type TComponentProps = IStateProps & IExternalProps;
+type TComponentProps = RequiredByKeys<IStateProps, "additionalData"> & IExternalProps;
 
 export const WithdrawPendingComponent: React.FunctionComponent<TComponentProps> = ({
   additionalData,
@@ -52,8 +54,16 @@ export const WithdrawPendingComponent: React.FunctionComponent<TComponentProps> 
   </section>
 );
 
-export const WithdrawPending = appConnect<IStateProps, {}>({
-  stateToProps: state => ({
-    additionalData: selectTxAdditionalData<ETxSenderType.WITHDRAW>(state)!,
+export const WithdrawPending = compose<TComponentProps, IExternalProps>(
+  appConnect<IStateProps, {}>({
+    stateToProps: state => ({
+      additionalData: selectTxAdditionalData<ETxSenderType.WITHDRAW>(state),
+    }),
   }),
-})(WithdrawPendingComponent);
+  branch<IStateProps>(
+    props => props.additionalData === undefined,
+    () => {
+      throw new Error("Additional transaction data is empty");
+    },
+  ),
+)(WithdrawPendingComponent);
