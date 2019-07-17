@@ -96,13 +96,11 @@ export const AppRouter: React.FunctionComponent = () => (
         key={appRoutes.loginIssuer}
         path={appRoutes.loginIssuer}
         component={() => <Redirect to={appRoutes.login} />}
-        exact
       />,
       <OnlyPublicRoute
         key={appRoutes.restoreIssuer}
         path={appRoutes.restoreIssuer}
         component={() => <Redirect to={appRoutes.restore} />}
-        exact
       />,
     ]}
     {process.env.NF_NOMINEE_ENABLED === "1" && [
@@ -115,13 +113,11 @@ export const AppRouter: React.FunctionComponent = () => (
         key={appRoutes.loginNominee}
         path={appRoutes.loginNominee}
         component={() => <Redirect to={appRoutes.login} />}
-        exact
       />,
       <OnlyPublicRoute
         key={appRoutes.restoreNominee}
         path={appRoutes.restoreNominee}
         component={() => <Redirect to={appRoutes.restore} />}
-        exact
       />,
     ]}
 
