@@ -1,26 +1,48 @@
+import * as cn from "classnames";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
-import { branch, renderComponent } from "recompose";
+import { branch, compose, renderComponent } from "recompose";
 
 import { TxPendingWithMetadata } from "../../../lib/api/users/interfaces";
+import { actions } from "../../../modules/actions";
+import { selectPlatformPendingTransaction } from "../../../modules/tx/monitor/selectors";
 import { ETxSenderState } from "../../../modules/tx/sender/reducer";
-import { ActionRequired, EActionRequiredPosition } from "../../shared/ActionRequired";
+import { appConnect } from "../../../store";
 import { Button, EButtonLayout } from "../../shared/buttons/index";
 import { TooltipBase } from "../../shared/tooltips/index";
 
-import * as bellNotification from "../../../assets/img/bell-notification.svg";
-import * as bell from "../../../assets/img/bell.svg";
+import * as txError from "../../../assets/img/icon_txn_status_error.svg";
+import * as txNoPending from "../../../assets/img/icon_txn_status_no_pending.svg";
+import * as txPending from "../../../assets/img/icon_txn_status_pending_transaction.svg";
+import * as txSuccess from "../../../assets/img/icon_txn_status_success.svg";
+import * as styles from "./PendingTransactionStatus.module.scss";
+
+interface IStateProps {
+  pendingTransaction?: Pick<TxPendingWithMetadata, "transactionStatus">;
+}
+
+interface IDispatchProps {
+  monitorPendingTransaction: () => void;
+}
 
 interface IExternalProps {
-  pendingTransaction?: Pick<TxPendingWithMetadata, "transactionStatus">;
+  className: string;
+}
+
+interface IComponentProps {
+  pendingTransaction: Pick<TxPendingWithMetadata, "transactionStatus">;
   monitorPendingTransaction: () => void;
   className: string;
 }
 
-const NoPendingTransactionImage = () => <img src={bell} width="20px" alt="" />;
-const PendingTransactionImage = () => <img src={bellNotification} width="20px" alt="" />;
+const NoPendingTransactionImage = () => <img src={txNoPending} className={styles.icon} alt="" />;
+const PendingTransactionImage = () => (
+  <img src={txPending} className={cn(styles.icon, styles.pendingTransaction)} alt="" />
+);
+const TransactionErrorImage = () => <img src={txError} className={styles.icon} alt="" />;
+const TransactionSuccessImage = () => <img src={txSuccess} className={styles.icon} alt="" />;
 
-const PendingTransactionStatusLayout: React.FunctionComponent<Required<IExternalProps>> = ({
+export const PendingTransactionStatusLayout: React.FunctionComponent<IComponentProps> = ({
   pendingTransaction,
   monitorPendingTransaction,
 }) => {
@@ -46,7 +68,7 @@ const PendingTransactionStatusLayout: React.FunctionComponent<Required<IExternal
           layout={EButtonLayout.SIMPLE}
           onClick={monitorPendingTransaction}
         >
-          <NoPendingTransactionImage />
+          <TransactionSuccessImage />
         </Button>
       );
 
@@ -57,9 +79,7 @@ const PendingTransactionStatusLayout: React.FunctionComponent<Required<IExternal
           layout={EButtonLayout.SIMPLE}
           onClick={monitorPendingTransaction}
         >
-          <ActionRequired active={true} position={EActionRequiredPosition.TOP}>
-            <NoPendingTransactionImage />
-          </ActionRequired>
+          <TransactionErrorImage />
         </Button>
       );
 
@@ -70,7 +90,7 @@ const PendingTransactionStatusLayout: React.FunctionComponent<Required<IExternal
   }
 };
 
-const NoPendingTransaction: React.FunctionComponent<{ className: string }> = ({ className }) => (
+export const NoPendingTransaction: React.FunctionComponent<IExternalProps> = ({ className }) => (
   <>
     <div
       className={className}
@@ -88,9 +108,21 @@ const NoPendingTransaction: React.FunctionComponent<{ className: string }> = ({ 
   </>
 );
 
-const PendingTransactionStatus = branch<IExternalProps>(
-  props => !props.pendingTransaction || !props.pendingTransaction.transactionStatus,
-  renderComponent(NoPendingTransaction),
+const PendingTransactionStatus = compose<IComponentProps, IExternalProps>(
+  appConnect<IStateProps, IDispatchProps>({
+    stateToProps: s => ({
+      pendingTransaction: selectPlatformPendingTransaction(s),
+    }),
+    dispatchToProps: dispatch => ({
+      monitorPendingTransaction: () => {
+        dispatch(actions.txMonitor.monitorPendingPlatformTx());
+      },
+    }),
+  }),
+  branch<IStateProps>(
+    props => !props.pendingTransaction || !props.pendingTransaction.transactionStatus,
+    renderComponent(NoPendingTransaction),
+  ),
 )(PendingTransactionStatusLayout);
 
 export { PendingTransactionStatus };

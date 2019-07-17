@@ -1,5 +1,4 @@
 .jurisdiction-banner {
-  @include get-out-of-container-layout;
   @include media-breakpoint-up(lg) {
     margin-bottom: -2rem;
   }

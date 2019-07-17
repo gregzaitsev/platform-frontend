@@ -4,9 +4,6 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { Link } from "react-router-dom";
 import { compose } from "recompose";
 
-import { TxPendingWithMetadata } from "../../../lib/api/users/interfaces";
-import { actions } from "../../../modules/actions";
-import { selectPlatformPendingTransaction } from "../../../modules/tx/monitor/selectors";
 import { appConnect } from "../../../store";
 import { appRoutes } from "../../appRoutes";
 import { ButtonLink, EButtonTheme } from "../../shared/buttons/index";
@@ -23,19 +20,6 @@ import * as styles from "./Header.module.scss";
 interface IHeaderButton {
   className: string;
   isIssuerLocation: boolean;
-}
-
-interface IStateProps {
-  location?: string;
-  pendingTransaction?: TxPendingWithMetadata;
-}
-
-interface IDispatchProps {
-  monitorPendingTransaction: () => void;
-}
-
-interface IAuthHeader {
-  pendingTransaction?: TxPendingWithMetadata;
 }
 
 interface IHeaderUnauthProps {
@@ -106,36 +90,15 @@ export const HeaderUnauthComponent: React.FunctionComponent<
   </div>
 );
 
-export const HeaderAuthComponent: React.FunctionComponent<IAuthHeader & IDispatchProps> = ({
-  monitorPendingTransaction,
-  pendingTransaction,
-}) => (
+export const HeaderAuthorized: React.FunctionComponent<{}> = () => (
   <div className={styles.headerAuth}>
     <MobileMenu />
     <LogoAuth />
     <MenuAuthorized />
-    <PendingTransactionStatus
-      className={styles.transactionStatus}
-      monitorPendingTransaction={monitorPendingTransaction}
-      pendingTransaction={pendingTransaction}
-    />
+    <PendingTransactionStatus className={styles.transactionStatus} />
     <MyAccountMenu />
   </div>
 );
-
-export const HeaderAuthorized = compose<IStateProps & IDispatchProps, {}>(
-  appConnect<IStateProps, IDispatchProps>({
-    stateToProps: s => ({
-      location: s.router.location && s.router.location.pathname,
-      pendingTransaction: selectPlatformPendingTransaction(s),
-    }),
-    dispatchToProps: dispatch => ({
-      monitorPendingTransaction: () => {
-        dispatch(actions.txMonitor.monitorPendingPlatformTx());
-      },
-    }),
-  }),
-)(HeaderAuthComponent);
 
 export const HeaderUnauthorized = compose<
   IHeaderUnauthProps & IHeaderUnauthExternalProps,

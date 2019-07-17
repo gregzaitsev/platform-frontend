@@ -3,18 +3,12 @@ import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
 import { ETxSenderState } from "../../../modules/tx/sender/reducer";
-import { PendingTransactionStatus } from "./PendingTransactionStatus";
+import { NoPendingTransaction, PendingTransactionStatusLayout } from "./PendingTransactionStatus";
 
 storiesOf("PendingTransactionStatus", module)
-  .add("No pending transactions", () => (
-    <PendingTransactionStatus
-      className="className"
-      pendingTransaction={undefined}
-      monitorPendingTransaction={action("monitorPendingTransaction")}
-    />
-  ))
+  .add("No pending transactions", () => <NoPendingTransaction className="className" />)
   .add("In progress", () => (
-    <PendingTransactionStatus
+    <PendingTransactionStatusLayout
       className="className"
       pendingTransaction={{
         transactionStatus: ETxSenderState.MINING,
@@ -23,7 +17,7 @@ storiesOf("PendingTransactionStatus", module)
     />
   ))
   .add("Success", () => (
-    <PendingTransactionStatus
+    <PendingTransactionStatusLayout
       className="className"
       pendingTransaction={{
         transactionStatus: ETxSenderState.DONE,
@@ -32,7 +26,7 @@ storiesOf("PendingTransactionStatus", module)
     />
   ))
   .add("Error", () => (
-    <PendingTransactionStatus
+    <PendingTransactionStatusLayout
       className="className"
       pendingTransaction={{
         transactionStatus: ETxSenderState.ERROR_SIGN,

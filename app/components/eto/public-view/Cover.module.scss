@@ -2,8 +2,6 @@ $_logo-size-xl: 130px;
 $_logo-size-sm: 80px;
 
 .cover {
-  @include get-out-of-container-layout;
-
   position: relative;
 
   img {

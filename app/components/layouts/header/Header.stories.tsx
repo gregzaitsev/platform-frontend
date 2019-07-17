@@ -1,4 +1,3 @@
-import { action } from "@storybook/addon-actions";
 import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
@@ -6,7 +5,7 @@ import { EUserType } from "../../../lib/api/users/interfaces";
 import { IAppState } from "../../../store";
 import { DeepPartial } from "../../../types";
 import { withStore } from "../../../utils/storeDecorator.unsafe";
-import { HeaderAuthComponent, HeaderUnauthComponent } from "./Header";
+import { HeaderAuthorized, HeaderUnauthComponent } from "./Header";
 
 const authStoreInvestor = {
   auth: {
@@ -32,7 +31,7 @@ storiesOf("Layout/Header for investor", module)
   .addDecorator(withStore(authStoreInvestor as DeepPartial<IAppState>))
   .add("default", () => (
     <>
-      <HeaderAuthComponent monitorPendingTransaction={action("monitorPendingTransaction")} />
+      <HeaderAuthorized />
     </>
   ));
 
@@ -40,7 +39,7 @@ storiesOf("Layout/Header for issuer", module)
   .addDecorator(withStore(authStoreIssuer as DeepPartial<IAppState>))
   .add("default", () => (
     <>
-      <HeaderAuthComponent monitorPendingTransaction={action("monitorPendingTransaction")} />
+      <HeaderAuthorized />
     </>
   ));
 
