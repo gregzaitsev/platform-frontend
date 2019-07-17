@@ -73,7 +73,7 @@ describe("Light wallet login / register", () => {
     });
   });
 
-  it("should wipe out saved investor wallet when on issuer login", () => {
+  it.only("should wipe out saved investor wallet when on issuer login", () => {
     const email = generateRandomEmailAddress();
     const password = "strongpassword";
 
