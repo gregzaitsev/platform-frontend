@@ -1,9 +1,8 @@
 import {
   assertEtoDashboard,
-  generateRandomEmailAddress,
+  generateRandomEmailAddress, loginWithLightWallet,
   logoutViaAccountMenu,
   registerWithLightWalletETO,
-  tid,
 } from "../utils/index";
 
 const password = "strongpassword";
@@ -13,17 +12,7 @@ const loginWithLightWalletETO = (testEmail: string, password: string) => {
   assertEtoDashboard();
 
   logoutViaAccountMenu();
-
-  cy.get(tid("Header-login")).awaitedClick();
-
-  cy.get(tid("wallet-selector-light")).awaitedClick();
-
-  cy.contains(tid("light-wallet-login-with-email-email-field"), testEmail);
-
-  cy.get(tid("light-wallet-login-with-email-password-field")).type(password);
-
-  cy.get(tid("wallet-selector-nuewallet.login-button")).awaitedClick();
-
+  loginWithLightWallet(testEmail, password);
   assertEtoDashboard();
 };
 

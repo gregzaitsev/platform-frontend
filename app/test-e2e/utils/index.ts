@@ -64,6 +64,17 @@ export const registerWithLightWalletETO = (
   if (acceptTos) acceptTOS();
 };
 
+export const registerWithLightWalletNominee = (
+  email: string,
+  password: string,
+  acceptTos: boolean = true,
+) => {
+  cy.visit("nominee/register");
+
+  typeEmailPassword(email, password);
+  if (acceptTos) acceptTOS();
+};
+
 export const typeLightwalletRecoveryPhrase = (words: string[]) => {
   for (let batch = 0; batch < words.length / 4; batch++) {
     for (let index = 0; index < 4; index++) {
@@ -200,8 +211,6 @@ export const loginWithLightWallet = (email: string, password: string) => {
   cy.get(tid("light-wallet-login-with-email-password-field")).type(password);
   cy.get(tid("wallet-selector-nuewallet.login-button")).awaitedClick();
   cy.get(tid("wallet-selector-nuewallet.login-button")).should("be.disabled");
-
-  assertDashboard();
 };
 
 export const acceptWallet = () => {

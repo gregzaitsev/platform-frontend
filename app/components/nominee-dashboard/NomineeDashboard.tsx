@@ -4,9 +4,9 @@ import { withContainer } from "../../utils/withContainer.unsafe";
 import { Layout } from "../layouts/Layout";
 
 const NomineeDashboardLayout = () => {
-  return <>
+  return <div data-test-id="nominee-dashboard">
   nominee dashboard
-  </>
+  </div>
 };
 
 export const NomineeDashboard = compose(

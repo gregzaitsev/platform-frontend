@@ -11,6 +11,11 @@ export const assertEtoDashboard = () => {
   cy.url().should("contain", appRoutes.dashboard);
 };
 
+export const assertNomineeDashboard = () => {
+  cy.get(tid("nominee-dashboard")).should("exist");
+  cy.url().should("contain", appRoutes.dashboard);
+};
+
 export const assertEtoDocuments = () => {
   cy.get(tid("eto-documents")).should("exist");
   cy.url().should("contain", appRoutes.documents);
