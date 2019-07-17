@@ -40,7 +40,7 @@ import { withContainer } from "../../utils/withContainer.unsafe";
 import { withMetaTags } from "../../utils/withMetaTags.unsafe";
 import { appRoutes } from "../appRoutes";
 import { EtoFileIpfsModal } from "../eto/shared/EtoFileIpfsModal";
-import { LayoutNew } from "../layouts/Layout";
+import { Layout } from "../layouts/Layout";
 import { ClickableDocumentTile, UploadableDocumentTile } from "../shared/Document";
 import { createErrorBoundary } from "../shared/errorBoundary/ErrorBoundary.unsafe";
 import { ErrorBoundaryLayout } from "../shared/errorBoundary/ErrorBoundaryLayout";
@@ -209,7 +209,7 @@ const Documents = compose<React.FunctionComponent>(
     }),
   }),
   withMetaTags((_, intl) => ({ title: intl.formatIntlMessage("menu.documents-page") })),
-  withContainer(LayoutNew),
+  withContainer(Layout),
   branch<TStateProps>(props => props.isLoading, renderComponent(LoadingIndicator)),
 )(DocumentsLayout);
 

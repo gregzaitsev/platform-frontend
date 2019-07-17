@@ -3,7 +3,7 @@ import { compose } from "redux";
 
 import { withContainer } from "../../utils/withContainer.unsafe";
 import { withMetaTags } from "../../utils/withMetaTags.unsafe";
-import { LayoutNew } from "../layouts/Layout";
+import { Layout } from "../layouts/Layout";
 import { WidgetGrid } from "../layouts/WidgetGrid";
 import { createErrorBoundary } from "../shared/errorBoundary/ErrorBoundary.unsafe";
 import { ErrorBoundaryLayout } from "../shared/errorBoundary/ErrorBoundaryLayout";
@@ -19,6 +19,6 @@ export const WalletComponent: React.FunctionComponent = () => (
 
 export const Wallet = compose<React.FunctionComponent>(
   createErrorBoundary(ErrorBoundaryLayout),
-  withContainer(LayoutNew),
+  withContainer(Layout),
   withMetaTags((_, intl) => ({ title: intl.formatIntlMessage("menu.wallet") })),
 )(WalletComponent);

@@ -22,28 +22,28 @@ interface IStateProps {
 }
 
 interface ILayoutUnauthProps {
-  hideHeaderCtaButtons: boolean;
-}
-
-interface IExternalProps {
   hideHeaderCtaButtons?: boolean;
 }
 
-export const LayoutUnauthorized: React.FunctionComponent<ILayoutUnauthProps> = ({
-  children,
-  hideHeaderCtaButtons,
-}) => (
+type TContentExternalProps = React.ComponentProps<typeof Content>;
+
+export const LayoutUnauthorized: React.FunctionComponent<
+  ILayoutUnauthProps & TContentExternalProps
+> = ({ children, hideHeaderCtaButtons = false, ...contentProps }) => (
   <>
     <HeaderUnauthorized hideHeaderCtaButtons={hideHeaderCtaButtons} />
-    <Content>{children}</Content>
+    <Content {...contentProps}>{children}</Content>
     <Footer />
   </>
 );
 
-export const LayoutAuthorized: React.FunctionComponent = ({ children }) => (
+export const LayoutAuthorized: React.FunctionComponent<TContentExternalProps> = ({
+  children,
+  ...contentProps
+}) => (
   <>
     <HeaderAuthorized />
-    <Content>
+    <Content {...contentProps}>
       <NotificationWidget className={styles.notification} />
       {children}
     </Content>
@@ -58,20 +58,29 @@ export const LayoutAuthorized: React.FunctionComponent = ({ children }) => (
 );
 
 export const LayoutComponent: React.FunctionComponent<
-  IStateProps & TDataTestId & IExternalProps
-> = ({ children, userIsAuthorized, hideHeaderCtaButtons = false, "data-test-id": dataTestId }) => (
+  IStateProps & TDataTestId & TContentExternalProps & ILayoutUnauthProps
+> = ({
+  children,
+  userIsAuthorized,
+  hideHeaderCtaButtons = false,
+  "data-test-id": dataTestId,
+  ...contentProps
+}) => (
   <div className={styles.layout} data-test-id={dataTestId}>
     {userIsAuthorized ? (
-      <LayoutAuthorized>{children}</LayoutAuthorized>
+      <LayoutAuthorized {...contentProps}>{children}</LayoutAuthorized>
     ) : (
-      <LayoutUnauthorized hideHeaderCtaButtons={hideHeaderCtaButtons}>
+      <LayoutUnauthorized {...contentProps} hideHeaderCtaButtons={hideHeaderCtaButtons}>
         {children}
       </LayoutUnauthorized>
     )}
   </div>
 );
 
-export const LayoutNew = compose<IStateProps, { "data-test-id"?: string } & IExternalProps>(
+export const Layout = compose<
+  IStateProps,
+  TDataTestId & TContentExternalProps & ILayoutUnauthProps
+>(
   appConnect<IStateProps, {}, {}>({
     stateToProps: state => ({
       userIsAuthorized: selectIsAuthorized(state.auth),

@@ -15,7 +15,7 @@ import { accountMenuData } from "./MenuData";
 import { DropdownMenuEntry, TMenuEntry } from "./MenuEntry";
 
 import * as userProfile from "../../../assets/img/user-profile.svg";
-import * as styles from "./MyAccount.module.scss";
+import * as styles from "./MyAccountMenu.module.scss";
 
 interface IProps {
   actionRequired: boolean;

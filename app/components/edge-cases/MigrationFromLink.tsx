@@ -10,7 +10,7 @@ import { appConnect } from "../../store";
 import { onEnterAction } from "../../utils/OnEnterAction";
 import { withContainer } from "../../utils/withContainer.unsafe";
 import { DashboardHeading } from "../eto/shared/DashboardHeading";
-import { LayoutNew } from "../layouts/Layout";
+import { Layout } from "../layouts/Layout";
 import { CheckYourICBMWalletWidget } from "../settings/icbm-wallet-widget/CheckYourICBMWalletWidget";
 
 interface IStateProps {
@@ -40,5 +40,5 @@ export const MigrationFromLink = compose<React.FunctionComponent>(
       userType: selectUserType(state),
     }),
   }),
-  withContainer(LayoutNew),
+  withContainer(Layout),
 )(MigrationFromLinkComponent);

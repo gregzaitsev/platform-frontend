@@ -11,7 +11,7 @@ import { appConnect } from "../../../../store";
 import { onEnterAction } from "../../../../utils/OnEnterAction";
 import { withContainer } from "../../../../utils/withContainer.unsafe";
 import { etoPublicViewByIdLink } from "../../../appRouteUtils";
-import { LayoutNew } from "../../../layouts/Layout";
+import { Layout } from "../../../layouts/Layout";
 import { LoadingIndicator } from "../../../shared/loading-indicator";
 
 interface IStateProps {
@@ -38,7 +38,7 @@ export const RedirectEtoById = compose<TProps, IRouterParams>(
       eto: selectEtoWithCompanyAndContractById(state, props.etoId),
     }),
   }),
-  withContainer(LayoutNew),
+  withContainer(Layout),
   onEnterAction<IRouterParams>({
     actionCreator: (dispatch, props) => {
       dispatch(actions.eto.loadEto(props.etoId));

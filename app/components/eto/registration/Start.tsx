@@ -6,7 +6,7 @@ import { actions } from "../../../modules/actions";
 import { appConnect } from "../../../store";
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { withContainer } from "../../../utils/withContainer.unsafe";
-import { LayoutNew } from "../../layouts/Layout";
+import { Layout } from "../../layouts/Layout";
 import { createErrorBoundary } from "../../shared/errorBoundary/ErrorBoundary.unsafe";
 import { ErrorBoundaryLayout } from "../../shared/errorBoundary/ErrorBoundaryLayout";
 import { LoadingIndicator } from "../../shared/loading-indicator";
@@ -28,5 +28,5 @@ export const EtoRegister = compose<React.FunctionComponent>(
     }),
   }),
   branch<IStateProps>(props => props.isLoading, renderComponent(LoadingIndicator)),
-  withContainer(LayoutNew),
+  withContainer(Layout),
 )(EtoRegistrationPanel);

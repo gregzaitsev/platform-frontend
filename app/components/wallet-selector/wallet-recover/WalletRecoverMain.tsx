@@ -2,7 +2,7 @@ import * as React from "react";
 import { compose } from "redux";
 
 import { withContainer } from "../../../utils/withContainer.unsafe";
-import { LayoutNew } from "../../layouts/Layout";
+import { Layout } from "../../layouts/Layout";
 import { createErrorBoundary } from "../../shared/errorBoundary/ErrorBoundary.unsafe";
 import { ErrorBoundaryLayout } from "../../shared/errorBoundary/ErrorBoundaryLayout";
 
@@ -14,5 +14,5 @@ export const WalletRecoverMainComponent: React.FunctionComponent = () => <Recove
 
 export const WalletRecoverMain: React.FunctionComponent = compose<React.FunctionComponent>(
   createErrorBoundary(ErrorBoundaryLayout),
-  withContainer(LayoutNew),
+  withContainer(Layout),
 )(WalletRecoverMainComponent);

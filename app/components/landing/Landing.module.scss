@@ -1,10 +1,5 @@
 $paragraph-color: #556877;
 
-%landing-container {
-  max-width: 1140px;
-  margin: 0 auto;
-}
-
 %landing-header {
   @include headline-big;
 
@@ -16,14 +11,8 @@ $paragraph-color: #556877;
   font-weight: bold;
 }
 
-.landing-wrapper {
-  background: $neu-white-two;
-  flex-grow: 1;
-}
-
 .landing {
-  @extend %landing-container;
-  @include container-horizontal-padding;
+  background: $neu-white-two;
 
   padding-top: px-to-rem(100px);
   padding-bottom: px-to-rem(100px);
@@ -32,6 +21,7 @@ $paragraph-color: #556877;
 .neon {
   background-color: $neu-neon-yellow;
   height: 15px;
+  margin-bottom: 2rem;
   width: 110px;
 }
 
@@ -97,9 +87,7 @@ $paragraph-color: #556877;
 }
 
 .investment-opportunities {
-  @extend %landing-container;
-
-  padding-top: px-to-rem(80px);
+  padding-top: px-to-rem(50px);
   padding-bottom: px-to-rem(100px);
 
   &-header {

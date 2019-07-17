@@ -28,7 +28,7 @@ import { appConnect } from "../../store";
 import { onEnterAction } from "../../utils/OnEnterAction";
 import { withContainer } from "../../utils/withContainer.unsafe";
 import { appRoutes } from "../appRoutes";
-import { LayoutNew } from "../layouts/Layout";
+import { Layout } from "../layouts/Layout";
 import { Button, ButtonLink, EButtonLayout } from "../shared/buttons";
 import { createErrorBoundary } from "../shared/errorBoundary/ErrorBoundary.unsafe";
 import { ErrorBoundaryLayout } from "../shared/errorBoundary/ErrorBoundaryLayout";
@@ -249,7 +249,7 @@ export const WalletSelector = compose<TExternalProps & IStateProps & IDispatchPr
   withContainer(
     withProps<{ hideHeaderCtaButtons?: boolean }, ILayoutProps>(() => ({
       hideHeaderCtaButtons: true,
-    }))(LayoutNew),
+    }))(Layout),
   ),
   branch<IStateProps & IDispatchProps>(
     props => props.isMessageSigning,

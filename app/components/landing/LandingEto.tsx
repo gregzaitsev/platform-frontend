@@ -7,7 +7,7 @@ import { compose } from "redux";
 import { IIntlProps, injectIntlHelpers } from "../../utils/injectIntlHelpers.unsafe";
 import { withContainer } from "../../utils/withContainer.unsafe";
 import { appRoutes } from "../appRoutes";
-import { LayoutNew } from "../layouts/Layout";
+import { Layout } from "../layouts/Layout";
 import { CenteredListWithTitle } from "../shared/CenteredListWithTitle";
 import { createErrorBoundary } from "../shared/errorBoundary/ErrorBoundary.unsafe";
 import { ErrorBoundaryLayout } from "../shared/errorBoundary/ErrorBoundaryLayout";
@@ -113,6 +113,6 @@ export const LandingEto: React.FunctionComponent<IIntlProps> = compose<
   React.FunctionComponent<IIntlProps>
 >(
   createErrorBoundary(ErrorBoundaryLayout),
-  withContainer(LayoutNew),
+  withContainer(Layout),
   injectIntlHelpers,
 )(LandingEtoComponent);

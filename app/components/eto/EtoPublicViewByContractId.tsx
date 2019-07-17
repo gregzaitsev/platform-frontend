@@ -8,7 +8,7 @@ import { TEtoWithCompanyAndContract } from "../../modules/eto/types";
 import { appConnect } from "../../store";
 import { onEnterAction } from "../../utils/OnEnterAction";
 import { withContainer } from "../../utils/withContainer.unsafe";
-import { LayoutNew } from "../layouts/Layout";
+import { Layout } from "../layouts/Layout";
 import { createErrorBoundary } from "../shared/errorBoundary/ErrorBoundary.unsafe";
 import { ErrorBoundaryLayout } from "../shared/errorBoundary/ErrorBoundaryLayout";
 import { LoadingIndicator } from "../shared/loading-indicator";
@@ -49,7 +49,7 @@ export const EtoPublicViewByContractId = compose<TProps, IRouterParams>(
       dispatch(actions.eto.loadEto(props.etoId));
     },
   }),
-  withContainer(LayoutNew),
+  withContainer(Layout),
   branch<IStateProps>(props => !props.eto, renderComponent(LoadingIndicator)),
   withJurisdictionDisclaimer<TProps>(props => props.eto.previewCode),
   withJurisdictionRoute<TProps & IRouterParams>(props => ({

@@ -6,13 +6,14 @@ import { EUserType } from "../../lib/api/users/interfaces";
 import { IAppState } from "../../store";
 import { DeepPartial } from "../../types";
 import { withStore } from "../../utils/storeDecorator.unsafe";
+import { EContentWidth } from "./Content";
 import { LayoutComponent } from "./Layout";
 
 const FakeContent = () => (
   <div style={{ height: "20rem", backgroundColor: "gray" }}>dummy content</div>
 );
 
-const authStore = {
+const authStore: DeepPartial<IAppState> = {
   auth: {
     jwt: "asdf",
     user: {
@@ -33,7 +34,7 @@ const authStore = {
   },
 };
 
-const unauthStore = {
+const unauthStore: DeepPartial<IAppState> = {
   auth: {
     user: {
       type: EUserType.ISSUER,
@@ -54,13 +55,18 @@ const unauthStore = {
 };
 
 storiesOf("Layouts", module)
-  .addDecorator(withStore(authStore as DeepPartial<IAppState>))
+  .addDecorator(withStore(authStore))
   .add("LayoutAuthorized", () => (
     <LayoutComponent userIsAuthorized={true}>
       <FakeContent />
     </LayoutComponent>
   ))
-  .addDecorator(withStore(unauthStore as DeepPartial<IAppState>))
+  .add("LayoutAuthorized with full width content", () => (
+    <LayoutComponent userIsAuthorized={true} width={EContentWidth.FULL}>
+      <FakeContent />
+    </LayoutComponent>
+  ))
+  .addDecorator(withStore(unauthStore))
   .add("LayoutUnauthorized", () => (
     <LayoutComponent userIsAuthorized={false}>
       <FakeContent />

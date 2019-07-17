@@ -7,7 +7,7 @@ import { IWalletPrivateData } from "../../../modules/web3/reducer";
 import { selectIsUnlocked, selectWalletPrivateData } from "../../../modules/web3/selectors";
 import { appConnect } from "../../../store";
 import { withContainer } from "../../../utils/withContainer.unsafe";
-import { LayoutNew } from "../../layouts/Layout";
+import { Layout } from "../../layouts/Layout";
 import { createErrorBoundary } from "../../shared/errorBoundary/ErrorBoundary.unsafe";
 import { ErrorBoundaryLayout } from "../../shared/errorBoundary/ErrorBoundaryLayout";
 import { LoadingIndicator } from "../../shared/loading-indicator";
@@ -75,5 +75,5 @@ export const BackupSeed = compose<React.FunctionComponent>(
       clearSeed: () => dispatch(actions.web3.clearWalletPrivateDataFromState()),
     }),
   }),
-  withContainer(LayoutNew),
+  withContainer(Layout),
 )(BackupSeedComponent);

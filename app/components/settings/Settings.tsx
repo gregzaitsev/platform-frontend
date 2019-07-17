@@ -18,7 +18,7 @@ import { withContainer } from "../../utils/withContainer.unsafe";
 import { withMetaTags } from "../../utils/withMetaTags.unsafe";
 import { DashboardHeading } from "../eto/shared/DashboardHeading";
 import { Container, EColumnSpan } from "../layouts/Container";
-import { LayoutNew } from "../layouts/Layout";
+import { Layout } from "../layouts/Layout";
 import { WidgetGrid } from "../layouts/WidgetGrid";
 import { createErrorBoundary } from "../shared/errorBoundary/ErrorBoundary.unsafe";
 import { ErrorBoundaryLayout } from "../shared/errorBoundary/ErrorBoundaryLayout";
@@ -103,6 +103,6 @@ export const Settings = compose<React.FunctionComponent>(
       dispatch(actions.kyc.kycLoadIndividualData());
     },
   }),
-  withContainer(LayoutNew),
+  withContainer(Layout),
   withMetaTags((_, intl) => ({ title: intl.formatIntlMessage("menu.settings") })),
 )(SettingsComponent);

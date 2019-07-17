@@ -7,7 +7,7 @@ import { TDataTestId } from "../../types";
 import { onEnterAction } from "../../utils/OnEnterAction";
 import { withContainer } from "../../utils/withContainer.unsafe";
 import { Container, EColumnSpan } from "../layouts/Container";
-import { LayoutNew } from "../layouts/Layout";
+import { Layout } from "../layouts/Layout";
 import { WidgetGrid } from "../layouts/WidgetGrid";
 import { Heading } from "../shared/Heading";
 import { EtoList } from "./eto-list/EtoList";
@@ -43,5 +43,5 @@ export const Dashboard = compose<{}, {}>(
       d(actions.wallet.loadWalletData());
     },
   }),
-  withContainer(withProps<TDataTestId, {}>({ "data-test-id": "dashboard-application" })(LayoutNew)),
+  withContainer(withProps<TDataTestId, {}>({ "data-test-id": "dashboard-application" })(Layout)),
 )(DashboardLayout);

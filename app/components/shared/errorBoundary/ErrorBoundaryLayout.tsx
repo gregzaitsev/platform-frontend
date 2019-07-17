@@ -3,7 +3,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { compose } from "recompose";
 
 import { withContainer } from "../../../utils/withContainer.unsafe";
-import { LayoutNew } from "../../layouts/Layout";
+import { Layout } from "../../layouts/Layout";
 
 import * as styles from "./ErrorBoundary.module.scss";
 
@@ -13,4 +13,4 @@ export const ErrorBoundaryLayoutComponent: React.FunctionComponent<{}> = () => (
   </div>
 );
 
-export const ErrorBoundaryLayout = compose(withContainer(LayoutNew))(ErrorBoundaryLayoutComponent);
+export const ErrorBoundaryLayout = compose(withContainer(Layout))(ErrorBoundaryLayoutComponent);
