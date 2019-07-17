@@ -10,7 +10,7 @@ export const OOO_TRANSACTION_TYPE = "mempool";
 export enum EUserType {
   INVESTOR = "investor",
   ISSUER = "issuer",
-  NOMINEE = "nominee"
+  NOMINEE = "nominee",
 }
 
 export interface IUser {
@@ -51,7 +51,7 @@ export const UserValidator = Yup.object()
     language: Yup.string(),
     unverifiedEmail: Yup.string(),
     verifiedEmail: Yup.string(),
-    type: Yup.string().oneOf(["investor", "issuer","nominee"]),
+    type: Yup.string().oneOf(["investor", "issuer", "nominee"]),
     walletType: Yup.string().oneOf(Object.keys(EWalletType).map(type => type.toLowerCase())),
     walletSubtype: Yup.string().oneOf(Object.keys(EWalletSubType).map(type => type.toLowerCase())),
   })

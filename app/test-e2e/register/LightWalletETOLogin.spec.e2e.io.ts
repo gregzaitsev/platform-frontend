@@ -1,6 +1,7 @@
 import {
   assertEtoDashboard,
-  generateRandomEmailAddress, loginWithLightWallet,
+  generateRandomEmailAddress,
+  loginWithLightWallet,
   logoutViaAccountMenu,
   registerWithLightWalletETO,
 } from "../utils/index";

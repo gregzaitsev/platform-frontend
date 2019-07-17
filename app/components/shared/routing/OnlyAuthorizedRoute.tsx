@@ -28,7 +28,7 @@ interface IExternalProps {
 
 interface IComponentProps {
   walletType: EWalletType;
-  userType: EUserType,
+  userType: EUserType;
   routerState: RouterState;
 }
 
@@ -60,7 +60,6 @@ const OnlyAuthorizedRouteRedirectionComponent: React.FunctionComponent<TProps> =
   return <Route {...rest} render={() => <Redirect to={redirectionPath} />} />;
 };
 
-
 /**
  * This component will only attempt to redirect on entering the route. So when user gets logged in you need to trigger redirection on your own.
  */
@@ -71,7 +70,7 @@ const OnlyAuthorizedRouteComponent: React.FunctionComponent<IComponentProps & IE
   userType,
   ...rest
 }) => {
-  const selectComponent = (userType:EUserType): React.ElementType | undefined => {
+  const selectComponent = (userType: EUserType): React.ElementType | undefined => {
     switch (userType) {
       case EUserType.INVESTOR:
         return InvestorComponent;
@@ -85,12 +84,14 @@ const OnlyAuthorizedRouteComponent: React.FunctionComponent<IComponentProps & IE
   };
   const Component = selectComponent(userType);
 
-  return <Route {...rest}
-                render={props => Component
-                  ? <Component {...props} />
-                  : <Redirect to={appRoutes.dashboard} />
-                }
-  />;
+  return (
+    <Route
+      {...rest}
+      render={props =>
+        Component ? <Component {...props} /> : <Redirect to={appRoutes.dashboard} />
+      }
+    />
+  );
 };
 
 export const OnlyAuthorizedRoute = compose<IComponentProps & IExternalProps, IExternalProps>(

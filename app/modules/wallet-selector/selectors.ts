@@ -18,7 +18,7 @@ export const selectIsLoginRoute = (state: RouterState): boolean =>
   !!state.location && state.location.pathname.includes("login");
 
 export const selectRootPath = (state: RouterState): string => {
-  switch(selectUrlUserType(state)){
+  switch (selectUrlUserType(state)) {
     case EUserType.ISSUER:
       return selectIsLoginRoute(state) ? appRoutes.loginIssuer : appRoutes.registerIssuer;
     case EUserType.NOMINEE:

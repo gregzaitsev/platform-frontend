@@ -1,13 +1,12 @@
 import {
   assertNomineeDashboard,
-  generateRandomEmailAddress, loginWithLightWallet,
+  generateRandomEmailAddress,
+  loginWithLightWallet,
   logoutViaAccountMenu,
   registerWithLightWalletNominee,
 } from "../utils/index";
 
-
-
-describe.only("Nominee flow", () => {
+describe("Nominee flow", () => {
   const password = "strongpassword";
   const email = generateRandomEmailAddress();
 

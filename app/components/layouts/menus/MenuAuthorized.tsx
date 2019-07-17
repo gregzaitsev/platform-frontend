@@ -7,11 +7,11 @@ import { selectUserType } from "../../../modules/auth/selectors";
 import { userHasKycAndEmailVerified } from "../../../modules/eto-flow/selectors";
 import { selectIsActionRequiredSettings } from "../../../modules/notifications/selectors";
 import { appConnect } from "../../../store";
+import { assertNever } from "../../../utils/assertNever";
 import { investorMenuData, issuerMenuData, nomineeMenuData } from "./MenuData";
 import { MenuEntry } from "./MenuEntry";
 
 import * as styles from "./MenuAuthorized.module.scss";
-import { assertNever } from "../../../utils/assertNever";
 
 interface IStateProps {
   userType: EUserType;
@@ -58,7 +58,9 @@ const IssuerMenu: React.FunctionComponent<IIssuerMenuProps> = ({ userHasKycAndVe
   );
 };
 
-const NomineeMenu: React.FunctionComponent<INomineeMenuProps> = ({userHasKycAndVerifiedEmail}) => {
+const NomineeMenu: React.FunctionComponent<INomineeMenuProps> = ({
+  userHasKycAndVerifiedEmail,
+}) => {
   const data = nomineeMenuData(userHasKycAndVerifiedEmail);
   return (
     <div className={styles.menu}>
@@ -81,7 +83,7 @@ const LayoutAuthorizedMenuComponent: React.FunctionComponent<IStateProps & IWith
     case EUserType.NOMINEE:
       return <NomineeMenu data-test-id="nominee-menu" {...props} />;
     default:
-      return assertNever(userType)
+      return assertNever(userType);
   }
 };
 

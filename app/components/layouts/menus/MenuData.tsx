@@ -110,7 +110,7 @@ export const issuerMenuData = (userHasKycAndVerifiedEmail: boolean): TMenuEntry[
   },
 ];
 
-export const nomineeMenuData = (userHasKycAndVerifiedEmail: boolean): TMenuEntry[]  => [
+export const nomineeMenuData = (userHasKycAndVerifiedEmail: boolean): TMenuEntry[] => [
   {
     type: EMenuEntryType.LINK,
     key: "nominee-dashboard",

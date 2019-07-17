@@ -12,18 +12,12 @@ export const appRoutes = {
   registerNominee: "/nominee/register",
   login: "/login",
 
-
-
   restore: "/restore",
-
-
 
   etoIssuerView: "/eto/view",
 
   etoPublicView: "/eto/view/:jurisdiction/:previewCode",
   etoPublicViewById: "/eto/by-id/:jurisdiction/:etoId",
-
-
 
   etoWidgetView: "/embed/eto/widget/:previewCode",
 
@@ -42,26 +36,26 @@ export const appRoutes = {
   portfolio: "/portfolio",
 
   /*
-  * the following routes shouldn't be used in the code,
-  * they are only there to catch accidental user input
-  * or for backward compatibility
-  */
+   * the following routes shouldn't be used in the code,
+   * they are only there to catch accidental user input
+   * or for backward compatibility
+   */
 
   /*
-  * @deprecated
-  * */
+   * @deprecated
+   * */
   loginIssuer: "/eto/login",
   /*
-  * @deprecated
-  * */
+   * @deprecated
+   * */
   loginNominee: "/nominee/login",
   /*
   @deprecated
    */
   restoreIssuer: "/eto/restore",
   /*
-  * @deprecated
-  * */
+   * @deprecated
+   * */
   restoreNominee: "/nominee/restore",
   /*
    * @deprecated Route with eto jurisdiction should be used instead. This is only for backward compatibility.

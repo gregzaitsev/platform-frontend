@@ -5,13 +5,13 @@ import { Col, Row } from "reactstrap";
 import { compose, withProps } from "recompose";
 
 import { externalRoutes } from "../../../../config/externalRoutes";
+import { TDataTestId } from "../../../../types";
 import { withContainer } from "../../../../utils/withContainer.unsafe";
 import { ButtonLink } from "../../../shared/buttons";
 import { ExternalLink } from "../../../shared/links";
 import { loginWalletRoutes } from "../../walletRoutes";
 import { WalletSelectorContainer } from "../../WalletSelectorContainer";
 import { recoverRoutes } from "../router/recoverRoutes";
-import { TDataTestId } from "../../../../types";
 
 export const LoginHelpLayout: React.FunctionComponent<{}> = () => (
   <>
@@ -76,6 +76,6 @@ export const LoginHelpLayout: React.FunctionComponent<{}> = () => (
 
 export const LoginHelp = compose(
   withContainer(
-    withProps<TDataTestId,{}>({'data-test-id':"recover-layout"})(WalletSelectorContainer)
-  )
+    withProps<TDataTestId, {}>({ "data-test-id": "recover-layout" })(WalletSelectorContainer),
+  ),
 )(LoginHelpLayout);

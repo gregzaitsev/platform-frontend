@@ -18,6 +18,7 @@ import { RedirectEtoPublicView } from "./eto/shared/routing/RedirectToEtoLink";
 import { Kyc } from "./kyc/Kyc";
 import { Landing } from "./landing/Landing";
 import { LandingEto } from "./landing/LandingEto";
+import { NomineeDashboard } from "./nominee-dashboard/NomineeDashboard";
 import { Portfolio } from "./portfolio/Portfolio";
 import { BackupSeed } from "./settings/backup-seed/BackupSeed";
 import { EmailVerify } from "./settings/EmailVerify";
@@ -32,7 +33,6 @@ import { EmbeddedWidget } from "./testing/embeded-widget/TestEmbededWidget";
 import { WalletRecoverMain } from "./wallet-selector/wallet-recover/WalletRecoverMain";
 import { WalletSelector } from "./wallet-selector/WalletSelector";
 import { Wallet } from "./wallet/Wallet";
-import { NomineeDashboard } from "./nominee-dashboard/NomineeDashboard";
 
 export const AppRouter: React.FunctionComponent = () => (
   <SwitchConnected>
@@ -122,7 +122,7 @@ export const AppRouter: React.FunctionComponent = () => (
         path={appRoutes.restoreNominee}
         component={() => <Redirect to={appRoutes.restore} />}
         exact
-      />
+      />,
     ]}
 
     {/* only investors routes */}

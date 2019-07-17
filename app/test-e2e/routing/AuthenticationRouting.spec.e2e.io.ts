@@ -3,7 +3,8 @@ import {
   assertUserInLanding,
   assertUserInLedgerWalletLoginPage,
   assertUserInLightWalletLoginPage,
-  assertUserInLightWalletRegisterPage, assertUserInRecoveryPage,
+  assertUserInLightWalletRegisterPage,
+  assertUserInRecoveryPage,
 } from "../utils/index";
 
 describe("Authentication Routing", () => {
@@ -36,7 +37,6 @@ describe("Authentication Routing", () => {
     cy.visit("/nominee/restore");
     assertUserInRecoveryPage();
   });
-
 
   it("should open activation link with light wallet when wallet type is unknown", () => {
     cy.visit(

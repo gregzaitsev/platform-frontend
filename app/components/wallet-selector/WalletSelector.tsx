@@ -14,6 +14,7 @@ import {
 } from "recompose";
 
 import { externalRoutes } from "../../config/externalRoutes";
+import { EUserType } from "../../lib/api/users/interfaces";
 import { actions } from "../../modules/actions";
 import { ELogoutReason } from "../../modules/auth/types";
 import { ENotificationText, ENotificationType } from "../../modules/notifications/reducer";
@@ -40,7 +41,6 @@ import { WalletRouter } from "./WalletRouter";
 import { WalletSelectorContainer } from "./WalletSelectorContainer";
 
 import * as styles from "./WalletSelector.module.scss";
-import { EUserType } from "../../lib/api/users/interfaces";
 
 type TRouteLoginProps = RouteComponentProps<unknown, StaticContext, TLoginRouterState>;
 
@@ -78,22 +78,28 @@ interface ISelectTitleProps {
   isNominee: boolean;
 }
 
-const SelectTitle:React.FunctionComponent<ISelectTitleProps> = ({ isIssuerWithOnlyLedgerAllowed, isLoginRoute, isNominee }) => {
+const SelectTitle: React.FunctionComponent<ISelectTitleProps> = ({
+  isIssuerWithOnlyLedgerAllowed,
+  isLoginRoute,
+  isNominee,
+}) => {
   if (isIssuerWithOnlyLedgerAllowed || isNominee) {
-    return <FormattedMessage id="wallet-selector.tabs.register.title.no-wallet-selection" />
+    return <FormattedMessage id="wallet-selector.tabs.register.title.no-wallet-selection" />;
   } else if (isLoginRoute) {
-    return <FormattedMessage id="wallet-selector.tabs.login.title" />
+    return <FormattedMessage id="wallet-selector.tabs.login.title" />;
   } else {
-    return <FormattedMessage id="wallet-selector.tabs.register.title" />
+    return <FormattedMessage id="wallet-selector.tabs.register.title" />;
   }
 };
 
-export const WalletSelectorLayout: React.FunctionComponent<IStateProps &
-  IDispatchProps &
-  TExternalProps &
-  TRouteLoginProps &
-  TLocalStateProps &
-  TLocalStateHandlersProps> = ({
+export const WalletSelectorLayout: React.FunctionComponent<
+  IStateProps &
+    IDispatchProps &
+    TExternalProps &
+    TRouteLoginProps &
+    TLocalStateProps &
+    TLocalStateHandlersProps
+> = ({
   rootPath,
   isLoginRoute,
   oppositeRoute,
@@ -122,8 +128,11 @@ export const WalletSelectorLayout: React.FunctionComponent<IStateProps &
       <Row>
         <Col tag="section" md={{ size: 10, offset: 1 }} lg={{ size: 8, offset: 2 }}>
           <h1 className={cn(styles.walletChooserTitle, "my-4", "text-center")}>
-            <SelectTitle isIssuerWithOnlyLedgerAllowed={isIssuerWithOnlyLedgerAllowed} isLoginRoute={isLoginRoute}
-                         isNominee={isNominee} />
+            <SelectTitle
+              isIssuerWithOnlyLedgerAllowed={isIssuerWithOnlyLedgerAllowed}
+              isLoginRoute={isLoginRoute}
+              isNominee={isNominee}
+            />
           </h1>
 
           {!isIssuerWithOnlyLedgerAllowed && !isNominee && (
@@ -228,8 +237,10 @@ export const WalletSelectorLayout: React.FunctionComponent<IStateProps &
   );
 };
 
-export const WalletSelector = compose<TExternalProps & IStateProps & IDispatchProps & TLocalStateHandlersProps & TLocalStateProps,
-  {}>(
+export const WalletSelector = compose<
+  TExternalProps & IStateProps & IDispatchProps & TLocalStateHandlersProps & TLocalStateProps,
+  {}
+>(
   createErrorBoundary(ErrorBoundaryLayout),
   onEnterAction({
     actionCreator: dispatch => dispatch(actions.walletSelector.reset()),
