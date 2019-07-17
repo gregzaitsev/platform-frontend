@@ -109,3 +109,33 @@ export const issuerMenuData = (userHasKycAndVerifiedEmail: boolean): TMenuEntry[
     "data-test-id": "authorized-layout-wallet-button",
   },
 ];
+
+export const nomineeMenuData = (userHasKycAndVerifiedEmail: boolean): TMenuEntry[]  => [
+  {
+    type: EMenuEntryType.LINK,
+    key: "nominee-dashboard",
+    to: appRoutes.dashboard,
+    menuName: <FormattedMessage id="menu.dashboard" />,
+  },
+  {
+    type: EMenuEntryType.LINK,
+    key: "wallet",
+    to: appRoutes.wallet,
+    menuName: <FormattedMessage id="menu.wallet" />,
+    "data-test-id": "authorized-layout-wallet-button",
+  },
+  {
+    type: EMenuEntryType.LINK,
+    key: "campaign",
+    to: appRoutes.campaign,
+    disabled: !userHasKycAndVerifiedEmail,
+    menuName: <FormattedMessage id="menu.campaign-page" />,
+  },
+  {
+    type: EMenuEntryType.LINK,
+    key: "documents",
+    to: appRoutes.documents,
+    disabled: !userHasKycAndVerifiedEmail,
+    menuName: <FormattedMessage id="menu.documents-page" />,
+  },
+];

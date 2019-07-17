@@ -7,10 +7,11 @@ import { selectUserType } from "../../../modules/auth/selectors";
 import { userHasKycAndEmailVerified } from "../../../modules/eto-flow/selectors";
 import { selectIsActionRequiredSettings } from "../../../modules/notifications/selectors";
 import { appConnect } from "../../../store";
-import { investorMenuData, issuerMenuData } from "./MenuData";
+import { investorMenuData, issuerMenuData, nomineeMenuData } from "./MenuData";
 import { MenuEntry } from "./MenuEntry";
 
 import * as styles from "./MenuAuthorized.module.scss";
+import { assertNever } from "../../../utils/assertNever";
 
 interface IStateProps {
   userType: EUserType;
@@ -27,7 +28,10 @@ interface IInvestorMenuProps {
 }
 
 interface IIssuerMenuProps {
-  actionRequired: boolean;
+  userHasKycAndVerifiedEmail: boolean;
+}
+
+interface INomineeMenuProps {
   userHasKycAndVerifiedEmail: boolean;
 }
 
@@ -54,15 +58,32 @@ const IssuerMenu: React.FunctionComponent<IIssuerMenuProps> = ({ userHasKycAndVe
   );
 };
 
+const NomineeMenu: React.FunctionComponent<INomineeMenuProps> = ({userHasKycAndVerifiedEmail}) => {
+  const data = nomineeMenuData(userHasKycAndVerifiedEmail);
+  return (
+    <div className={styles.menu}>
+      {data.map(entry => (
+        <MenuEntry {...entry} />
+      ))}
+    </div>
+  );
+};
+
 const LayoutAuthorizedMenuComponent: React.FunctionComponent<IStateProps & IWithProps> = ({
   userType,
   ...props
-}) =>
-  userType === EUserType.INVESTOR ? (
-    <InvestorMenu data-test-id="investor-menu" {...props} />
-  ) : (
-    <IssuerMenu data-test-id="issuer-menu" {...props} />
-  );
+}) => {
+  switch (userType) {
+    case EUserType.INVESTOR:
+      return <InvestorMenu data-test-id="investor-menu" {...props} />;
+    case EUserType.ISSUER:
+      return <IssuerMenu data-test-id="issuer-menu" {...props} />;
+    case EUserType.NOMINEE:
+      return <NomineeMenu data-test-id="nominee-menu" {...props} />;
+    default:
+      return assertNever(userType)
+  }
+};
 
 const MenuAuthorized = compose<IStateProps & IWithProps, {}>(
   appConnect<IStateProps | null, {}>({

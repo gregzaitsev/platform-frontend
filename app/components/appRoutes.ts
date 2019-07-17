@@ -31,6 +31,7 @@ export const appRoutes = {
   wallet: "/wallet",
   dashboard: "/dashboard",
   documents: "/documents",
+  campaign: "/campaign",
   profile: "/profile",
   demo: "/demo",
   eto: "/eto",

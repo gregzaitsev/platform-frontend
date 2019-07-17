@@ -144,6 +144,7 @@ export const AppRouter: React.FunctionComponent = () => (
       path={appRoutes.wallet}
       investorComponent={Wallet}
       issuerComponent={Wallet}
+      nomineeComponent={Wallet}
     />
     <OnlyAuthorizedRoute
       path={appRoutes.dashboard}
@@ -156,20 +157,28 @@ export const AppRouter: React.FunctionComponent = () => (
       path={appRoutes.verify}
       investorComponent={EmailVerify}
       issuerComponent={EmailVerify}
+      nomineeComponent={EmailVerify}
     />
     <OnlyAuthorizedRoute
       path={appRoutes.profile}
       investorComponent={Settings}
       issuerComponent={Settings}
+      nomineeComponent={Settings}
       exact
     />
     <OnlyAuthorizedRoute
       path={profileRoutes.seedBackup}
       investorComponent={BackupSeed}
       issuerComponent={BackupSeed}
+      nomineeComponent={BackupSeed}
       exact
     />
-    <OnlyAuthorizedRoute path={appRoutes.kyc} investorComponent={Kyc} issuerComponent={Kyc} />
+    <OnlyAuthorizedRoute
+      path={appRoutes.kyc}
+      investorComponent={Kyc}
+      issuerComponent={Kyc}
+      nomineeComponent={Kyc}
+    />
 
     {/*Routes used only in E2E tests*/}
     {!!process.env.IS_CYPRESS && [
