@@ -95,12 +95,13 @@ export const AppRouter: React.FunctionComponent = () => (
       <OnlyPublicRoute
         key={appRoutes.loginIssuer}
         path={appRoutes.loginIssuer}
-        render={() => <Redirect to={appRoutes.login} />}
+        component={() => <Redirect to={appRoutes.login} />}
+        exact
       />,
       <OnlyPublicRoute
         key={appRoutes.restoreIssuer}
         path={appRoutes.restoreIssuer}
-        render={() => <Redirect to={appRoutes.restore} />}
+        component={() => <Redirect to={appRoutes.restore} />}
         exact
       />,
     ]}
@@ -113,13 +114,13 @@ export const AppRouter: React.FunctionComponent = () => (
       <OnlyPublicRoute
         key={appRoutes.loginNominee}
         path={appRoutes.loginNominee}
-        render={() => <Redirect to={appRoutes.login} />}
+        component={() => <Redirect to={appRoutes.login} />}
         exact
       />,
       <OnlyPublicRoute
         key={appRoutes.restoreNominee}
         path={appRoutes.restoreNominee}
-        render={() => <Redirect to={appRoutes.restore} />}
+        component={() => <Redirect to={appRoutes.restore} />}
         exact
       />
     ]}

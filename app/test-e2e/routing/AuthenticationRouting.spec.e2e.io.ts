@@ -3,8 +3,8 @@ import {
   assertUserInLanding,
   assertUserInLedgerWalletLoginPage,
   assertUserInLightWalletLoginPage,
-  assertUserInLightWalletRegisterPage,
-} from "../utils";
+  assertUserInLightWalletRegisterPage, assertUserInRecoveryPage,
+} from "../utils/index";
 
 describe("Authentication Routing", () => {
   it("should open login with light wallet", () => {
@@ -16,6 +16,27 @@ describe("Authentication Routing", () => {
     cy.visit("/register");
     assertUserInLightWalletRegisterPage();
   });
+
+  it("should redirect to login from /eto/login", () => {
+    cy.visit("/eto/login");
+    assertUserInLightWalletLoginPage();
+  });
+
+  it("should redirect to login from /nominee/login", () => {
+    cy.visit("/nominee/login");
+    assertUserInLightWalletLoginPage();
+  });
+
+  it("should redirect to login from /eto/restore", () => {
+    cy.visit("/eto/restore");
+    assertUserInRecoveryPage();
+  });
+
+  it("should redirect to login from /nominee/restore", () => {
+    cy.visit("/nominee/restore");
+    assertUserInRecoveryPage();
+  });
+
 
   it("should open activation link with light wallet when wallet type is unknown", () => {
     cy.visit(

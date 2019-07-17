@@ -162,6 +162,10 @@ export const assertUserInLightWalletRegisterPage = () => {
   cy.get(tid("modals.wallet-selector.register-restore-light-wallet.title"));
 };
 
+export const assertUserInRecoveryPage = () => {
+  cy.get(tid("recover-layout"));
+};
+
 export const assertUserInBrowserWalletLoginPage = () => {
   cy.get(tid("modals.wallet-selector.wallet-browser.title"));
 };
