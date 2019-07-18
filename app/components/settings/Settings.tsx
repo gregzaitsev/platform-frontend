@@ -92,7 +92,7 @@ export const Settings = compose<React.FunctionComponent>(
       isLightWallet: selectIsLightWallet(state.web3),
       userType: selectUserType(state),
       kycRequestStatus: selectKycRequestStatus(state),
-      kycRequestType: selectKycRequestType(state.kyc),
+      kycRequestType: selectKycRequestType(state),
       isIcbmWalletConnected: selectIcbmWalletConnected(state.wallet),
       isLockedWalletConnected: selectLockedWalletConnected(state),
     }),

@@ -1,8 +1,8 @@
 import * as cn from "classnames";
 import { FormikProps, withFormik } from "formik";
 import * as React from "react";
-import { FormattedMessage } from "react-intl-phraseapp";
-import { compose } from "redux";
+import { FormattedMessage, FormattedHTMLMessage } from "react-intl-phraseapp";
+import { compose } from "recompose";
 import * as Yup from "yup";
 
 import { actions } from "../../../modules/actions";
@@ -15,11 +15,11 @@ import {
 import { selectIsCancelEmail } from "../../../modules/profile/reducer";
 import { selectIsConnectedButtonLocked } from "../../../modules/verify-email-widget/reducer";
 import { appConnect } from "../../../store";
-import { IIntlProps, injectIntlHelpers } from "../../../utils/injectIntlHelpers.unsafe";
+import { injectIntlHelpers } from "../../../utils/injectIntlHelpers.unsafe";
 import { EColumnSpan } from "../../layouts/Container";
 import { Button, EButtonLayout } from "../../shared/buttons";
 import { ButtonArrowRight } from "../../shared/buttons/Button";
-import { Form, FormField } from "../../shared/forms";
+import { Form, FormField } from "../../shared/forms/index";
 import { Panel } from "../../shared/Panel";
 
 import * as successIcon from "../../../assets/img/notifications/success.svg";
@@ -35,7 +35,7 @@ interface IStateProps {
   isEmailTemporaryCancelled: boolean;
 }
 
-interface IOwnProps {
+interface IExternalProps {
   step: number;
   columnSpan?: EColumnSpan;
 }
@@ -235,10 +235,7 @@ const UnVerifiedUser: React.FunctionComponent<{
   </section>
 );
 
-export const VerifyEmailWidgetComponent: React.FunctionComponent<
-  IStateProps & IDispatchProps & IOwnProps & IIntlProps
-> = ({
-  intl: { formatIntlMessage },
+export const VerifyEmailWidgetComponent: React.FunctionComponent<IStateProps & IDispatchProps> = ({
   isUserEmailVerified,
   isThereUnverifiedEmail,
   resendEmail,
@@ -248,10 +245,8 @@ export const VerifyEmailWidgetComponent: React.FunctionComponent<
   isLocked,
   cancelEmail,
   isEmailTemporaryCancelled,
-  step,
   revertCancelEmail,
   abortEmailUpdate,
-  columnSpan,
 }) => {
   const shouldViewVerifiedUser =
     !isThereUnverifiedEmail && !isEmailTemporaryCancelled && isUserEmailVerified;
@@ -259,18 +254,7 @@ export const VerifyEmailWidgetComponent: React.FunctionComponent<
   const shouldViewNoEmail =
     (!isThereUnverifiedEmail && !verifiedEmail) || isEmailTemporaryCancelled;
   return (
-    <Panel
-      columnSpan={columnSpan}
-      headerText={formatIntlMessage("settings.verify-email-widget.header", { step })}
-      rightComponent={
-        isUserEmailVerified && !isThereUnverifiedEmail ? (
-          <img src={successIcon} className={styles.icon} aria-hidden="true" alt="" />
-        ) : (
-          <img src={warningIcon} className={styles.icon} aria-hidden="true" alt="" />
-        )
-      }
-      data-test-id="profile.verify-email-widget"
-    >
+    <>
       {shouldViewVerifiedUser && (
         <VerifiedUser {...{ verifiedEmail, cancelEmail }} data-test-id="verified-section" />
       )}
@@ -292,33 +276,56 @@ export const VerifyEmailWidgetComponent: React.FunctionComponent<
           {...{ addNewEmail, verifiedEmail, isLocked, revertCancelEmail, isThereUnverifiedEmail }}
         />
       )}
-    </Panel>
+    </>
   );
 };
 
-export const VerifyEmailWidget = compose<React.FunctionComponent<IOwnProps>>(
-  appConnect<IStateProps, IDispatchProps, IOwnProps>({
-    stateToProps: s => ({
-      isUserEmailVerified: selectIsUserEmailVerified(s.auth),
-      isThereUnverifiedEmail: selectIsThereUnverifiedEmail(s.auth),
-      verifiedEmail: selectVerifiedUserEmail(s.auth),
-      unverifiedEmail: selectUnverifiedUserEmail(s.auth),
-      isLocked: selectIsConnectedButtonLocked(s.verifyEmailWidgetState),
-      isEmailTemporaryCancelled: selectIsCancelEmail(s.profile),
+const VerifyEmailWidgetBase: React.FunctionComponent<IStateProps & IDispatchProps & IExternalProps> = ({ columnSpan, step, isUserEmailVerified, isThereUnverifiedEmail, ...rest }) =>
+  <Panel
+    columnSpan={columnSpan}
+    headerText={<FormattedHTMLMessage tagName="span" id="settings.verify-email-widget.header" values={{ step }} />}
+    rightComponent={
+      isUserEmailVerified && !isThereUnverifiedEmail ? (
+        <img src={successIcon} className={styles.icon} aria-hidden="true" alt="" />
+      ) : (
+        <img src={warningIcon} className={styles.icon} aria-hidden="true" alt="" />
+      )
+    }
+    data-test-id="profile.verify-email-widget"
+  >
+    <VerifyEmailWidgetComponent
+      isUserEmailVerified={isUserEmailVerified}
+      isThereUnverifiedEmail={isThereUnverifiedEmail} {...rest}
+    />
+  </Panel>;
+
+
+export const connectVerifyEmailComponent = <T extends {}>(WrappedComponent: React.ComponentType<IStateProps & IDispatchProps & T>) =>
+  compose<IStateProps & IDispatchProps & T, T>(
+    appConnect<IStateProps, IDispatchProps, T>({
+      stateToProps: s => ({
+        isUserEmailVerified: selectIsUserEmailVerified(s.auth),
+        isThereUnverifiedEmail: selectIsThereUnverifiedEmail(s.auth),
+        isEmailTemporaryCancelled: selectIsCancelEmail(s.profile),
+        verifiedEmail: selectVerifiedUserEmail(s.auth),
+        unverifiedEmail: selectUnverifiedUserEmail(s.auth),
+        isLocked: selectIsConnectedButtonLocked(s.verifyEmailWidgetState),
+      }),
+      dispatchToProps: dispatch => ({
+        resendEmail: () => {
+          dispatch(actions.profile.resendEmail());
+        },
+        addNewEmail: (values: { email: string }) => {
+          dispatch(actions.profile.addNewEmail(values.email));
+        },
+        cancelEmail: () => {
+          dispatch(actions.profile.cancelEmail());
+        },
+        revertCancelEmail: () => dispatch(actions.profile.revertCancelEmail()),
+        abortEmailUpdate: () => dispatch(actions.profile.abortEmailUpdate()),
+      }),
     }),
-    dispatchToProps: dispatch => ({
-      resendEmail: () => {
-        dispatch(actions.profile.resendEmail());
-      },
-      addNewEmail: (values: { email: string }) => {
-        dispatch(actions.profile.addNewEmail(values.email));
-      },
-      cancelEmail: () => {
-        dispatch(actions.profile.cancelEmail());
-      },
-      revertCancelEmail: () => dispatch(actions.profile.revertCancelEmail()),
-      abortEmailUpdate: () => dispatch(actions.profile.abortEmailUpdate()),
-    }),
-  }),
-  injectIntlHelpers,
-)(VerifyEmailWidgetComponent);
+  )(WrappedComponent);
+
+export const VerifyEmailWidget = connectVerifyEmailComponent<IExternalProps>(VerifyEmailWidgetBase);
+export const VerifyEmailComponent = connectVerifyEmailComponent(VerifyEmailWidgetComponent);
