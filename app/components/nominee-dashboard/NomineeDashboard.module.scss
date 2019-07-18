@@ -1,0 +1,30 @@
+.account-setup-step-wrapper{
+  display: grid;
+  grid-template: auto auto / 5rem 1fr;
+  grid-template-areas: "ticker title" "line component";
+  grid-gap: 1rem;
+}
+
+.ticker {
+  grid-area: ticker;
+}
+
+.title {
+  grid-area: title;
+}
+
+.component {
+  grid-area: component;
+
+  display: none;
+
+  &.open {
+    display: block;
+  }
+}
+
+.line {
+  width: 1px;
+  height: 100%;
+  background-color: black;
+}
