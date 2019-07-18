@@ -6,7 +6,7 @@ import { compose } from "redux";
 
 import { EUserType } from "../../../../lib/api/users/interfaces";
 import { actions } from "../../../../modules/actions";
-import { selectUrlUserType } from "../../../../modules/wallet-selector/selectors";
+import { selectUrlUserTypeForLoginOrRegistration } from "../../../../modules/wallet-selector/selectors";
 import { appConnect } from "../../../../store";
 import { withContainer } from "../../../../utils/withContainer.unsafe";
 import { Button } from "../../../shared/buttons";
@@ -71,7 +71,7 @@ export const RecoverySuccessComponent: React.FunctionComponent<IStateProps & IDi
 export const RecoverySuccess = compose<React.FunctionComponent>(
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: s => ({
-      userType: selectUrlUserType(s.router),
+      userType: selectUrlUserTypeForLoginOrRegistration(s.router),
     }),
     dispatchToProps: dispatch => ({
       goToDashboard: () => dispatch(actions.walletSelector.connected()),

@@ -6,9 +6,11 @@ import {
   selectBackupCodesVerified,
   selectIsInvestor,
   selectIsUserEmailVerified,
+  selectUserType,
 } from "../auth/selectors";
 import { selectKycLoading, selectKycRequestStatus } from "../kyc/selectors";
 import { INotification, settingsNotificationInvestor, settingsNotificationIssuer } from "./reducer";
+import { EUserType } from "../../lib/api/users/interfaces";
 
 export const selectNotifications = (state: IAppState): ReadonlyArray<INotification> =>
   state.notifications.notifications;
@@ -29,6 +31,11 @@ export const selectIsActionRequiredSettings = (state: IAppState): boolean => {
  */
 export const selectIsVisibleSecurityNotification = (state: IAppState): boolean => {
   const disallowedViewsPaths = [appRoutes.profile, appRoutes.kyc];
+  const userType = selectUserType(state);
+
+  if(userType === EUserType.NOMINEE){
+    return false;
+  }
 
   if (
     state.router.location &&

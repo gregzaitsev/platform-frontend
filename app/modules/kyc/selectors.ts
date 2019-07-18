@@ -10,24 +10,30 @@ import { IAppState } from "../../store";
 import { DeepReadonly } from "../../types";
 import { IKycState } from "./reducer";
 import { TBankAccount } from "./types";
+import { selectUserType } from "../auth/selectors";
+import { EUserType } from "../../lib/api/users/interfaces";
 
 export const selectKyc = (state: IAppState) => state.kyc;
 
 export const selectKycRequestStatus = (state: IAppState): ERequestStatus | undefined => {
-  const userKycType = selectKycRequestType(state.kyc);
+  const userKycType = selectKycRequestType(state);
   switch (userKycType) {
     case EKycRequestType.BUSINESS:
-      return state.kyc.businessRequestState!.status === "Accepted" && !selectIsClaimsVerified(state)
+      return state.kyc.businessRequestState!.status === ERequestStatus.ACCEPTED && !selectIsClaimsVerified(state)
         ? ERequestStatus.PENDING
         : state.kyc.businessRequestState!.status;
     case EKycRequestType.INDIVIDUAL:
-      return state.kyc.individualRequestState!.status === "Accepted" &&
-        !selectIsClaimsVerified(state)
+      return state.kyc.individualRequestState!.status === ERequestStatus.ACCEPTED &&
+      !selectIsClaimsVerified(state)
         ? ERequestStatus.PENDING
         : state.kyc.individualRequestState!.status;
     default:
       return ERequestStatus.DRAFT;
   }
+};
+
+export const selectNomineeKycRequestStatus = (state: IAppState): ERequestStatus | undefined => {
+  return state.kyc.businessRequestState && state.kyc.businessRequestState.status
 };
 
 export const selectKycRequestOutsourcedStatus = (
@@ -61,13 +67,22 @@ export const selectPendingKycRequestType = (
 };
 
 export const selectKycRequestType = (
-  state: DeepReadonly<IKycState>,
+  state: IAppState,
 ): EKycRequestType | undefined => {
-  if (state.individualRequestState && state.individualRequestState.status !== "Draft")
-    return EKycRequestType.INDIVIDUAL;
-  if (state.businessRequestState && state.businessRequestState.status !== "Draft")
-    return EKycRequestType.BUSINESS;
-  return undefined;
+  const userType = selectUserType(state);
+  switch (userType) {
+    case EUserType.NOMINEE:
+    case EUserType.ISSUER:
+      return state.kyc.businessRequestState && EKycRequestType.BUSINESS;
+    case EUserType.INVESTOR:
+    default: {
+      if (state.kyc.individualRequestState && state.kyc.individualRequestState.status !== ERequestStatus.DRAFT)
+        return EKycRequestType.INDIVIDUAL;
+      if (state.kyc.businessRequestState && state.kyc.businessRequestState.status !== ERequestStatus.DRAFT)
+        return EKycRequestType.BUSINESS;
+      return undefined;
+    }
+  }
 };
 
 export const selectKycOutSourcedURL = (state: DeepReadonly<IKycState>): string => {

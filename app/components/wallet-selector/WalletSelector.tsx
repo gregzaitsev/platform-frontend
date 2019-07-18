@@ -23,7 +23,7 @@ import {
   selectIsLoginRoute,
   selectOppositeRootPath,
   selectRootPath,
-  selectUrlUserType,
+  selectUrlUserTypeForLoginOrRegistration,
 } from "../../modules/wallet-selector/selectors";
 import { appConnect } from "../../store";
 import { onEnterAction } from "../../utils/OnEnterAction";
@@ -250,7 +250,7 @@ export const WalletSelector = compose<
       isMessageSigning: s.walletSelector.isMessageSigning,
       rootPath: selectRootPath(s.router),
       isLoginRoute: selectIsLoginRoute(s.router),
-      userType: selectUrlUserType(s.router),
+      userType: selectUrlUserTypeForLoginOrRegistration(s.router),
       oppositeRoute: selectOppositeRootPath(s.router),
     }),
     dispatchToProps: dispatch => ({

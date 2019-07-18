@@ -4,7 +4,7 @@ import { appRoutes } from "../../components/appRoutes";
 import { EUserType } from "../../lib/api/users/interfaces";
 import { IAppState } from "../../store";
 
-export const selectUrlUserType = (router: RouterState): EUserType => {
+export const selectUrlUserTypeForLoginOrRegistration = (router: RouterState): EUserType => {
   if (router.location && router.location.pathname.includes("eto")) {
     return EUserType.ISSUER;
   } else if (router.location && router.location.pathname.includes("nominee")) {
@@ -18,7 +18,7 @@ export const selectIsLoginRoute = (state: RouterState): boolean =>
   !!state.location && state.location.pathname.includes("login");
 
 export const selectRootPath = (state: RouterState): string => {
-  switch (selectUrlUserType(state)) {
+  switch (selectUrlUserTypeForLoginOrRegistration(state)) {
     case EUserType.ISSUER:
       return selectIsLoginRoute(state) ? appRoutes.loginIssuer : appRoutes.registerIssuer;
     case EUserType.NOMINEE:
@@ -30,7 +30,7 @@ export const selectRootPath = (state: RouterState): string => {
 };
 
 export const selectOppositeRootPath = (state: RouterState): string => {
-  if (selectUrlUserType(state) === EUserType.INVESTOR) {
+  if (selectUrlUserTypeForLoginOrRegistration(state) === EUserType.INVESTOR) {
     return selectIsLoginRoute(state) ? appRoutes.register : appRoutes.login;
   } else {
     return selectIsLoginRoute(state) ? appRoutes.registerIssuer : appRoutes.loginIssuer;
