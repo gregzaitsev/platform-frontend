@@ -12,23 +12,44 @@ import { ERequestStatus } from "../../lib/api/KycApi.interfaces";
 import { Panel } from "../shared/Panel";
 
 
-const AccountSetupStep = ({stepData}) => {
+interface IStepComponentProps {
+  done: boolean;
+  isOpen: boolean;
+  title: JSX.Element;
+  component: JSX.Element;
+}
+
+interface INomineeAccountSetupSteps {
+  accountSetupStepsData: IStepComponentProps[];
+}
+
+interface IAccountSetupStepData {
+  key: string,
+  conditionCompleted: boolean,
+  title: JSX.Element,
+  component: JSX.Element
+}
+
+const AccountSetupStep: React.FunctionComponent<IStepComponentProps> = ({ done, title, isOpen, component }) => {
   return <div className="acocunt-steup-step-wrapper">
-    <div className="step-ticker">{stepData.condition === true ? "x":"0"}</div>
-    <div className="step-title">{stepData.title}</div>
-    <div className="step-component" >{stepData.component}</div>
+    <div className="step-ticker">{done ? "x" : "0"}</div>
+    <div className="step-title">{title}</div>
+    <div className={isOpen ? "open" : "closed"}>{component}</div>
   </div>
 };
 
-const NomineeDashboardLayout = ({
+const NomineeDashboardLayout: React.FunctionComponent<INomineeAccountSetupSteps> = ({
   accountSetupStepsData
 }) => {
-  return accountSetupStepsData.map((stepData) => {
-    return <AccountSetupStep stepData={stepData} />;
-  })
+  return <>
+    {accountSetupStepsData.map((stepData: IStepComponentProps) => {
+      return <AccountSetupStep {...stepData} />;
+    })}
+  </>
 };
 
-const nomineeAccountSetupSteps = (emailVerified, backupCodesVerified, kycRequestStatusIsDraft) => [
+
+const nomineeAccountSetupSteps = (emailVerified: boolean, backupCodesVerified: boolean, kycDone: boolean): IAccountSetupStepData[] => [
   {
     key: 'verifyEmail',
     conditionCompleted: emailVerified,
@@ -37,33 +58,56 @@ const nomineeAccountSetupSteps = (emailVerified, backupCodesVerified, kycRequest
   },
   {
     key: 'verifyBackupCodes',
-    conditionCompleted: emailVerified,
+    conditionCompleted: backupCodesVerified,
     title: <FormattedMessage id="account-setup.verify-backup-codes" />,
     component: <>backup codes</>
   },
   {
     key: 'startKyc',
-    conditionCompleted: kycRequestStatusIsDraft,
+    conditionCompleted: kycDone,
     title: <FormattedMessage id="account-setup.verify-your-company" />,
     component: <>start kyc</>
   }
 ];
 
+const prepareSetupAccountSteps = (data: IAccountSetupStepData[]): IStepComponentProps[] => {
 
-const AccountSetupContainer = ({ children }) => <div data-test-id="nominee-dashboard">
-  <h1>
-    <FormattedMessage id="account-setup.welcome-to-neufund" />
-  </h1>
-  <p>
-    <FormattedMessage id="account-setup.please-complete-setup" />
-  </p>
-  <Panel>
-    {children}
-  </Panel>
-</div>;
+  const newData = data.reduce((acc: { firstOpenElement: string | null, data: IStepComponentProps[] }, stepData: IAccountSetupStepData) => {
+
+      const isOpen = !stepData.conditionCompleted && acc.firstOpenElement === null;
+      console.log(stepData.key,!stepData.conditionCompleted , acc.firstOpenElement === null)
+      const stepComponentProps = {
+        done: stepData.conditionCompleted,
+        isOpen: isOpen,
+        key: stepData.key,
+        title: stepData.title,
+        component: stepData.component,
+      };
+      acc.data.push(stepComponentProps);
+      acc.firstOpenElement = isOpen ? stepData.key : acc.firstOpenElement;
+      return acc;
+    },
+    { firstOpenElement: null, data: [] }
+  );
+  console.log(newData.data);
+  return newData.data
+};
+
+const AccountSetupContainer: React.FunctionComponent = ({ children }) =>
+  <div data-test-id="nominee-dashboard">
+    <h1>
+      <FormattedMessage id="account-setup.welcome-to-neufund" />
+    </h1>
+    <p>
+      <FormattedMessage id="account-setup.please-complete-setup" />
+    </p>
+    <Panel>
+      {children}
+    </Panel>
+  </div>;
 
 
-export const NomineeDashboard = compose(
+export const NomineeDashboard = compose<INomineeAccountSetupSteps, {}>(
   withContainer(nest(Layout, AccountSetupContainer)),
   appConnect({
     stateToProps: state => ({
@@ -75,20 +119,11 @@ export const NomineeDashboard = compose(
   }),
   branch(props => props.kycRequestStatus === ERequestStatus.PENDING, renderComponent(() => <>kyc pending</>)),
   branch(props => props.verificationIsComplete, renderComponent(() => <>no tasks for you today</>)),
-  withProps(({emailVerified, backupCodesVerified, kycRequestStatusIsDraft}) => {
+  withProps(({ emailVerified, backupCodesVerified, kycRequestStatus }) => {
     return ({
-      accountSetupStepsData: nomineeAccountSetupSteps(emailVerified, backupCodesVerified, kycRequestStatusIsDraft)
+      accountSetupStepsData: prepareSetupAccountSteps(
+        nomineeAccountSetupSteps(emailVerified, backupCodesVerified, kycRequestStatus !== ERequestStatus.DRAFT)
+      )
     })
   }),
 )(NomineeDashboardLayout);
-
-
-// claims{
-// isVerified: true
-// isSophisticatedInvestor: true
-// hasBankAccount: false
-// isAccountFrozen: false
-// }
-// businessRequstState {
-// status: "Accepted"
-// }
