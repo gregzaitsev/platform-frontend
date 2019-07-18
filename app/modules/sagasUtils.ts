@@ -124,7 +124,12 @@ export function* neuThrottle(ms: number, type: TType, saga: TSagaWithDeps): Iter
   yield throttle(ms, type, saga, deps);
 }
 
-export function neuDebounce(ms: number, pattern: TType, task: TSagaWithDeps, ...args: any[]): any {
+export function neuDebounce(
+  ms: number,
+  pattern: TType,
+  task: TSagaWithDeps,
+  ...args: any[]
+): Iterator<Effect> {
   return neuFork(function*(): any {
     while (true) {
       let action = yield take(pattern);

@@ -174,6 +174,12 @@ $_active-color: lighten($_hover-color, 20%);
     min-width: px-to-rem(220px);
   }
 
+  &:global(.no-padding) {
+    > .content {
+      padding: px-to-rem(8) 0;
+    }
+  }
+
   // sizes
   &-small {
     font-size: 80%;

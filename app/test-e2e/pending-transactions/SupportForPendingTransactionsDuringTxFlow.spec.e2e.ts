@@ -77,7 +77,7 @@ describe("Pending Transactions During TX flow", () => {
 
       cy.get(tid("wallet.eth.withdraw.button")).click();
 
-      assertPendingWithdrawModal();
+      assertPendingWithdrawModal("0x16cd5aC5A1b77FB72032E3A09E91A98bB21D8988", "1");
 
       // It's not possible to that transaction will move to success/error state as
       // this is a mock transaction that doesn't exist on a blockchain

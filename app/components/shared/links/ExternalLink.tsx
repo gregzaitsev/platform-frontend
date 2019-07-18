@@ -1,7 +1,6 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
-import { IS_CYPRESS } from "../../../config/constants";
 import { OmitKeys } from "../../../types";
 
 type TProps = OmitKeys<
@@ -17,7 +16,7 @@ const ExternalLink: React.FunctionComponent<TProps> = ({ href, children, ...rest
   <a href={href} target="_blank" rel="noopener noreferrer" {...rest}>
     {children || href}
     {/* Hide accessibility improvement on e2e tests as often we get text content of anchor to compare with some pattern */}
-    {!IS_CYPRESS && (
+    {!process.env.IS_CYPRESS && (
       <span className="sr-only">
         (<FormattedMessage id="links.external-link.opens-in-new-window" />)
       </span>

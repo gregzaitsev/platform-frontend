@@ -1,13 +1,16 @@
-import * as cn from "classnames";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
+import { branch, compose } from "recompose";
 
 import { selectTxAdditionalData } from "../../../../modules/tx/sender/selectors";
 import { TWithdrawAdditionalData } from "../../../../modules/tx/transactions/withdraw/types";
 import { ETxSenderType } from "../../../../modules/tx/types";
 import { appConnect } from "../../../../store";
+import { RequiredByKeys } from "../../../../types";
 import { EHeadingSize, Heading } from "../../../shared/Heading";
 import { EtherscanTxLink } from "../../../shared/links/EtherscanLink";
+import { DataRow } from "../shared/DataRow";
+import { ETxStatus } from "../types";
 import { WithdrawTransactionDetails } from "./WithdrawTransactionDetails";
 
 import * as styles from "./Withdraw.module.scss";
@@ -17,16 +20,16 @@ interface IExternalProps {
 }
 
 interface IStateProps {
-  additionalData: TWithdrawAdditionalData;
+  additionalData?: TWithdrawAdditionalData;
 }
 
-type TComponentProps = IStateProps & IExternalProps;
+type TComponentProps = RequiredByKeys<IStateProps, "additionalData"> & IExternalProps;
 
 export const WithdrawPendingComponent: React.FunctionComponent<TComponentProps> = ({
   additionalData,
   txHash,
 }) => (
-  <section className={styles.contentWrapper}>
+  <section className={styles.contentWrapper} data-test-id="modals.shared.tx-pending.modal">
     <Heading
       className="mb-4"
       size={EHeadingSize.HUGE}
@@ -37,21 +40,30 @@ export const WithdrawPendingComponent: React.FunctionComponent<TComponentProps> 
       <FormattedMessage id="withdraw-flow.summary" />
     </Heading>
 
-    <WithdrawTransactionDetails additionalData={additionalData}>
-      <FormattedMessage id="withdraw-flow.pending" />
-    </WithdrawTransactionDetails>
+    <WithdrawTransactionDetails additionalData={additionalData} status={ETxStatus.PENDING} />
 
-    <section className={cn(styles.section, "mb-4")}>
-      <FormattedMessage id="tx-monitor.details.hash-label" />
-      <EtherscanTxLink txHash={txHash} className={styles.txHash}>
-        <small>{txHash}</small>
-      </EtherscanTxLink>
-    </section>
+    <DataRow
+      className="mb-4"
+      caption={<FormattedMessage id="tx-monitor.details.hash-label" />}
+      value={
+        <EtherscanTxLink txHash={txHash} className={styles.txHash}>
+          {txHash}
+        </EtherscanTxLink>
+      }
+    />
   </section>
 );
 
-export const WithdrawPending = appConnect<IStateProps, {}>({
-  stateToProps: state => ({
-    additionalData: selectTxAdditionalData<ETxSenderType.WITHDRAW>(state)!,
+export const WithdrawPending = compose<TComponentProps, IExternalProps>(
+  appConnect<IStateProps, {}>({
+    stateToProps: state => ({
+      additionalData: selectTxAdditionalData<ETxSenderType.WITHDRAW>(state),
+    }),
   }),
-})(WithdrawPendingComponent);
+  branch<IStateProps>(
+    props => props.additionalData === undefined,
+    () => {
+      throw new Error("Additional transaction data is empty");
+    },
+  ),
+)(WithdrawPendingComponent);

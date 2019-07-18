@@ -19,7 +19,6 @@ import {
   selectTxValueEurUlps,
 } from "../../../../modules/tx/sender/selectors";
 import {
-  EAdditionalValidationDataWarrning,
   ETxSenderType,
   IAdditionalValidationData,
   IDraftType,
@@ -50,10 +49,13 @@ import { Form } from "../../../shared/forms";
 import { FormFieldBoolean } from "../../../shared/forms/fields/FormFieldBoolean";
 import { FormLabel } from "../../../shared/forms/fields/FormFieldLabel";
 import { FormInput } from "../../../shared/forms/fields/FormInput";
+import { EInputTheme } from "../../../shared/forms/layouts/InputLayout";
 import { EHeadingSize, Heading } from "../../../shared/Heading";
 import { EtherscanAddressLink } from "../../../shared/links/EtherscanLink";
 import { MaskedNumberInput } from "../../../shared/MaskedNumberInput";
-import { getFormattedMoney } from "../../../shared/Money.unsafe";
+import { ESize, ETextPosition, ETheme, MoneySuiteWidget } from "../../../shared/MoneySuiteWidget";
+import { DataRow } from "../shared/DataRow";
+import { WarningLabel } from "./WarningLabel";
 
 import * as styles from "./Withdraw.module.scss";
 
@@ -90,39 +92,6 @@ interface IDispatchProps {
 }
 
 type TProps = IStateProps & OmitKeys<IDispatchProps, "onValidate"> & IHandlersProps;
-
-const WaringSelectorComponent: React.FunctionComponent<{
-  warning: EAdditionalValidationDataWarrning | undefined;
-}> = ({ warning }) => {
-  switch (warning) {
-    case EAdditionalValidationDataWarrning.IS_NOT_ENOUGH_ETHER:
-      return (
-        <span data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.not-enough-ether">
-          <FormattedMessage id="modals.tx-sender.withdraw-flow.withdraw-component.errors.value-higher-than-balance" />
-        </span>
-      );
-    case EAdditionalValidationDataWarrning.IS_SMART_CONTRACT:
-      return (
-        <span data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.smart-contract">
-          <FormattedMessage id="modal.sent-eth.smart-contract-address" />
-        </span>
-      );
-    case EAdditionalValidationDataWarrning.IS_NEW_ADDRESS:
-      return (
-        <span data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.new-address">
-          <FormattedMessage id="modal.sent-eth.new-address" />
-        </span>
-      );
-    case EAdditionalValidationDataWarrning.IS_NOT_ACCEPTING_ETHER:
-      return (
-        <span data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.not-accepting-ether">
-          <FormattedMessage id="modal.sent-eth.not-accepting-ether" />
-        </span>
-      );
-    default:
-      return null;
-  }
-};
 
 const getWithdrawFormSchema = () =>
   YupTS.object({
@@ -162,7 +131,7 @@ const WithdrawLayout: React.FunctionComponent<TProps> = ({
     <Heading
       size={EHeadingSize.HUGE}
       level={4}
-      className="mb-4"
+      className={styles.withSpacing}
       decorator={false}
       disableTransform={true}
     >
@@ -174,16 +143,13 @@ const WithdrawLayout: React.FunctionComponent<TProps> = ({
       // Initial values are used only when user is returning to this screen from Summary
       initialValues={{
         to: (additionalData && additionalData.to) || "",
-        value:
-          additionalData && additionalData.amount
-            ? getFormattedMoney(
-                additionalData.amount,
-                ECurrency.ETH,
-                ENumberInputFormat.ULPS,
-                false,
-                ERoundingMode.DOWN,
-              )
-            : "",
+        value: additionalData
+          ? toFixedPrecision({
+              value: additionalData.inputValue,
+              decimalPlaces: selectDecimalPlaces(ECurrency.ETH),
+              inputFormat: ENumberInputFormat.ULPS,
+            })
+          : "",
         acceptWarnings: false,
       }}
       // Initial valid is only set to true when user is returning to this screen from Summary
@@ -199,7 +165,7 @@ const WithdrawLayout: React.FunctionComponent<TProps> = ({
         errors,
       }: FormikProps<IWithdrawData>) => (
         <Form>
-          <section className="mb-4">
+          <section className={styles.withSpacing}>
             <FormLabel for="to" className={styles.label}>
               <FormattedMessage id="modal.sent-eth.to-address" />
             </FormLabel>
@@ -208,6 +174,7 @@ const WithdrawLayout: React.FunctionComponent<TProps> = ({
               data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.to-address"
               maxLength={ETH_ADDRESS_SIZE}
               charactersLimit={ETH_ADDRESS_SIZE}
+              theme={EInputTheme.BOX}
             />
             {!errors.to && values.to && (
               <EtherscanAddressLink className={cn(styles.etherscanLink)} address={values.to}>
@@ -216,16 +183,18 @@ const WithdrawLayout: React.FunctionComponent<TProps> = ({
             )}
           </section>
 
-          <section className={styles.section}>
-            <FormattedMessage id="modal.sent-eth.available-balance" />
-            <MoneyNew
-              className={styles.money}
-              value={ethAmount}
-              inputFormat={ENumberInputFormat.ULPS}
-              outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
-              valueType={ECurrency.ETH}
-            />
-          </section>
+          <DataRow
+            caption={<FormattedMessage id="modal.sent-eth.available-balance" />}
+            value={
+              <MoneyNew
+                className={styles.money}
+                value={ethAmount}
+                inputFormat={ENumberInputFormat.ULPS}
+                outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
+                valueType={ECurrency.ETH}
+              />
+            }
+          />
 
           <section className="text-right small mb-4">
             <Button
@@ -258,7 +227,6 @@ const WithdrawLayout: React.FunctionComponent<TProps> = ({
             </FormLabel>
             <MaskedNumberInput
               className="text-right"
-              errorMsg={""}
               storageFormat={ENumberInputFormat.FLOAT}
               valueType={ECurrency.ETH}
               outputFormat={ENumberOutputFormat.FULL}
@@ -271,6 +239,7 @@ const WithdrawLayout: React.FunctionComponent<TProps> = ({
               }}
               returnInvalidValues={true}
               showUnits={true}
+              theme={EInputTheme.BOX}
             />
           </section>
 
@@ -278,7 +247,11 @@ const WithdrawLayout: React.FunctionComponent<TProps> = ({
             <small>
               {"= "}
               <MoneyNew
-                value={valueEur}
+                value={
+                  isValid
+                    ? valueEur
+                    : "0" /* Show 0 if form is invalid due of initially populated state */
+                }
                 inputFormat={ENumberInputFormat.ULPS}
                 valueType={ECurrency.EUR}
                 outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
@@ -286,59 +259,69 @@ const WithdrawLayout: React.FunctionComponent<TProps> = ({
             </small>
           </section>
 
-          <section className={styles.section}>
-            <FormattedMessage id="modal.sent-eth.transaction-fee" />
-            <div className="text-right">
-              <MoneyNew
-                className={cn(styles.money, "d-block")}
-                value={gasPrice}
-                inputFormat={ENumberInputFormat.ULPS}
-                valueType={ECurrency.ETH}
+          <DataRow
+            className={styles.withSpacing}
+            caption={<FormattedMessage id="modal.sent-eth.transaction-fee" />}
+            value={
+              <MoneySuiteWidget
+                currency={ECurrency.ETH}
+                largeNumber={
+                  isValid
+                    ? gasPrice
+                    : "0" /* Show 0 if form is invalid due of initially populated state */
+                }
+                value={isValid ? gasPriceEur : "0"}
+                currencyTotal={ECurrency.EUR}
+                data-test-id="modals.tx-sender.withdraw-flow.summary.cost"
+                theme={ETheme.BLACK}
+                size={ESize.MEDIUM}
+                textPosition={ETextPosition.RIGHT}
                 outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS_ROUND_UP}
               />
-              <small>
-                {"= "}
-                <MoneyNew
-                  value={gasPriceEur}
-                  inputFormat={ENumberInputFormat.ULPS}
-                  valueType={ECurrency.EUR}
-                  outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS_ROUND_UP}
-                />
-              </small>
-            </div>
-          </section>
+            }
+          />
 
           <hr className={styles.separator} />
 
-          <section className={styles.sectionBig}>
-            <FormattedMessage id="modal.sent-eth.total" />
-            <div className="text-right">
-              <MoneyNew
-                className={cn(styles.money, "d-block")}
-                value={total}
-                inputFormat={ENumberInputFormat.ULPS}
-                valueType={ECurrency.ETH}
+          <DataRow
+            className={cn(styles.sectionBig, styles.withSpacing)}
+            caption={<FormattedMessage id="modal.sent-eth.total" />}
+            value={
+              <MoneySuiteWidget
+                currency={ECurrency.ETH}
+                largeNumber={
+                  isValid
+                    ? total
+                    : "0" /* Show 0 if form is invalid due of initially populated state */
+                }
+                value={isValid ? totalEur : "0"}
+                currencyTotal={ECurrency.EUR}
+                data-test-id="modals.tx-sender.withdraw-flow.summary.cost"
+                theme={ETheme.BLACK}
+                size={ESize.HUGE}
+                textPosition={ETextPosition.RIGHT}
                 outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS_ROUND_UP}
               />
-              <small>
-                {"= "}
-                <MoneyNew
-                  value={totalEur}
-                  inputFormat={ENumberInputFormat.ULPS}
-                  valueType={ECurrency.EUR}
-                  outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS_ROUND_UP}
-                />
-              </small>
-            </div>
-          </section>
+            }
+          />
 
-          {additionalData && additionalData.warning && (
+          {/* Hide if values are empty even if there is a warning in state*/}
+          {additionalData && additionalData.warning && values.value && values.to && (
             <section className="mt-4">
               <FormFieldBoolean
                 name="acceptWarnings"
-                label={<WaringSelectorComponent warning={additionalData.warning} />}
+                label={<WarningLabel warning={additionalData.warning} />}
               />
             </section>
+          )}
+
+          {isValid && validationState === EValidationState.IS_NOT_ACCEPTING_ETHER && (
+            <span
+              className="text-warning"
+              data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.not-accepting-ether"
+            >
+              <FormattedMessage id="modal.sent-eth.not-accepting-ether" />
+            </span>
           )}
 
           <section className="mt-4 text-center">
@@ -352,7 +335,11 @@ const WithdrawLayout: React.FunctionComponent<TProps> = ({
               }
               data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.send-transaction-button"
             >
-              <FormattedMessage id="modal.sent-eth.button" />
+              {isValidating || (!validationState && !values.acceptWarnings) ? (
+                <FormattedMessage id="modal.sent-eth.button-loading" />
+              ) : (
+                <FormattedMessage id="modal.sent-eth.button" />
+              )}
             </Button>
           </section>
         </Form>

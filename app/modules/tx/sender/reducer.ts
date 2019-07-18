@@ -2,12 +2,7 @@ import { ITxData } from "../../../lib/web3/types";
 import { AppReducer } from "../../../store";
 import { Overwrite } from "../../../types";
 import { actions } from "../../actions";
-import {
-  ETxSenderType,
-  ITxTypeWithData,
-  TAdditionalDataByType,
-  TSpecificTransactionState,
-} from "../types";
+import { ITxTypeWithData, TSpecificTransactionState } from "../types";
 
 export enum ETransactionErrorType {
   // Flow Specific Errors
@@ -32,6 +27,7 @@ export enum ETransactionErrorType {
 export enum EValidationState {
   NOT_ENOUGH_ETHER_FOR_GAS = "not_enough_ether_for_gas",
   VALIDATION_OK = "validation_ok",
+  IS_NOT_ACCEPTING_ETHER = "is_not_accepting_ether",
 }
 
 export enum ETxSenderState {
@@ -165,9 +161,9 @@ export const txSenderReducer: AppReducer<ITxSenderState> = (
       return {
         ...state,
         additionalData: {
-          ...state.additionalData,
+          ...state.additionalData!,
           ...action.payload.additionalData,
-        } as TAdditionalDataByType<typeof ETxSenderType.WITHDRAW>,
+        },
       };
   }
 

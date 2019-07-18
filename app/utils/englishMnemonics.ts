@@ -1,5 +1,6 @@
 // BIP39 English Mnemonics
-// Imported directly from bitcore-mnemonic to save space
-import { ENGLISH as englishMnemonics } from "bitcore-mnemonic/lib/words";
+import { Words } from "bitcore-mnemonic";
+
+const englishMnemonics = Words.ENGLISH;
 
 export { englishMnemonics };

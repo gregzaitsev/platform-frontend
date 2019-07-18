@@ -10,6 +10,7 @@ import { AcceptTransactionDetails } from "./investor-payout/AcceptTransactionDet
 import { RedistributeTransactionDetails } from "./investor-payout/RedistributeTransactionDetails";
 import { RefundTransactionDetails } from "./investor-refund/RefundDetails";
 import { BankTransferRedeemDetails } from "./redeem/BankTransferRedeemDetails";
+import { ETxStatus } from "./types";
 import { UnlockWalletTransactionDetails } from "./unlock-wallet-flow/UnlockWalletTransactionDetails";
 import { UpgradeTransactionDetails } from "./upgrade-flow/UpgradeTransactionDetails.unsafe";
 import { ClaimTransactionDetails } from "./user-claim/ClaimTransactionDetails";
@@ -39,7 +40,7 @@ const TxDetails: React.FunctionComponent<IProps & CommonHtmlProps> = props => {
     case ETxSenderType.USER_CLAIM:
       return <ClaimTransactionDetails {...propsAsAny} />;
     case ETxSenderType.WITHDRAW:
-      return <WithdrawTransactionDetails {...propsAsAny} />;
+      return <WithdrawTransactionDetails {...propsAsAny} status={ETxStatus.ERROR} />;
     case ETxSenderType.UPGRADE:
       return <UpgradeTransactionDetails {...propsAsAny} />;
     case ETxSenderType.UNLOCK_FUNDS:

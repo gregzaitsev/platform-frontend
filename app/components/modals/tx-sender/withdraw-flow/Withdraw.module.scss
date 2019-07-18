@@ -4,44 +4,9 @@
   font-size: 1rem;
 }
 
-.spinning-eth-wrapper {
-  margin-bottom: $spacing-vertical-lg-3;
-}
-
-.title {
-  @include font-label;
-  font-size: 1rem;
-  text-align: center;
-  margin-bottom: $spacing-vertical-lg-1;
-  margin-top: $spacing-vertical-lg-1;
-}
-
-.section {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-}
-
-.section-big {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
+.section--big {
   font-size: px-to-rem(20px);
 }
-
-.wallet-label {
-  color: $neu-black;
-}
-
-.wallet-label-details {
-  @include text-truncate;
-
-  color: $neu-black;
-  display: inline-block;
-  width: 75%;
-  align-self: flex-end;
-}
-
 
 .label {
   color: inherit;
@@ -49,42 +14,30 @@
   text-transform: none;
 }
 
-.with-etherscan {
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-  position: relative;
-}
-
-.full-width {
-  flex-basis: 100%;
-  flex-shrink: 0;
-}
-
-.disable {
-  pointer-events: none;
-}
-
 .etherscan-link {
   font-size: 12px;
-  text-align: right;
-  position: relative;
-  top: -22px;
+  margin-top: -22px;
   float: right;
 }
 
 .money {
   font-weight: bold;
   color: $neu-charcoal-grey;
-}
 
-.money-big {
-  font-weight: bold;
-  color: $neu-charcoal-grey;
-  font-size: px-to-rem(20px);
+  &--big {
+    font-size: px-to-rem(20px);
+  }
 }
 
 .separator {
   margin: 1.5rem 0;
   border-color: $neu-gull-gray;
+}
+
+.tx-hash {
+  font-size: 80%;
+}
+
+.with-spacing {
+  margin-bottom: 1.5rem;
 }

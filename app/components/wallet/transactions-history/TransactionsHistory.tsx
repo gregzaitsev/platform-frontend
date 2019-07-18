@@ -67,7 +67,7 @@ const TransactionListLayout: React.FunctionComponent<TStateProps & TDispatchProp
                       day="2-digit"
                     />
                   }
-                  size={ESize.MEDIUM}
+                  size={ESize.LARGE}
                 />
                 <MoneyNew
                   className={cn(styles.amount, { [styles.amountIn]: isIncomeTransaction })}

@@ -44,34 +44,40 @@ type TTxPendingLayoutProps = {
 } & TSpecificTransactionState &
   IDispatchProps;
 
-const TxPendingLayout: React.FunctionComponent<TTxPendingLayoutProps> = props =>
-  props.type === ETxSenderType.WITHDRAW ? (
-    <WithdrawPending txHash={props.txHash!} />
-  ) : (
-    <Message
-      data-test-id="modals.shared.tx-pending.modal"
-      image={<EthereumIcon className="mb-3" />}
-      title={
-        <FormattedMessage
-          id="tx-sender.tx-pending.title"
-          values={{ transaction: <TxName type={props.type} /> }}
-        />
-      }
-      text={<FormattedMessage id="tx-sender.tx-pending.description" />}
-    >
-      <TxDetails className="mb-3" {...props} />
+const TxDefaultPendingLayout: React.FunctionComponent<TTxPendingLayoutProps> = props => (
+  <Message
+    data-test-id="modals.shared.tx-pending.modal"
+    image={<EthereumIcon className="mb-3" />}
+    title={
+      <FormattedMessage
+        id="tx-sender.tx-pending.title"
+        values={{ transaction: <TxName type={props.type} /> }}
+      />
+    }
+    text={<FormattedMessage id="tx-sender.tx-pending.description" />}
+  >
+    <TxDetails className="mb-3" {...props} />
 
-      {props.txHash && <TxHashAndBlock txHash={props.txHash} blockId={props.blockId} />}
+    {props.txHash && <TxHashAndBlock txHash={props.txHash} blockId={props.blockId} />}
 
-      {/* This feature is only for testing purpose should not be enabled on production environment. */}
-      {/* Because of it there is no need to include button string in translations */}
-      {process.env.NF_ENABLE_TRANSACTION_RESET === "1" && (
-        <Button className="mt-4" onClick={() => props.deletePendingTransaction()}>
-          Delete transaction
-        </Button>
-      )}
-    </Message>
-  );
+    {/* This feature is only for testing purpose should not be enabled on production environment. */}
+    {/* Because of it there is no need to include button string in translations */}
+    {process.env.NF_ENABLE_TRANSACTION_RESET === "1" && (
+      <Button className="mt-4" onClick={() => props.deletePendingTransaction()}>
+        Delete transaction
+      </Button>
+    )}
+  </Message>
+);
+
+const TxPendingLayout: React.FunctionComponent<TTxPendingLayoutProps> = props => {
+  switch (props.type) {
+    case ETxSenderType.WITHDRAW:
+      return <WithdrawPending txHash={props.txHash!} />;
+    default:
+      return <TxDefaultPendingLayout {...props} />;
+  }
+};
 
 const TxPending = compose<TTxPendingLayoutProps, ITxPendingProps>(
   appConnect<IStateProps, IDispatchProps>({

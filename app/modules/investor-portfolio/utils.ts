@@ -3,7 +3,7 @@ import { includes } from "lodash/fp";
 
 import { IWindowWithData } from "../../../test/helperTypes";
 import { ECurrency } from "../../components/shared/formatters/utils";
-import { IS_CYPRESS, Q18 } from "../../config/constants";
+import { Q18 } from "../../config/constants";
 import { EUserType } from "../../lib/api/users/interfaces";
 import { convertToBigInt } from "../../utils/Number.utils";
 import { EETOStateOnChain } from "../eto/types";
@@ -104,7 +104,7 @@ export const getTokenPrice = (equityTokenInt: string, equivEurUlps: string): str
 export const getRequiredIncomingAmount = (token: ECurrency) => {
   // In case of Cypress tests we have to return 0 by default to prevent tests with low amounts from crash
   // If there is data stored in window use it
-  if (IS_CYPRESS) {
+  if (process.env.IS_CYPRESS) {
     const { payoutRequiredAmount } = window as IWindowWithData;
     return payoutRequiredAmount || "0";
   }

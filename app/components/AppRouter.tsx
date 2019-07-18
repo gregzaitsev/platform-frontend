@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Redirect, Route } from "react-router-dom";
 
-import { IS_CYPRESS } from "../config/constants";
 import { SwitchConnected } from "../utils/connectedRouting";
 import { appRoutes } from "./appRoutes";
 import { Dashboard } from "./dashboard/Dashboard";
@@ -151,7 +150,7 @@ export const AppRouter: React.FunctionComponent = () => (
     <OnlyAuthorizedRoute path={appRoutes.kyc} investorComponent={Kyc} issuerComponent={Kyc} />
 
     {/*Routes used only in E2E tests*/}
-    {IS_CYPRESS && [
+    {!!process.env.IS_CYPRESS && [
       <Route
         key={1}
         path={e2eRoutes.embeddedWidget}

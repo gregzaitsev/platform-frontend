@@ -8,14 +8,22 @@
     padding: px-to-rem(16px) px-to-rem(12px);
   }
 
-  &.large {
+  &.huge {
     .icon {
       @include rect(43px);
     }
   }
 
+  &.large {
+    .icon {
+      @include rect(40px);
+    }
+  }
+
   &.medium {
-    font-size: px-to-rem(16px);
+    .icon {
+      @include rect(36px);
+    }
   }
 
   .icon {
@@ -31,5 +39,9 @@
 
   .red {
     color: $neu-red;
+  }
+
+  .black {
+    color: $neu-charcoal-grey;
   }
 }
