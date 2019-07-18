@@ -10,33 +10,45 @@ import { selectBackupCodesVerified, selectIsUserEmailVerified } from "../../modu
 import { selectNomineeKycRequestStatus } from "../../modules/kyc/selectors";
 import { ERequestStatus } from "../../lib/api/KycApi.interfaces";
 import { Panel } from "../shared/Panel";
-
-
-interface IStepComponentProps {
-  done: boolean;
-  isOpen: boolean;
-  title: JSX.Element;
-  component: JSX.Element;
-}
+import { IAccountSetupStepData, IStepComponentProps, prepareSetupAccountSteps } from "./utils";
 
 interface INomineeAccountSetupSteps {
   accountSetupStepsData: IStepComponentProps[];
 }
 
-interface IAccountSetupStepData {
-  key: string,
-  conditionCompleted: boolean,
-  title: JSX.Element,
-  component: JSX.Element
+interface IStepTickerProps {
+  done: boolean,
+  active: boolean,
 }
 
-const AccountSetupStep: React.FunctionComponent<IStepComponentProps> = ({ done, title, isOpen, component }) => {
-  return <div className="acocunt-steup-step-wrapper">
-    <div className="step-ticker">{done ? "x" : "0"}</div>
-    <div className="step-title">{title}</div>
-    <div className={isOpen ? "open" : "closed"}>{component}</div>
-  </div>
+const StepTicker:React.FunctionComponent<IStepTickerProps> = ({done, active}) => {
+  if(done){
+    return <>x</>
+  } else if (active) {
+    return <>v</>
+  } else {
+    return <>0</>
+  }
 };
+
+class AccountSetupStep extends React.Component<IStepComponentProps,{isOpen: boolean}> {
+  state = {
+    isOpen: this.props.isActive
+  };
+
+  toggleOpen = () => {};
+
+  render() {
+    const { done,isActive, title, component } = this.props;
+    return <div className="acocunt-steup-step-wrapper">
+      <div className="step-ticker">
+        <StepTicker done={done} active={isActive}/>
+      </div>
+      <div className="step-title">{title}</div>
+      <div className={this.state.isOpen ? "open" : "closed"}>{component}</div>
+    </div>
+  }
+}
 
 const NomineeDashboardLayout: React.FunctionComponent<INomineeAccountSetupSteps> = ({
   accountSetupStepsData
@@ -48,8 +60,7 @@ const NomineeDashboardLayout: React.FunctionComponent<INomineeAccountSetupSteps>
   </>
 };
 
-
-const nomineeAccountSetupSteps = (emailVerified: boolean, backupCodesVerified: boolean, kycDone: boolean): IAccountSetupStepData[] => [
+const nomineeAccountSetupSteps = (emailVerified: boolean, backupCodesVerified: boolean, kycCompleted: boolean): IAccountSetupStepData[] => [
   {
     key: 'verifyEmail',
     conditionCompleted: emailVerified,
@@ -64,34 +75,12 @@ const nomineeAccountSetupSteps = (emailVerified: boolean, backupCodesVerified: b
   },
   {
     key: 'startKyc',
-    conditionCompleted: kycDone,
+    conditionCompleted: kycCompleted,
     title: <FormattedMessage id="account-setup.verify-your-company" />,
     component: <>start kyc</>
   }
 ];
 
-const prepareSetupAccountSteps = (data: IAccountSetupStepData[]): IStepComponentProps[] => {
-
-  const newData = data.reduce((acc: { firstOpenElement: string | null, data: IStepComponentProps[] }, stepData: IAccountSetupStepData) => {
-
-      const isOpen = !stepData.conditionCompleted && acc.firstOpenElement === null;
-      console.log(stepData.key,!stepData.conditionCompleted , acc.firstOpenElement === null)
-      const stepComponentProps = {
-        done: stepData.conditionCompleted,
-        isOpen: isOpen,
-        key: stepData.key,
-        title: stepData.title,
-        component: stepData.component,
-      };
-      acc.data.push(stepComponentProps);
-      acc.firstOpenElement = isOpen ? stepData.key : acc.firstOpenElement;
-      return acc;
-    },
-    { firstOpenElement: null, data: [] }
-  );
-  console.log(newData.data);
-  return newData.data
-};
 
 const AccountSetupContainer: React.FunctionComponent = ({ children }) =>
   <div data-test-id="nominee-dashboard">
@@ -117,9 +106,9 @@ export const NomineeDashboard = compose<INomineeAccountSetupSteps, {}>(
       verificationIsComplete: SelectIsVerificationFullyDone(state),
     })
   }),
-  branch(props => props.kycRequestStatus === ERequestStatus.PENDING, renderComponent(() => <>kyc pending</>)),
-  branch(props => props.verificationIsComplete, renderComponent(() => <>no tasks for you today</>)),
-  withProps(({ emailVerified, backupCodesVerified, kycRequestStatus }) => {
+  branch<any>(props => props.kycRequestStatus === ERequestStatus.PENDING, renderComponent(() => <>kyc pending</>)),
+  branch<any>(props => props.verificationIsComplete, renderComponent(() => <>no tasks for you today</>)),
+  withProps<any,any>(({ emailVerified, backupCodesVerified, kycRequestStatus }:any) => {
     return ({
       accountSetupStepsData: prepareSetupAccountSteps(
         nomineeAccountSetupSteps(emailVerified, backupCodesVerified, kycRequestStatus !== ERequestStatus.DRAFT)
