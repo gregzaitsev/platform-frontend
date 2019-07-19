@@ -2,6 +2,7 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
 import { BackupSeedComponent } from "../settings/backup-seed/BackupSeedWidget";
+import { KycStatusComponent } from "../settings/kyc-states/KycStatusWidget";
 import { VerifyEmailComponent } from "../settings/verify-email/VerifyEmailWidget";
 import { IAccountSetupStepData } from "./utils";
 
@@ -22,7 +23,7 @@ export const nomineeAccountSetupSteps = (emailVerified: boolean, backupCodesVeri
     key: 'startKyc',
     conditionCompleted: kycCompleted,
     title: <FormattedMessage id="account-setup.verify-your-company" />,
-    component: <>start kyc</>
+    component: <KycStatusComponent />
   }
 ];
 

@@ -58,6 +58,7 @@ export const KycRouterComponent: React.FunctionComponent<IStateProps> = ({ userT
     case EUserType.INVESTOR:
       return <NormalKycRouter />;
     case EUserType.ISSUER:
+    case EUserType.NOMINEE:
       return <EtoKycRouter />;
     default:
       return invariant(false, "Unknown user type");

@@ -4,7 +4,6 @@ import { compose } from "redux";
 
 import { actions } from "../../../modules/actions";
 import { appConnect } from "../../../store";
-import { injectIntlHelpers } from "../../../utils/injectIntlHelpers.unsafe";
 import { KycPanel } from "../KycPanel";
 import { Panels } from "../shared/Panels";
 
@@ -34,9 +33,8 @@ interface IProps {
   goToCompany: () => void;
 }
 
-export const KYCStartComponent = injectIntlHelpers<IProps>(
-  ({ intl: { formatIntlMessage }, ...props }) => (
-    <KycPanel steps={personalSteps} title={formatIntlMessage("kyc.start.title")} isMaxWidth={true}>
+export const KYCStartComponent = ({ ...props }) => (
+    <KycPanel steps={personalSteps} title={<FormattedMessage id="kyc.start.title"/>} isMaxWidth={true}>
       <p className={styles.textFieldNarrow}>
         <FormattedHTMLMessage tagName="span" id="kyc.start.description" />
       </p>
@@ -57,8 +55,7 @@ export const KYCStartComponent = injectIntlHelpers<IProps>(
         ]}
       />
     </KycPanel>
-  ),
-);
+  );
 
 export const KYCStart = compose<React.FunctionComponent>(
   appConnect<IProps>({

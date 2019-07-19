@@ -235,7 +235,7 @@ const UnVerifiedUser: React.FunctionComponent<{
   </section>
 );
 
-export const VerifyEmailWidgetComponent: React.FunctionComponent<IStateProps & IDispatchProps> = ({
+export const VerifyEmailWidgetLayout: React.FunctionComponent<IStateProps & IDispatchProps> = ({
   isUserEmailVerified,
   isThereUnverifiedEmail,
   resendEmail,
@@ -293,7 +293,7 @@ const VerifyEmailWidgetBase: React.FunctionComponent<IStateProps & IDispatchProp
     }
     data-test-id="profile.verify-email-widget"
   >
-    <VerifyEmailWidgetComponent
+    <VerifyEmailWidgetLayout
       isUserEmailVerified={isUserEmailVerified}
       isThereUnverifiedEmail={isThereUnverifiedEmail} {...rest}
     />
@@ -328,4 +328,4 @@ export const connectVerifyEmailComponent = <T extends {}>(WrappedComponent: Reac
   )(WrappedComponent);
 
 export const VerifyEmailWidget = connectVerifyEmailComponent<IExternalProps>(VerifyEmailWidgetBase);
-export const VerifyEmailComponent = connectVerifyEmailComponent(VerifyEmailWidgetComponent);
+export const VerifyEmailComponent = connectVerifyEmailComponent(VerifyEmailWidgetLayout);

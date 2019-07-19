@@ -21,9 +21,10 @@ interface IStateProps {
 
 interface IExternalProps {
   columnSpan?: EColumnSpan;
+  step: number;
 }
 
-const BackupSeedWidgetComponent: React.FunctionComponent<IStateProps> = ({ backupCodesVerified }) =>
+const BackupSeedWidgetLayout: React.FunctionComponent<IStateProps> = ({ backupCodesVerified }) =>
   backupCodesVerified
     ? <section
         data-test-id="backup-seed-verified-section"
@@ -77,7 +78,7 @@ const BackupSeedWidgetBase: React.FunctionComponent<IStateProps & IExternalProps
     }
     data-test-id="profile.backup-seed-widget"
   >
-    <BackupSeedWidgetComponent backupCodesVerified={backupCodesVerified}/>
+    <BackupSeedWidgetLayout backupCodesVerified={backupCodesVerified}/>
   </Panel>
 );
 
@@ -91,6 +92,6 @@ const connectBackupSeedWidget = <T extends {}>(WrappedComponent: React.Component
   )(WrappedComponent);
 
 const BackupSeedWidget = connectBackupSeedWidget<IExternalProps>(BackupSeedWidgetBase)
-const BackupSeedComponent = connectBackupSeedWidget(BackupSeedWidgetComponent)
+const BackupSeedComponent = connectBackupSeedWidget(BackupSeedWidgetLayout)
 
 export { BackupSeedWidget, BackupSeedComponent, BackupSeedWidgetBase };

@@ -2,7 +2,7 @@ import * as cn from "classnames";
 import * as React from "react";
 import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 import { Col, Row } from "reactstrap";
-import { compose } from "redux";
+import { branch, compose, renderNothing, withHandlers } from "recompose";
 
 import { externalRoutes } from "../../../config/externalRoutes";
 import { ERequestOutsourcedStatus, ERequestStatus } from "../../../lib/api/KycApi.interfaces";
@@ -20,7 +20,7 @@ import {
   selectKycRequestStatus,
   selectWidgetError,
 } from "../../../modules/kyc/selectors";
-import { appConnect } from "../../../store";
+import { appConnect, AppDispatch } from "../../../store";
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { onLeaveAction } from "../../../utils/OnLeaveAction";
 import { EColumnSpan } from "../../layouts/Container";
@@ -46,21 +46,37 @@ interface IStateProps {
   userType: EUserType;
 }
 
-interface IOwnProps {
+interface IExternalProps {
   step: number;
   columnSpan?: EColumnSpan;
 }
 
 interface IDispatchProps {
-  onGoToKycHome: () => void;
   onGoToDashboard: () => void;
   cancelInstantId: () => void;
+  onGoToKycStart: () => void;
 }
 
-export type IKycStatusWidgetProps = IStateProps & IDispatchProps & IOwnProps;
+// interface IHandlers {
+// }
+
+interface IReduxProps {
+  dispatch: AppDispatch;
+}
+
+interface IKycStatusLayoutProps {
+  requestStatus?: ERequestStatus;
+  requestOutsourcedStatus?: ERequestOutsourcedStatus;
+  isUserEmailVerified: boolean;
+  externalKycUrl?: string;
+  userType: EUserType;
+  backupCodesVerified: boolean;
+}
+
+export type IKycStatusWidgetProps = IStateProps & IDispatchProps & IExternalProps;
 
 const statusTextMap: Record<ERequestStatus, React.ReactNode> = {
-  Accepted: <FormattedMessage id="settings.kyc-status-widget.status.accepted" />,
+  Accepted: <FormattedMessage id="settings.kyc-status-widget.status.accepted"/>,
   Rejected: (
     <FormattedHTMLMessage
       tagName="span"
@@ -68,7 +84,7 @@ const statusTextMap: Record<ERequestStatus, React.ReactNode> = {
       values={{ url: externalRoutes.neufundSupportHome }}
     />
   ),
-  Ignored: <FormattedMessage id="settings.kyc-status-widget.status.ignored" />,
+  Ignored: <FormattedMessage id="settings.kyc-status-widget.status.ignored"/>,
   Pending: (
     <FormattedHTMLMessage
       tagName="span"
@@ -83,12 +99,12 @@ const statusTextMap: Record<ERequestStatus, React.ReactNode> = {
       values={{ url: externalRoutes.neufundSupportHome }}
     />
   ),
-  Outsourced: <FormattedMessage id="settings.kyc-status-widget.status.outsourced.started" />,
+  Outsourced: <FormattedMessage id="settings.kyc-status-widget.status.outsourced.started"/>,
 };
 
 const outsourcedStatusTextMap: Record<ERequestOutsourcedStatus, React.ReactNode> = {
   review_pending: (
-    <FormattedMessage id="settings.kyc-status-widget.status.outsourced.review_pending" />
+    <FormattedMessage id="settings.kyc-status-widget.status.outsourced.review_pending"/>
   ),
   aborted: (
     <FormattedHTMLMessage
@@ -110,10 +126,10 @@ const outsourcedStatusTextMap: Record<ERequestOutsourcedStatus, React.ReactNode>
       values={{ url: externalRoutes.neufundSupportHome }}
     />
   ),
-  started: <FormattedMessage id="settings.kyc-status-widget.status.outsourced.started" />,
-  success: <FormattedMessage id="settings.kyc-status-widget.status.outsourced.review_pending" />,
+  started: <FormattedMessage id="settings.kyc-status-widget.status.outsourced.started"/>,
+  success: <FormattedMessage id="settings.kyc-status-widget.status.outsourced.review_pending"/>,
   success_data_changed: (
-    <FormattedMessage id="settings.kyc-status-widget.status.outsourced.review_pending" />
+    <FormattedMessage id="settings.kyc-status-widget.status.outsourced.review_pending"/>
   ),
 };
 
@@ -123,7 +139,7 @@ const getStatus = (
   requestOutsourcedStatus?: ERequestOutsourcedStatus,
 ): React.ReactNode => {
   if (!selectIsUserEmailVerified) {
-    return <FormattedMessage id="settings.kyc-status-widget.status.error-verification-email" />;
+    return <FormattedMessage id="settings.kyc-status-widget.status.error-verification-email"/>;
   }
 
   if (!requestStatus) {
@@ -140,14 +156,14 @@ const getStatus = (
 const ActionButton = ({
   requestStatus,
   requestOutsourcedStatus,
-  onGoToKycHome,
+  onGoToKycStart,
   isUserEmailVerified,
   externalKycUrl,
   userType,
   onGoToDashboard,
   backupCodesVerified,
   cancelInstantId,
-}: IKycStatusWidgetProps) => {
+}: IKycStatusLayoutProps & IDispatchProps) => {
   if (requestStatus === ERequestStatus.ACCEPTED && userType === EUserType.INVESTOR) {
     return (
       <Button
@@ -157,7 +173,7 @@ const ActionButton = ({
         onClick={onGoToDashboard}
         disabled={!isUserEmailVerified}
       >
-        <FormattedMessage id="kyc.request-state.go-to-dashboard" />
+        <FormattedMessage id="kyc.request-state.go-to-dashboard"/>
       </Button>
     );
   }
@@ -168,10 +184,10 @@ const ActionButton = ({
         layout={EButtonLayout.SECONDARY}
         iconPosition={EIconPosition.ICON_AFTER}
         svgIcon={arrowRight}
-        onClick={onGoToKycHome}
+        onClick={onGoToKycStart}
         disabled={!isUserEmailVerified || !backupCodesVerified}
       >
-        <FormattedMessage id="settings.kyc-status-widget.start-kyc-process" />
+        <FormattedMessage id="settings.kyc-status-widget.start-kyc-process"/>
       </Button>
     );
   }
@@ -182,10 +198,10 @@ const ActionButton = ({
         layout={EButtonLayout.SECONDARY}
         iconPosition={EIconPosition.ICON_AFTER}
         svgIcon={arrowRight}
-        onClick={onGoToKycHome}
+        onClick={onGoToKycStart}
         disabled={!isUserEmailVerified}
       >
-        <FormattedMessage id="settings.kyc-status-widget.submit-additional-documents" />
+        <FormattedMessage id="settings.kyc-status-widget.submit-additional-documents"/>
       </Button>
     );
   }
@@ -205,7 +221,7 @@ const ActionButton = ({
           iconPosition={EIconPosition.ICON_AFTER}
           svgIcon={arrowRight}
         >
-          <FormattedMessage id="settings.kyc-status-widget.continue-external-kyc" />
+          <FormattedMessage id="settings.kyc-status-widget.continue-external-kyc"/>
         </ButtonLink>
         <Button
           data-test={true}
@@ -215,7 +231,7 @@ const ActionButton = ({
           onClick={cancelInstantId}
           data-test-id="settings.kyc-status-widget.cancel-external-kyc-button"
         >
-          <FormattedMessage id="settings.kyc-status-widget.cancel-external-kyc" />
+          <FormattedMessage id="settings.kyc-status-widget.cancel-external-kyc"/>
         </Button>
       </>
     );
@@ -240,7 +256,7 @@ const StatusIcon = ({
         requestOutsourcedStatus!,
       ))
   ) {
-    return <img src={successIcon} className={styles.icon} alt="" />;
+    return <img src={successIcon} className={styles.icon} alt=""/>;
   }
 
   if (
@@ -252,76 +268,93 @@ const StatusIcon = ({
         ERequestOutsourcedStatus.OTHER,
       ].includes(requestOutsourcedStatus!))
   ) {
-    return <img src={infoIcon} className={styles.icon} alt="" />;
+    return <img src={infoIcon} className={styles.icon} alt=""/>;
   }
 
-  return <img src={warningIcon} className={styles.icon} alt="" />;
+  return <img src={warningIcon} className={styles.icon} alt=""/>;
 };
 
-export const KycStatusWidgetComponent: React.FunctionComponent<IKycStatusWidgetProps> = props => {
+const KycStatusWidgetLayout: React.FunctionComponent<IStateProps & IDispatchProps> = ({
+  isLoading,
+  error,
+  ...props
+}) => {
+  if (isLoading) {
+    return <div className={styles.panelBody}>
+      <Row noGutters>
+        <Col>
+          <LoadingIndicator className={styles.loading}/>
+        </Col>
+      </Row>
+    </div>
+  } else if (error) {
+    return <WarningAlert>
+      <FormattedMessage id="settings.kyc-widget.error"/>
+    </WarningAlert>
+  } else {
+    return <section className={cn(styles.section)}>
+      <p className={cn(styles.text, "pt-2")}>
+        {getStatus(props.isUserEmailVerified, props.requestStatus, props.requestOutsourcedStatus)}
+      </p>
+      <ActionButton {...props} />
+    </section>
+  }
+}
+
+
+export const KycStatusWidgetBase: React.FunctionComponent<IKycStatusWidgetProps> = props => {
   const {
-    requestStatus,
-    requestOutsourcedStatus,
-    isUserEmailVerified,
-    isLoading,
-    error,
     step,
     columnSpan,
+    ...rest
   } = props;
 
   return (
     <Panel
       columnSpan={columnSpan}
-      headerText={<FormattedMessage id="settings.kyc-widget.header" values={{ step }} />}
+      headerText={<FormattedMessage id="settings.kyc-widget.header" values={{ step }}/>}
       rightComponent={<StatusIcon {...props} />}
     >
-      {isLoading ? (
-        <div className={styles.panelBody}>
-          <Row noGutters>
-            <Col>
-              <LoadingIndicator className={styles.loading} />
-            </Col>
-          </Row>
-        </div>
-      ) : error ? (
-        <WarningAlert>
-          <FormattedMessage id="settings.kyc-widget.error" />
-        </WarningAlert>
-      ) : (
-        <section className={cn(styles.section)}>
-          <p className={cn(styles.text, "pt-2")}>
-            {getStatus(isUserEmailVerified, requestStatus, requestOutsourcedStatus)}
-          </p>
-          <ActionButton {...props} />
-        </section>
-      )}
+      <KycStatusWidgetLayout {...rest} />
     </Panel>
   );
 };
 
-export const KycStatusWidget = compose<React.ComponentClass<IOwnProps>>(
-  appConnect<IStateProps, IDispatchProps, IOwnProps>({
-    stateToProps: state => ({
-      isUserEmailVerified: selectIsUserEmailVerified(state.auth),
-      userType: selectUserType(state)!,
-      backupCodesVerified: selectBackupCodesVerified(state),
-      requestStatus: selectKycRequestStatus(state),
-      requestOutsourcedStatus: selectKycRequestOutsourcedStatus(state.kyc),
-      externalKycUrl: selectExternalKycUrl(state.kyc),
-      isLoading: selectKycLoading(state.kyc),
-      error: selectWidgetError(state.kyc),
+const connectKycStatusWidget = <T extends {}>(WrappedComponent: React.ComponentType<IStateProps & IDispatchProps & T>) =>
+  compose<(IStateProps | null) & IDispatchProps & T, T>(
+    appConnect<IStateProps | null, IDispatchProps, T>({
+      stateToProps: state => {
+        const userType = selectUserType(state);
+        if (userType !== undefined) {
+          return ({
+            isUserEmailVerified: selectIsUserEmailVerified(state.auth),
+            userType: selectUserType(state),
+            backupCodesVerified: selectBackupCodesVerified(state),
+            requestStatus: selectKycRequestStatus(state),
+            requestOutsourcedStatus: selectKycRequestOutsourcedStatus(state.kyc),
+            externalKycUrl: selectExternalKycUrl(state.kyc),
+            isLoading: selectKycLoading(state.kyc),
+            error: selectWidgetError(state.kyc),
+          })
+        } else {
+          return null
+        }
+      },
+      dispatchToProps: (dispatch) => ({
+        onGoToDashboard: () => dispatch(actions.routing.goToDashboard()),
+        cancelInstantId: () => dispatch(actions.kyc.kycCancelInstantId()),
+        onGoToKycStart: () => dispatch(actions.routing.goToKYCHome())
+      }),
     }),
-    dispatchToProps: dispatch => ({
-      onGoToKycHome: () => dispatch(actions.routing.goToKYCHome()),
-      onGoToDashboard: () => dispatch(actions.routing.goToDashboard()),
-      cancelInstantId: () => dispatch(actions.kyc.kycCancelInstantId()),
+    branch<IStateProps | null>(props => props === null, renderNothing ),
+    // note: initial data for this view are loaded as part of app init process
+    onEnterAction({
+      actionCreator: d => d(actions.kyc.kycStartWatching()),
     }),
-  }),
-  // note: initial data for this view are loaded as part of app init process
-  onEnterAction({
-    actionCreator: d => d(actions.kyc.kycStartWatching()),
-  }),
-  onLeaveAction({
-    actionCreator: d => d(actions.kyc.kycStopWatching()),
-  }),
-)(KycStatusWidgetComponent);
+    onLeaveAction({
+      actionCreator: d => d(actions.kyc.kycStopWatching()),
+    }),
+  )(WrappedComponent);
+
+export const KycStatusWidget = connectKycStatusWidget<IExternalProps>(KycStatusWidgetBase);
+export const KycStatusComponent = connectKycStatusWidget(KycStatusWidgetLayout);
