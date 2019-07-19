@@ -49,7 +49,7 @@ export const DEFAULT_CHART_COLOR = "#c4c5c6";
 
 interface IProps {
   eto: TEtoWithCompanyAndContract;
-  isInvestorView: boolean;
+  publicView: boolean;
 }
 
 // TODO: There are lots of castings right now in this file, cause formerly the types of IProps was "any"
@@ -58,7 +58,7 @@ interface IProps {
 const EtoViewSchema = EtoCompanyInformationType.toYup().concat(EtoPitchType.toYup());
 
 // TODO: Refactor to smaller components
-const EtoViewLayout: React.FunctionComponent<IProps> = ({ eto, isInvestorView }) => {
+const EtoViewLayout: React.FunctionComponent<IProps> = ({ eto, publicView }) => {
   const {
     advisors,
     companyDescription,
@@ -122,7 +122,7 @@ const EtoViewLayout: React.FunctionComponent<IProps> = ({ eto, isInvestorView })
     <FieldSchemaProvider value={EtoViewSchema}>
       <PersonProfileModal />
       <WidgetGrid className={styles.etoLayout} data-test-id="eto.public-view">
-        <CoverBanner eto={eto} isInvestorView={isInvestorView} />
+        <CoverBanner eto={eto} publicView={publicView} />
         <Cover
           companyName={brandName}
           companyOneliner={companyOneliner}
@@ -141,7 +141,7 @@ const EtoViewLayout: React.FunctionComponent<IProps> = ({ eto, isInvestorView })
           }}
           tags={categories}
         />
-        <EtoOverviewStatus eto={eto} publicView={isInvestorView} />
+        <EtoOverviewStatus eto={eto} publicView={publicView} isEmbedded={false} />
         <Container columnSpan={EColumnSpan.THREE_COL}>
           <DashboardHeading
             title={

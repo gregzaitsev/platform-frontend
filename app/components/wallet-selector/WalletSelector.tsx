@@ -73,17 +73,15 @@ type TLocalStateHandlersProps = {
 };
 
 interface ISelectTitleProps {
-  isIssuerWithOnlyLedgerAllowed: boolean;
   isLoginRoute: boolean;
-  isNominee: boolean;
+  walletSelectionDisabled: boolean;
 }
 
 const SelectTitle: React.FunctionComponent<ISelectTitleProps> = ({
-  isIssuerWithOnlyLedgerAllowed,
   isLoginRoute,
-  isNominee,
+  walletSelectionDisabled,
 }) => {
-  if (isIssuerWithOnlyLedgerAllowed || isNominee) {
+  if (walletSelectionDisabled) {
     return <FormattedMessage id="wallet-selector.tabs.register.title.no-wallet-selection" />;
   } else if (isLoginRoute) {
     return <FormattedMessage id="wallet-selector.tabs.login.title" />;
@@ -110,9 +108,9 @@ export const WalletSelectorLayout: React.FunctionComponent<
   hideLogoutReason,
   location,
 }) => {
-  const isIssuerWithOnlyLedgerAllowed =
-    userType === EUserType.ISSUER && process.env.NF_ISSUERS_CAN_LOGIN_WITH_ANY_WALLET !== "1";
-  const isNominee = userType === EUserType.NOMINEE;
+  const walletSelectionDisabled =
+    userType === EUserType.NOMINEE ||
+    (userType === EUserType.ISSUER && process.env.NF_ISSUERS_CAN_LOGIN_WITH_ANY_WALLET !== "1");
 
   return (
     <WalletSelectorContainer data-test-id="register-layout">
@@ -129,13 +127,12 @@ export const WalletSelectorLayout: React.FunctionComponent<
         <Col tag="section" md={{ size: 10, offset: 1 }} lg={{ size: 8, offset: 2 }}>
           <h1 className={cn(styles.walletChooserTitle, "my-4", "text-center")}>
             <SelectTitle
-              isIssuerWithOnlyLedgerAllowed={isIssuerWithOnlyLedgerAllowed}
+              walletSelectionDisabled={walletSelectionDisabled}
               isLoginRoute={isLoginRoute}
-              isNominee={isNominee}
             />
           </h1>
 
-          {!isIssuerWithOnlyLedgerAllowed && !isNominee && (
+          {!walletSelectionDisabled && (
             <div className={styles.walletChooserButtons}>
               <div className="m-2">
                 <ButtonLink data-test-id="wallet-selector-light" to={`${rootPath}/light`}>

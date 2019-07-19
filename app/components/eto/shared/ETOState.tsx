@@ -12,7 +12,7 @@ import {
   TEtoWithCompanyAndContract,
 } from "../../../modules/eto/types";
 import { isOnChain } from "../../../modules/eto/utils";
-import { CommonHtmlProps, OmitKeys, TTranslatedString } from "../../../types";
+import { CommonHtmlProps, TTranslatedString } from "../../../types";
 
 import * as styles from "./ETOState.module.scss";
 
@@ -30,15 +30,22 @@ export enum EProjectStatusLayout {
 }
 
 interface IExternalProps {
+  eto: TEtoWithCompanyAndContract;
+  isIssuer: boolean;
+}
+
+interface ISizeLayoutProps {
   size?: EProjectStatusSize;
   layout?: EProjectStatusLayout;
-  eto: TEtoWithCompanyAndContract;
-  isIssuer?: boolean;
+}
+
+interface IComingSoonEtoStateProps {
+  isIssuer: boolean;
 }
 
 export const stateToName: Record<EEtoState | EETOStateOnChain | EEtoSubState, TTranslatedString> = {
   [EEtoState.PREVIEW]: <FormattedMessage id="shared-component.eto-overview.status-in-preview" />,
-  [EEtoState.PENDING]: <FormattedMessage id="shared-component.eto-overview.status-in-preview" />,
+  [EEtoState.PENDING]: <FormattedMessage id="shared-component.eto-overview.status-pending" />,
   [EEtoState.LISTED]: <FormattedMessage id="shared-component.eto-overview.status-listed" />,
   [EEtoState.PROSPECTUS_APPROVED]: (
     <FormattedMessage id="shared-component.eto-overview.status-prospectus-approved" />
@@ -65,7 +72,7 @@ export const stateToName: Record<EEtoState | EETOStateOnChain | EEtoSubState, TT
 
 export const getStateName: (
   state: EEtoState | EETOStateOnChain | EEtoSubState,
-  isIssuer?: boolean,
+  isIssuer: boolean,
 ) => TTranslatedString = (state, isIssuer) => {
   if (isIssuer && (state === EETOStateOnChain.Payout || state === EETOStateOnChain.Claim)) {
     return <FormattedMessage id="eto.status.onchain.issuer-withdraw-funds" />;
@@ -76,7 +83,7 @@ export const getStateName: (
 
 const stateToClassName: Partial<Record<EEtoState | EETOStateOnChain | EEtoSubState, string>> = {
   [EEtoState.PREVIEW]: styles.blue,
-  [EEtoState.PENDING]: styles.black,
+  [EEtoState.PENDING]: styles.red,
   // eto on chain states
   [EETOStateOnChain.Whitelist]: styles.green,
   [EETOStateOnChain.Public]: styles.green,
@@ -94,7 +101,10 @@ const stateToClassName: Partial<Record<EEtoState | EETOStateOnChain | EEtoSubSta
   [EEtoSubState.COUNTDOWN_TO_PRESALE]: styles.blue,
 };
 
-const getState = (eto: TEtoWithCompanyAndContract, isIssuer?: boolean) => {
+const getState = (
+  eto: TEtoWithCompanyAndContract,
+  isIssuer: boolean,
+): EETOStateOnChain | EEtoState | EEtoSubState => {
   const state = isOnChain(eto) ? eto.contract.timedState : eto.state;
 
   if (eto.subState) {
@@ -108,7 +118,7 @@ const getState = (eto: TEtoWithCompanyAndContract, isIssuer?: boolean) => {
 };
 
 const ComingSoonEtoState: React.FunctionComponent<
-  OmitKeys<IExternalProps, "eto"> & CommonHtmlProps
+  ISizeLayoutProps & IComingSoonEtoStateProps & CommonHtmlProps
 > = ({
   className,
   size = EProjectStatusSize.MEDIUM,
@@ -127,9 +137,11 @@ const ComingSoonEtoState: React.FunctionComponent<
   );
 };
 
-const SuccessEtoState: React.FunctionComponent<
-  OmitKeys<IExternalProps, "eto"> & CommonHtmlProps
-> = ({ className, size = EProjectStatusSize.MEDIUM, layout = EProjectStatusLayout.NORMAL }) => (
+const SuccessEtoState: React.FunctionComponent<ISizeLayoutProps & CommonHtmlProps> = ({
+  className,
+  size = EProjectStatusSize.MEDIUM,
+  layout = EProjectStatusLayout.NORMAL,
+}) => (
   <div
     className={cn(styles.projectStatus, styles.green, size, layout, className)}
     data-test-id="eto-state-mock-successful"
@@ -138,7 +150,7 @@ const SuccessEtoState: React.FunctionComponent<
   </div>
 );
 
-const ETOState: React.FunctionComponent<IExternalProps & CommonHtmlProps> = ({
+const ETOState: React.FunctionComponent<IExternalProps & ISizeLayoutProps & CommonHtmlProps> = ({
   eto,
   className,
   size = EProjectStatusSize.MEDIUM,

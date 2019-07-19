@@ -131,7 +131,7 @@ const PortfolioReservedAssets: React.FunctionComponent<IExternalProps> = ({ pend
                   />
                 </span>
               ) : (
-                <ETOState eto={eto} size={EProjectStatusSize.SMALL} />
+                <ETOState eto={eto} size={EProjectStatusSize.SMALL} isIssuer={false} />
               )}
             </span>
 

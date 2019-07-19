@@ -3,7 +3,7 @@ import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
 import { withModalBody } from "../../../../utils/storybookHelpers.unsafe";
-import { WithdrawSummaryComponent } from "./Summary";
+import { WithdrawPendingComponent } from "./Pending";
 
 const props = {
   txHash: "0xdb3c43a0cfc4e221ecb52655eab3c3b88ba521a",
@@ -23,6 +23,6 @@ const props = {
   onChange: action("onChange"),
 };
 
-storiesOf("Withdraw/Summary", module)
+storiesOf("Withdraw/Pending", module)
   .addDecorator(withModalBody())
-  .add("default", () => <WithdrawSummaryComponent {...props} />);
+  .add("default", () => <WithdrawPendingComponent {...props} />);

@@ -16,7 +16,7 @@ import * as styles from "./CoverBanner.module.scss";
 
 interface IExternalProps {
   eto: TEtoWithCompanyAndContract;
-  isInvestorView: boolean;
+  publicView: boolean;
 }
 
 interface IBaseProps {
@@ -84,7 +84,7 @@ export const CoverBanner = compose<TBannerProps, IExternalProps & TBannerProps>(
     stateToProps: (state, props) => {
       const userType = selectUserType(state);
 
-      if (userType === EUserType.ISSUER && !props.isInvestorView) {
+      if (userType === EUserType.ISSUER && !props.publicView) {
         return {
           userType,
           origin: selectBaseUrl(),
@@ -98,8 +98,8 @@ export const CoverBanner = compose<TBannerProps, IExternalProps & TBannerProps>(
       }
     },
   }),
-  branch<{ userType: EUserType; isInvestorView: boolean }>(
-    props => props.userType === EUserType.ISSUER && !props.isInvestorView,
+  branch<{ userType: EUserType; publicView: boolean }>(
+    props => props.userType === EUserType.ISSUER && !props.publicView,
     renderComponent(IssuerBannerLayout),
   ),
 )(InvestorBannerLayout);

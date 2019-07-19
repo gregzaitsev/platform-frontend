@@ -1,4 +1,4 @@
-import { branch, compose, renderComponent } from "recompose";
+import { branch, compose, renderComponent, withProps } from "recompose";
 
 import { actions } from "../../modules/actions";
 import { selectIssuerEtoWithCompanyAndContract } from "../../modules/eto-flow/selectors";
@@ -14,12 +14,11 @@ import { EtoView } from "./shared/EtoView";
 
 type TStateProps = {
   eto: TEtoWithCompanyAndContract | undefined;
-  isInvestorView: boolean;
 };
 
 type TViewProps = {
   eto: TEtoWithCompanyAndContract;
-  isInvestorView: boolean;
+  publicView: boolean;
 };
 
 export const EtoIssuerView = compose<TViewProps, {}>(
@@ -32,9 +31,9 @@ export const EtoIssuerView = compose<TViewProps, {}>(
   appConnect<TStateProps>({
     stateToProps: state => ({
       eto: selectIssuerEtoWithCompanyAndContract(state),
-      isInvestorView: false,
     }),
   }),
+  withProps<{ publicView: boolean }, TStateProps>(() => ({ publicView: false })),
   withContainer(Layout),
   branch<TStateProps>(props => !props.eto, renderComponent(LoadingIndicator)),
 )(EtoView);

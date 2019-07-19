@@ -57,7 +57,7 @@ const MockEtoOverviewLayout: React.FunctionComponent<
     {mockedEto.totalAmount ? (
       <SuccessEtoState className={styles.statusOfEto} />
     ) : (
-      <ComingSoonEtoState className={styles.statusOfEto} />
+      <ComingSoonEtoState className={styles.statusOfEto} isIssuer={false} />
     )}
 
     <section className={styles.content}>
@@ -94,7 +94,7 @@ const EtoOverviewLayout: React.FunctionComponent<TEtoProps & CommonHtmlProps & I
       jurisdiction={eto.product.jurisdiction}
     />
 
-    <ETOState className={styles.statusOfEto} eto={eto} />
+    <ETOState className={styles.statusOfEto} eto={eto} isIssuer={false} />
 
     <section className={styles.content}>
       <Heading titleClassName="text-truncate" decorator={false} level={2} size={EHeadingSize.HUGE}>

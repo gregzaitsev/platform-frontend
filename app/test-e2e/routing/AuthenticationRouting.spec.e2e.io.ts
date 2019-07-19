@@ -28,12 +28,12 @@ describe("Authentication Routing", () => {
     assertUserInLightWalletLoginPage();
   });
 
-  it("should redirect to login from /eto/restore", () => {
+  it("should redirect to /restore from /eto/restore", () => {
     cy.visit("/eto/restore");
     assertUserInRecoveryPage();
   });
 
-  it("should redirect to login from /nominee/restore", () => {
+  it("should redirect to /restore from /nominee/restore", () => {
     cy.visit("/nominee/restore");
     assertUserInRecoveryPage();
   });

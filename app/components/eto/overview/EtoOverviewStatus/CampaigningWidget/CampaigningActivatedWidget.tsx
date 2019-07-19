@@ -116,7 +116,7 @@ const CampaigningActivatedWidgetComponent: React.FunctionComponent<IProps> = ({
             </span>
             <span className={styles.value}>
               <span data-test-id="eto-bookbuilding-remaining-slots">
-                {investorsCount !== null ? investorsLimit - investorsCount : investorsLimit}
+                {investorsCount !== 0 ? investorsLimit - investorsCount : investorsLimit}
               </span>{" "}
               out of {investorsLimit} slots remaining
               {/* TODO: Move to translations once the format is stable */}
@@ -133,7 +133,7 @@ const CampaigningActivatedWidgetComponent: React.FunctionComponent<IProps> = ({
         </div>
         {isInvestor && !isVerifiedInvestor && (
           <ButtonLink
-            innerClassName="mb-3"
+            innerClassName={styles.etoOverviewStatusButton}
             to={appRoutes.profile}
             data-test-id="eto-overview-settings-update-required-to-invest"
           >

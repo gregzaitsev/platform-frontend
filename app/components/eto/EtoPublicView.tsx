@@ -1,4 +1,4 @@
-import { branch, compose, renderComponent } from "recompose";
+import { branch, compose, renderComponent, withProps } from "recompose";
 
 import { EUserType } from "../../lib/api/users/interfaces";
 import { actions } from "../../modules/actions";
@@ -28,7 +28,7 @@ interface IRouterParams {
 
 type TProps = {
   eto: TEtoWithCompanyAndContract;
-  isInvestorView: boolean;
+  publicView: boolean;
 };
 
 export const EtoPublicView = compose<TProps, IRouterParams>(
@@ -37,7 +37,6 @@ export const EtoPublicView = compose<TProps, IRouterParams>(
     stateToProps: (state, props) => ({
       userType: selectUserType(state),
       eto: selectEtoWithCompanyAndContract(state, props.previewCode),
-      isInvestorView: true,
     }),
   }),
   onEnterAction<IRouterParams>({
@@ -45,6 +44,7 @@ export const EtoPublicView = compose<TProps, IRouterParams>(
       dispatch(actions.eto.loadEtoPreview(props.previewCode));
     },
   }),
+  withProps<{ publicView: boolean }, IStateProps>(() => ({ publicView: true })),
   withContainer(Layout),
   branch<IStateProps>(props => !props.eto, renderComponent(LoadingIndicator)),
   withJurisdictionDisclaimer<TProps>(props => props.eto.previewCode),
