@@ -5,7 +5,7 @@ import { Redirect, Route } from "react-router-dom";
 import { branch, compose, renderComponent } from "recompose";
 
 import { EUserType } from "../../../lib/api/users/interfaces";
-import { selectUserType } from "../../../modules/auth/selectors";
+import { selectIsAuthorized, selectUserType } from "../../../modules/auth/selectors";
 import { selectWalletTypeFromQueryString } from "../../../modules/routing/selectors";
 import { EWalletType } from "../../../modules/web3/types";
 import { appConnect } from "../../../store";
@@ -14,6 +14,7 @@ import { appRoutes } from "../../appRoutes";
 import { loginWalletRoutes } from "../../wallet-selector/walletRoutes";
 
 interface IStateProps {
+  isAuthorized: boolean;
   userType?: EUserType;
   walletType: EWalletType;
   routerState: RouterState;
@@ -105,13 +106,14 @@ const OnlyAuthorizedRouteComponent: React.FunctionComponent<IComponentProps & IE
 export const OnlyAuthorizedRoute = compose<IComponentProps & IExternalProps, IExternalProps>(
   appConnect<IStateProps, {}, IExternalProps>({
     stateToProps: state => ({
+      isAuthorized: selectIsAuthorized(state.auth),
       userType: selectUserType(state),
       walletType: selectWalletTypeFromQueryString(state),
       routerState: state.router,
     }),
   }),
   branch<IStateProps>(
-    (props: IStateProps) => props.userType === undefined,
+    (props: IStateProps) => !props.isAuthorized,
     renderComponent(OnlyAuthorizedRouteRedirectionComponent),
   ),
 )(OnlyAuthorizedRouteComponent);
