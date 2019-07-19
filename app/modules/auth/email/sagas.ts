@@ -42,10 +42,10 @@ export function* verifyUserEmail({ notificationCenter }: TGlobalDependencies): I
   yield neuCall(verifyUserEmailPromise, userCode, urlEmail, verifiedEmail);
   yield loadUser();
 
-  const userType = yield select((s: IAppState) =>selectUserType(s));
+  const userType = yield select((s: IAppState) => selectUserType(s));
   const kycAndEmailVerified = yield select((s: IAppState) => userHasKycAndEmailVerified(s));
 
-  if(!kycAndEmailVerified && userType === EUserType.NOMINEE){
+  if (!kycAndEmailVerified && userType === EUserType.NOMINEE) {
     yield put(actions.routing.goToDashboard());
   } else {
     yield put(actions.routing.goToProfile());

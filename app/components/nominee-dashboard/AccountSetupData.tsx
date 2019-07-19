@@ -6,25 +6,27 @@ import { KycStatusComponent } from "../settings/kyc-states/KycStatusWidget";
 import { VerifyEmailComponent } from "../settings/verify-email/VerifyEmailWidget";
 import { IAccountSetupStepData } from "./utils";
 
-export const nomineeAccountSetupSteps = (emailVerified: boolean, backupCodesVerified: boolean, kycCompleted: boolean): IAccountSetupStepData[] => [
+export const nomineeAccountSetupSteps = (
+  emailVerified: boolean,
+  backupCodesVerified: boolean,
+  kycCompleted: boolean,
+): IAccountSetupStepData[] => [
   {
-    key: 'verifyEmail',
+    key: "verifyEmail",
     conditionCompleted: emailVerified,
     title: <FormattedMessage id="account-setup.verify-email" />,
-    component: <VerifyEmailComponent />
+    component: <VerifyEmailComponent />,
   },
   {
-    key: 'verifyBackupCodes',
+    key: "verifyBackupCodes",
     conditionCompleted: backupCodesVerified,
     title: <FormattedMessage id="account-setup.verify-backup-codes" />,
-    component: <BackupSeedComponent />
+    component: <BackupSeedComponent />,
   },
   {
-    key: 'startKyc',
+    key: "startKyc",
     conditionCompleted: kycCompleted,
     title: <FormattedMessage id="account-setup.verify-your-company" />,
-    component: <KycStatusComponent />
-  }
+    component: <KycStatusComponent />,
+  },
 ];
-
-

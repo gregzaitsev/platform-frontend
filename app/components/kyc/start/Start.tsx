@@ -34,28 +34,32 @@ interface IProps {
 }
 
 export const KYCStartComponent = ({ ...props }) => (
-    <KycPanel steps={personalSteps} title={<FormattedMessage id="kyc.start.title"/>} isMaxWidth={true}>
-      <p className={styles.textFieldNarrow}>
-        <FormattedHTMLMessage tagName="span" id="kyc.start.description" />
-      </p>
-      <Panels
-        panels={[
-          {
-            content: <FormattedMessage id="kyc.start.go-to-personal" />,
-            id: 1,
-            onClick: () => props.goToPerson(),
-            "data-test-id": "kyc-start-go-to-personal",
-          },
-          {
-            content: <FormattedMessage id="kyc.start.go-to-company" />,
-            id: 2,
-            onClick: () => props.goToCompany(),
-            "data-test-id": "kyc-start-go-to-company",
-          },
-        ]}
-      />
-    </KycPanel>
-  );
+  <KycPanel
+    steps={personalSteps}
+    title={<FormattedMessage id="kyc.start.title" />}
+    isMaxWidth={true}
+  >
+    <p className={styles.textFieldNarrow}>
+      <FormattedHTMLMessage tagName="span" id="kyc.start.description" />
+    </p>
+    <Panels
+      panels={[
+        {
+          content: <FormattedMessage id="kyc.start.go-to-personal" />,
+          id: 1,
+          onClick: () => props.goToPerson(),
+          "data-test-id": "kyc-start-go-to-personal",
+        },
+        {
+          content: <FormattedMessage id="kyc.start.go-to-company" />,
+          id: 2,
+          onClick: () => props.goToCompany(),
+          "data-test-id": "kyc-start-go-to-company",
+        },
+      ]}
+    />
+  </KycPanel>
+);
 
 export const KYCStart = compose<React.FunctionComponent>(
   appConnect<IProps>({

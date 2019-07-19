@@ -7,7 +7,7 @@ import { externalRoutes } from "../../../config/externalRoutes";
 import { ERequestStatus } from "../../../lib/api/KycApi.interfaces";
 import { EUserType } from "../../../lib/api/users/interfaces";
 import { LoadingIndicator } from "../../shared/loading-indicator";
-import { KycStatusWidgetComponent } from "./KycStatusWidget";
+import { KycStatusWidgetBase } from "./KycStatusWidget";
 
 const defaultProps = {
   onGoToKycHome: () => {},
@@ -18,10 +18,10 @@ const defaultProps = {
   isUserEmailVerified: true,
   backupCodesVerified: true,
 };
-describe("<KycStatusWidgetComponent />", () => {
+describe("<KycStatusWidgetBase />", () => {
   it("should render verified section", () => {
     const component = shallow(
-      <KycStatusWidgetComponent
+      <KycStatusWidgetBase
         {...defaultProps}
         requestStatus={ERequestStatus.ACCEPTED}
         isLoading={false}
@@ -34,7 +34,7 @@ describe("<KycStatusWidgetComponent />", () => {
 
   it("should render unverified section", () => {
     const component = shallow(
-      <KycStatusWidgetComponent
+      <KycStatusWidgetBase
         {...defaultProps}
         requestStatus={ERequestStatus.DRAFT}
         isLoading={false}
@@ -53,7 +53,7 @@ describe("<KycStatusWidgetComponent />", () => {
   });
 
   it("should render loading indicator", () => {
-    const component = shallow(<KycStatusWidgetComponent {...defaultProps} isLoading={true} />);
+    const component = shallow(<KycStatusWidgetBase {...defaultProps} isLoading={true} />);
     expect(component.find(LoadingIndicator)).to.have.length(1);
   });
 });

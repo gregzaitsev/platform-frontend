@@ -1,13 +1,11 @@
 import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
-import { dummyIntl } from "../../../utils/injectIntlHelpers.fixtures";
-import { VerifyEmailWidgetComponent } from "./VerifyEmailWidget";
+import { VerifyEmailWidgetBase } from "./VerifyEmailWidget";
 
-storiesOf("VerifyEmailWidgetComponent", module)
+storiesOf("VerifyEmailWidgetBase", module)
   .add("verified email", () => (
-    <VerifyEmailWidgetComponent
-      intl={dummyIntl}
+    <VerifyEmailWidgetBase
       isUserEmailVerified={true}
       isThereUnverifiedEmail={false}
       isEmailTemporaryCancelled={false}
@@ -21,8 +19,7 @@ storiesOf("VerifyEmailWidgetComponent", module)
     />
   ))
   .add("unverified and verified emails", () => (
-    <VerifyEmailWidgetComponent
-      intl={dummyIntl}
+    <VerifyEmailWidgetBase
       isUserEmailVerified={true}
       isEmailTemporaryCancelled={false}
       isThereUnverifiedEmail={true}
@@ -37,8 +34,7 @@ storiesOf("VerifyEmailWidgetComponent", module)
     />
   ))
   .add("unverified email", () => (
-    <VerifyEmailWidgetComponent
-      intl={dummyIntl}
+    <VerifyEmailWidgetBase
       isUserEmailVerified={false}
       isEmailTemporaryCancelled={false}
       revertCancelEmail={() => {}}
@@ -52,8 +48,7 @@ storiesOf("VerifyEmailWidgetComponent", module)
     />
   ))
   .add("no email", () => (
-    <VerifyEmailWidgetComponent
-      intl={dummyIntl}
+    <VerifyEmailWidgetBase
       cancelEmail={() => {}}
       isUserEmailVerified={false}
       revertCancelEmail={() => {}}
@@ -66,8 +61,7 @@ storiesOf("VerifyEmailWidgetComponent", module)
     />
   ))
   .add("cancellation in process", () => (
-    <VerifyEmailWidgetComponent
-      intl={dummyIntl}
+    <VerifyEmailWidgetBase
       isUserEmailVerified={false}
       revertCancelEmail={() => {}}
       cancelEmail={() => {}}

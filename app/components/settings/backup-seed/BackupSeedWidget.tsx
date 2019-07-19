@@ -25,42 +25,43 @@ interface IExternalProps {
 }
 
 const BackupSeedWidgetLayout: React.FunctionComponent<IStateProps> = ({ backupCodesVerified }) =>
-  backupCodesVerified
-    ? <section
-        data-test-id="backup-seed-verified-section"
-        className={cn(styles.section, "d-flex flex-wrap align-content-around")}
+  backupCodesVerified ? (
+    <section
+      data-test-id="backup-seed-verified-section"
+      className={cn(styles.section, "d-flex flex-wrap align-content-around")}
+    >
+      <p className={cn(styles.text, "pt-2")}>
+        <FormattedMessage id="settings.backup-seed-widget.backed-up-seed" />
+      </p>
+      <ButtonLink
+        to={profileRoutes.seedBackup}
+        layout={EButtonLayout.SECONDARY}
+        iconPosition={EIconPosition.ICON_AFTER}
+        svgIcon={arrowRight}
+        data-test-id="backup-seed-verified-section.view-again"
       >
-        <p className={cn(styles.text, "pt-2")}>
-          <FormattedMessage id="settings.backup-seed-widget.backed-up-seed"/>
-        </p>
-        <ButtonLink
-          to={profileRoutes.seedBackup}
-          layout={EButtonLayout.SECONDARY}
-          iconPosition={EIconPosition.ICON_AFTER}
-          svgIcon={arrowRight}
-          data-test-id="backup-seed-verified-section.view-again"
-        >
-          <FormattedMessage id="settings.backup-seed-widget.view-again"/>
-        </ButtonLink>
-      </section>
-    : <section
-        data-test-id="backup-seed-unverified-section"
-        className={cn(styles.section, "d-flex flex-wrap align-content-around")}
+        <FormattedMessage id="settings.backup-seed-widget.view-again" />
+      </ButtonLink>
+    </section>
+  ) : (
+    <section
+      data-test-id="backup-seed-unverified-section"
+      className={cn(styles.section, "d-flex flex-wrap align-content-around")}
+    >
+      <p className={cn(styles.text, "pt-2")}>
+        <FormattedMessage id="settings.backup-seed-widget.write-down-recovery-phrase" />
+      </p>
+      <ButtonLink
+        to={profileRoutes.seedBackup}
+        data-test-id="backup-seed-widget-link-button"
+        layout={EButtonLayout.SECONDARY}
+        iconPosition={EIconPosition.ICON_AFTER}
+        svgIcon={arrowRight}
       >
-        <p className={cn(styles.text, "pt-2")}>
-          <FormattedMessage id="settings.backup-seed-widget.write-down-recovery-phrase"/>
-        </p>
-        <ButtonLink
-          to={profileRoutes.seedBackup}
-          data-test-id="backup-seed-widget-link-button"
-          layout={EButtonLayout.SECONDARY}
-          iconPosition={EIconPosition.ICON_AFTER}
-          svgIcon={arrowRight}
-        >
-          <FormattedMessage id="settings.backup-seed-widget.backup-phrase"/>
-        </ButtonLink>
-      </section>
-
+        <FormattedMessage id="settings.backup-seed-widget.backup-phrase" />
+      </ButtonLink>
+    </section>
+  );
 
 const BackupSeedWidgetBase: React.FunctionComponent<IStateProps & IExternalProps> = ({
   backupCodesVerified,
@@ -68,21 +69,23 @@ const BackupSeedWidgetBase: React.FunctionComponent<IStateProps & IExternalProps
 }) => (
   <Panel
     columnSpan={columnSpan}
-    headerText={<FormattedMessage id="settings.backup-seed-widget.header"/>}
+    headerText={<FormattedMessage id="settings.backup-seed-widget.header" />}
     rightComponent={
       backupCodesVerified ? (
-        <img src={successIcon} className={styles.icon} aria-hidden="true" alt=""/>
+        <img src={successIcon} className={styles.icon} aria-hidden="true" alt="" />
       ) : (
-        <img src={warningIcon} className={styles.icon} aria-hidden="true" alt=""/>
+        <img src={warningIcon} className={styles.icon} aria-hidden="true" alt="" />
       )
     }
     data-test-id="profile.backup-seed-widget"
   >
-    <BackupSeedWidgetLayout backupCodesVerified={backupCodesVerified}/>
+    <BackupSeedWidgetLayout backupCodesVerified={backupCodesVerified} />
   </Panel>
 );
 
-const connectBackupSeedWidget = <T extends {}>(WrappedComponent: React.ComponentType<IStateProps & T>) =>
+const connectBackupSeedWidget = <T extends {}>(
+  WrappedComponent: React.ComponentType<IStateProps & T>,
+) =>
   compose<IStateProps & T, T>(
     appConnect<IStateProps, {}, T>({
       stateToProps: s => ({
@@ -91,7 +94,7 @@ const connectBackupSeedWidget = <T extends {}>(WrappedComponent: React.Component
     }),
   )(WrappedComponent);
 
-const BackupSeedWidget = connectBackupSeedWidget<IExternalProps>(BackupSeedWidgetBase)
-const BackupSeedComponent = connectBackupSeedWidget(BackupSeedWidgetLayout)
+const BackupSeedWidget = connectBackupSeedWidget<IExternalProps>(BackupSeedWidgetBase);
+const BackupSeedComponent = connectBackupSeedWidget<{}>(BackupSeedWidgetLayout);
 
 export { BackupSeedWidget, BackupSeedComponent, BackupSeedWidgetBase };

@@ -19,12 +19,13 @@ export const selectKycRequestStatus = (state: IAppState): ERequestStatus | undef
   const userKycType = selectKycRequestType(state);
   switch (userKycType) {
     case EKycRequestType.BUSINESS:
-      return state.kyc.businessRequestState!.status === ERequestStatus.ACCEPTED && !selectIsClaimsVerified(state)
+      return state.kyc.businessRequestState!.status === ERequestStatus.ACCEPTED &&
+        !selectIsClaimsVerified(state)
         ? ERequestStatus.PENDING
         : state.kyc.businessRequestState!.status;
     case EKycRequestType.INDIVIDUAL:
       return state.kyc.individualRequestState!.status === ERequestStatus.ACCEPTED &&
-      !selectIsClaimsVerified(state)
+        !selectIsClaimsVerified(state)
         ? ERequestStatus.PENDING
         : state.kyc.individualRequestState!.status;
     default:
@@ -65,9 +66,7 @@ export const selectPendingKycRequestType = (
   return undefined;
 };
 
-export const selectKycRequestType = (
-  state: IAppState,
-): EKycRequestType | undefined => {
+export const selectKycRequestType = (state: IAppState): EKycRequestType | undefined => {
   const userType = selectUserType(state);
   switch (userType) {
     case EUserType.NOMINEE:
@@ -75,9 +74,15 @@ export const selectKycRequestType = (
       return state.kyc.businessRequestState && EKycRequestType.BUSINESS;
     case EUserType.INVESTOR:
     default: {
-      if (state.kyc.individualRequestState && state.kyc.individualRequestState.status !== ERequestStatus.DRAFT)
+      if (
+        state.kyc.individualRequestState &&
+        state.kyc.individualRequestState.status !== ERequestStatus.DRAFT
+      )
         return EKycRequestType.INDIVIDUAL;
-      if (state.kyc.businessRequestState && state.kyc.businessRequestState.status !== ERequestStatus.DRAFT)
+      if (
+        state.kyc.businessRequestState &&
+        state.kyc.businessRequestState.status !== ERequestStatus.DRAFT
+      )
         return EKycRequestType.BUSINESS;
       return undefined;
     }

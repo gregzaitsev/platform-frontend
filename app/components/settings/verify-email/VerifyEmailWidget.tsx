@@ -235,7 +235,7 @@ const UnVerifiedUser: React.FunctionComponent<{
   </section>
 );
 
-export const VerifyEmailWidgetLayout: React.FunctionComponent<IStateProps & IDispatchProps> = ({
+const VerifyEmailWidgetLayout: React.FunctionComponent<IStateProps & IDispatchProps> = ({
   isUserEmailVerified,
   isThereUnverifiedEmail,
   resendEmail,
@@ -280,10 +280,18 @@ export const VerifyEmailWidgetLayout: React.FunctionComponent<IStateProps & IDis
   );
 };
 
-const VerifyEmailWidgetBase: React.FunctionComponent<IStateProps & IDispatchProps & IExternalProps> = ({ columnSpan, step, isUserEmailVerified, isThereUnverifiedEmail, ...rest }) =>
+export const VerifyEmailWidgetBase: React.FunctionComponent<
+  IStateProps & IDispatchProps & IExternalProps
+> = ({ columnSpan, step, isUserEmailVerified, isThereUnverifiedEmail, ...rest }) => (
   <Panel
     columnSpan={columnSpan}
-    headerText={<FormattedHTMLMessage tagName="span" id="settings.verify-email-widget.header" values={{ step }} />}
+    headerText={
+      <FormattedHTMLMessage
+        tagName="span"
+        id="settings.verify-email-widget.header"
+        values={{ step }}
+      />
+    }
     rightComponent={
       isUserEmailVerified && !isThereUnverifiedEmail ? (
         <img src={successIcon} className={styles.icon} aria-hidden="true" alt="" />
@@ -295,12 +303,15 @@ const VerifyEmailWidgetBase: React.FunctionComponent<IStateProps & IDispatchProp
   >
     <VerifyEmailWidgetLayout
       isUserEmailVerified={isUserEmailVerified}
-      isThereUnverifiedEmail={isThereUnverifiedEmail} {...rest}
+      isThereUnverifiedEmail={isThereUnverifiedEmail}
+      {...rest}
     />
-  </Panel>;
+  </Panel>
+);
 
-
-export const connectVerifyEmailComponent = <T extends {}>(WrappedComponent: React.ComponentType<IStateProps & IDispatchProps & T>) =>
+export const connectVerifyEmailComponent = <T extends {}>(
+  WrappedComponent: React.ComponentType<IStateProps & IDispatchProps & T>,
+) =>
   compose<IStateProps & IDispatchProps & T, T>(
     appConnect<IStateProps, IDispatchProps, T>({
       stateToProps: s => ({
@@ -328,4 +339,4 @@ export const connectVerifyEmailComponent = <T extends {}>(WrappedComponent: Reac
   )(WrappedComponent);
 
 export const VerifyEmailWidget = connectVerifyEmailComponent<IExternalProps>(VerifyEmailWidgetBase);
-export const VerifyEmailComponent = connectVerifyEmailComponent(VerifyEmailWidgetLayout);
+export const VerifyEmailComponent = connectVerifyEmailComponent<{}>(VerifyEmailWidgetLayout);

@@ -33,7 +33,7 @@ export const selectIsVisibleSecurityNotification = (state: IAppState): boolean =
   const disallowedViewsPaths = [appRoutes.profile, appRoutes.kyc];
   const userType = selectUserType(state);
 
-  if(userType === EUserType.NOMINEE){
+  if (userType === EUserType.NOMINEE) {
     return false;
   }
 

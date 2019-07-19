@@ -1,4 +1,9 @@
 {
+  "account-setup.please-complete-setup": "",
+  "account-setup.verify-backup-codes": "",
+  "account-setup.verify-email": "",
+  "account-setup.verify-your-company": "",
+  "account-setup.welcome-to-neufund": "",
   "bank-transfer-flow.failed-to-start": "We are unable to initiate bank transfer. Please contact with support.",
   "bank-transfer.purchase.success.text": "Thank you for your wire transfer, the nEUR purchase takes around 1 to 3 business days. For your convenience we will sent you an email once your request was processed and your account will be credited.",
   "bank-transfer.purchase.summary.description": "To get nEUR to your wallet please proceed to your bank and complete the wire transfer using the bank details below. Your wire transfer details must include the reference number and your name in order to match it to your Neufund wallet.<br/><br/>To limit bank fees, we recommend sending funds in EUR.",

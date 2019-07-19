@@ -49,9 +49,7 @@ let kycWidgetWatchDelay: number = 1000;
 function* kycRefreshWidgetSaga({ logger }: TGlobalDependencies): any {
   kycWidgetWatchDelay = 1000;
   while (true) {
-    const requestType: EKycRequestType = yield select((s: IAppState) =>
-      selectKycRequestType(s),
-    );
+    const requestType: EKycRequestType = yield select((s: IAppState) => selectKycRequestType(s));
     const status: ERequestStatus | undefined = yield select((s: IAppState) =>
       selectKycRequestStatus(s),
     );

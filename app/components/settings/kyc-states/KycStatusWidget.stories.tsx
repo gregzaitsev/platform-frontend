@@ -3,7 +3,7 @@ import * as React from "react";
 
 import { ERequestOutsourcedStatus, ERequestStatus } from "../../../lib/api/KycApi.interfaces";
 import { EUserType } from "../../../lib/api/users/interfaces";
-import { KycStatusWidgetComponent } from "./KycStatusWidget";
+import { KycStatusWidgetBase } from "./KycStatusWidget";
 
 const commonProps = {
   isUserEmailVerified: true,
@@ -19,34 +19,32 @@ const commonProps = {
 
 storiesOf("KYC/StatusWidget", module)
   .add("email-not-verified", () => (
-    <KycStatusWidgetComponent
+    <KycStatusWidgetBase
       {...commonProps}
       requestStatus={ERequestStatus.DRAFT}
       isUserEmailVerified={false}
     />
   ))
   .add("backup-codes-not-verified", () => (
-    <KycStatusWidgetComponent
+    <KycStatusWidgetBase
       {...commonProps}
       requestStatus={ERequestStatus.DRAFT}
       isUserEmailVerified={true}
       backupCodesVerified={false}
     />
   ))
-  .add("draft", () => (
-    <KycStatusWidgetComponent {...commonProps} requestStatus={ERequestStatus.DRAFT} />
-  ))
+  .add("draft", () => <KycStatusWidgetBase {...commonProps} requestStatus={ERequestStatus.DRAFT} />)
   .add("pending", () => (
-    <KycStatusWidgetComponent {...commonProps} requestStatus={ERequestStatus.PENDING} />
+    <KycStatusWidgetBase {...commonProps} requestStatus={ERequestStatus.PENDING} />
   ))
   .add("rejected", () => (
-    <KycStatusWidgetComponent {...commonProps} requestStatus={ERequestStatus.REJECTED} />
+    <KycStatusWidgetBase {...commonProps} requestStatus={ERequestStatus.REJECTED} />
   ))
   .add("accepted", () => (
-    <KycStatusWidgetComponent {...commonProps} requestStatus={ERequestStatus.ACCEPTED} />
+    <KycStatusWidgetBase {...commonProps} requestStatus={ERequestStatus.ACCEPTED} />
   ))
   .add("outsourced-started", () => (
-    <KycStatusWidgetComponent
+    <KycStatusWidgetBase
       {...commonProps}
       userType={EUserType.INVESTOR}
       requestStatus={ERequestStatus.OUTSOURCED}
@@ -55,7 +53,7 @@ storiesOf("KYC/StatusWidget", module)
     />
   ))
   .add("outsourced-aborted", () => (
-    <KycStatusWidgetComponent
+    <KycStatusWidgetBase
       {...commonProps}
       userType={EUserType.INVESTOR}
       requestStatus={ERequestStatus.OUTSOURCED}
@@ -63,7 +61,7 @@ storiesOf("KYC/StatusWidget", module)
     />
   ))
   .add("outsourced-canceled", () => (
-    <KycStatusWidgetComponent
+    <KycStatusWidgetBase
       {...commonProps}
       userType={EUserType.INVESTOR}
       requestStatus={ERequestStatus.OUTSOURCED}
@@ -71,7 +69,7 @@ storiesOf("KYC/StatusWidget", module)
     />
   ))
   .add("outsourced-other", () => (
-    <KycStatusWidgetComponent
+    <KycStatusWidgetBase
       {...commonProps}
       userType={EUserType.INVESTOR}
       requestStatus={ERequestStatus.OUTSOURCED}
@@ -79,7 +77,7 @@ storiesOf("KYC/StatusWidget", module)
     />
   ))
   .add("outsourced-review_pending", () => (
-    <KycStatusWidgetComponent
+    <KycStatusWidgetBase
       {...commonProps}
       userType={EUserType.INVESTOR}
       requestStatus={ERequestStatus.OUTSOURCED}
@@ -87,7 +85,7 @@ storiesOf("KYC/StatusWidget", module)
     />
   ))
   .add("outsourced-success", () => (
-    <KycStatusWidgetComponent
+    <KycStatusWidgetBase
       {...commonProps}
       userType={EUserType.INVESTOR}
       requestStatus={ERequestStatus.OUTSOURCED}
@@ -95,7 +93,7 @@ storiesOf("KYC/StatusWidget", module)
     />
   ))
   .add("outsourced-success-data-changed", () => (
-    <KycStatusWidgetComponent
+    <KycStatusWidgetBase
       {...commonProps}
       userType={EUserType.INVESTOR}
       requestStatus={ERequestStatus.OUTSOURCED}
@@ -103,7 +101,7 @@ storiesOf("KYC/StatusWidget", module)
     />
   ))
   .add("error", () => (
-    <KycStatusWidgetComponent
+    <KycStatusWidgetBase
       {...commonProps}
       error="bla bla error"
       userType={EUserType.INVESTOR}
@@ -112,7 +110,7 @@ storiesOf("KYC/StatusWidget", module)
     />
   ))
   .add("loading", () => (
-    <KycStatusWidgetComponent
+    <KycStatusWidgetBase
       {...commonProps}
       isLoading={true}
       userType={EUserType.INVESTOR}

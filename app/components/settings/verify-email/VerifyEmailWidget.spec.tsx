@@ -10,15 +10,14 @@ import {
   wrapWithIntl,
 } from "../../../../test/integrationTestUtils.unsafe";
 import { tid } from "../../../../test/testUtils";
-import { dummyIntl } from "../../../utils/injectIntlHelpers.fixtures";
-import { VerifyEmailWidgetComponent } from "./VerifyEmailWidget";
+import { VerifyEmailWidgetBase } from "./VerifyEmailWidget";
 
-describe("<VerifyEmailWidgetComponent />", () => {
+describe("<VerifyEmailWidgetBase />", () => {
   const clock = setupFakeClock();
 
   it("should render verified section", () => {
     const verifyEmailWidget = shallow(
-      <VerifyEmailWidgetComponent
+      <VerifyEmailWidgetBase
         step={1}
         revertCancelEmail={() => {}}
         isThereUnverifiedEmail={false}
@@ -28,7 +27,6 @@ describe("<VerifyEmailWidgetComponent />", () => {
         abortEmailUpdate={() => {}}
         cancelEmail={() => {}}
         addNewEmail={() => {}}
-        intl={dummyIntl}
       />,
     );
     expect(verifyEmailWidget.find(tid("unverified-section"))).to.have.length(0);
@@ -37,7 +35,7 @@ describe("<VerifyEmailWidgetComponent />", () => {
 
   it("should render unverified section", () => {
     const verifyEmailWidget = shallow(
-      <VerifyEmailWidgetComponent
+      <VerifyEmailWidgetBase
         step={1}
         isThereUnverifiedEmail={true}
         isUserEmailVerified={false}
@@ -47,7 +45,6 @@ describe("<VerifyEmailWidgetComponent />", () => {
         resendEmail={() => {}}
         addNewEmail={() => {}}
         abortEmailUpdate={() => {}}
-        intl={dummyIntl}
       />,
     );
     expect(verifyEmailWidget.find(tid("unverified-section"))).to.have.length(1);
@@ -56,7 +53,7 @@ describe("<VerifyEmailWidgetComponent />", () => {
 
   it("should not render resend link button", () => {
     const verifyEmailWidget = shallow(
-      <VerifyEmailWidgetComponent
+      <VerifyEmailWidgetBase
         step={1}
         isThereUnverifiedEmail={false}
         isEmailTemporaryCancelled={false}
@@ -66,7 +63,6 @@ describe("<VerifyEmailWidgetComponent />", () => {
         resendEmail={() => {}}
         addNewEmail={() => {}}
         abortEmailUpdate={() => {}}
-        intl={dummyIntl}
       />,
     );
     expect(verifyEmailWidget.find(tid("resend-link"))).to.have.length(0);
@@ -75,7 +71,7 @@ describe("<VerifyEmailWidgetComponent />", () => {
   it("should render resend link button", () => {
     const verifyEmailWidget = render(
       wrapWithIntl(
-        <VerifyEmailWidgetComponent
+        <VerifyEmailWidgetBase
           step={1}
           isEmailTemporaryCancelled={false}
           isThereUnverifiedEmail={true}
@@ -86,7 +82,6 @@ describe("<VerifyEmailWidgetComponent />", () => {
           resendEmail={() => {}}
           addNewEmail={() => {}}
           abortEmailUpdate={() => {}}
-          intl={dummyIntl}
         />,
       ),
     );
@@ -97,7 +92,7 @@ describe("<VerifyEmailWidgetComponent />", () => {
     it("initially submit button should be disabled", () => {
       const verifyEmailWidget = createMount(
         wrapWithIntl(
-          <VerifyEmailWidgetComponent
+          <VerifyEmailWidgetBase
             step={1}
             isThereUnverifiedEmail={false}
             isEmailTemporaryCancelled={false}
@@ -107,7 +102,6 @@ describe("<VerifyEmailWidgetComponent />", () => {
             revertCancelEmail={() => {}}
             addNewEmail={() => {}}
             abortEmailUpdate={() => {}}
-            intl={dummyIntl}
           />,
         ),
       );
@@ -124,7 +118,7 @@ describe("<VerifyEmailWidgetComponent />", () => {
       const addNewEmailSpy = spy();
       const verifyEmailWidget = createMount(
         wrapWithIntl(
-          <VerifyEmailWidgetComponent
+          <VerifyEmailWidgetBase
             step={1}
             isThereUnverifiedEmail={false}
             isUserEmailVerified={false}
@@ -134,7 +128,6 @@ describe("<VerifyEmailWidgetComponent />", () => {
             resendEmail={() => {}}
             addNewEmail={addNewEmailSpy}
             abortEmailUpdate={() => {}}
-            intl={dummyIntl}
           />,
         ),
       );
@@ -170,7 +163,7 @@ describe("<VerifyEmailWidgetComponent />", () => {
     it("should not be possible to submit with invalid email", async () => {
       const verifyEmailWidget = createMount(
         wrapWithIntl(
-          <VerifyEmailWidgetComponent
+          <VerifyEmailWidgetBase
             step={1}
             isThereUnverifiedEmail={false}
             cancelEmail={() => {}}
@@ -180,7 +173,6 @@ describe("<VerifyEmailWidgetComponent />", () => {
             resendEmail={() => {}}
             addNewEmail={() => {}}
             abortEmailUpdate={() => {}}
-            intl={dummyIntl}
           />,
         ),
       );

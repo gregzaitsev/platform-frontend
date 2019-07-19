@@ -9,33 +9,57 @@ import { appConnect } from "../../store";
 import { withContainer } from "../../utils/withContainer.unsafe";
 import { Layout } from "../layouts/Layout";
 import { nomineeAccountSetupSteps } from "./AccountSetupData";
-import { AccountSetupContainer, AccountSetupStep, INomineeAccountSetupSteps } from "./AccountSetupWizard";
-import {  IStepComponentProps, prepareSetupAccountSteps } from "./utils";
+import {
+  AccountSetupContainer,
+  AccountSetupStep,
+  INomineeAccountSetupSteps,
+} from "./AccountSetupWizard";
+import { IStepComponentProps, prepareSetupAccountSteps } from "./utils";
+
+interface IStateProps {
+  emailVerified: boolean;
+  backupCodesVerified: boolean;
+  kycRequestStatus: ERequestStatus | undefined;
+  verificationIsComplete: boolean;
+}
 
 const NomineeAccountSetup: React.FunctionComponent<INomineeAccountSetupSteps> = ({
-  accountSetupStepsData
-}) =>
+  accountSetupStepsData,
+}) => (
   <>
-    {accountSetupStepsData.map((stepData: IStepComponentProps) =>
-      <AccountSetupStep {...stepData} />)}
-  </>;
+    {accountSetupStepsData.map((stepData: IStepComponentProps) => (
+      <AccountSetupStep {...stepData} />
+    ))}
+  </>
+);
 
 export const NomineeDashboard = compose<INomineeAccountSetupSteps, {}>(
   withContainer(nest(Layout, AccountSetupContainer)),
-  appConnect({
+  appConnect<IStateProps>({
     stateToProps: state => ({
       emailVerified: selectIsUserEmailVerified(state.auth),
       backupCodesVerified: selectBackupCodesVerified(state),
       kycRequestStatus: selectNomineeKycRequestStatus(state),
       verificationIsComplete: SelectIsVerificationFullyDone(state),
-    })
+    }),
   }),
-  branch<any>(props => props.kycRequestStatus === ERequestStatus.PENDING, renderComponent(() => <>kyc pending</>)),
-  branch<any>(props => props.verificationIsComplete, renderComponent(() => <>no tasks for you today</>)),
-  withProps<any, any>(({ emailVerified, backupCodesVerified, kycRequestStatus }: any) =>
-    ({
+  branch<IStateProps>(
+    props => props.kycRequestStatus === ERequestStatus.PENDING,
+    renderComponent(() => <>kyc pending</>),
+  ),
+  branch<IStateProps>(
+    props => props.verificationIsComplete,
+    renderComponent(() => <>no tasks for you today</>),
+  ),
+  withProps<INomineeAccountSetupSteps, IStateProps>(
+    ({ emailVerified, backupCodesVerified, kycRequestStatus }: IStateProps) => ({
       accountSetupStepsData: prepareSetupAccountSteps(
-        nomineeAccountSetupSteps(emailVerified, backupCodesVerified, kycRequestStatus !== ERequestStatus.DRAFT)
-      )
-    })),
+        nomineeAccountSetupSteps(
+          emailVerified,
+          backupCodesVerified,
+          kycRequestStatus !== ERequestStatus.DRAFT,
+        ),
+      ),
+    }),
+  ),
 )(NomineeAccountSetup);

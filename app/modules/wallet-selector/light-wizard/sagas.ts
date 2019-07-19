@@ -95,10 +95,10 @@ export function* lightWalletBackupWatch({ logger }: TGlobalDependencies): Iterat
     );
     yield loadUser();
 
-    const userType = yield select((s: IAppState) =>selectUserType(s));
+    const userType = yield select((s: IAppState) => selectUserType(s));
     const kycAndEmailVerified = yield select((s: IAppState) => userHasKycAndEmailVerified(s));
 
-    if(!kycAndEmailVerified && userType === EUserType.NOMINEE){
+    if (!kycAndEmailVerified && userType === EUserType.NOMINEE) {
       yield put(actions.routing.goToDashboard());
     } else {
       yield put(actions.routing.goToProfile());
@@ -136,7 +136,9 @@ export function* lightWalletRecoverWatch(
   action: TAction,
 ): Iterator<any> {
   try {
-    const userType = yield select((state: IAppState) => selectUrlUserTypeForLoginOrRegistration(state.router));
+    const userType = yield select((state: IAppState) =>
+      selectUrlUserTypeForLoginOrRegistration(state.router),
+    );
 
     if (action.type !== "LIGHT_WALLET_RECOVER") {
       return;
