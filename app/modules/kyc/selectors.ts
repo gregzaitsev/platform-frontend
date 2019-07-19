@@ -6,12 +6,12 @@ import {
   ERequestStatus,
   KycBankQuintessenceBankAccount,
 } from "../../lib/api/KycApi.interfaces";
+import { EUserType } from "../../lib/api/users/interfaces";
 import { IAppState } from "../../store";
 import { DeepReadonly } from "../../types";
+import { selectUserType } from "../auth/selectors";
 import { IKycState } from "./reducer";
 import { TBankAccount } from "./types";
-import { selectUserType } from "../auth/selectors";
-import { EUserType } from "../../lib/api/users/interfaces";
 
 export const selectKyc = (state: IAppState) => state.kyc;
 
@@ -32,9 +32,8 @@ export const selectKycRequestStatus = (state: IAppState): ERequestStatus | undef
   }
 };
 
-export const selectNomineeKycRequestStatus = (state: IAppState): ERequestStatus | undefined => {
-  return state.kyc.businessRequestState && state.kyc.businessRequestState.status
-};
+export const selectNomineeKycRequestStatus = (state: IAppState): ERequestStatus | undefined =>
+  state.kyc.businessRequestState && state.kyc.businessRequestState.status;
 
 export const selectKycRequestOutsourcedStatus = (
   state: DeepReadonly<IKycState>,

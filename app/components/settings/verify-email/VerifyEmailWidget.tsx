@@ -1,7 +1,7 @@
 import * as cn from "classnames";
 import { FormikProps, withFormik } from "formik";
 import * as React from "react";
-import { FormattedMessage, FormattedHTMLMessage } from "react-intl-phraseapp";
+import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 import { compose } from "recompose";
 import * as Yup from "yup";
 

@@ -1,6 +1,7 @@
 import { includes, some } from "lodash";
 
 import { appRoutes } from "../../components/appRoutes";
+import { EUserType } from "../../lib/api/users/interfaces";
 import { IAppState } from "../../store";
 import {
   selectBackupCodesVerified,
@@ -10,7 +11,6 @@ import {
 } from "../auth/selectors";
 import { selectKycLoading, selectKycRequestStatus } from "../kyc/selectors";
 import { INotification, settingsNotificationInvestor, settingsNotificationIssuer } from "./reducer";
-import { EUserType } from "../../lib/api/users/interfaces";
 
 export const selectNotifications = (state: IAppState): ReadonlyArray<INotification> =>
   state.notifications.notifications;

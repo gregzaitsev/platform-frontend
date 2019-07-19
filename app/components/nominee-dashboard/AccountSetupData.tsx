@@ -1,8 +1,9 @@
-import { FormattedMessage } from "react-intl-phraseapp";
 import * as React from "react";
+import { FormattedMessage } from "react-intl-phraseapp";
 
-import { IAccountSetupStepData } from "./utils";
+import { BackupSeedComponent } from "../settings/backup-seed/BackupSeedWidget";
 import { VerifyEmailComponent } from "../settings/verify-email/VerifyEmailWidget";
+import { IAccountSetupStepData } from "./utils";
 
 export const nomineeAccountSetupSteps = (emailVerified: boolean, backupCodesVerified: boolean, kycCompleted: boolean): IAccountSetupStepData[] => [
   {
@@ -15,7 +16,7 @@ export const nomineeAccountSetupSteps = (emailVerified: boolean, backupCodesVeri
     key: 'verifyBackupCodes',
     conditionCompleted: backupCodesVerified,
     title: <FormattedMessage id="account-setup.verify-backup-codes" />,
-    component: <>backup codes</>
+    component: <BackupSeedComponent />
   },
   {
     key: 'startKyc',

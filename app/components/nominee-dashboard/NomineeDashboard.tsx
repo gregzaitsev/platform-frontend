@@ -1,26 +1,24 @@
 import * as React from "react";
 import { branch, compose, nest, renderComponent, withProps } from "recompose";
 
-import { withContainer } from "../../utils/withContainer.unsafe";
-import { Layout } from "../layouts/Layout";
-import { appConnect } from "../../store";
-import { SelectIsVerificationFullyDone } from "../../modules/selectors";
+import { ERequestStatus } from "../../lib/api/KycApi.interfaces";
 import { selectBackupCodesVerified, selectIsUserEmailVerified } from "../../modules/auth/selectors";
 import { selectNomineeKycRequestStatus } from "../../modules/kyc/selectors";
-import { ERequestStatus } from "../../lib/api/KycApi.interfaces";
-import {  IStepComponentProps, prepareSetupAccountSteps } from "./utils";
+import { SelectIsVerificationFullyDone } from "../../modules/selectors";
+import { appConnect } from "../../store";
+import { withContainer } from "../../utils/withContainer.unsafe";
+import { Layout } from "../layouts/Layout";
 import { nomineeAccountSetupSteps } from "./AccountSetupData";
 import { AccountSetupContainer, AccountSetupStep, INomineeAccountSetupSteps } from "./AccountSetupWizard";
+import {  IStepComponentProps, prepareSetupAccountSteps } from "./utils";
 
 const NomineeAccountSetup: React.FunctionComponent<INomineeAccountSetupSteps> = ({
   accountSetupStepsData
-}) => {
-  return <>
-    {accountSetupStepsData.map((stepData: IStepComponentProps) => {
-      return <AccountSetupStep {...stepData} />;
-    })}
-  </>
-};
+}) =>
+  <>
+    {accountSetupStepsData.map((stepData: IStepComponentProps) =>
+      <AccountSetupStep {...stepData} />)}
+  </>;
 
 export const NomineeDashboard = compose<INomineeAccountSetupSteps, {}>(
   withContainer(nest(Layout, AccountSetupContainer)),
@@ -34,11 +32,10 @@ export const NomineeDashboard = compose<INomineeAccountSetupSteps, {}>(
   }),
   branch<any>(props => props.kycRequestStatus === ERequestStatus.PENDING, renderComponent(() => <>kyc pending</>)),
   branch<any>(props => props.verificationIsComplete, renderComponent(() => <>no tasks for you today</>)),
-  withProps<any, any>(({ emailVerified, backupCodesVerified, kycRequestStatus }: any) => {
-    return ({
+  withProps<any, any>(({ emailVerified, backupCodesVerified, kycRequestStatus }: any) =>
+    ({
       accountSetupStepsData: prepareSetupAccountSteps(
         nomineeAccountSetupSteps(emailVerified, backupCodesVerified, kycRequestStatus !== ERequestStatus.DRAFT)
       )
-    })
-  }),
+    })),
 )(NomineeAccountSetup);

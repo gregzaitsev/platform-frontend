@@ -2,7 +2,7 @@ import { expect } from "chai";
 
 import { prepareSetupAccountSteps } from "./utils";
 
-describe.only("prepareSetupAccountSteps", () => {
+describe("prepareSetupAccountSteps", () => {
   it("iterates over data and sets the first not done element open", () => {
     const data = [
       {

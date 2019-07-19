@@ -9,7 +9,7 @@ import {
 import { createMessage } from "../../../components/translatedMessages/utils";
 import { EJwtPermissions } from "../../../config/constants";
 import { TGlobalDependencies } from "../../../di/setupBindings";
-import { IUser, IUserInput } from "../../../lib/api/users/interfaces";
+import { EUserType, IUser, IUserInput } from "../../../lib/api/users/interfaces";
 import { EmailAlreadyExists, UserNotExisting } from "../../../lib/api/users/UsersApi";
 import {
   LightError,
@@ -26,6 +26,7 @@ import { connectLightWallet } from "../../access-wallet/sagas";
 import { actions, TAction } from "../../actions";
 import { checkEmailPromise } from "../../auth/email/sagas";
 import { createJwt } from "../../auth/jwt/sagas";
+import { selectUserType } from "../../auth/selectors";
 import {
   createUser,
   loadUser,
@@ -34,6 +35,7 @@ import {
   updateUser,
   updateUserPromise,
 } from "../../auth/user/sagas";
+import { userHasKycAndEmailVerified } from "../../eto-flow/selectors";
 import { displayInfoModalSaga } from "../../generic-modal/sagas";
 import { neuCall, neuTakeEvery } from "../../sagasUtils";
 import { selectIsUnlocked } from "../../web3/selectors";
@@ -92,7 +94,15 @@ export function* lightWalletBackupWatch({ logger }: TGlobalDependencies): Iterat
       createMessage(BackupRecoveryMessage.BACKUP_SUCCESS_DESCRIPTION),
     );
     yield loadUser();
-    yield put(actions.routing.goToProfile());
+
+    const userType = yield select((s: IAppState) =>selectUserType(s));
+    const kycAndEmailVerified = yield select((s: IAppState) => userHasKycAndEmailVerified(s));
+
+    if(!kycAndEmailVerified && userType === EUserType.NOMINEE){
+      yield put(actions.routing.goToDashboard());
+    } else {
+      yield put(actions.routing.goToProfile());
+    }
   } catch (e) {
     logger.error("Light Wallet Backup Error", e);
     yield put(

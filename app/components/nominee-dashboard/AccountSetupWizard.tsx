@@ -1,6 +1,6 @@
+import * as cn from "classnames";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
-import * as cn from "classnames";
 
 import { Panel } from "../shared/Panel";
 import { IStepComponentProps } from "./utils";

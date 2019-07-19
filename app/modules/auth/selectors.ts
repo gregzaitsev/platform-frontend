@@ -26,7 +26,7 @@ export const selectUnverifiedUserEmail = (state: IAuthState): string | undefined
 export const selectUser = (state: IAuthState): IUser | undefined => state.user;
 
 export const selectBackupCodesVerified = (state: IAppState): boolean =>
-  (!!state.auth.user && !!state.auth.user.backupCodesVerified) || !selectIsLightWallet(state.web3);
+  !!(state.auth.user && state.auth.user.backupCodesVerified) || !selectIsLightWallet(state.web3);
 
 export const selectIsUserEmailVerified = (state: IAuthState): boolean =>
   !!state.user && !!state.user.verifiedEmail;
