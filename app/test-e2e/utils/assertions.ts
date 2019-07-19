@@ -169,6 +169,7 @@ export const assertUserInLightWalletRegisterPage = () => {
 
 export const assertUserInRecoveryPage = () => {
   cy.get(tid("recover-layout"));
+  cy.url().should("contain", appRoutes.restore);
 };
 
 export const assertUserInBrowserWalletLoginPage = () => {
