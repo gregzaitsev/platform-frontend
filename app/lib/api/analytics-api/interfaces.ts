@@ -21,6 +21,7 @@ export enum ETransactionType {
 export const AnalyticsTransactionTokenMetadataSchema = YupTS.object({
   companyName: YupTS.string().optional(),
   tokenImage: YupTS.string().optional(),
+  tokenCommitmentAddress: YupTS.string<EthereumAddressWithChecksum>().optional(),
   tokenSymbol: YupTS.string(),
   tokenDecimals: YupTS.number(),
 });

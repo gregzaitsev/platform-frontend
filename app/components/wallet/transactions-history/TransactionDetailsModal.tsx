@@ -1,16 +1,19 @@
+import * as cn from "classnames";
 import * as React from "react";
 import { FormattedDate, FormattedRelative } from "react-intl";
 import { FormattedMessage } from "react-intl-phraseapp";
 
 import { ETransactionType } from "../../../lib/api/analytics-api/interfaces";
 import { ETransactionSubType, TTxHistory } from "../../../modules/tx-history/types";
-import { TTranslatedString } from "../../../types";
+import { CommonHtmlProps, TTranslatedString } from "../../../types";
 import { assertNever } from "../../../utils/assertNever";
+import { etoPublicViewByIdLinkLegacy } from "../../appRouteUtils";
 import { DataRow } from "../../modals/tx-sender/shared/DataRow";
 import { ECurrency, ENumberOutputFormat, selectUnits } from "../../shared/formatters/utils";
 import { EHeadingSize, Heading } from "../../shared/Heading";
 import { getIconForCurrency } from "../../shared/icons/CurrencyIcon";
-import { EtherscanAddressLink } from "../../shared/links/EtherscanLink";
+import { EtherscanAddressLink, EtherscanTxLink } from "../../shared/links/EtherscanLink";
+import { ExternalLink } from "../../shared/links/ExternalLink";
 import { ETextPosition, ETheme, MoneySuiteWidget } from "../../shared/MoneySuiteWidget";
 import { ESize, TransactionData } from "../../shared/TransactionData";
 
@@ -21,13 +24,16 @@ interface IExternalProps {
   transaction: TTxHistory;
 }
 
-const ModalHeading: React.FunctionComponent<{ children: TTranslatedString }> = ({ children }) => (
+const ModalHeading: React.FunctionComponent<{ children: TTranslatedString } & CommonHtmlProps> = ({
+  children,
+  className,
+}) => (
   <Heading
-    className="mb-4"
     size={EHeadingSize.HUGE}
     level={4}
     decorator={false}
     disableTransform={true}
+    className={className}
   >
     {children}
   </Heading>
@@ -40,12 +46,19 @@ const TransferTransactionDetails: React.FunctionComponent<IExternalProps> = ({ t
 
   return (
     <>
-      <ModalHeading>
+      <ModalHeading className={cn({ "mb-4": transaction.subType === undefined })}>
         <FormattedMessage
           id="wallet.tx-list.name.transfer.transferred"
           values={{ currency: selectUnits(transaction.currency) }}
         />
       </ModalHeading>
+      {transaction.subType === ETransactionSubType.TRANSFER_EQUITY_TOKEN && (
+        <p className="mb-4">
+          <ExternalLink href={etoPublicViewByIdLinkLegacy(transaction.etoId)}>
+            View Company Profile
+          </ExternalLink>
+        </p>
+      )}
 
       <DataRow className={styles.withSpacing} caption={"Status"} value={"Complete"} />
 
@@ -78,11 +91,13 @@ const TransferTransactionDetails: React.FunctionComponent<IExternalProps> = ({ t
         className={styles.withSpacing}
         caption={"From address"}
         value={<EtherscanAddressLink address={transaction.from} />}
+        clipboardCopyValue={transaction.from}
       />
 
       <DataRow
         className={styles.withSpacing}
         caption={"To address"}
+        clipboardCopyValue={transaction.to}
         value={<EtherscanAddressLink address={transaction.to} />}
       />
 
@@ -125,6 +140,8 @@ const TransferTransactionDetails: React.FunctionComponent<IExternalProps> = ({ t
           }
         />
       )}
+
+      <EtherscanTxLink txHash={transaction.txHash}>Etherscan</EtherscanTxLink>
     </>
   );
 };

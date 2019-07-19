@@ -54,13 +54,14 @@ export function* mapAnalyticsApiTransactionResponse(
       break;
     }
     case ETransactionType.TRANSFER: {
-      // In case it's an token transaction
+      // In case it's an equity token transaction
       if (transaction.extraData.tokenInterface === "equityTokenInterface") {
         tx = {
           ...common,
           type: transaction.type,
           subType: ETransactionSubType.TRANSFER_EQUITY_TOKEN,
           currency: transaction.extraData.tokenMetadata!.tokenSymbol as EquityToken,
+          etoId: transaction.extraData.tokenMetadata!.tokenCommitmentAddress!,
           icon: transaction.extraData.tokenMetadata!.tokenImage,
           from: transaction.extraData.fromAddress!,
           to: transaction.extraData.toAddress!,

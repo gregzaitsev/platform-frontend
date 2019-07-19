@@ -30,6 +30,7 @@ export type TTransferEquityToken = {
   type: ETransactionType.TRANSFER;
   subType: ETransactionSubType.TRANSFER_EQUITY_TOKEN;
   currency: EquityToken;
+  etoId: EthereumAddressWithChecksum;
   from: EthereumAddressWithChecksum;
   to: EthereumAddressWithChecksum;
   icon: string | undefined;

@@ -2,9 +2,14 @@
   display: flex;
   justify-content: space-between;
 
-  & > .value {
+  .value {
     overflow-wrap: break-word;
     overflow-y: auto;
     text-align: right;
+
+    .copy-to-clipboard {
+      vertical-align: middle;
+      height: px-to-rem(20px);
+    }
   }
 }
