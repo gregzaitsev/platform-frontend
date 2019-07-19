@@ -79,7 +79,7 @@ interface ISelectTitleProps {
 
 const SelectTitle: React.FunctionComponent<ISelectTitleProps> = ({
   isLoginRoute,
-  walletSelectionDisabled
+  walletSelectionDisabled,
 }) => {
   if (walletSelectionDisabled) {
     return <FormattedMessage id="wallet-selector.tabs.register.title.no-wallet-selection" />;
@@ -108,8 +108,9 @@ export const WalletSelectorLayout: React.FunctionComponent<
   hideLogoutReason,
   location,
 }) => {
-  const walletSelectionDisabled = userType === EUserType.NOMINEE ||
-    (userType === EUserType.ISSUER && process.env.NF_ISSUERS_CAN_LOGIN_WITH_ANY_WALLET !== "1")
+  const walletSelectionDisabled =
+    userType === EUserType.NOMINEE ||
+    (userType === EUserType.ISSUER && process.env.NF_ISSUERS_CAN_LOGIN_WITH_ANY_WALLET !== "1");
 
   return (
     <WalletSelectorContainer data-test-id="register-layout">
