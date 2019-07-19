@@ -4,4 +4,6 @@ import * as React from "react";
 import { testEto } from "../../../../../../test/fixtures";
 import { InvestmentWidget } from "./InvestmentWidget";
 
-storiesOf("ETO/InvestmentWidget", module).add("default", () => <InvestmentWidget eto={testEto} />);
+storiesOf("ETO/InvestmentWidget", module)
+  .add("default", () => <InvestmentWidget eto={testEto} isEmbedded={false} />)
+  .add("embedded", () => <InvestmentWidget eto={testEto} isEmbedded={true} />);

@@ -12,7 +12,7 @@ export const submitProposal = () => {
   cy.get(tid("eto-dashboard-submit-proposal")).click();
   acceptWallet();
 
-  cy.get(tid("eto-state-coming_soon")).should("exist");
+  cy.get(tid("eto-state-pending")).should("exist");
 };
 
 export const submitPreview = () => {

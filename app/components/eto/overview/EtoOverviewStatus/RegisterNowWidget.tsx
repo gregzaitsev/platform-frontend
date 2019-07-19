@@ -2,29 +2,22 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
 import { appRoutes } from "../../../appRoutes";
-import { ButtonLink } from "../../../shared/buttons";
-import { EtoWidgetContext } from "../../EtoWidgetView";
+import { ButtonLink } from "../../../shared/buttons/ButtonLink";
 
-import * as styles from "./RegisterNowWidget.module.scss";
-
-const RegisterNowWidget: React.FunctionComponent = () => (
-  <EtoWidgetContext.Consumer>
-    {previewCode => (
-      <div className={styles.registerNow}>
-        <div>
-          <FormattedMessage id="shared-component.eto-overview.register-cta" />
-        </div>
-        <ButtonLink
-          innerClassName="mt-3"
-          to={appRoutes.register}
-          data-test-id="logged-out-campaigning-register"
-          target={previewCode ? "_blank" : ""}
-        >
-          <FormattedMessage id="shared-component.eto-overview.register" />
-        </ButtonLink>
-      </div>
-    )}
-  </EtoWidgetContext.Consumer>
+const RegisterNowWidget: React.FunctionComponent<{ isEmbedded: boolean }> = ({ isEmbedded }) => (
+  <>
+    <div>
+      <FormattedMessage id="shared-component.eto-overview.register-cta" />
+    </div>
+    <ButtonLink
+      innerClassName="mt-3"
+      to={appRoutes.register}
+      data-test-id="logged-out-campaigning-register"
+      target={isEmbedded ? "_blank" : ""}
+    >
+      <FormattedMessage id="shared-component.eto-overview.register" />
+    </ButtonLink>
+  </>
 );
 
 export { RegisterNowWidget };

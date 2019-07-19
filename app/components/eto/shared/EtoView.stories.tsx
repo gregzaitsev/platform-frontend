@@ -24,11 +24,11 @@ storiesOf("ETO/EtoView", module)
   .addDecorator(withStore(testStore))
   .add("investor view", () => (
     <Container>
-      <EtoView eto={testEto} isInvestorView={true} />
+      <EtoView eto={testEto} publicView={true} />
     </Container>
   ))
   .add("issuer view", () => (
     <Container>
-      <EtoView eto={testEto} isInvestorView={false} />
+      <EtoView eto={testEto} publicView={false} />
     </Container>
   ));

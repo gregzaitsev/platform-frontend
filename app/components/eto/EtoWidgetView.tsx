@@ -11,7 +11,7 @@ import { appConnect } from "../../store";
 import { onEnterAction } from "../../utils/OnEnterAction";
 import { createErrorBoundary } from "../shared/errorBoundary/ErrorBoundary.unsafe";
 import { LoadingIndicator } from "../shared/loading-indicator";
-import { EtoOverviewStatus } from "./overview/EtoOverviewStatus";
+import { EtoOverviewStatus } from "./overview/EtoOverviewStatus/EtoOverviewStatus";
 
 import * as styles from "./overview/EtoOverviewStatus/EtoOverviewStatus.module.scss";
 
@@ -28,8 +28,6 @@ type TProps = {
   eto: TEtoWithCompanyAndContract;
   widgetError: boolean | undefined;
 };
-
-const EtoWidgetContext = React.createContext<string | undefined>(undefined);
 
 const EtoWidgetError: React.FunctionComponent<{}> = () => (
   <div className={styles.etoOverviewStatus}>
@@ -48,9 +46,7 @@ const EtoWidget: React.FunctionComponent<TProps> = ({ eto, widgetError }) => (
       {widgetError ? (
         <EtoWidgetError />
       ) : (
-        <EtoWidgetContext.Provider value={eto.previewCode}>
-          <EtoOverviewStatus eto={eto} />
-        </EtoWidgetContext.Provider>
+        <EtoOverviewStatus eto={eto} publicView={false} isEmbedded={true} />
       )}
     </div>
   </Col>
@@ -72,4 +68,4 @@ const EtoWidgetView = compose<TProps, IRouterParams>(
   branch<IStateProps>(props => !props.eto && !props.widgetError, renderComponent(LoadingIndicator)),
 )(EtoWidget);
 
-export { EtoWidgetView, EtoWidgetContext, EtoWidget };
+export { EtoWidgetView, EtoWidget };

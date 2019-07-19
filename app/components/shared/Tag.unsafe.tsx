@@ -2,7 +2,7 @@ import * as cn from "classnames";
 import * as React from "react";
 import { Link } from "react-router-dom";
 
-import { TTranslatedString } from "../../types";
+import { TDataTestId, TTranslatedString } from "../../types";
 import { isExternalUrl } from "../../utils/StringUtils";
 import { InlineIcon } from "./icons";
 import { ExternalLink } from "./links/ExternalLink";
@@ -32,6 +32,50 @@ export interface ITag {
   target?: string;
   dataTestId?: string;
 }
+
+interface ITagWithFallback {
+  condition: any;
+  to: string;
+  textElement: TTranslatedString;
+  innerClass?: string;
+  onClick?: any;
+  component?: React.ReactElement;
+}
+
+export const TagWithFallback = ({
+  condition,
+  to,
+  textElement,
+  innerClass,
+  onClick,
+  "data-test-id": dataTestId,
+}: ITagWithFallback & TDataTestId) => {
+  if (condition) {
+    return (
+      <Tag
+        onClick={onClick}
+        to={to}
+        target="_blank"
+        size={ETagSize.TINY}
+        theme="green"
+        layout="ghost"
+        text={textElement}
+        dataTestId={dataTestId}
+        className={innerClass}
+      />
+    );
+  } else {
+    return (
+      <Tag
+        size={ETagSize.TINY}
+        theme="silver"
+        layout="ghost"
+        text={textElement}
+        className={innerClass}
+      />
+    );
+  }
+};
 
 export const Tag: React.FunctionComponent<ITag> = ({
   text,

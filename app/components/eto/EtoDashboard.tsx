@@ -347,6 +347,7 @@ const VerifiedUserSection: React.FunctionComponent<IVerifiedUserSectionProps> = 
                 size={EProjectStatusSize.HUGE}
                 layout={EProjectStatusLayout.INHERIT}
                 className="ml-3"
+                isIssuer={true}
               />
             )}
           </div>

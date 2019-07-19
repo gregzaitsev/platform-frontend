@@ -10,8 +10,7 @@ import {
 } from "../../../../modules/eto/types";
 import { withStore } from "../../../../utils/storeDecorator.unsafe";
 import { withMockedDate } from "../../../../utils/storybookHelpers.unsafe";
-import { EtoWidgetContext } from "../../EtoWidgetView";
-import { EtoOverviewStatusLayout } from "./EtoOverviewStatus";
+import { EtoOverviewStatus } from "./EtoOverviewStatus";
 
 const eto: TEtoWithCompanyAndContract = {
   ...testEto,
@@ -46,122 +45,60 @@ storiesOf("ETO/EtoOverviewStatus", module)
     }),
   )
   .addDecorator(withMockedDate(dummyNow))
-  .add("default", () => (
-    <EtoWidgetContext.Provider value={eto.previewCode}>
-      <EtoOverviewStatusLayout
-        eto={eto}
-        isAuthorized={true}
-        isEligibleToPreEto={true}
-        maxCapExceeded={false}
-        navigateToEto={() => {}}
-        openInNewWindow={() => {}}
-      />
-    </EtoWidgetContext.Provider>
-  ))
-  .add("not public", () => (
-    <EtoWidgetContext.Provider value={undefined}>
-      <EtoOverviewStatusLayout
-        eto={eto}
-        isAuthorized={true}
-        isEligibleToPreEto={true}
-        maxCapExceeded={false}
-        navigateToEto={() => {}}
-        openInNewWindow={() => {}}
-        publicView={false}
-      />
-    </EtoWidgetContext.Provider>
-  ))
+  .add("default", () => <EtoOverviewStatus eto={eto} publicView={false} isEmbedded={true} />)
+  .add("not public", () => <EtoOverviewStatus eto={eto} isEmbedded={false} publicView={false} />)
   .add("with whitelist discount", () => (
-    <EtoWidgetContext.Provider value={eto.previewCode}>
-      <EtoOverviewStatusLayout
-        eto={eto}
-        isAuthorized={true}
-        isEligibleToPreEto={true}
-        isPreEto={true}
-        maxCapExceeded={false}
-        navigateToEto={() => {}}
-        openInNewWindow={() => {}}
-      />
-    </EtoWidgetContext.Provider>
+    <EtoOverviewStatus eto={eto} isEmbedded={true} publicView={false} />
   ))
   .add("without discount", () => (
-    <EtoWidgetContext.Provider value={eto.previewCode}>
-      <EtoOverviewStatusLayout
-        eto={{ ...eto, publicDiscountFraction: 0 }}
-        isAuthorized={true}
-        isEligibleToPreEto={true}
-        maxCapExceeded={false}
-        navigateToEto={() => {}}
-        openInNewWindow={() => {}}
-      />
-    </EtoWidgetContext.Provider>
+    <EtoOverviewStatus
+      eto={{ ...eto, publicDiscountFraction: 0 }}
+      isEmbedded={true}
+      publicView={false}
+    />
   ))
   .add("whitelisted not eligible", () => (
-    <EtoWidgetContext.Provider value={eto.previewCode}>
-      <EtoOverviewStatusLayout
-        eto={{ ...eto }}
-        isAuthorized={true}
-        isEligibleToPreEto={false}
-        maxCapExceeded={false}
-        navigateToEto={() => {}}
-        openInNewWindow={() => {}}
-      />
-    </EtoWidgetContext.Provider>
+    <EtoOverviewStatus eto={{ ...eto }} isEmbedded={true} publicView={false} />
   ))
   .add("successful", () => (
-    <EtoWidgetContext.Provider value={eto.previewCode}>
-      <EtoOverviewStatusLayout
-        eto={{
-          ...eto,
-          isBookbuilding: true,
-          contract: { ...eto.contract, timedState: EETOStateOnChain.Claim } as IEtoContractData,
-        }}
-        isAuthorized={true}
-        isEligibleToPreEto={false}
-        maxCapExceeded={false}
-        navigateToEto={() => {}}
-        openInNewWindow={() => {}}
-      />
-    </EtoWidgetContext.Provider>
+    <EtoOverviewStatus
+      eto={{
+        ...eto,
+        isBookbuilding: true,
+        contract: { ...eto.contract, timedState: EETOStateOnChain.Claim } as IEtoContractData,
+      }}
+      isEmbedded={true}
+      publicView={false}
+    />
   ))
   .add("max cap exceeded whitelisted", () => (
-    <EtoWidgetContext.Provider value={eto.previewCode}>
-      <EtoOverviewStatusLayout
-        eto={{
-          ...eto,
-          contract: {
-            ...eto.contract,
-            startOfStates: {
-              ...eto.contract!.startOfStates,
-              [EETOStateOnChain.Public]: moment()
-                .add(7, "days")
-                .toDate(),
-            },
-          } as IEtoContractData,
-        }}
-        isAuthorized={true}
-        isEligibleToPreEto={true}
-        maxCapExceeded={true}
-        navigateToEto={() => {}}
-        openInNewWindow={() => {}}
-      />
-    </EtoWidgetContext.Provider>
+    <EtoOverviewStatus
+      eto={{
+        ...eto,
+        contract: {
+          ...eto.contract,
+          startOfStates: {
+            ...eto.contract!.startOfStates,
+            [EETOStateOnChain.Public]: moment()
+              .add(7, "days")
+              .toDate(),
+          },
+        } as IEtoContractData,
+      }}
+      isEmbedded={true}
+      publicView={false}
+    />
   ))
   .add("max cap exceeded public", () => (
-    <EtoWidgetContext.Provider value={eto.previewCode}>
-      <EtoOverviewStatusLayout
-        eto={{
-          ...eto,
-          contract: {
-            ...eto.contract,
-            timedState: EETOStateOnChain.Public,
-          } as IEtoContractData,
-        }}
-        isAuthorized={true}
-        isEligibleToPreEto={true}
-        maxCapExceeded={true}
-        navigateToEto={() => {}}
-        openInNewWindow={() => {}}
-      />
-    </EtoWidgetContext.Provider>
+    <EtoOverviewStatus
+      eto={{
+        ...eto,
+        contract: {
+          ...eto.contract,
+          timedState: EETOStateOnChain.Public,
+        } as IEtoContractData,
+      }}
+      isEmbedded={true}
+      publicView={false}
+    />
   ));

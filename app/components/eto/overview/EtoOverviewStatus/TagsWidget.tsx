@@ -1,164 +1,113 @@
+import { keyBy } from "lodash";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
-import { compose } from "recompose";
+import { compose, withProps } from "recompose";
 
-import { IEtoDocument } from "../../../../lib/api/eto/EtoFileApi.interfaces";
-import {
-  EJurisdiction,
-  EOfferingDocumentType,
-} from "../../../../lib/api/eto/EtoProductsApi.interfaces";
+import { EEtoDocumentType, IEtoDocument } from "../../../../lib/api/eto/EtoFileApi.interfaces";
+import { EOfferingDocumentType } from "../../../../lib/api/eto/EtoProductsApi.interfaces";
 import { actions } from "../../../../modules/actions";
+import { TEtoWithCompanyAndContract } from "../../../../modules/eto/types";
 import { appConnect } from "../../../../store";
 import { etoPublicViewLink } from "../../../appRouteUtils";
-import { EtherscanAddressLink } from "../../../shared/links";
-import { ETagSize, Tag } from "../../../shared/Tag.unsafe";
-import { EtoWidgetContext } from "../../EtoWidgetView";
+import { EtherscanAddressLink } from "../../../shared/links/index";
+import { TagWithFallback } from "../../../shared/Tag.unsafe";
 
-export interface ITagsWidget {
+import * as styles from "./EtoOverviewStatus.module.scss";
+
+interface IExternalProps {
+  eto: TEtoWithCompanyAndContract;
+  innerClass?: string;
+}
+
+interface IWithProps {
   termSheet: IEtoDocument;
   prospectusApproved: IEtoDocument;
   smartContractOnChain: boolean;
-  etoId: string;
-  offeringDocumentType: EOfferingDocumentType;
-  innerClass?: string;
-  jurisdiction: EJurisdiction;
-  companyPitchdeckUrl?: { title?: string; url?: string };
 }
 
-type TDispatchProps = {
+interface IDispatchProps {
   downloadDocument: (document: IEtoDocument) => void;
-};
-
-type TLayoutProps = ITagsWidget & TDispatchProps;
+}
 
 const hasDocument = (document: IEtoDocument): boolean =>
-  !!document && !!document.name && !!document.name.length;
+  Boolean(document && document.name && document.name.length);
 
-const TagsWidgetLayout: React.FunctionComponent<TLayoutProps> = ({
+const TagsWidgetLayout: React.FunctionComponent<IWithProps & IExternalProps & IDispatchProps> = ({
+  eto,
   termSheet,
   prospectusApproved,
   smartContractOnChain,
-  etoId,
   downloadDocument,
-  jurisdiction,
-  offeringDocumentType,
   innerClass,
-  companyPitchdeckUrl,
 }) => {
   const approvedDocumentTitle =
-    offeringDocumentType === EOfferingDocumentType.PROSPECTUS ? (
+    eto.product.offeringDocumentType === EOfferingDocumentType.PROSPECTUS ? (
       <FormattedMessage id="shared-component.eto-overview.prospectus-approved" />
     ) : (
       <FormattedMessage id="shared-component.eto-overview.investment-memorandum" />
     );
 
   return (
-    <EtoWidgetContext.Consumer>
-      {previewCode => (
-        <>
-          {companyPitchdeckUrl ? (
-            <Tag
-              to={companyPitchdeckUrl.url}
-              target="_blank"
-              size={ETagSize.TINY}
-              theme="green"
-              layout="ghost"
-              text={<FormattedMessage id="shared-component.eto-overview.pitch-deck" />}
-              dataTestId="eto-overview-pitch-deck-button"
-              className={innerClass}
-            />
-          ) : (
-            <Tag
-              size={ETagSize.TINY}
-              theme="silver"
-              layout="ghost"
-              text={<FormattedMessage id="shared-component.eto-overview.pitch-deck" />}
-              className={innerClass}
-            />
-          )}
-          {hasDocument(termSheet) ? (
-            <Tag
-              onClick={e => {
-                downloadDocument(termSheet);
-                e.stopPropagation();
-              }}
-              to={previewCode ? etoPublicViewLink(previewCode, jurisdiction) : undefined}
-              target={previewCode ? "_blank" : undefined}
-              size={ETagSize.TINY}
-              theme="green"
-              layout="ghost"
-              text={<FormattedMessage id="shared-component.eto-overview.term-sheet" />}
-              dataTestId="eto-overview-term-sheet-button"
-              className={innerClass}
-            />
-          ) : (
-            <Tag
-              size={ETagSize.TINY}
-              theme="silver"
-              layout="ghost"
-              text={<FormattedMessage id="shared-component.eto-overview.term-sheet" />}
-              className={innerClass}
-            />
-          )}
-          {hasDocument(prospectusApproved) ? (
-            <Tag
-              onClick={e => {
-                downloadDocument(prospectusApproved);
-                e.stopPropagation();
-              }}
-              to={previewCode ? etoPublicViewLink(previewCode, jurisdiction) : undefined}
-              target={previewCode ? "_blank" : undefined}
-              size={ETagSize.TINY}
-              theme="green"
-              layout="ghost"
-              text={approvedDocumentTitle}
-              dataTestId="eto-overview-prospectus-approved-button"
-              className={innerClass}
-            />
-          ) : (
-            <Tag
-              size={ETagSize.TINY}
-              theme="silver"
-              layout="ghost"
-              text={approvedDocumentTitle}
-              className={innerClass}
-            />
-          )}
-          {smartContractOnChain ? (
-            <Tag
-              onClick={e => e.stopPropagation()}
-              component={EtherscanAddressLink}
-              componentProps={{ address: etoId }}
-              to={previewCode ? etoPublicViewLink(previewCode, jurisdiction) : undefined}
-              target={previewCode ? "_blank" : undefined}
-              size={ETagSize.TINY}
-              theme="green"
-              layout="ghost"
-              text={<FormattedMessage id="shared-component.eto-overview.smart-contract-on-chain" />}
-              dataTestId="eto-overview-smart-contract-on-chain-button"
-              className={innerClass}
-            />
-          ) : (
-            <Tag
-              size={ETagSize.TINY}
-              theme="silver"
-              layout="ghost"
-              text={<FormattedMessage id="shared-component.eto-overview.smart-contract-on-chain" />}
-              className={innerClass}
-            />
-          )}
-        </>
-      )}
-    </EtoWidgetContext.Consumer>
+    <div className={styles.tagsWrapper}>
+      <TagWithFallback
+        condition={eto.company.companyPitchdeckUrl}
+        to={eto.company.companyPitchdeckUrl ? eto.company.companyPitchdeckUrl.url : ""}
+        textElement={<FormattedMessage id="shared-component.eto-overview.pitch-deck" />}
+        innerClass={innerClass}
+        data-test-id="eto-overview-pitch-deck-button"
+      />
+      <TagWithFallback
+        condition={hasDocument(termSheet)}
+        onClick={(e: React.MouseEvent) => {
+          downloadDocument(termSheet);
+          e.stopPropagation();
+        }}
+        to={etoPublicViewLink(eto.previewCode, eto.product.jurisdiction)}
+        textElement={<FormattedMessage id="shared-component.eto-overview.term-sheet" />}
+        innerClass={innerClass}
+        data-test-id="eto-overview-term-sheet-button"
+      />
+
+      <TagWithFallback
+        condition={hasDocument(prospectusApproved)}
+        onClick={(e: React.MouseEvent) => {
+          downloadDocument(prospectusApproved);
+          e.stopPropagation();
+        }}
+        to={etoPublicViewLink(eto.previewCode, eto.product.jurisdiction)}
+        textElement={approvedDocumentTitle}
+        innerClass={innerClass}
+        data-test-id="eto-overview-prospectus-approved-button"
+      />
+      <TagWithFallback
+        onClick={(e: React.MouseEvent) => e.stopPropagation()}
+        condition={smartContractOnChain}
+        component={<EtherscanAddressLink address={eto.etoId} />}
+        to={etoPublicViewLink(eto.previewCode, eto.product.jurisdiction)}
+        textElement={
+          <FormattedMessage id="shared-component.eto-overview.smart-contract-on-chain" />
+        }
+        data-test-id="eto-overview-smart-contract-on-chain-button"
+        innerClass={innerClass}
+      />
+    </div>
   );
 };
 
-const TagsWidget = compose<TLayoutProps, ITagsWidget>(
-  appConnect<{}, TDispatchProps>({
+const TagsWidget = compose<IDispatchProps & IWithProps & IExternalProps, IExternalProps>(
+  appConnect<{}, IDispatchProps, IExternalProps>({
     dispatchToProps: dispatch => ({
       downloadDocument: (document: IEtoDocument) =>
         dispatch(actions.eto.downloadEtoDocument(document)),
     }),
+  }),
+  withProps<IWithProps, IExternalProps & IDispatchProps>(props => {
+    const documentsByType = keyBy(props.eto.documents, document => document.documentType);
+    return {
+      smartContractOnChain: Boolean(props.eto.contract),
+      termSheet: documentsByType[EEtoDocumentType.SIGNED_TERMSHEET],
+      prospectusApproved: documentsByType[EEtoDocumentType.APPROVED_INVESTOR_OFFERING_DOCUMENT],
+    };
   }),
 )(TagsWidgetLayout);
 

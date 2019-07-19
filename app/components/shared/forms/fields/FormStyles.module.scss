@@ -27,3 +27,44 @@
     }
   }
 }
+
+.input-meta {
+  display: flex;
+  justify-content: space-between;
+}
+
+.bottom-border {
+  border-bottom: 1px solid $neu-greyish-brown;
+}
+
+.box {
+  &:first-child {
+    border: 1px solid $neu-greyish-brown;
+    border-right: 0;
+  }
+
+  &:first-child ~ .addon {
+    & > :global(.input-group-text) {
+      border: 1px solid $neu-greyish-brown;
+      border-left: 0;
+      padding-right: 3px;
+    }
+  }
+
+  &:last-child {
+    border: 1px solid $neu-greyish-brown;
+    border-left: 0;
+  }
+
+  &:last-child ~ .addon {
+    & > :global(.input-group-text) {
+      border: 1px solid $neu-greyish-brown;
+      border-right: 0;
+      padding-left: 3px;
+    }
+  }
+
+  &:only-child {
+    border: 1px solid $neu-greyish-brown;
+  }
+}

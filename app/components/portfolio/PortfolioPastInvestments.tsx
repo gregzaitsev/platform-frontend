@@ -103,7 +103,7 @@ const PortfolioPastInvestments: React.FunctionComponent<IExternalProps> = ({ pas
               outputFormat={ENumberOutputFormat.FULL}
               data-test-id="past-investments-asset-neu-reward"
             />
-            <ETOState eto={eto} size={EProjectStatusSize.SMALL} />
+            <ETOState eto={eto} size={EProjectStatusSize.SMALL} isIssuer={false} />
           </NewTableRow>
         );
       })}
