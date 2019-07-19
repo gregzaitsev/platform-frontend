@@ -4,31 +4,56 @@ import {
   EquityToken,
 } from "../../components/shared/formatters/utils";
 import { ETransactionDirection, ETransactionType } from "../../lib/api/analytics-api/interfaces";
+import { EthereumAddressWithChecksum, EthereumTxHash } from "../../types";
+
+export enum ETransactionSubType {
+  TRANSFER_EQUITY_TOKEN = "tokenTransfer",
+}
 
 export type TTxHistoryCommon = {
-  type: ETransactionType;
-  date: string;
-  transactionDirection: ETransactionDirection;
-  id: string;
-  currency: ECurrency | EquityToken;
-  amount: number;
+  amount: string;
   amountFormat: ENumberInputFormat;
+  currency: ECurrency | EquityToken;
+  date: string;
+  id: string;
+  transactionDirection: ETransactionDirection;
+  txHash: EthereumTxHash;
 };
 
 export type TEtoTx = {
   type: ETransactionType.ETO_INVESTMENT | ETransactionType.ETO_REFUND;
+  subType: undefined;
   companyName: string;
+};
+
+export type TTransferEquityToken = {
+  type: ETransactionType.TRANSFER;
+  subType: ETransactionSubType.TRANSFER_EQUITY_TOKEN;
+  currency: EquityToken;
+  from: EthereumAddressWithChecksum;
+  to: EthereumAddressWithChecksum;
+  icon: string | undefined;
+};
+
+export type TTransferWellKnownToken = {
+  type: ETransactionType.TRANSFER;
+  subType: undefined;
+  currency: ECurrency;
+  amountEur: string;
+  from: EthereumAddressWithChecksum;
+  to: EthereumAddressWithChecksum;
 };
 
 export type TTx = {
   type:
-    | ETransactionType.TRANSFER
     | ETransactionType.NEUR_PURCHASE
     | ETransactionType.NEUR_REDEEM
     | ETransactionType.ETO_TOKENS_CLAIM
     | ETransactionType.REDISTRIBUTE_PAYOUT
     | ETransactionType.PAYOUT
     | ETransactionType.NEUR_DESTROY;
+  subType: undefined;
 };
 
-export type TTxHistory = (TEtoTx | TTx) & TTxHistoryCommon;
+export type TTxHistory = (TEtoTx | TTx | TTransferEquityToken | TTransferWellKnownToken) &
+  TTxHistoryCommon;

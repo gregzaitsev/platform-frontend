@@ -1,6 +1,7 @@
 import * as cn from "classnames";
 import * as React from "react";
-import { Link, LinkProps } from "react-router-dom";
+
+import { Dictionary } from "../../types";
 
 import * as styles from "./Navigation.module.scss";
 
@@ -15,6 +16,9 @@ interface INavigationButton {
   disabled?: boolean;
 }
 
+/**
+ * @deprecated Should be replaced by Button
+ */
 export const NavigationButton: React.FunctionComponent<INavigation & INavigationButton> = ({
   text,
   forward,
@@ -22,7 +26,7 @@ export const NavigationButton: React.FunctionComponent<INavigation & INavigation
   onClick,
   disabled,
 }) => {
-  const props: any = {
+  const props: Dictionary<unknown> = {
     className: cn(
       className,
       styles.container,
@@ -45,21 +49,3 @@ export const NavigationButton: React.FunctionComponent<INavigation & INavigation
     </span>
   );
 };
-
-export const NavigationLink: React.FunctionComponent<INavigation & LinkProps> = ({
-  text,
-  forward,
-  className,
-  to,
-  ...props
-}) => (
-  <Link
-    to={to}
-    className={cn(className, styles.container, forward ? styles.right : styles.left)}
-    {...props}
-  >
-    {!forward && <i className={"fa fa-chevron-left mr-2"} aria-hidden="true" />}
-    {text}
-    {forward && <i className={"fa fa-chevron-right ml-2"} aria-hidden="true" />}
-  </Link>
-);

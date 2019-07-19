@@ -1,3 +1,4 @@
+import { EthereumAddressWithChecksum, EthereumTxHash } from "../../../types";
 import * as YupTS from "../../yup-ts";
 
 export enum ETransactionDirection {
@@ -19,6 +20,7 @@ export enum ETransactionType {
 
 export const AnalyticsTransactionTokenMetadataSchema = YupTS.object({
   companyName: YupTS.string().optional(),
+  tokenImage: YupTS.string().optional(),
   tokenSymbol: YupTS.string(),
   tokenDecimals: YupTS.number(),
 });
@@ -28,6 +30,10 @@ export type TAnalyticsTransactionTokenMetadata = YupTS.TypeOf<
 
 export const AnalyticsTransactionExtraDataSchema = YupTS.object({
   amount: YupTS.number(),
+  fromAddress: YupTS.string<EthereumAddressWithChecksum>().optional(),
+  toAddress: YupTS.string<EthereumAddressWithChecksum>().optional(),
+  tokenAddress: YupTS.string<EthereumAddressWithChecksum>().optional(),
+  tokenInterface: YupTS.string().optional(),
   tokenMetadata: AnalyticsTransactionTokenMetadataSchema.optional(),
   assetTokenMetadata: AnalyticsTransactionTokenMetadataSchema.optional(),
 });
@@ -39,7 +45,7 @@ export const AnalyticsTransactionSchema = YupTS.object({
   logIndex: YupTS.number(),
   transactionDirection: YupTS.string<ETransactionDirection>(),
   transactionIndex: YupTS.number(),
-  txHash: YupTS.string(),
+  txHash: YupTS.string<EthereumTxHash>(),
   type: YupTS.string<ETransactionType>(),
   version: YupTS.number(),
 });

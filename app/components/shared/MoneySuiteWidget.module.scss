@@ -26,10 +26,23 @@
     }
   }
 
+  &.position-left {
+    .icon {
+      margin-right: px-to-rem(10px);
+    }
+  }
+
+  &.position-right {
+    text-align: right;
+
+    .icon {
+      margin-left: px-to-rem(10px);
+    }
+  }
+
   .icon {
     @include rect(34px);
 
-    margin-right: px-to-rem(10px);
     margin-top: .2em;
   }
 

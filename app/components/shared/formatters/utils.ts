@@ -325,3 +325,7 @@ export const selectUnits = (valueType: TValueFormat): string => {
       return valueType;
   }
 };
+
+export function isCurrency(currency: TValueFormat): currency is ECurrency {
+  return Object.values(ECurrency).includes(currency);
+}

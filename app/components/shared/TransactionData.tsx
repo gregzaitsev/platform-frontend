@@ -36,9 +36,11 @@ const TransactionData: React.FunctionComponent<TExternalProps & TDataTestId> = (
     <div className={styles.top} data-test-id={makeTid(dataTestId, "large-value")}>
       {top}
     </div>
-    <div className={styles.bottom} data-test-id={makeTid(dataTestId, "value")}>
-      {bottom}
-    </div>
+    {bottom && (
+      <div className={styles.bottom} data-test-id={makeTid(dataTestId, "value")}>
+        {bottom}
+      </div>
+    )}
   </div>
 );
 
