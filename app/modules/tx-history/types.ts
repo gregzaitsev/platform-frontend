@@ -13,10 +13,13 @@ export enum ETransactionSubType {
 export type TTxHistoryCommon = {
   amount: string;
   amountFormat: ENumberInputFormat;
+  blockNumber: number;
   currency: ECurrency | EquityToken;
   date: string;
   id: string;
+  logIndex: number;
   transactionDirection: ETransactionDirection;
+  transactionIndex: number;
   txHash: EthereumTxHash;
 };
 

@@ -25,13 +25,16 @@ export function* mapAnalyticsApiTransactionResponse(
   transaction: TAnalyticsTransaction,
 ): Iterator<any> {
   const common = {
-    date: transaction.blockTime,
-    txHash: transaction.txHash,
-    transactionDirection: transaction.transactionDirection,
-    id: getTxUniqueId(transaction),
     amount: transaction.extraData.amount.toString(),
     amountFormat: getDecimalsFormat(transaction.extraData.tokenMetadata),
+    blockNumber: transaction.blockNumber,
+    date: transaction.blockTime,
+    id: getTxUniqueId(transaction),
+    logIndex: transaction.logIndex,
     subType: undefined,
+    transactionDirection: transaction.transactionDirection,
+    transactionIndex: transaction.transactionIndex,
+    txHash: transaction.txHash,
   };
 
   let tx: TTxHistory | undefined = undefined;
