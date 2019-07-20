@@ -13,6 +13,11 @@ enum ENewTableCellLayout {
   BOTTOM = "bottom",
 }
 
+enum ENewTableTheme {
+  COMPACK = styles.compackTheme,
+  NORMAL = styles.normalTheme,
+}
+
 interface INewTableTitle {
   title: TTranslatedString | React.ReactNode;
   width: string;
@@ -44,6 +49,7 @@ interface INewTable {
   placeholder?: TTranslatedString;
   className?: string;
   keepRhythm?: boolean;
+  theme?: ENewTableTheme;
 }
 
 type TProps = INewTable & INewTableHeader;
@@ -90,6 +96,7 @@ const TableLayout: React.FunctionComponent<TProps> = ({
   placeholder,
   keepRhythm,
   titlesVisuallyHidden,
+  theme = ENewTableTheme.COMPACK,
   ...props
 }) => {
   // We have to filter empty nodes in case of any conditional rendering inside table
@@ -97,7 +104,7 @@ const TableLayout: React.FunctionComponent<TProps> = ({
 
   return (
     <table
-      className={cn(styles.table, className, { [styles.tableKeepRhythm]: keepRhythm })}
+      className={cn(styles.table, theme, className, { [styles.tableKeepRhythm]: keepRhythm })}
       {...props}
     >
       <thead className={cn(styles.header, { "sr-only": titlesVisuallyHidden })}>
@@ -138,4 +145,4 @@ const NewTable: React.FunctionComponent<TProps> = props => (
   </div>
 );
 
-export { NewTable, NewTableRow, Table, ENewTableCellLayout };
+export { NewTable, NewTableRow, Table, ENewTableCellLayout, ENewTableTheme };
