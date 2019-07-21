@@ -1,3 +1,4 @@
+import { EquityToken } from "../../../components/shared/formatters/utils";
 import { EthereumAddressWithChecksum, EthereumTxHash } from "../../../types";
 import * as YupTS from "../../yup-ts";
 
@@ -22,7 +23,7 @@ export const AnalyticsTransactionTokenMetadataSchema = YupTS.object({
   companyName: YupTS.string().optional(),
   tokenImage: YupTS.string().optional(),
   tokenCommitmentAddress: YupTS.string<EthereumAddressWithChecksum>().optional(),
-  tokenSymbol: YupTS.string(),
+  tokenSymbol: YupTS.string<EquityToken>(),
   tokenDecimals: YupTS.number(),
 });
 export type TAnalyticsTransactionTokenMetadata = YupTS.TypeOf<
@@ -37,6 +38,7 @@ export const AnalyticsTransactionExtraDataSchema = YupTS.object({
   tokenInterface: YupTS.string().optional(),
   tokenMetadata: AnalyticsTransactionTokenMetadataSchema.optional(),
   assetTokenMetadata: AnalyticsTransactionTokenMetadataSchema.optional(),
+  neumarkReward: YupTS.number().optional(),
 });
 
 export const AnalyticsTransactionSchema = YupTS.object({

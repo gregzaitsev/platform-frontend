@@ -48,16 +48,36 @@ export type TTransferWellKnownToken = {
   to: EthereumAddressWithChecksum;
 };
 
-export type TTx = {
+export type TNEURTransfer = {
   type:
     | ETransactionType.NEUR_PURCHASE
     | ETransactionType.NEUR_REDEEM
-    | ETransactionType.ETO_TOKENS_CLAIM
-    | ETransactionType.REDISTRIBUTE_PAYOUT
-    | ETransactionType.PAYOUT
     | ETransactionType.NEUR_DESTROY;
+  subType: undefined;
+  currency: ECurrency.EUR_TOKEN;
+  to: EthereumAddressWithChecksum;
+};
+
+export type EtoTokensClaimTransfer = {
+  type: ETransactionType.ETO_TOKENS_CLAIM;
+  subType: undefined;
+  currency: EquityToken;
+  etoId: EthereumAddressWithChecksum;
+  neuReward: string;
+  icon: string;
+  neuRewardEur: string;
+};
+
+export type TTx = {
+  type: ETransactionType.REDISTRIBUTE_PAYOUT | ETransactionType.PAYOUT;
   subType: undefined;
 };
 
-export type TTxHistory = (TEtoTx | TTx | TTransferEquityToken | TTransferWellKnownToken) &
+export type TTxHistory = (
+  | TEtoTx
+  | TTx
+  | TTransferEquityToken
+  | TTransferWellKnownToken
+  | TNEURTransfer
+  | EtoTokensClaimTransfer) &
   TTxHistoryCommon;

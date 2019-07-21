@@ -1,7 +1,7 @@
 import { delay } from "redux-saga";
 import { all, fork, put, select } from "redux-saga/effects";
 
-import { ECurrency, EquityToken } from "../../components/shared/formatters/utils";
+import { ECurrency } from "../../components/shared/formatters/utils";
 import { ETxHistoryMessage } from "../../components/translatedMessages/messages";
 import { createMessage } from "../../components/translatedMessages/utils";
 import { TransactionDetailsModal } from "../../components/wallet/transactions-history/TransactionDetailsModal";
@@ -63,7 +63,7 @@ export function* mapAnalyticsApiTransactionResponse(
           ...common,
           type: transaction.type,
           subType: ETransactionSubType.TRANSFER_EQUITY_TOKEN,
-          currency: transaction.extraData.tokenMetadata!.tokenSymbol as EquityToken,
+          currency: transaction.extraData.tokenMetadata!.tokenSymbol,
           etoId: transaction.extraData.tokenMetadata!.tokenCommitmentAddress!,
           icon: transaction.extraData.tokenMetadata!.tokenImage,
           from: transaction.extraData.fromAddress!,
@@ -95,6 +95,7 @@ export function* mapAnalyticsApiTransactionResponse(
         ...common,
         type: transaction.type,
         currency: ECurrency.EUR_TOKEN,
+        to: transaction.extraData.toAddress!,
       };
       break;
     }
@@ -104,11 +105,21 @@ export function* mapAnalyticsApiTransactionResponse(
           throw new Error("Asset token metadata should be provided");
         }
 
+        const neuReward = transaction.extraData.neumarkReward!.toString();
+
+        const neuRewardEur: string = yield select((state: IAppState) =>
+          selectEurEquivalent(state, neuReward, ECurrency.NEU),
+        );
+
         tx = {
           ...common,
+          neuReward,
+          neuRewardEur,
           type: transaction.type,
           amountFormat: getDecimalsFormat(transaction.extraData.assetTokenMetadata),
-          currency: getCurrencyFromTokenSymbol(transaction.extraData.assetTokenMetadata),
+          currency: transaction.extraData.assetTokenMetadata.tokenSymbol,
+          etoId: transaction.extraData.assetTokenMetadata.tokenCommitmentAddress!,
+          icon: transaction.extraData.assetTokenMetadata.tokenImage!,
         };
       }
       break;
