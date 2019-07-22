@@ -6,8 +6,9 @@ import { CommonHtmlProps, TTranslatedString } from "../../../types";
 import { assertNever } from "../../../utils/assertNever";
 import { EHeadingSize, Heading } from "../../shared/Heading";
 import { EtherscanTxLink } from "../../shared/links/EtherscanLink";
+import { EtoRefundTransactionsDetails } from "./transaction-modal-content/EtoRefundTransactionDetails";
 import { EtoTokensClaimTransactionDetails } from "./transaction-modal-content/EtoTokensClaimTransactionDetails";
-import { NEurDestroy } from "./transaction-modal-content/NEurDestroy";
+import { NEurDestroyTransactionDetails } from "./transaction-modal-content/NEurDestroyTransactionDetails";
 import { NEurPurchaseTransactionDetails } from "./transaction-modal-content/NEurPurchaseTransactionDetails";
 import { TransferTransactionDetails } from "./transaction-modal-content/TransferTransactionDetails";
 import { TransactionName } from "./TransactionName";
@@ -43,9 +44,10 @@ const TransactionTypeToComponentMap: React.FunctionComponent<IExternalProps> = p
     case ETransactionType.ETO_TOKENS_CLAIM:
       return <EtoTokensClaimTransactionDetails {...props} />;
     case ETransactionType.NEUR_DESTROY:
-      return <NEurDestroy {...props} />;
-    case ETransactionType.ETO_INVESTMENT:
+      return <NEurDestroyTransactionDetails {...props} />;
     case ETransactionType.ETO_REFUND:
+      return <EtoRefundTransactionsDetails {...props} />;
+    case ETransactionType.ETO_INVESTMENT:
     case ETransactionType.NEUR_REDEEM:
     case ETransactionType.REDISTRIBUTE_PAYOUT:
     case ETransactionType.PAYOUT:

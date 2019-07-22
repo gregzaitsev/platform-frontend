@@ -23,10 +23,20 @@ export type TTxHistoryCommon = {
   txHash: EthereumTxHash;
 };
 
-export type TEtoTx = {
-  type: ETransactionType.ETO_INVESTMENT | ETransactionType.ETO_REFUND;
+export type TEtoInvestmentTx = {
+  type: ETransactionType.ETO_INVESTMENT;
   subType: undefined;
   companyName: string;
+};
+
+export type TEtoRefundTx = {
+  type: ETransactionType.ETO_REFUND;
+  subType: undefined;
+  companyName: string;
+  etoId: string;
+  currency: ECurrency;
+  amountEur: string;
+  toAddress: EthereumAddressWithChecksum;
 };
 
 export type TTransferEquityToken = {
@@ -78,7 +88,8 @@ export type TTx = {
 };
 
 export type TTxHistory = (
-  | TEtoTx
+  | TEtoRefundTx
+  | TEtoInvestmentTx
   | TTx
   | TTransferEquityToken
   | TTransferWellKnownToken

@@ -40,8 +40,7 @@ export function* mapAnalyticsApiTransactionResponse(
   let tx: TTxHistory | undefined = undefined;
 
   switch (transaction.type) {
-    case ETransactionType.ETO_INVESTMENT:
-    case ETransactionType.ETO_REFUND: {
+    case ETransactionType.ETO_INVESTMENT: {
       if (!transaction.extraData.assetTokenMetadata || !transaction.extraData.tokenMetadata) {
         throw new Error("Invalid asset token metadata");
       }
@@ -49,10 +48,30 @@ export function* mapAnalyticsApiTransactionResponse(
       tx = {
         ...common,
         type: transaction.type,
-        // TODO: Remove non-null assertion operator after `ETO_REFUND` is fixed on a backend
-        // see https://github.com/Neufund/platform-backend/pull/1874
         companyName: transaction.extraData.assetTokenMetadata.companyName!,
         currency: getCurrencyFromTokenSymbol(transaction.extraData.tokenMetadata),
+      };
+      break;
+    }
+    case ETransactionType.ETO_REFUND: {
+      if (!transaction.extraData.assetTokenMetadata || !transaction.extraData.tokenMetadata) {
+        throw new Error("Invalid asset token metadata");
+      }
+
+      const currency = getCurrencyFromTokenSymbol(transaction.extraData.tokenMetadata);
+
+      const amountEur: string = yield select((state: IAppState) =>
+        selectEurEquivalent(state, common.amount, currency),
+      );
+
+      tx = {
+        ...common,
+        currency,
+        amountEur,
+        etoId: transaction.extraData.assetTokenMetadata.tokenCommitmentAddress!,
+        toAddress: transaction.extraData.toAddress!,
+        type: transaction.type,
+        companyName: transaction.extraData.assetTokenMetadata.companyName!,
       };
       break;
     }
