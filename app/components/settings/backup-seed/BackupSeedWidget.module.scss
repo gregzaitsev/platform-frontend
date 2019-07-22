@@ -5,24 +5,8 @@
 
 .text {
   min-height: px-to-rem(108px);
-  padding-top: .5px;
 }
 
 .section {
   @include section-container;
-  flex-wrap: wrap;
-  align-content: space-around;
-}
-
-.account-setup-section {
-  display: grid;
-  grid-template: auto / auto;
-  grid-gap: 2rem;
-
-  justify-items: flex-start;
-  align-items: flex-start;
-}
-
-.account-setup-text {
-  margin: 0;
 }
