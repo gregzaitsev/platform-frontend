@@ -1,22 +1,27 @@
 import * as cn from "classnames";
 import * as React from "react";
 
-import * as styles from "./NomineeDashboard.module.scss";
+import { InlineIcon } from "../shared/icons/InlineIcon";
 import { EAccountSetupStepState, IStepComponentProps } from "./utils";
 
+import * as styles from "./NomineeDashboard.module.scss";
+import * as checkMark from "../../assets/img/inline_icons/icon_check.svg";
 
 interface IStepTickerProps {
   stepState: EAccountSetupStepState;
   number: number;
 }
 
-
-export interface INomineeAccountSetupSteps {
-  accountSetupStepsData: IStepComponentProps[];
+interface IExternalProps {
+  isLast: boolean
 }
 
 export interface IAccountSetupStepState {
   isOpen: boolean
+}
+
+export interface INomineeAccountSetupSteps {
+  accountSetupStepsData: IStepComponentProps[];
 }
 
 const StepTicker: React.FunctionComponent<IStepTickerProps> = ({ stepState, number }) => {
@@ -24,14 +29,16 @@ const StepTicker: React.FunctionComponent<IStepTickerProps> = ({ stepState, numb
     case EAccountSetupStepState.ACTIVE:
       return <div className={cn(styles.ticker, styles.active)}>{number}</div>;
     case EAccountSetupStepState.DONE:
-      return <div className={cn(styles.ticker, styles.done)}>v</div>;
+      return <div className={cn(styles.ticker, styles.done)}>
+        <InlineIcon svgIcon={checkMark} />
+      </div>;
     case EAccountSetupStepState.NOT_DONE:
     default:
       return <div className={styles.ticker}>{number}</div>;
   }
 };
 
-export class AccountSetupStep extends React.Component<IStepComponentProps, IAccountSetupStepState> {
+export class AccountSetupStep extends React.Component<IStepComponentProps & IExternalProps, IAccountSetupStepState> {
   state = {
     isOpen: this.props.stepState === EAccountSetupStepState.ACTIVE,
   };
@@ -59,15 +66,3 @@ export class AccountSetupStep extends React.Component<IStepComponentProps, IAcco
     );
   }
 }
-//
-// export const AccountSetupContainer: React.FunctionComponent = ({ children }) => (
-//   <div data-test-id="nominee-dashboard">
-//     <h1>
-//       <FormattedMessage id="account-setup.welcome-to-neufund"/>
-//     </h1>
-//     <p>
-//       <FormattedMessage id="account-setup.please-complete-setup"/>
-//     </p>
-//     <Panel>{children}</Panel>
-//   </div>
-// );

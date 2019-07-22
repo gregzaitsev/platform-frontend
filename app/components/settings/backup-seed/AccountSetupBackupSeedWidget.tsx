@@ -16,7 +16,7 @@ interface IDispatchProps {
 
 interface IWidgetBaseProps {
   widgetDataTestId:string,
-  widgetText:TTranslatedString,
+  widgetText:TTranslatedString[] | TTranslatedString,
   buttonDataTestId: string,
   buttonText:TTranslatedString,
 }
@@ -26,9 +26,16 @@ const BackupCodesWidgetBase:React.FunctionComponent<IWidgetBaseProps & IDispatch
     data-test-id={widgetDataTestId}
     className={styles.accountSetupSection}
   >
-    <p className={styles.accountSetupText}>
-      {widgetText}
-    </p>
+    {Array.isArray(widgetText)
+      ? widgetText.map(txt =>
+      <p className={styles.accountSetupText}>
+        {txt}
+      </p>)
+    : <p className={styles.accountSetupText}>
+        {widgetText}
+      </p>
+    }
+
     <Button
       onClick={startBackupProcess}
       theme={EButtonTheme.BRAND}
@@ -50,7 +57,13 @@ export const AccountSetupBackupWidgetLayout: React.FunctionComponent<IStateProps
     />
     : <BackupCodesWidgetBase
       widgetDataTestId="backup-seed-unverified-section"
-      widgetText={<FormattedMessage id="settings.backup-seed-widget.write-down-recovery-phrase"/>}
+      widgetText={
+        [
+        <FormattedMessage id="account-setup.backup-seed-widget.text-1"/>,
+        <FormattedMessage id="account-setup.backup-seed-widget.text-2"/>,
+        <FormattedMessage id="account-setup.backup-seed-widget.text-3"/>
+        ]
+      }
       buttonDataTestId="backup-seed-widget-link-button"
       buttonText={<FormattedMessage id="settings.backup-seed-widget.backup-phrase"/>}
       startBackupProcess={startBackupProcess}

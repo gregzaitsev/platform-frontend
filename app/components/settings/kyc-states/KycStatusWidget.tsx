@@ -28,7 +28,7 @@ import { Button, ButtonLink, EButtonLayout, EIconPosition } from "../../shared/b
 import { LoadingIndicator } from "../../shared/loading-indicator";
 import { Panel } from "../../shared/Panel";
 import { WarningAlert } from "../../shared/WarningAlert";
-import { AccountSetupKycStartLayout } from "./AccountSetupKycWidget";
+import { AccountSetupKycPendingLayout, AccountSetupKycStartLayout } from "./AccountSetupKycWidget";
 
 import * as arrowRight from "../../../assets/img/inline_icons/arrow_right.svg";
 import * as infoIcon from "../../../assets/img/notifications/info.svg";
@@ -348,4 +348,5 @@ const connectKycStatusWidget = <T extends {}>(
   )(WrappedComponent);
 
 export const KycStatusWidget = connectKycStatusWidget<IExternalProps>(KycStatusWidgetBase);
-export const KycStatusComponent = connectKycStatusWidget<{}>(AccountSetupKycStartLayout);
+export const AccountSetupKycComponent = connectKycStatusWidget<{}>(AccountSetupKycStartLayout);
+export const AccountSetupKycPendingComponent = connectKycStatusWidget<{}>(AccountSetupKycPendingLayout);

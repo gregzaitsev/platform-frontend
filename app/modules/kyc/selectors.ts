@@ -109,14 +109,17 @@ export const selectKycLoading = (state: DeepReadonly<IKycState>): boolean =>
 export const selectWidgetError = (state: DeepReadonly<IKycState>): string | undefined =>
   state.individualRequestError || state.businessRequestError;
 
-export const selectIndividualClientName = (state: DeepReadonly<IKycState>) => {
-  const data = state.individualData;
+export const selectIndividualClientName = (state: IAppState) => {
+  const data = state.kyc.individualData;
 
   return data ? [data.firstName, data.lastName].filter(Boolean).join(" ") : undefined;
 };
 
-export const selectClientName = (state: DeepReadonly<IKycState>) =>
-  (state.businessData && state.businessData.name) || selectIndividualClientName(state);
+export const selectBusinessClientName = (state: IAppState) =>
+  (state.kyc.businessData && state.kyc.businessData.name)
+
+export const selectClientName = (state: IAppState) =>
+  (state.kyc.businessData && state.kyc.businessData.name) || selectIndividualClientName(state);
 
 export const selectClientJurisdiction = createSelector(
   selectKyc,
