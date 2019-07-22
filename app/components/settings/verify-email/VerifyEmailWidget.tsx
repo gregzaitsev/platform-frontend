@@ -21,6 +21,7 @@ import { Button, EButtonLayout } from "../../shared/buttons";
 import { ButtonArrowRight } from "../../shared/buttons/Button";
 import { Form, FormField } from "../../shared/forms/index";
 import { Panel } from "../../shared/Panel";
+import { AccountSetupVerifyEmailWidgetLayout } from "./AccountSetupVerifyEmailWidget";
 
 import * as successIcon from "../../../assets/img/notifications/success.svg";
 import * as warningIcon from "../../../assets/img/notifications/warning.svg";
@@ -235,7 +236,9 @@ const UnVerifiedUser: React.FunctionComponent<{
   </section>
 );
 
-const VerifyEmailWidgetLayout: React.FunctionComponent<IStateProps & IDispatchProps> = ({
+export const VerifyEmailWidgetBase: React.FunctionComponent<
+  IStateProps & IDispatchProps & IExternalProps
+> = ({
   isUserEmailVerified,
   isThereUnverifiedEmail,
   resendEmail,
@@ -245,8 +248,10 @@ const VerifyEmailWidgetLayout: React.FunctionComponent<IStateProps & IDispatchPr
   isLocked,
   cancelEmail,
   isEmailTemporaryCancelled,
+  step,
   revertCancelEmail,
   abortEmailUpdate,
+  columnSpan,
 }) => {
   const shouldViewVerifiedUser =
     !isThereUnverifiedEmail && !isEmailTemporaryCancelled && isUserEmailVerified;
@@ -254,7 +259,18 @@ const VerifyEmailWidgetLayout: React.FunctionComponent<IStateProps & IDispatchPr
   const shouldViewNoEmail =
     (!isThereUnverifiedEmail && !verifiedEmail) || isEmailTemporaryCancelled;
   return (
-    <>
+    <Panel
+      columnSpan={columnSpan}
+      headerText={<FormattedHTMLMessage tagName="span" id="settings.verify-email-widget.header" values={{ step }} />}
+      rightComponent={
+        isUserEmailVerified && !isThereUnverifiedEmail ? (
+          <img src={successIcon} className={styles.icon} aria-hidden="true" alt="" />
+        ) : (
+          <img src={warningIcon} className={styles.icon} aria-hidden="true" alt="" />
+        )
+      }
+      data-test-id="profile.verify-email-widget"
+    >
       {shouldViewVerifiedUser && (
         <VerifiedUser {...{ verifiedEmail, cancelEmail }} data-test-id="verified-section" />
       )}
@@ -276,38 +292,9 @@ const VerifyEmailWidgetLayout: React.FunctionComponent<IStateProps & IDispatchPr
           {...{ addNewEmail, verifiedEmail, isLocked, revertCancelEmail, isThereUnverifiedEmail }}
         />
       )}
-    </>
+    </Panel>
   );
 };
-
-export const VerifyEmailWidgetBase: React.FunctionComponent<
-  IStateProps & IDispatchProps & IExternalProps
-> = ({ columnSpan, step, isUserEmailVerified, isThereUnverifiedEmail, ...rest }) => (
-  <Panel
-    columnSpan={columnSpan}
-    headerText={
-      <FormattedHTMLMessage
-        tagName="span"
-        id="settings.verify-email-widget.header"
-        values={{ step }}
-      />
-    }
-    rightComponent={
-      isUserEmailVerified && !isThereUnverifiedEmail ? (
-        <img src={successIcon} className={styles.icon} aria-hidden="true" alt="" />
-      ) : (
-        <img src={warningIcon} className={styles.icon} aria-hidden="true" alt="" />
-      )
-    }
-    data-test-id="profile.verify-email-widget"
-  >
-    <VerifyEmailWidgetLayout
-      isUserEmailVerified={isUserEmailVerified}
-      isThereUnverifiedEmail={isThereUnverifiedEmail}
-      {...rest}
-    />
-  </Panel>
-);
 
 export const connectVerifyEmailComponent = <T extends {}>(
   WrappedComponent: React.ComponentType<IStateProps & IDispatchProps & T>,
@@ -339,4 +326,4 @@ export const connectVerifyEmailComponent = <T extends {}>(
   )(WrappedComponent);
 
 export const VerifyEmailWidget = connectVerifyEmailComponent<IExternalProps>(VerifyEmailWidgetBase);
-export const VerifyEmailComponent = connectVerifyEmailComponent<{}>(VerifyEmailWidgetLayout);
+export const VerifyEmailComponent = connectVerifyEmailComponent<{}>(AccountSetupVerifyEmailWidgetLayout);

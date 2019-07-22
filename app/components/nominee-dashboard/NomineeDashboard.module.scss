@@ -79,6 +79,10 @@
 }
 .component-closed {
   height: 16px;
+
+  &.last{
+    display: none
+  }
 }
 
 .line {

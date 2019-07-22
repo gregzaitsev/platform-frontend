@@ -49,8 +49,10 @@ const NomineeAccountSetup: React.FunctionComponent<INomineeAccountSetupSteps> = 
   <>
     <DashboardTitle/>
     <Panel className={styles.accountSetupWrapper}>
-      {accountSetupStepsData.map((stepData: IStepComponentProps) =>
-        <AccountSetupStep {...stepData} />
+      {accountSetupStepsData.map((stepData: IStepComponentProps, index: number) =>
+      { const isLast = index + 1 === accountSetupStepsData.length;
+        return <AccountSetupStep {...stepData} isLast={isLast}/>
+      }
       )}
     </Panel>
   </>

@@ -45,23 +45,15 @@ export class AccountSetupStep extends React.Component<IStepComponentProps, IAcco
     return (
       <div className={styles.accountSetupStepWrapper}>
           <StepTicker stepState={stepState} number={number}/>
-        <div
-          className={styles.title}
-          onClick={
-            stepState === EAccountSetupStepState.DONE || stepState === EAccountSetupStepState.ACTIVE
-              ? this.toggleOpen
-              : undefined
-          }
-        >
+        <div className={styles.title} >
           {title}
         </div>
-        <span className={styles.line}/>
+        {!this.props.isLast && <span className={styles.line}/>}
         {this.state.isOpen
           ? <div className={styles.componentOpen}>
             {component}
           </div>
-        : <div className={styles.componentClosed}/>
-
+        : <div className={cn(styles.componentClosed, {[styles.last]:this.props.isLast})}/>
         }
       </div>
     );

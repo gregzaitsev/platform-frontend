@@ -10,7 +10,8 @@ export interface IStepComponentProps {
   stepState: EAccountSetupStepState
   title: JSX.Element | string;
   component: JSX.Element | string;
-  number: number
+  number: number;
+  isLast:boolean;
 }
 
 export enum EAccountSetupStepState {

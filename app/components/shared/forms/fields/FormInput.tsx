@@ -46,7 +46,7 @@ export const FormInput: React.FunctionComponent<TExternalProps & FormInputProps>
   <FormikConsumer>
     {({ touched, errors, setFieldTouched, setFieldValue, submitCount }) => {
       const invalid = isNonValid(touched, errors, name, submitCount, ignoreTouched);
-
+      console.log("----------",className)
       return (
         <Field
           name={name}
