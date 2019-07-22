@@ -33,33 +33,34 @@ const NomineeDashboardContainer: React.FunctionComponent = ({ children }) =>
     {children}
   </div>
 
-const NewcomerGreeting = () => <>
-  <h1>
-    <FormattedMessage id="account-setup.welcome-to-neufund"/>
-  </h1>
-  <p>
-    <FormattedMessage id="account-setup.please-complete-setup"/>
-  </p>
-</>
+const DashboardTitle = () =>
+  <div className={styles.dashboardTitleWrapper}>
+    <h1 className={styles.dashboardTitle}>
+      <FormattedMessage id="account-setup.welcome-to-neufund"/>
+    </h1>
+    <p className={styles.dashboardText}>
+      <FormattedMessage id="account-setup.please-complete-setup"/>
+    </p>
+  </div>
 
 const NomineeAccountSetup: React.FunctionComponent<INomineeAccountSetupSteps> = ({
   accountSetupStepsData,
 }) => (
   <>
-    <NewcomerGreeting/>
-    <Panel>
-      {accountSetupStepsData.map((stepData: IStepComponentProps) => (
+    <DashboardTitle/>
+    <Panel className={styles.accountSetupWrapper}>
+      {accountSetupStepsData.map((stepData: IStepComponentProps) =>
         <AccountSetupStep {...stepData} />
-      ))}
+      )}
     </Panel>
   </>
 );
 
 const NoTasks = () =>
   <>
-    <SuccessTick />
-    <h2><FormattedMessage id="nominee-dashboard.no-tasks-title"/></h2>
-    <p><FormattedMessage id="nominee-dashboard.no-tasks-text"/></p>
+    <SuccessTick/>
+    <h2 className={styles.dashboardTitle}><FormattedMessage id="nominee-dashboard.no-tasks-title"/></h2>
+    <p className={styles.dashboardText}><FormattedMessage id="nominee-dashboard.no-tasks-text"/></p>
   </>
 
 const Notification = () =>
@@ -82,7 +83,7 @@ interface INomineeTask {
   key: string
 }
 
-const NomineeDashboardTasks:React.FunctionComponent<{nomineeTasks?:INomineeTask[]}> = ({ nomineeTasks }) =>
+const NomineeDashboardTasks: React.FunctionComponent<{ nomineeTasks?: INomineeTask[] }> = ({ nomineeTasks }) =>
   <Panel className={styles.dashboardContentPanel}>
     {!nomineeTasks
       ? <NoTasks/>

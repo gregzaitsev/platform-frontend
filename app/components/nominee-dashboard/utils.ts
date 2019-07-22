@@ -7,10 +7,26 @@ export interface IAccountSetupStepData {
 
 export interface IStepComponentProps {
   key: string;
-  done: boolean;
-  isActive: boolean;
+  stepState: EAccountSetupStepState
   title: JSX.Element | string;
   component: JSX.Element | string;
+  number: number
+}
+
+export enum EAccountSetupStepState {
+  DONE = "done",
+  ACTIVE = "active",
+  NOT_DONE = "notDone"
+}
+
+const determineStepState = (isActive:boolean, completed:boolean):EAccountSetupStepState => {
+  if(isActive) {
+    return EAccountSetupStepState.ACTIVE
+  } else if (completed) {
+    return EAccountSetupStepState.DONE
+  } else {
+    return EAccountSetupStepState.NOT_DONE
+  }
 }
 
 export const prepareSetupAccountSteps = (data: IAccountSetupStepData[]): IStepComponentProps[] => {
@@ -18,11 +34,13 @@ export const prepareSetupAccountSteps = (data: IAccountSetupStepData[]): IStepCo
     (
       acc: { activeElement: string | null; data: IStepComponentProps[] },
       stepData: IAccountSetupStepData,
+      index: number,
     ) => {
       const isActive = !stepData.conditionCompleted && acc.activeElement === null;
+
       const stepComponentProps = {
-        done: stepData.conditionCompleted,
-        isActive: isActive,
+        stepState: determineStepState(isActive, stepData.conditionCompleted),
+        number: index + 1,
         key: stepData.key,
         title: stepData.title,
         component: stepData.component,
