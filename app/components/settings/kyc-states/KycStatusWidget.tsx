@@ -1,3 +1,4 @@
+import * as cn from "classnames";
 import * as React from "react";
 import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 import { Col, Row } from "reactstrap";
@@ -23,10 +24,11 @@ import { appConnect } from "../../../store";
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { onLeaveAction } from "../../../utils/OnLeaveAction";
 import { EColumnSpan } from "../../layouts/Container";
-import { Button, ButtonLink, EButtonLayout, EButtonTheme, EIconPosition } from "../../shared/buttons/index";
+import { Button, ButtonLink, EButtonLayout, EIconPosition } from "../../shared/buttons/index";
 import { LoadingIndicator } from "../../shared/loading-indicator";
 import { Panel } from "../../shared/Panel";
 import { WarningAlert } from "../../shared/WarningAlert";
+import { AccountSetupKycStartLayout } from "./AccountSetupKycWidget";
 
 import * as arrowRight from "../../../assets/img/inline_icons/arrow_right.svg";
 import * as infoIcon from "../../../assets/img/notifications/info.svg";
@@ -266,83 +268,16 @@ const StatusIcon = ({
   return <img src={warningIcon} className={styles.icon} alt="" />;
 };
 
-const AccountSetupKycStartLayout: React.FunctionComponent<IStateProps & IDispatchProps> = ({
-  isLoading,
-  error,
-  onGoToKycHome,
-}) => {
-  if (isLoading) {
-    return (
-      <div className={styles.panelBody}>
-        <Row noGutters>
-          <Col>
-            <LoadingIndicator className={styles.loading} />
-          </Col>
-        </Row>
-      </div>
-    );
-  } else if (error) {
-    return (
-      <WarningAlert>
-        <FormattedMessage id="settings.kyc-widget.error" />
-      </WarningAlert>
-    );
-  } else {
-    return (
-      <section className={styles.accountSetupSection}>
-        <p className={styles.accountSetupText}>
-          <FormattedMessage id="account-setup.kyc-widget-text"/>
-        </p>
-        <Button
-          layout={EButtonLayout.PRIMARY}
-          theme={EButtonTheme.BRAND}
-          type="button"
-          onClick={onGoToKycHome}
-          data-test-id="start-kyc-button"
-        >
-          <FormattedMessage id="account-setup.kyc-widget-start-kyc" />
-        </Button>
-      </section>
-    );
-  }
-};
-
-
-const KycStatusWidgetLayout: React.FunctionComponent<IStateProps & IDispatchProps> = ({
-  isLoading,
-  error,
-  ...props
-}) => {
-  if (isLoading) {
-    return (
-      <div className={styles.panelBody}>
-        <Row noGutters>
-          <Col>
-            <LoadingIndicator className={styles.loading} />
-          </Col>
-        </Row>
-      </div>
-    );
-  } else if (error) {
-    return (
-      <WarningAlert>
-        <FormattedMessage id="settings.kyc-widget.error" />
-      </WarningAlert>
-    );
-  } else {
-    return (
-      <section className={styles.section}>
-        <p className={styles.text}>
-          {getStatus(props.isUserEmailVerified, props.requestStatus, props.requestOutsourcedStatus)}
-        </p>
-        <ActionButton {...props} />
-      </section>
-    );
-  }
-};
-
 export const KycStatusWidgetBase: React.FunctionComponent<IKycStatusWidgetProps> = props => {
-  const { step, columnSpan, ...rest } = props;
+  const {
+    requestStatus,
+    requestOutsourcedStatus,
+    isUserEmailVerified,
+    isLoading,
+    error,
+    step,
+    columnSpan,
+  } = props;
 
   return (
     <Panel
@@ -350,7 +285,26 @@ export const KycStatusWidgetBase: React.FunctionComponent<IKycStatusWidgetProps>
       headerText={<FormattedMessage id="settings.kyc-widget.header" values={{ step }} />}
       rightComponent={<StatusIcon {...props} />}
     >
-      <KycStatusWidgetLayout {...rest} />
+      {isLoading ? (
+        <div className={styles.panelBody}>
+          <Row noGutters>
+            <Col>
+              <LoadingIndicator className={styles.loading} />
+            </Col>
+          </Row>
+        </div>
+      ) : error ? (
+        <WarningAlert>
+          <FormattedMessage id="settings.kyc-widget.error" />
+        </WarningAlert>
+      ) : (
+        <section className={cn(styles.section)}>
+          <p className={cn(styles.text, "pt-2")}>
+            {getStatus(isUserEmailVerified, requestStatus, requestOutsourcedStatus)}
+          </p>
+          <ActionButton {...props} />
+        </section>
+      )}
     </Panel>
   );
 };

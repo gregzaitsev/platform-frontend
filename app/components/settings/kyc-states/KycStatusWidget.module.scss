@@ -13,19 +13,4 @@
 
 .text {
   min-height: px-to-rem(108px);
-  margin-top: 0.5rem;
 }
-
-.account-setup-section {
-  display: grid;
-  grid-template: auto auto / 1fr;
-  grid-gap: 2rem;
-
-  justify-items: flex-start;
-  align-items: flex-start;
-}
-
-.account-setup-text {
-  margin: 0
-}
-
