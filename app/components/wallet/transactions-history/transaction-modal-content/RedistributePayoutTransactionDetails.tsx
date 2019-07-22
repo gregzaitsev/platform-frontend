@@ -5,7 +5,6 @@ import { TTxHistory } from "../../../../modules/tx-history/types";
 import { DataRow } from "../../../modals/tx-sender/shared/DataRow";
 import { ECurrency, ENumberOutputFormat } from "../../../shared/formatters/utils";
 import { getIconForCurrency } from "../../../shared/icons/CurrencyIcon";
-import { EtherscanAddressLink } from "../../../shared/links/EtherscanLink";
 import { ETextPosition, ETheme, MoneySuiteWidget } from "../../../shared/MoneySuiteWidget";
 import { ESize } from "../../../shared/TransactionData";
 import { BasicTransactionDetails } from "./BasicTransactionDetails";
@@ -16,9 +15,11 @@ interface IExternalProps {
   transaction: TTxHistory;
 }
 
-const PayoutTransactionsDetails: React.FunctionComponent<IExternalProps> = ({ transaction }) => {
-  if (transaction.type !== ETransactionType.PAYOUT) {
-    throw new Error("Only payout transactions types are allowed");
+const RedistributePayoutTransactionsDetails: React.FunctionComponent<IExternalProps> = ({
+  transaction,
+}) => {
+  if (transaction.type !== ETransactionType.REDISTRIBUTE_PAYOUT) {
+    throw new Error("Only redistribute payout transactions types are allowed");
   }
 
   return (
@@ -29,16 +30,7 @@ const PayoutTransactionsDetails: React.FunctionComponent<IExternalProps> = ({ tr
 
       <DataRow
         className={styles.withSpacing}
-        caption={"Paid Out To"}
-        value={<EtherscanAddressLink address={transaction.toAddress} />}
-        clipboardCopyValue={transaction.toAddress}
-      />
-
-      <hr className={styles.separator} />
-
-      <DataRow
-        className={styles.withSpacing}
-        caption={"Amount received"}
+        caption={"Amount redistributed"}
         value={
           <MoneySuiteWidget
             icon={getIconForCurrency(transaction.currency)}
@@ -57,4 +49,4 @@ const PayoutTransactionsDetails: React.FunctionComponent<IExternalProps> = ({ tr
   );
 };
 
-export { PayoutTransactionsDetails };
+export { RedistributePayoutTransactionsDetails };

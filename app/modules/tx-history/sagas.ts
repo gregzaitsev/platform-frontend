@@ -39,6 +39,7 @@ export function* mapAnalyticsApiTransactionResponse(
     txHash: transaction.txHash,
   };
 
+  // we can return tx in each case but then we will loose type safety
   let tx: TTxHistory | undefined = undefined;
 
   switch (transaction.type) {
@@ -153,8 +154,7 @@ export function* mapAnalyticsApiTransactionResponse(
       }
       break;
 
-    case ETransactionType.PAYOUT:
-    case ETransactionType.REDISTRIBUTE_PAYOUT: {
+    case ETransactionType.PAYOUT: {
       if (!transaction.extraData.tokenMetadata) {
         throw new Error("Invalid token metadata");
       }
@@ -174,6 +174,25 @@ export function* mapAnalyticsApiTransactionResponse(
         currency,
         amountEur,
         toAddress,
+        type: transaction.type,
+      };
+      break;
+    }
+    case ETransactionType.REDISTRIBUTE_PAYOUT: {
+      if (!transaction.extraData.tokenMetadata) {
+        throw new Error("Invalid token metadata");
+      }
+
+      const currency = getCurrencyFromTokenSymbol(transaction.extraData.tokenMetadata);
+
+      const amountEur: string = yield select((state: IAppState) =>
+        selectEurEquivalent(state, common.amount, currency),
+      );
+
+      tx = {
+        ...common,
+        currency,
+        amountEur,
         type: transaction.type,
       };
       break;

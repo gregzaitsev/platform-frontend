@@ -82,18 +82,26 @@ export type EtoTokensClaimTransfer = {
   neuRewardEur: string;
 };
 
-export type TTx = {
-  type: ETransactionType.REDISTRIBUTE_PAYOUT | ETransactionType.PAYOUT;
+export type TPayoutTransfer = {
+  type: ETransactionType.PAYOUT;
   subType: undefined;
   amountEur: string;
   currency: ECurrency;
   toAddress: EthereumAddressWithChecksum;
 };
 
+export type TRedistributePayoutTransfer = {
+  type: ETransactionType.REDISTRIBUTE_PAYOUT;
+  subType: undefined;
+  amountEur: string;
+  currency: ECurrency;
+};
+
 export type TTxHistory = (
   | TEtoRefundTx
   | TEtoInvestmentTx
-  | TTx
+  | TPayoutTransfer
+  | TRedistributePayoutTransfer
   | TTransferEquityToken
   | TTransferWellKnownToken
   | TNEURTransfer

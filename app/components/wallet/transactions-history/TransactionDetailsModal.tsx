@@ -11,6 +11,7 @@ import { EtoTokensClaimTransactionDetails } from "./transaction-modal-content/Et
 import { NEurDestroyTransactionDetails } from "./transaction-modal-content/NEurDestroyTransactionDetails";
 import { NEurPurchaseTransactionDetails } from "./transaction-modal-content/NEurPurchaseTransactionDetails";
 import { PayoutTransactionsDetails } from "./transaction-modal-content/PayoutTransactionDetails";
+import { RedistributePayoutTransactionsDetails } from "./transaction-modal-content/RedistributePayoutTransactionDetails";
 import { TransferTransactionDetails } from "./transaction-modal-content/TransferTransactionDetails";
 import { TransactionName } from "./TransactionName";
 
@@ -49,6 +50,7 @@ const TransactionTypeToComponentMap: React.FunctionComponent<IExternalProps> = p
     case ETransactionType.ETO_REFUND:
       return <EtoRefundTransactionsDetails {...props} />;
     case ETransactionType.REDISTRIBUTE_PAYOUT:
+      return <RedistributePayoutTransactionsDetails {...props} />;
     case ETransactionType.PAYOUT:
       return <PayoutTransactionsDetails {...props} />;
     case ETransactionType.ETO_INVESTMENT:
