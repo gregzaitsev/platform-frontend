@@ -1,6 +1,4 @@
-import * as cn from "classnames";
 import * as React from "react";
-import { FormattedDate, FormattedRelative } from "react-intl";
 
 import { ETransactionType } from "../../../../lib/api/analytics-api/interfaces";
 import { TTxHistory } from "../../../../modules/tx-history/types";
@@ -10,7 +8,8 @@ import { ECurrency, ENumberOutputFormat } from "../../../shared/formatters/utils
 import { getIconForCurrency } from "../../../shared/icons/CurrencyIcon";
 import { ExternalLink } from "../../../shared/links/ExternalLink";
 import { ETextPosition, ETheme, MoneySuiteWidget } from "../../../shared/MoneySuiteWidget";
-import { ESize, TransactionData } from "../../../shared/TransactionData";
+import { ESize } from "../../../shared/TransactionData";
+import { BasicTransactionDetails } from "./BasicTransactionDetails";
 
 import * as styles from "../../../modals/tx-sender/withdraw-flow/Withdraw.module.scss";
 
@@ -33,34 +32,7 @@ const EtoTokensClaimTransactionDetails: React.FunctionComponent<IExternalProps> 
         </ExternalLink>
       </p>
 
-      <DataRow
-        className={cn(styles.withSpacing, { "mt-4": transaction.subType === undefined })}
-        caption={"Status"}
-        value={"Complete"}
-      />
-
-      <DataRow
-        className={styles.withSpacing}
-        caption={"Time"}
-        value={
-          <TransactionData
-            top={<FormattedRelative value={transaction.date} />}
-            bottom={
-              <FormattedDate
-                value={transaction.date}
-                timeZone="UTC"
-                timeZoneName="short"
-                year="numeric"
-                month="short"
-                day="numeric"
-                hour="numeric"
-                minute="numeric"
-              />
-            }
-            size={ESize.MEDIUM}
-          />
-        }
-      />
+      <BasicTransactionDetails transaction={transaction} />
 
       <hr className={styles.separator} />
 

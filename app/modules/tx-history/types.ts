@@ -85,6 +85,9 @@ export type EtoTokensClaimTransfer = {
 export type TTx = {
   type: ETransactionType.REDISTRIBUTE_PAYOUT | ETransactionType.PAYOUT;
   subType: undefined;
+  amountEur: string;
+  currency: ECurrency;
+  toAddress: EthereumAddressWithChecksum;
 };
 
 export type TTxHistory = (

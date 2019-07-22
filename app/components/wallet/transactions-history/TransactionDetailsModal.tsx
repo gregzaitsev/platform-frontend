@@ -10,6 +10,7 @@ import { EtoRefundTransactionsDetails } from "./transaction-modal-content/EtoRef
 import { EtoTokensClaimTransactionDetails } from "./transaction-modal-content/EtoTokensClaimTransactionDetails";
 import { NEurDestroyTransactionDetails } from "./transaction-modal-content/NEurDestroyTransactionDetails";
 import { NEurPurchaseTransactionDetails } from "./transaction-modal-content/NEurPurchaseTransactionDetails";
+import { PayoutTransactionsDetails } from "./transaction-modal-content/PayoutTransactionDetails";
 import { TransferTransactionDetails } from "./transaction-modal-content/TransferTransactionDetails";
 import { TransactionName } from "./TransactionName";
 
@@ -47,10 +48,11 @@ const TransactionTypeToComponentMap: React.FunctionComponent<IExternalProps> = p
       return <NEurDestroyTransactionDetails {...props} />;
     case ETransactionType.ETO_REFUND:
       return <EtoRefundTransactionsDetails {...props} />;
-    case ETransactionType.ETO_INVESTMENT:
-    case ETransactionType.NEUR_REDEEM:
     case ETransactionType.REDISTRIBUTE_PAYOUT:
     case ETransactionType.PAYOUT:
+      return <PayoutTransactionsDetails {...props} />;
+    case ETransactionType.ETO_INVESTMENT:
+    case ETransactionType.NEUR_REDEEM:
       return null;
     default:
       return assertNever(props.transaction, "Can't find component related to transaction");

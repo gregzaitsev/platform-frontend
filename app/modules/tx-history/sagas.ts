@@ -12,9 +12,11 @@ import {
   TAnalyticsTransactionsResponse,
 } from "../../lib/api/analytics-api/interfaces";
 import { IAppState } from "../../store";
+import { EthereumAddressWithChecksum } from "../../types";
 import { actions, TActionFromCreator } from "../actions";
 import { neuCall, neuTakeLatest, neuTakeUntil } from "../sagasUtils";
 import { selectEurEquivalent } from "../shared/tokenPrice/selectors";
+import { selectEthereumAddressWithChecksum } from "../web3/selectors";
 import { TX_LIMIT, TX_POLLING_INTERVAL } from "./constants";
 import { selectLastTransactionId, selectTimestampOfLastChange, selectTXById } from "./selectors";
 import { ETransactionSubType, TTxHistory } from "./types";
@@ -157,10 +159,22 @@ export function* mapAnalyticsApiTransactionResponse(
         throw new Error("Invalid token metadata");
       }
 
+      const currency = getCurrencyFromTokenSymbol(transaction.extraData.tokenMetadata);
+
+      const amountEur: string = yield select((state: IAppState) =>
+        selectEurEquivalent(state, common.amount, currency),
+      );
+
+      const toAddress: EthereumAddressWithChecksum = yield select(
+        selectEthereumAddressWithChecksum,
+      );
+
       tx = {
         ...common,
+        currency,
+        amountEur,
+        toAddress,
         type: transaction.type,
-        currency: getCurrencyFromTokenSymbol(transaction.extraData.tokenMetadata),
       };
       break;
     }

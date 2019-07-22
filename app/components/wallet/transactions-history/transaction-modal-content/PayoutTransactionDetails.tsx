@@ -16,11 +16,12 @@ interface IExternalProps {
   transaction: TTxHistory;
 }
 
-const NEurDestroyTransactionDetails: React.FunctionComponent<IExternalProps> = ({
-  transaction,
-}) => {
-  if (transaction.type !== ETransactionType.NEUR_DESTROY) {
-    throw new Error("Only neur destroy transaction type is allowed");
+const PayoutTransactionsDetails: React.FunctionComponent<IExternalProps> = ({ transaction }) => {
+  if (
+    transaction.type !== ETransactionType.PAYOUT &&
+    transaction.type !== ETransactionType.REDISTRIBUTE_PAYOUT
+  ) {
+    throw new Error("Only payout transactions types are allowed");
   }
 
   return (
@@ -31,25 +32,22 @@ const NEurDestroyTransactionDetails: React.FunctionComponent<IExternalProps> = (
 
       <DataRow
         className={styles.withSpacing}
-        caption={"Liquidated By"}
-        value={
-          <EtherscanAddressLink address={transaction.liquidatedByAddress}>
-            Fifth Force Lichtenstein
-          </EtherscanAddressLink>
-        }
+        caption={"Paid Out To"}
+        value={<EtherscanAddressLink address={transaction.toAddress} />}
+        clipboardCopyValue={transaction.toAddress}
       />
 
       <hr className={styles.separator} />
 
       <DataRow
         className={styles.withSpacing}
-        caption={"Liquidated"}
+        caption={"Amount received"}
         value={
           <MoneySuiteWidget
             icon={getIconForCurrency(transaction.currency)}
             currency={transaction.currency}
             largeNumber={transaction.amount}
-            value={transaction.amount}
+            value={transaction.amountEur}
             currencyTotal={ECurrency.EUR}
             theme={ETheme.BLACK}
             size={ESize.MEDIUM}
@@ -62,4 +60,4 @@ const NEurDestroyTransactionDetails: React.FunctionComponent<IExternalProps> = (
   );
 };
 
-export { NEurDestroyTransactionDetails };
+export { PayoutTransactionsDetails };
