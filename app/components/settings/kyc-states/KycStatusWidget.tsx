@@ -1,4 +1,3 @@
-import * as cn from "classnames";
 import * as React from "react";
 import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 import { Col, Row } from "reactstrap";
@@ -24,7 +23,7 @@ import { appConnect } from "../../../store";
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { onLeaveAction } from "../../../utils/OnLeaveAction";
 import { EColumnSpan } from "../../layouts/Container";
-import { Button, ButtonLink, EButtonLayout, EIconPosition } from "../../shared/buttons";
+import { Button, ButtonLink, EButtonLayout, EButtonTheme, EIconPosition } from "../../shared/buttons/index";
 import { LoadingIndicator } from "../../shared/loading-indicator";
 import { Panel } from "../../shared/Panel";
 import { WarningAlert } from "../../shared/WarningAlert";
@@ -267,6 +266,48 @@ const StatusIcon = ({
   return <img src={warningIcon} className={styles.icon} alt="" />;
 };
 
+const AccountSetupKycStartLayout: React.FunctionComponent<IStateProps & IDispatchProps> = ({
+  isLoading,
+  error,
+  onGoToKycHome,
+}) => {
+  if (isLoading) {
+    return (
+      <div className={styles.panelBody}>
+        <Row noGutters>
+          <Col>
+            <LoadingIndicator className={styles.loading} />
+          </Col>
+        </Row>
+      </div>
+    );
+  } else if (error) {
+    return (
+      <WarningAlert>
+        <FormattedMessage id="settings.kyc-widget.error" />
+      </WarningAlert>
+    );
+  } else {
+    return (
+      <section className={styles.accountSetupSection}>
+        <p className={styles.accountSetupText}>
+          <FormattedMessage id="account-setup.kyc-widget-text"/>
+        </p>
+        <Button
+          layout={EButtonLayout.PRIMARY}
+          theme={EButtonTheme.BRAND}
+          type="button"
+          onClick={onGoToKycHome}
+          data-test-id="start-kyc-button"
+        >
+          <FormattedMessage id="account-setup.kyc-widget-start-kyc" />
+        </Button>
+      </section>
+    );
+  }
+};
+
+
 const KycStatusWidgetLayout: React.FunctionComponent<IStateProps & IDispatchProps> = ({
   isLoading,
   error,
@@ -290,8 +331,8 @@ const KycStatusWidgetLayout: React.FunctionComponent<IStateProps & IDispatchProp
     );
   } else {
     return (
-      <section className={cn(styles.section)}>
-        <p className={cn(styles.text, "pt-2")}>
+      <section className={styles.section}>
+        <p className={styles.text}>
           {getStatus(props.isUserEmailVerified, props.requestStatus, props.requestOutsourcedStatus)}
         </p>
         <ActionButton {...props} />
@@ -353,4 +394,4 @@ const connectKycStatusWidget = <T extends {}>(
   )(WrappedComponent);
 
 export const KycStatusWidget = connectKycStatusWidget<IExternalProps>(KycStatusWidgetBase);
-export const KycStatusComponent = connectKycStatusWidget<{}>(KycStatusWidgetLayout);
+export const KycStatusComponent = connectKycStatusWidget<{}>(AccountSetupKycStartLayout);
