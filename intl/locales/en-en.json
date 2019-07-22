@@ -1254,7 +1254,7 @@
   "wallet.tx-list.name.eto-investment": "Invested in {companyName}",
   "wallet.tx-list.name.eto-refund": "Refunded by {companyName}",
   "wallet.tx-list.name.eto-tokens-claim": "Claimed {currency} token",
-  "wallet.tx-list.name.neur-destroy": "Destroyed {currency}",
+  "wallet.tx-list.name.neur-destroy": "{currency} Liquidated",
   "wallet.tx-list.name.neur-purchase": "Purchased {currency}",
   "wallet.tx-list.name.neur-redeem": "Redeemed {currency}",
   "wallet.tx-list.name.payout": "Payout {currency}",

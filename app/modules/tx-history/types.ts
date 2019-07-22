@@ -49,13 +49,17 @@ export type TTransferWellKnownToken = {
 };
 
 export type TNEURTransfer = {
-  type:
-    | ETransactionType.NEUR_PURCHASE
-    | ETransactionType.NEUR_REDEEM
-    | ETransactionType.NEUR_DESTROY;
+  type: ETransactionType.NEUR_PURCHASE | ETransactionType.NEUR_REDEEM;
   subType: undefined;
   currency: ECurrency.EUR_TOKEN;
   to: EthereumAddressWithChecksum;
+};
+
+export type TNEURDestroyTransfer = {
+  type: ETransactionType.NEUR_DESTROY;
+  subType: undefined;
+  liquidatedByAddress: EthereumAddressWithChecksum;
+  currency: ECurrency.EUR_TOKEN;
 };
 
 export type EtoTokensClaimTransfer = {
@@ -79,5 +83,6 @@ export type TTxHistory = (
   | TTransferEquityToken
   | TTransferWellKnownToken
   | TNEURTransfer
+  | TNEURDestroyTransfer
   | EtoTokensClaimTransfer) &
   TTxHistoryCommon;

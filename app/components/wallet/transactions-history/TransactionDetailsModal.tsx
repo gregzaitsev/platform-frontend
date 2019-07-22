@@ -7,6 +7,7 @@ import { assertNever } from "../../../utils/assertNever";
 import { EHeadingSize, Heading } from "../../shared/Heading";
 import { EtherscanTxLink } from "../../shared/links/EtherscanLink";
 import { EtoTokensClaimTransactionDetails } from "./transaction-modal-content/EtoTokensClaimTransactionDetails";
+import { NEurDestroy } from "./transaction-modal-content/NEurDestroy";
 import { NEurPurchaseTransactionDetails } from "./transaction-modal-content/NEurPurchaseTransactionDetails";
 import { TransferTransactionDetails } from "./transaction-modal-content/TransferTransactionDetails";
 import { TransactionName } from "./TransactionName";
@@ -39,14 +40,15 @@ const TransactionTypeToComponentMap: React.FunctionComponent<IExternalProps> = p
       return <TransferTransactionDetails {...props} />;
     case ETransactionType.NEUR_PURCHASE:
       return <NEurPurchaseTransactionDetails {...props} />;
+    case ETransactionType.ETO_TOKENS_CLAIM:
+      return <EtoTokensClaimTransactionDetails {...props} />;
+    case ETransactionType.NEUR_DESTROY:
+      return <NEurDestroy {...props} />;
     case ETransactionType.ETO_INVESTMENT:
     case ETransactionType.ETO_REFUND:
     case ETransactionType.NEUR_REDEEM:
-    case ETransactionType.ETO_TOKENS_CLAIM:
-      return <EtoTokensClaimTransactionDetails {...props} />;
     case ETransactionType.REDISTRIBUTE_PAYOUT:
     case ETransactionType.PAYOUT:
-    case ETransactionType.NEUR_DESTROY:
       return null;
     default:
       return assertNever(props.transaction, "Can't find component related to transaction");

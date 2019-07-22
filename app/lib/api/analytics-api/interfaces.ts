@@ -33,6 +33,7 @@ export type TAnalyticsTransactionTokenMetadata = YupTS.TypeOf<
 export const AnalyticsTransactionExtraDataSchema = YupTS.object({
   amount: YupTS.number(),
   fromAddress: YupTS.string<EthereumAddressWithChecksum>().optional(),
+  byAddress: YupTS.string<EthereumAddressWithChecksum>().optional(),
   toAddress: YupTS.string<EthereumAddressWithChecksum>().optional(),
   tokenAddress: YupTS.string<EthereumAddressWithChecksum>().optional(),
   tokenInterface: YupTS.string().optional(),

@@ -63,7 +63,7 @@ function* handleAcceptCurrentAgreement({
     );
   } catch (e) {
     notificationCenter.error(createMessage(AuthMessage.AUTH_TOC_ACCEPT_ERROR));
-    logger.error(new Error("Could not accept Terms and Conditions"), e);
+    logger.error("Could not accept Terms and Conditions", e);
   }
 }
 
