@@ -11,6 +11,10 @@ export const txHistoryActions = {
   stopWatchingForNewTransactions: createActionFactory(
     "TX_HISTORY_STOP_WATCHING_FOR_NEW_TRANSACTIONS",
   ),
+  showTransactionDetails: createActionFactory(
+    "TX_HISTORY_SHOW_TRANSACTION_DETAILS",
+    (id: string) => ({ id }),
+  ),
 
   setTransactions: createActionFactory(
     "TX_HISTORY_SET_TRANSACTIONS",

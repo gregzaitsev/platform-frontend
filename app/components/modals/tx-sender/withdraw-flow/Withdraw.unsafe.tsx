@@ -1,7 +1,7 @@
-import * as cn from "classnames";
-import { Formik, FormikErrors, FormikProps, yupToFormErrors } from "formik";
+import { Formik, FormikErrors, yupToFormErrors } from "formik";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
+import { Col, Container, Row } from "reactstrap";
 import { compose, withHandlers } from "recompose";
 import { NumberSchema } from "yup";
 
@@ -9,83 +9,33 @@ import { ITxData } from "../../../../lib/web3/types";
 import * as YupTS from "../../../../lib/yup-ts";
 import { actions } from "../../../../modules/actions";
 import { EValidationState } from "../../../../modules/tx/sender/reducer";
-import {
-  selectTxAdditionalData,
-  selectTxGasCostEthUlps,
-  selectTxGasCostEurUlps,
-  selectTxTotalEthUlps,
-  selectTxTotalEurUlps,
-  selectTxValidationState,
-  selectTxValueEurUlps,
-} from "../../../../modules/tx/sender/selectors";
-import {
-  EAdditionalValidationDataWarning,
-  ETxSenderType,
-  IAdditionalValidationData,
-  IDraftType,
-  TAdditionalDataByType,
-} from "../../../../modules/tx/types";
-import { ETH_ADDRESS_SIZE } from "../../../../modules/tx/utils";
-import {
-  selectLiquidEtherBalance,
-  selectLiquidEtherBalanceEuroAmount,
-  selectMaxAvailableEther,
-} from "../../../../modules/wallet/selectors";
-import { selectEthereumAddressWithChecksum } from "../../../../modules/web3/selectors";
+import { selectTxValidationState } from "../../../../modules/tx/sender/selectors";
+import { ETxSenderType, IDraftType } from "../../../../modules/tx/types";
+import { selectMaxAvailableEther } from "../../../../modules/wallet/selectors";
 import { doesUserHaveEnoughEther, validateAddress } from "../../../../modules/web3/utils";
 import { appConnect } from "../../../../store";
 import { OmitKeys } from "../../../../types";
+import { IIntlProps, injectIntlHelpers } from "../../../../utils/injectIntlHelpers.unsafe";
 import { Button } from "../../../shared/buttons";
-import { EButtonLayout } from "../../../shared/buttons/Button";
-import { MoneyNew } from "../../../shared/formatters/Money";
-import {
-  ECurrency,
-  ENumberInputFormat,
-  ENumberOutputFormat,
-  ERoundingMode,
-  selectDecimalPlaces,
-  toFixedPrecision,
-} from "../../../shared/formatters/utils";
-import { Form } from "../../../shared/forms";
-import { FormFieldBoolean } from "../../../shared/forms/fields/FormFieldBoolean";
-import { FormLabel } from "../../../shared/forms/fields/FormFieldLabel";
-import { FormInput } from "../../../shared/forms/fields/FormInput";
-import { EInputTheme } from "../../../shared/forms/layouts/InputLayout";
-import { EHeadingSize, Heading } from "../../../shared/Heading";
-import { EtherscanAddressLink } from "../../../shared/links/EtherscanLink";
-import { MaskedNumberInput } from "../../../shared/MaskedNumberInput";
-import { ESize, ETextPosition, ETheme, MoneySuiteWidget } from "../../../shared/MoneySuiteWidget";
-import { DataRow } from "../shared/DataRow";
+import { EthereumIcon } from "../../../shared/ethereum";
+import { Form, FormField } from "../../../shared/forms";
+import { ValidationErrorMessage } from "../shared/ValidationErrorMessage";
 
 import * as styles from "./Withdraw.module.scss";
-
-type TAdditionalData = IAdditionalValidationData &
-  TAdditionalDataByType<typeof ETxSenderType.WITHDRAW>;
 
 interface IStateProps {
   maxEther: string;
   validationState?: EValidationState;
-  ethAmount: string;
-  ethEuroAmount: string;
-  walletAddress: string;
-  gasPrice: string;
-  gasPriceEur: string;
-  total: string;
-  totalEur: string;
-  additionalData?: TAdditionalData;
-  valueEur: string;
 }
 
-interface IWithdrawData {
+// tslint:disable-next-line:no-unused-variable
+interface IFormikProps {
   value: string;
   to: string;
-  withdrawAll: boolean;
-  allowNewAddress: boolean;
-  allowSmartContract: boolean;
 }
 
 interface IHandlersProps {
-  onValidateHandler: (values: IWithdrawData) => void | FormikErrors<IWithdrawData>;
+  onValidateHandler: (values: IFormikProps) => void | FormikErrors<IFormikProps>;
 }
 
 interface IDispatchProps {
@@ -94,16 +44,6 @@ interface IDispatchProps {
 }
 
 type TProps = IStateProps & OmitKeys<IDispatchProps, "onValidate"> & IHandlersProps;
-
-export const hasWarning = (
-  error: EAdditionalValidationDataWarning,
-  errorList: ReadonlyArray<EAdditionalValidationDataWarning> | undefined,
-): boolean => {
-  if (errorList) {
-    return errorList.includes(error);
-  }
-  return false;
-};
 
 const getWithdrawFormSchema = (maxEther: string) =>
   YupTS.object({
@@ -136,324 +76,85 @@ const getWithdrawFormSchema = (maxEther: string) =>
     ),
   }).toYup();
 
-const WithdrawLayout: React.FunctionComponent<TProps> = ({
+const WithdrawLayout: React.FunctionComponent<TProps & IIntlProps> = ({
   onAccept,
   onValidateHandler,
-  ethAmount,
-  gasPrice,
-  gasPriceEur,
-  total,
-  totalEur,
   validationState,
-  additionalData,
-  valueEur,
+  intl,
 }) => (
-  <section className={styles.contentWrapper}>
-    <Heading
-      size={EHeadingSize.HUGE}
-      level={4}
-      className={styles.withSpacing}
-      decorator={false}
-      disableTransform={true}
-    >
-      <FormattedMessage id="modal.sent-eth.title" />
-    </Heading>
+  <section>
+    <EthereumIcon />
 
-    <Formik<IWithdrawData>
+    <h3 className={styles.title}>
+      <FormattedMessage id="modal.sent-eth.title" />
+    </h3>
+
+    <Formik<IFormikProps>
       validate={onValidateHandler}
-      // Initial values are used only when user is returning to this screen from Summary
-      initialValues={{
-        to: (additionalData && additionalData.to) || "",
-        value: additionalData
-          ? toFixedPrecision({
-              value: additionalData.inputValue || "0",
-              decimalPlaces: selectDecimalPlaces(ECurrency.ETH),
-              inputFormat: ENumberInputFormat.ULPS,
-            })
-          : "",
-        withdrawAll: false,
-        allowNewAddress: false,
-        allowSmartContract: false,
-      }}
-      // Initial valid is only set to true when user is returning to this screen from Summary
-      isInitialValid={additionalData && !!additionalData.amount}
+      initialValues={{ value: "", to: "" }}
       onSubmit={onAccept}
     >
-      {({
-        isValid,
-        isValidating,
-        setFieldValue,
-        setFieldTouched,
-        values,
-        errors,
-      }: FormikProps<IWithdrawData>) => (
+      {({ isValid, isValidating }) => (
         <Form>
-          <section className={styles.withSpacing}>
-            <FormLabel for="to" className={styles.label}>
-              <FormattedMessage id="modal.sent-eth.to-address" />
-            </FormLabel>
-            <FormInput
-              name="to"
-              data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.to-address"
-              maxLength={ETH_ADDRESS_SIZE}
-              charactersLimit={ETH_ADDRESS_SIZE}
-              theme={EInputTheme.BOX}
-            />
-            {!errors.to && values.to && (
-              <EtherscanAddressLink className={cn(styles.etherscanLink)} address={values.to}>
-                <FormattedMessage id="modal.sent-eth.view-on-etherscan" />
-              </EtherscanAddressLink>
-            )}
-          </section>
-
-          {additionalData &&
-            hasWarning(
-              EAdditionalValidationDataWarning.IS_NEW_ADDRESS,
-              additionalData.warnings,
-            ) && (
-              <FormFieldBoolean
-                className={styles.withSpacing}
-                data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.new-address"
-                name="allowNewAddress"
-                label={<FormattedMessage id="modal.sent-eth.new-address" />}
-              />
-            )}
-
-          {additionalData &&
-            hasWarning(
-              EAdditionalValidationDataWarning.IS_SMART_CONTRACT,
-              additionalData.warnings,
-            ) && (
-              <FormFieldBoolean
-                className={styles.withSpacing}
-                data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.smart-contract"
-                name="allowSmartContract"
-                label={<FormattedMessage id="modal.sent-eth.smart-contract-address" />}
-              />
-            )}
-
-          <DataRow
-            caption={<FormattedMessage id="modal.sent-eth.available-balance" />}
-            value={
-              <MoneyNew
-                className={styles.money}
-                value={ethAmount}
-                inputFormat={ENumberInputFormat.ULPS}
-                outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
-                valueType={ECurrency.ETH}
-              />
-            }
-          />
-
-          <section className={cn(styles.withSpacing, "text-right small")}>
-            <Button
-              data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.whole-balance"
-              disabled={!(additionalData && additionalData.maximumAvailableEther)}
-              onClick={() => {
-                // TODO: Remove disable button when issue with much bigger gas for random addresses has been fixed
-                setFieldValue(
-                  "value",
-                  toFixedPrecision({
-                    value:
-                      additionalData && additionalData.maximumAvailableEther
-                        ? additionalData.maximumAvailableEther
-                        : "0",
-                    roundingMode: ERoundingMode.DOWN,
-                    inputFormat: ENumberInputFormat.ULPS,
-                    decimalPlaces: selectDecimalPlaces(
-                      ECurrency.ETH,
-                      ENumberOutputFormat.ONLY_NONZERO_DECIMALS,
-                    ),
-                  }),
-                  true,
-                );
-                setFieldTouched("value", true, true);
-              }}
-              layout={EButtonLayout.INLINE}
-            >
-              <FormattedMessage id="modal.sent-eth.whole-balance" />
-            </Button>
-          </section>
-
-          <section>
-            <FormLabel for="value" className={styles.label}>
-              <FormattedMessage id="modal.sent-eth.amount" />
-            </FormLabel>
-            <MaskedNumberInput
-              className="text-right"
-              storageFormat={ENumberInputFormat.FLOAT}
-              valueType={ECurrency.ETH}
-              outputFormat={ENumberOutputFormat.FULL}
-              data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.value"
-              name="value"
-              value={values.value}
-              onChangeFn={value => {
-                setFieldValue("value", value);
-                setFieldTouched("value", true);
-              }}
-              returnInvalidValues={true}
-              showUnits={true}
-              theme={EInputTheme.BOX}
-            />
-          </section>
-
-          <section className={cn(styles.withSpacing, "text-right")}>
-            <small>
-              {"= "}
-              <MoneyNew
-                value={
-                  isValid
-                    ? valueEur
-                    : "0" /* Show 0 if form is invalid due of initially populated state */
-                }
-                inputFormat={ENumberInputFormat.ULPS}
-                valueType={ECurrency.EUR}
-                outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
-              />
-            </small>
-          </section>
-
-          {additionalData &&
-            hasWarning(
-              EAdditionalValidationDataWarning.WILL_EMPTY_WALLET,
-              additionalData.warnings,
-            ) && (
-              <FormFieldBoolean
-                className={styles.withSpacing}
-                data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.will-empty-wallet"
-                name="withdrawAll"
-                label={
-                  <FormattedMessage id="modals.tx-sender.withdraw-flow.withdraw-component.errors.value-will-empty-wallet" />
-                }
-              />
-            )}
-
-          <DataRow
-            className={styles.withSpacing}
-            caption={<FormattedMessage id="modal.sent-eth.transaction-fee" />}
-            value={
-              <MoneySuiteWidget
-                currency={ECurrency.ETH}
-                largeNumber={
-                  isValid
-                    ? gasPrice
-                    : "0" /* Show 0 if form is invalid due of initially populated state */
-                }
-                value={isValid ? gasPriceEur : "0"}
-                currencyTotal={ECurrency.EUR}
-                data-test-id="modals.tx-sender.withdraw-flow.summary.cost"
-                theme={ETheme.BLACK}
-                size={ESize.MEDIUM}
-                textPosition={ETextPosition.RIGHT}
-                outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS_ROUND_UP}
-              />
-            }
-          />
-
-          <hr className={styles.separator} />
-
-          <DataRow
-            className={cn(styles.sectionBig, styles.withSpacing)}
-            caption={<FormattedMessage id="modal.sent-eth.total" />}
-            value={
-              <MoneySuiteWidget
-                currency={ECurrency.ETH}
-                largeNumber={
-                  isValid
-                    ? total
-                    : "0" /* Show 0 if form is invalid due of initially populated state */
-                }
-                value={isValid ? totalEur : "0"}
-                currencyTotal={ECurrency.EUR}
-                data-test-id="modals.tx-sender.withdraw-flow.summary.cost"
-                theme={ETheme.BLACK}
-                size={ESize.HUGE}
-                textPosition={ETextPosition.RIGHT}
-                outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS_ROUND_UP}
-              />
-            }
-          />
-
-          {isValid && validationState === EValidationState.IS_NOT_ACCEPTING_ETHER && (
-            <span
-              className="text-warning"
-              data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.not-accepting-ether"
-            >
-              <FormattedMessage id="modal.sent-eth.not-accepting-ether" />
-            </span>
-          )}
-
-          <section className="mt-4 text-center">
-            <Button
-              type="submit"
-              disabled={
-                !isValid ||
-                isValidating ||
-                validationState !== EValidationState.VALIDATION_OK ||
-                // TODO: Refactor to better readable form
-                (additionalData &&
-                  hasWarning(
-                    EAdditionalValidationDataWarning.WILL_EMPTY_WALLET,
-                    additionalData.warnings,
-                  ) &&
-                  !values.withdrawAll) ||
-                (additionalData &&
-                  hasWarning(
-                    EAdditionalValidationDataWarning.IS_SMART_CONTRACT,
-                    additionalData.warnings,
-                  ) &&
-                  !values.allowSmartContract) ||
-                (additionalData &&
-                  hasWarning(
-                    EAdditionalValidationDataWarning.IS_NEW_ADDRESS,
-                    additionalData.warnings,
-                  ) &&
-                  !values.allowNewAddress)
-              }
-              data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.send-transaction-button"
-            >
-              {isValidating || !validationState ? (
-                <FormattedMessage id="modal.sent-eth.button-loading" />
-              ) : (
-                <FormattedMessage id="modal.sent-eth.button" />
-              )}
-            </Button>
-          </section>
+          <Container>
+            <Row>
+              <Col xs={12} className="mb-3">
+                <FormField
+                  name="to"
+                  label={<FormattedMessage id="modal.sent-eth.to-address" />}
+                  placeholder="0x0"
+                  data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.to-address"
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col xs={12} className="mb-3">
+                <FormField
+                  name="value"
+                  label={<FormattedMessage id="modal.sent-eth.amount-to-send" />}
+                  placeholder={intl.formatIntlMessage("modal.sent-eth.eth-amount-placeholder")}
+                  data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.value"
+                />
+                {/* @SEE https://github.com/jaredpalmer/formik/issues/288 */}
+                {validationState !== EValidationState.VALIDATION_OK && isValid && !isValidating && (
+                  <ValidationErrorMessage type={validationState} />
+                )}
+              </Col>
+            </Row>
+            <Row>
+              <Col xs={12} className="mt-3 text-center">
+                <Button
+                  type="submit"
+                  disabled={
+                    !isValid || isValidating || validationState !== EValidationState.VALIDATION_OK
+                  }
+                  data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.send-transaction-button"
+                >
+                  <FormattedMessage id="modal.sent-eth.button" />
+                </Button>
+              </Col>
+            </Row>
+          </Container>
         </Form>
       )}
     </Formik>
   </section>
 );
 
-const Withdraw = compose<TProps, {}>(
+const Withdraw = compose<TProps & IIntlProps, {}>(
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: state => ({
-      ethAmount: selectLiquidEtherBalance(state),
-      ethEuroAmount: selectLiquidEtherBalanceEuroAmount(state),
-      walletAddress: selectEthereumAddressWithChecksum(state),
       maxEther: selectMaxAvailableEther(state),
       validationState: selectTxValidationState(state),
-      gasPrice: selectTxGasCostEthUlps(state),
-      gasPriceEur: selectTxGasCostEurUlps(state),
-      total: selectTxTotalEthUlps(state),
-      totalEur: selectTxTotalEurUlps(state),
-      additionalData: selectTxAdditionalData<typeof ETxSenderType.WITHDRAW>(state),
-      valueEur: selectTxValueEurUlps(state),
     }),
     dispatchToProps: d => ({
       onAccept: (tx: Partial<ITxData>) => d(actions.txSender.txSenderAcceptDraft(tx)),
       onValidate: (txDraft: IDraftType) => d(actions.txValidator.txSenderValidateDraft(txDraft)),
     }),
   }),
-  withHandlers<IStateProps & IDispatchProps, {}>({
-    onValidateHandler: ({ onValidate, maxEther }) => (values: IWithdrawData) => {
+  withHandlers<IStateProps & IDispatchProps, IHandlersProps>({
+    onValidateHandler: ({ onValidate, maxEther }) => (values: IFormikProps) => {
       const schema = getWithdrawFormSchema(maxEther);
-
-      onValidate({
-        to: values.to,
-        value: values.value ? values.value : "0",
-        type: ETxSenderType.WITHDRAW,
-      });
 
       try {
         schema.validateSync(values, { abortEarly: false });
@@ -461,9 +162,16 @@ const Withdraw = compose<TProps, {}>(
         return yupToFormErrors(errors);
       }
 
+      onValidate({
+        to: values.to,
+        value: values.value,
+        type: ETxSenderType.WITHDRAW,
+      });
+
       return undefined;
     },
   }),
+  injectIntlHelpers,
 )(WithdrawLayout);
 
 export { Withdraw, WithdrawLayout };

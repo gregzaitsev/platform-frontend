@@ -7,19 +7,9 @@ import { ITxData } from "../../../../lib/web3/types";
 import { actions, TActionFromCreator } from "../../../actions";
 import { selectStandardGasPriceWithOverHead } from "../../../gas/selectors";
 import { neuCall } from "../../../sagasUtils";
-import {
-  selectEtherTokenBalanceAsBigNumber,
-  selectLiquidEtherBalance,
-} from "../../../wallet/selectors";
+import { selectEtherTokenBalanceAsBigNumber } from "../../../wallet/selectors";
 import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
-import {
-  selectTxGasCostEthUlps,
-  selectTxGasCostEurUlps,
-  selectTxTotalEthUlps,
-  selectTxTotalEurUlps,
-  selectTxValueEthUlps,
-  selectTxValueEurUlps,
-} from "../../sender/selectors";
+import { selectTxGasCostEthUlps } from "../../sender/selectors";
 import { ETxSenderType, IWithdrawDraftType } from "../../types";
 import { calculateGasLimitWithOverhead, EMPTY_DATA } from "../../utils";
 
@@ -32,7 +22,6 @@ export function* generateEthWithdrawTransaction(
   const etherTokenBalance: BigNumber = yield select(selectEtherTokenBalanceAsBigNumber);
   const from: string = yield select(selectEthereumAddressWithChecksum);
   const gasPriceWithOverhead = yield select(selectStandardGasPriceWithOverHead);
-
   const weiValue = Q18.mul(value);
 
   if (etherTokenBalance.isZero()) {
@@ -45,7 +34,6 @@ export function* generateEthWithdrawTransaction(
       gasPrice: gasPriceWithOverhead,
       gas: calculateGasLimitWithOverhead(SIMPLE_WITHDRAW_TRANSACTION),
     };
-
     return txDetails;
   } else {
     // transaction can be fully covered by etherTokens
@@ -60,23 +48,12 @@ export function* generateEthWithdrawTransaction(
       value: difference.comparedTo(0) > 0 ? difference.toString() : "0",
       gasPrice: gasPriceWithOverhead,
     };
-
     const estimatedGasWithOverhead = yield web3Manager.estimateGasWithOverhead(txDetails);
-
     return { ...txDetails, gas: estimatedGasWithOverhead };
   }
 }
 
 export function* ethWithdrawFlow(_: TGlobalDependencies): any {
-  const maxEther = yield select(selectLiquidEtherBalance);
-
-  const initialTxDetails = yield neuCall(generateEthWithdrawTransaction, {
-    to: "0x0",
-    value: maxEther.toString(),
-  });
-
-  yield put(actions.txSender.setTransactionData(initialTxDetails));
-
   const action: TActionFromCreator<typeof actions.txSender.txSenderAcceptDraft> = yield take(
     actions.txSender.txSenderAcceptDraft,
   );
@@ -93,13 +70,6 @@ export function* ethWithdrawFlow(_: TGlobalDependencies): any {
     value: Q18.mul(txDataFromUser.value!).toString(),
     to: txDataFromUser.to!,
     cost: yield select(selectTxGasCostEthUlps),
-    costEur: yield select(selectTxGasCostEurUlps),
-    walletAddress: yield select(selectEthereumAddressWithChecksum),
-    amount: yield select(selectTxValueEthUlps),
-    amountEur: yield select(selectTxValueEurUlps),
-    total: yield select(selectTxTotalEthUlps),
-    totalEur: yield select(selectTxTotalEurUlps),
-    inputValue: Q18.mul(txDataFromUser.value || "0").toString(),
   };
 
   yield put(actions.txSender.txSenderContinueToSummary<ETxSenderType.WITHDRAW>(additionalData));

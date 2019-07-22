@@ -8,21 +8,9 @@
     padding: px-to-rem(16px) px-to-rem(12px);
   }
 
-  &.huge {
-    .icon {
-      @include rect(43px);
-    }
-  }
-
   &.large {
     .icon {
-      @include rect(40px);
-    }
-  }
-
-  &.medium {
-    .icon {
-      @include rect(36px);
+      @include rect(43px);
     }
   }
 
@@ -39,9 +27,5 @@
 
   .red {
     color: $neu-red;
-  }
-
-  .black {
-    color: $neu-charcoal-grey;
   }
 }

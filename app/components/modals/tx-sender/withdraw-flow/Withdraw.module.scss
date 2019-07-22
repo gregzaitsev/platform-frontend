@@ -1,43 +1,16 @@
 .content-wrapper {
-  color: $neu-shuttle-gray;
-  padding: 0 50px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.spinning-eth-wrapper {
+  margin-bottom: $spacing-vertical-lg-3;
+}
+
+.title {
+  @include font-label;
   font-size: 1rem;
-}
-
-.section--big {
-  font-size: px-to-rem(20px);
-}
-
-.label {
-  color: inherit;
-  font-size: inherit;
-  text-transform: none;
-}
-
-.etherscan-link {
-  font-size: 12px;
-  margin-top: -22px;
-  float: right;
-}
-
-.money {
-  font-weight: bold;
-  color: $neu-charcoal-grey;
-
-  &--big {
-    font-size: px-to-rem(20px);
-  }
-}
-
-.separator {
-  margin: 1.5rem 0;
-  border-color: $neu-gull-gray;
-}
-
-.tx-hash {
-  font-size: 80%;
-}
-
-.with-spacing {
-  margin-bottom: 1.5rem;
+  text-align: center;
+  margin-bottom: $spacing-vertical-lg-1;
+  margin-top: $spacing-vertical-lg-1;
 }

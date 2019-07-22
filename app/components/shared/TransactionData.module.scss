@@ -1,5 +1,5 @@
 .transaction-data {
-  &.huge {
+  &.large {
     .top {
       @include font-headline;
     }
@@ -9,44 +9,22 @@
     }
   }
 
-  &.large {
-    .top {
-      @include font-headline-medium;
-    }
-  }
-
   &.medium {
     .top {
-      @include font-headline-small;
-    }
-  }
+      @include font-headline-medium;
 
-  &.black {
-    .top {
-      font-weight: bold;
-      color: $neu-charcoal-grey;
-    }
-
-    .bottom {
-      color: $neu-shuttle-gray;
-    }
-  }
-
-  &.silver {
-    .top {
-      color: $neu-slate-grey;
-    }
-
-    .bottom {
-      color: $neu-silver;
     }
   }
 
   .top {
     @include font-default;
+
+    color: $neu-slate-grey;
   }
 
   .bottom {
     @include font-tab;
+
+    color: $neu-silver;
   }
 }

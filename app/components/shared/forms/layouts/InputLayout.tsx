@@ -13,11 +13,6 @@ enum EInputSize {
   SMALL = "sm",
 }
 
-enum EInputTheme {
-  BOTTOM_BORDER = styles.bottomBorder,
-  BOX = styles.box,
-}
-
 interface IExternalProps {
   addonStyle?: string;
   charactersLimit?: number;
@@ -29,7 +24,6 @@ interface IExternalProps {
   prefix?: TTranslatedString;
   size?: EInputSize;
   suffix?: TTranslatedString;
-  theme?: EInputTheme;
 }
 
 type TProps = IExternalProps & CommonHtmlProps & TDataTestId & Omit<InputProps, IExternalProps>;
@@ -54,7 +48,6 @@ const InputLayout: React.FunctionComponent<TProps> = ({
   onFocus,
   onBlur,
   ["data-test-id"]: dataTestId,
-  theme,
   ...props
 }) => (
   <>
@@ -74,7 +67,7 @@ const InputLayout: React.FunctionComponent<TProps> = ({
         name={name}
         id={name}
         maxLength={maxLength}
-        className={cn(className, styles.inputField, theme)}
+        className={cn(className, styles.inputField)}
         onChange={onChange}
         onBlur={e => {
           if (onBlur) {
@@ -99,21 +92,18 @@ const InputLayout: React.FunctionComponent<TProps> = ({
         </InputGroupAddon>
       )}
     </InputGroup>
-    <div className={styles.inputMeta}>
-      {charactersLimit && <div>{withCountedCharacters(value, charactersLimit)}</div>}
-      <FormFieldError
-        invalid={invalid}
-        name={name}
-        defaultMessage={errorMsg}
-        ignoreTouched={ignoreTouched}
-      />
-    </div>
+    <FormFieldError
+      invalid={invalid}
+      name={name}
+      defaultMessage={errorMsg}
+      ignoreTouched={ignoreTouched}
+    />
+    {charactersLimit && <div>{withCountedCharacters(value, charactersLimit)}</div>}
   </>
 );
 
 InputLayout.defaultProps = {
   size: EInputSize.NORMAL,
-  theme: EInputTheme.BOTTOM_BORDER,
 };
 
-export { InputLayout, EInputSize, EInputTheme };
+export { InputLayout, EInputSize };

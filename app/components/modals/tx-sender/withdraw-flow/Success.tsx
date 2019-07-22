@@ -1,20 +1,14 @@
 import * as React from "react";
-import { FormattedDate } from "react-intl";
 import { FormattedMessage } from "react-intl-phraseapp";
-import { branch, compose } from "recompose";
 
 import { selectTxAdditionalData } from "../../../../modules/tx/sender/selectors";
 import { TWithdrawAdditionalData } from "../../../../modules/tx/transactions/withdraw/types";
 import { ETxSenderType } from "../../../../modules/tx/types";
 import { appConnect } from "../../../../store";
-import { RequiredByKeys } from "../../../../types";
-import { EHeadingSize, Heading } from "../../../shared/Heading";
-import { EtherscanTxLink } from "../../../shared/links/EtherscanLink";
-import { DataRow } from "../shared/DataRow";
-import { ETxStatus } from "../types";
+import { ConfettiEthereum } from "../../../shared/ethereum";
+import { Message } from "../../Message";
+import { TxHashAndBlock } from "../shared/TxHashAndBlock";
 import { WithdrawTransactionDetails } from "./WithdrawTransactionDetails";
-
-import * as styles from "./Withdraw.module.scss";
 
 interface IExternalProps {
   txHash: string;
@@ -22,78 +16,34 @@ interface IExternalProps {
 }
 
 interface IStateProps {
-  additionalData?: TWithdrawAdditionalData;
+  additionalData: TWithdrawAdditionalData;
 }
 
-type TComponentProps = RequiredByKeys<IStateProps, "additionalData"> & IExternalProps;
+type TProps = IExternalProps & IStateProps;
 
-export const WithdrawSuccessLayout: React.FunctionComponent<TComponentProps> = ({
-  additionalData,
+export const WithdrawSuccessLayout: React.FunctionComponent<TProps> = ({
   txHash,
   txTimestamp,
+  additionalData,
 }) => (
-  <section className={styles.contentWrapper} data-test-id="modals.tx-sender.withdraw-flow.success">
-    <Heading
+  <Message
+    data-test-id="modals.tx-sender.withdraw-flow.success"
+    image={<ConfettiEthereum className="mb-3" />}
+    title={<FormattedMessage id="withdraw-flow.success" />}
+    titleClassName="text-success"
+  >
+    <WithdrawTransactionDetails
+      additionalData={additionalData}
       className="mb-4"
-      size={EHeadingSize.HUGE}
-      level={4}
-      decorator={false}
-      disableTransform={true}
-    >
-      <FormattedMessage id="withdraw-flow.summary" />
-    </Heading>
-
-    <WithdrawTransactionDetails additionalData={additionalData} status={ETxStatus.COMPLETE} />
-
-    <DataRow
-      className="mb-4"
-      caption={<FormattedMessage id="tx-monitor.details.hash-label" />}
-      value={
-        <EtherscanTxLink
-          txHash={txHash}
-          className={styles.txHash}
-          data-test-id="modals.tx-sender.withdraw-flow.tx-hash"
-        >
-          {txHash}
-        </EtherscanTxLink>
-      }
+      txTimestamp={txTimestamp}
     />
 
-    <DataRow
-      data-test-id="timestamp-row.timestamp"
-      className="mb-4"
-      caption={
-        <>
-          <FormattedMessage id="tx-monitor.details.timestamp" />
-          {": "}
-        </>
-      }
-      value={
-        <FormattedDate
-          value={txTimestamp}
-          timeZone="UTC"
-          timeZoneName="short"
-          year="numeric"
-          month="short"
-          day="numeric"
-          hour="numeric"
-          minute="numeric"
-        />
-      }
-    />
-  </section>
+    <TxHashAndBlock data-test-id="modals.tx-sender.withdraw-flow" txHash={txHash} />
+  </Message>
 );
 
-export const WithdrawSuccess = compose<TComponentProps, {}>(
-  appConnect<IStateProps, {}>({
-    stateToProps: state => ({
-      additionalData: selectTxAdditionalData<ETxSenderType.WITHDRAW>(state),
-    }),
+export const WithdrawSuccess = appConnect<IStateProps>({
+  stateToProps: state => ({
+    additionalData: selectTxAdditionalData<ETxSenderType.WITHDRAW>(state)!,
   }),
-  branch<IStateProps>(
-    props => props.additionalData === undefined,
-    () => {
-      throw new Error("Additional transaction data is empty");
-    },
-  ),
-)(WithdrawSuccessLayout);
+})(WithdrawSuccessLayout);
