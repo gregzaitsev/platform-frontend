@@ -32,7 +32,7 @@ describe("prepareSetupAccountSteps", () => {
         title: "title 1",
         stepState: EAccountSetupStepState.DONE,
         component: "component 1",
-        isLast: false
+        isLast: false,
       },
       {
         key: "b",
@@ -40,7 +40,7 @@ describe("prepareSetupAccountSteps", () => {
         title: "title 2",
         stepState: EAccountSetupStepState.ACTIVE,
         component: "component 2",
-        isLast: false
+        isLast: false,
       },
       {
         key: "c",
@@ -48,7 +48,7 @@ describe("prepareSetupAccountSteps", () => {
         title: "title 3",
         stepState: EAccountSetupStepState.NOT_DONE,
         component: "component 3",
-        isLast: true
+        isLast: true,
       },
     ];
 
