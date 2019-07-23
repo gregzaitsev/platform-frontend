@@ -110,13 +110,20 @@ export function* mapAnalyticsApiTransactionResponse(
       }
       break;
     }
-    case ETransactionType.NEUR_REDEEM:
     case ETransactionType.NEUR_PURCHASE: {
       tx = {
         ...common,
         type: transaction.type,
         currency: ECurrency.EUR_TOKEN,
         to: transaction.extraData.toAddress!,
+      };
+      break;
+    }
+    case ETransactionType.NEUR_REDEEM: {
+      tx = {
+        ...common,
+        type: transaction.type,
+        currency: ECurrency.EUR_TOKEN,
       };
       break;
     }

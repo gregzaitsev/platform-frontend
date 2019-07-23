@@ -37,27 +37,29 @@ const ModalHeading: React.FunctionComponent<{ children: TTranslatedString } & Co
   </Heading>
 );
 
-const TransactionTypeToComponentMap: React.FunctionComponent<IExternalProps> = props => {
-  switch (props.transaction.type) {
+const TransactionTypeToComponentMap: React.FunctionComponent<IExternalProps> = ({
+  transaction,
+}) => {
+  switch (transaction.type) {
     case ETransactionType.TRANSFER:
-      return <TransferTransactionDetails {...props} />;
+      return <TransferTransactionDetails transaction={transaction} />;
     case ETransactionType.NEUR_PURCHASE:
-      return <NEurPurchaseTransactionDetails {...props} />;
+      return <NEurPurchaseTransactionDetails transaction={transaction} />;
     case ETransactionType.ETO_TOKENS_CLAIM:
-      return <EtoTokensClaimTransactionDetails {...props} />;
+      return <EtoTokensClaimTransactionDetails transaction={transaction} />;
     case ETransactionType.NEUR_DESTROY:
-      return <NEurDestroyTransactionDetails {...props} />;
+      return <NEurDestroyTransactionDetails transaction={transaction} />;
     case ETransactionType.ETO_REFUND:
-      return <EtoRefundTransactionsDetails {...props} />;
+      return <EtoRefundTransactionsDetails transaction={transaction} />;
     case ETransactionType.REDISTRIBUTE_PAYOUT:
-      return <RedistributePayoutTransactionsDetails {...props} />;
+      return <RedistributePayoutTransactionsDetails transaction={transaction} />;
     case ETransactionType.PAYOUT:
-      return <PayoutTransactionsDetails {...props} />;
+      return <PayoutTransactionsDetails transaction={transaction} />;
     case ETransactionType.ETO_INVESTMENT:
     case ETransactionType.NEUR_REDEEM:
       return null;
     default:
-      return assertNever(props.transaction, "Can't find component related to transaction");
+      return assertNever(transaction, "Can't find component related to transaction");
   }
 };
 
