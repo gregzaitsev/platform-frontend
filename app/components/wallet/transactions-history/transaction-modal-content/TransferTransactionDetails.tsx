@@ -6,7 +6,7 @@ import {
   TExtractTxHistoryFromType,
 } from "../../../../modules/tx-history/types";
 import { etoPublicViewByIdLinkLegacy } from "../../../appRouteUtils";
-import { DataRow } from "../../../modals/tx-sender/shared/DataRow";
+import { DataRow, DataRowSeparator } from "../../../modals/tx-sender/shared/DataRow";
 import { ECurrency, ENumberOutputFormat } from "../../../shared/formatters/utils";
 import { getIconForCurrency } from "../../../shared/icons/CurrencyIcon";
 import { EtherscanAddressLink } from "../../../shared/links/EtherscanLink";
@@ -14,8 +14,6 @@ import { ExternalLink } from "../../../shared/links/ExternalLink";
 import { ETextPosition, ETheme, MoneySuiteWidget } from "../../../shared/MoneySuiteWidget";
 import { ESize } from "../../../shared/TransactionData";
 import { BasicTransactionDetails } from "./BasicTransactionDetails";
-
-import * as styles from "../../../modals/tx-sender/withdraw-flow/Withdraw.module.scss";
 
 interface IExternalProps {
   transaction: TExtractTxHistoryFromType<ETransactionType.TRANSFER>;
@@ -33,27 +31,24 @@ const TransferTransactionDetails: React.FunctionComponent<IExternalProps> = ({ t
 
     <BasicTransactionDetails transaction={transaction} />
 
-    <hr className={styles.separator} />
+    <DataRowSeparator />
 
     <DataRow
-      className={styles.withSpacing}
       caption={"From address"}
       value={<EtherscanAddressLink address={transaction.fromAddress} />}
       clipboardCopyValue={transaction.fromAddress}
     />
 
     <DataRow
-      className={styles.withSpacing}
       caption={"To address"}
       clipboardCopyValue={transaction.toAddress}
       value={<EtherscanAddressLink address={transaction.toAddress} />}
     />
 
-    <hr className={styles.separator} />
+    <DataRowSeparator />
 
     {transaction.subType === ETransactionSubType.TRANSFER_EQUITY_TOKEN && (
       <DataRow
-        className={styles.withSpacing}
         caption={"Transferred"}
         value={
           <MoneySuiteWidget
@@ -71,7 +66,6 @@ const TransferTransactionDetails: React.FunctionComponent<IExternalProps> = ({ t
 
     {transaction.subType === undefined && (
       <DataRow
-        className={styles.withSpacing}
         caption={"Transferred"}
         value={
           <MoneySuiteWidget

@@ -15,7 +15,7 @@ import { RedistributePayoutTransactionsDetails } from "./transaction-modal-conte
 import { TransferTransactionDetails } from "./transaction-modal-content/TransferTransactionDetails";
 import { TransactionName } from "./TransactionName";
 
-import * as styles from "../../modals/tx-sender/withdraw-flow/Withdraw.module.scss";
+import * as styles from "./TransactionDetailsModal.module.scss";
 
 interface IExternalProps {
   closeModal: () => void;

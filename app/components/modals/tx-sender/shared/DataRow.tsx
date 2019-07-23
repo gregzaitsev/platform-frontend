@@ -12,8 +12,10 @@ interface IDataRowProps {
   clipboardCopyValue?: string;
 }
 
+const DataRowSeparator: React.FunctionComponent = () => <hr className={styles.separator} />;
+
 /* This is similar component to InfoRow, but it's not utilize Lists */
-export const DataRow: React.FunctionComponent<IDataRowProps & CommonHtmlProps & TDataTestId> = ({
+const DataRow: React.FunctionComponent<IDataRowProps & CommonHtmlProps & TDataTestId> = ({
   caption,
   value,
   clipboardCopyValue,
@@ -33,3 +35,5 @@ export const DataRow: React.FunctionComponent<IDataRowProps & CommonHtmlProps & 
     </span>
   </section>
 );
+
+export { DataRow, DataRowSeparator };

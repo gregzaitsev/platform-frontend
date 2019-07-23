@@ -3,7 +3,7 @@ import * as React from "react";
 import { externalRoutes } from "../../../../config/externalRoutes";
 import { ETransactionType } from "../../../../lib/api/analytics-api/interfaces";
 import { TExtractTxHistoryFromType } from "../../../../modules/tx-history/types";
-import { DataRow } from "../../../modals/tx-sender/shared/DataRow";
+import { DataRow, DataRowSeparator } from "../../../modals/tx-sender/shared/DataRow";
 import { ECurrency, ENumberOutputFormat } from "../../../shared/formatters/utils";
 import { getIconForCurrency } from "../../../shared/icons/CurrencyIcon";
 import { EtherscanAddressLink } from "../../../shared/links/EtherscanLink";
@@ -11,8 +11,6 @@ import { ExternalLink } from "../../../shared/links/ExternalLink";
 import { ETextPosition, ETheme, MoneySuiteWidget } from "../../../shared/MoneySuiteWidget";
 import { ESize } from "../../../shared/TransactionData";
 import { BasicTransactionDetails } from "./BasicTransactionDetails";
-
-import * as styles from "../../../modals/tx-sender/withdraw-flow/Withdraw.module.scss";
 
 interface IExternalProps {
   transaction: TExtractTxHistoryFromType<ETransactionType.NEUR_PURCHASE>;
@@ -24,25 +22,22 @@ const NEurPurchaseTransactionDetails: React.FunctionComponent<IExternalProps> = 
   <>
     <BasicTransactionDetails transaction={transaction} />
 
-    <hr className={styles.separator} />
+    <DataRowSeparator />
 
     <DataRow
-      className={styles.withSpacing}
       caption={"Handled by"}
       value={<ExternalLink href={externalRoutes.quintessenceLanding}>Quintessence UG</ExternalLink>}
     />
 
     <DataRow
-      className={styles.withSpacing}
       caption={"To address"}
       clipboardCopyValue={transaction.toAddress}
       value={<EtherscanAddressLink address={transaction.toAddress} />}
     />
 
-    <hr className={styles.separator} />
+    <DataRowSeparator />
 
     <DataRow
-      className={styles.withSpacing}
       caption={"Purchased"}
       value={
         <MoneySuiteWidget

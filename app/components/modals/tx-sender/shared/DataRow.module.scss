@@ -1,6 +1,7 @@
 .section {
   display: flex;
   justify-content: space-between;
+  margin-bottom: 1.5rem;
 
   .value {
     overflow-wrap: break-word;
@@ -12,4 +13,9 @@
       height: px-to-rem(20px);
     }
   }
+}
+
+.separator {
+  margin: 1.5rem 0;
+  border-color: $neu-gull-gray;
 }
