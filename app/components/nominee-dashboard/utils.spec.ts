@@ -1,24 +1,24 @@
 import { expect } from "chai";
 
-import { prepareSetupAccountSteps } from "./utils";
+import { EAccountSetupStepState, prepareSetupAccountSteps } from "./utils";
 
 describe("prepareSetupAccountSteps", () => {
   it("iterates over data and sets the first not done element open", () => {
     const data = [
       {
-        key: "1",
+        key: "a",
         conditionCompleted: true,
         title: "title 1",
         component: "component 1",
       },
       {
-        key: "2",
+        key: "b",
         conditionCompleted: false,
         title: "title 2",
         component: "component 2",
       },
       {
-        key: "3",
+        key: "c",
         conditionCompleted: false,
         title: "title 3",
         component: "component 3",
@@ -27,25 +27,28 @@ describe("prepareSetupAccountSteps", () => {
 
     const expectedData = [
       {
-        key: "1",
-        done: true,
-        isOpen: false,
+        key: "a",
+        number: 1,
         title: "title 1",
+        stepState: EAccountSetupStepState.DONE,
         component: "component 1",
+        isLast: false
       },
       {
-        key: "2",
-        done: false,
-        isOpen: true,
+        key: "b",
+        number: 2,
         title: "title 2",
+        stepState: EAccountSetupStepState.ACTIVE,
         component: "component 2",
+        isLast: false
       },
       {
-        key: "3",
-        done: false,
-        isOpen: false,
+        key: "c",
+        number: 3,
         title: "title 3",
+        stepState: EAccountSetupStepState.NOT_DONE,
         component: "component 3",
+        isLast: true
       },
     ];
 

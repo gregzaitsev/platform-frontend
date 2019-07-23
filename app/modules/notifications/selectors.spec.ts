@@ -4,6 +4,7 @@ import { appRoutes } from "../../components/appRoutes";
 import { IAppState } from "../../store";
 import { DeepPartial } from "../../types";
 import { selectIsVisibleSecurityNotification } from "./selectors";
+import { EUserType } from "../../lib/api/users/interfaces";
 
 describe("selectIsVisibleSecurityNotification", () => {
   it("should return false if KYC data is still loading", () => {
@@ -11,6 +12,11 @@ describe("selectIsVisibleSecurityNotification", () => {
       kyc: {
         individualRequestStateLoading: false,
         businessRequestStateLoading: true,
+      },
+      auth:{
+        user: {
+          type: EUserType.INVESTOR
+        }
       },
       router: {},
     };
@@ -23,6 +29,11 @@ describe("selectIsVisibleSecurityNotification", () => {
   it("should return false if route is whitelisted", () => {
     const appState: DeepPartial<IAppState> = {
       kyc: {},
+      auth:{
+        user: {
+          type: EUserType.INVESTOR
+        }
+      },
       router: {
         location: {
           pathname: appRoutes.kyc,

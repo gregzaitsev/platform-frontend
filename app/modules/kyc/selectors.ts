@@ -17,6 +17,7 @@ export const selectKyc = (state: IAppState) => state.kyc;
 
 export const selectKycRequestStatus = (state: IAppState): ERequestStatus | undefined => {
   const userKycType = selectKycRequestType(state);
+  console.log("userKycType", userKycType)
   switch (userKycType) {
     case EKycRequestType.BUSINESS:
       return state.kyc.businessRequestState!.status === ERequestStatus.ACCEPTED &&
@@ -68,6 +69,7 @@ export const selectPendingKycRequestType = (
 
 export const selectKycRequestType = (state: IAppState): EKycRequestType | undefined => {
   const userType = selectUserType(state);
+  console.log("selectKycRequestType, userType", userType)
   switch (userType) {
     case EUserType.NOMINEE:
     case EUserType.ISSUER:

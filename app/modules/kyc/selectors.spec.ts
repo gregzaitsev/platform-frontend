@@ -4,8 +4,18 @@ import { ERequestStatus } from "../../lib/api/KycApi.interfaces";
 import { IAppState } from "../../store";
 import { DeepPartial } from "../../types";
 import { selectKycRequestStatus } from "./selectors";
+import { EUserType } from "../../lib/api/users/interfaces";
 
 describe("selectKycRequestStatus", () => {
+
+  const authState = {
+    auth: {
+      user: {
+        type: EUserType.INVESTOR
+      }
+    }
+  };
+
   it("should return pending if kyc is approved and on chain claim is false", () => {
     const appState: DeepPartial<IAppState> = {
       kyc: {
@@ -17,7 +27,7 @@ describe("selectKycRequestStatus", () => {
       router: {},
     };
 
-    const actual = selectKycRequestStatus(appState as any);
+    const actual = selectKycRequestStatus({...appState, auth: authState} as any);
 
     expect(actual).to.be.equal("Pending");
   });
@@ -32,7 +42,7 @@ describe("selectKycRequestStatus", () => {
       router: {},
     };
 
-    const actual = selectKycRequestStatus(appState as any);
+    const actual = selectKycRequestStatus({...appState, auth: authState} as any);
 
     expect(actual).to.be.equal("Draft");
   });
@@ -47,7 +57,7 @@ describe("selectKycRequestStatus", () => {
       router: {},
     };
 
-    const actual = selectKycRequestStatus(appState as any);
+    const actual = selectKycRequestStatus({...appState, auth: authState} as any);
 
     expect(actual).to.be.equal("Pending");
   });
