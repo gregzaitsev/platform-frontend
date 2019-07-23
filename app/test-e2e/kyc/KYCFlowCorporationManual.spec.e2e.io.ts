@@ -3,7 +3,6 @@ import { goThroughKycCorporateProcess } from "../utils";
 import { tid } from "../utils/selectors";
 import { createAndLoginNewUser } from "../utils/userHelpers";
 
-
 describe("KYC Small Business flow with manual verification", () => {
   it("went through KYC Small Business flow", () => {
     createAndLoginNewUser({ type: "investor" }).then(() => {

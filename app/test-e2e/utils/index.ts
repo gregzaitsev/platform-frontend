@@ -16,7 +16,12 @@ import {
 import { makeEthereumAddressChecksummed } from "../../modules/web3/utils";
 import { EthereumAddress } from "../../types";
 import { mockApiUrl } from "../config";
-import { kycCompanyDocsForm, kycCorporateCompanyForm, kycLegalRepDocsForm, kycLegalRepForm } from "../kyc/fixtures";
+import {
+  kycCompanyDocsForm,
+  kycCorporateCompanyForm,
+  kycLegalRepDocsForm,
+  kycLegalRepForm,
+} from "../kyc/fixtures";
 import {
   assertDashboard,
   assertEtoDashboard,
@@ -131,7 +136,7 @@ export const getLatestVerifyUserEmailLink = (
     }
   });
 
-const verifyLatestUserEmailBase = (email: string, finalCheckTid?:string, attempts = 3) => {
+const verifyLatestUserEmailBase = (email: string, finalCheckTid?: string, attempts = 3) => {
   cy.request({ url: mockApiUrl + "sendgrid/session/mails", method: "GET" }).then(r => {
     const latestEmailByUser = r.body.find(
       (body: { personalizations: { to: { email: string }[] }[] }) =>
@@ -150,21 +155,20 @@ const verifyLatestUserEmailBase = (email: string, finalCheckTid?:string, attempt
       // we need to replace the loginlink pointing to a remote destination with one pointing to our local instance
       const cleanedActivationLink = activationLink.replace("platform.neufund.io", "localhost:9090");
       cy.visit(cleanedActivationLink);
-      if(finalCheckTid){
+      if (finalCheckTid) {
         cy.get(tid(finalCheckTid));
       }
     }
-  })
-}
+  });
+};
 
 export const verifyLatestUserEmail = (email: string, attempts = 3) => {
-  verifyLatestUserEmailBase(email, "email-verified",attempts)
+  verifyLatestUserEmailBase(email, "email-verified", attempts);
 };
 
 export const verifyLatestUserEmailAccountSetup = (email: string, attempts = 3) => {
-  verifyLatestUserEmailBase(email, undefined,attempts)
+  verifyLatestUserEmailBase(email, undefined, attempts);
 };
-
 
 export const registerWithLightWallet = (
   email: string,
@@ -226,7 +230,7 @@ export const goThroughKycCorporateProcess = () => {
   // submit and accept
   cy.get(tid("kyc-company-legal-representative-upload-and-submit")).awaitedClick();
   confirmAccessModal();
-}
+};
 
 export const goToUserAccountSettings = () => {
   cy.get(tid("account-menu-open-button"))

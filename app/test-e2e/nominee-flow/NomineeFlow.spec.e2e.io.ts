@@ -1,12 +1,14 @@
-import { tid } from "../../../test/testUtils";
 import { backupLightWalletSeedFromAccountSetupDashboard } from "../shared/backupLightWalletSeed";
 import {
   assertNomineeDashboard,
-  generateRandomEmailAddress, goThroughKycCorporateProcess,
+  generateRandomEmailAddress,
+  goThroughKycCorporateProcess,
   loginWithLightWallet,
   logoutViaAccountMenu,
-  registerWithLightWalletNominee, verifyLatestUserEmailAccountSetup,
+  registerWithLightWalletNominee,
+  verifyLatestUserEmailAccountSetup,
 } from "../utils/index";
+import { tid } from "../utils/selectors";
 
 describe("Nominee flow", () => {
   const password = "strongpassword";
@@ -21,19 +23,16 @@ describe("Nominee flow", () => {
     loginWithLightWallet(email, password);
     assertNomineeDashboard();
 
-    cy.get(tid("account-setup-email-unverified-section")).should("exist");
-    verifyLatestUserEmailAccountSetup(email);
+    cy.get(tid("account-setup-email-unverified-section")); //.should("exist");
+    verifyLatestUserEmailAccountSetup(email); //;
 
-    cy.get(tid("account-setup-backup-seed-section")).should("exist");
+    cy.get(tid("account-setup-backup-seed-section")); //.should("exist");
     backupLightWalletSeedFromAccountSetupDashboard();
 
-    cy.get(tid("account-setup-start-kyc-section")).should("exist");
+    cy.get(tid("account-setup-start-kyc-section")); //.should("exist");
     cy.get(tid("start-kyc-button")).awaitedClick();
-    goThroughKycCorporateProcess()
+    goThroughKycCorporateProcess();
     cy.get(tid("generic-modal-dismiss-button")).awaitedClick();
-    cy.get(tid("nominee-kyc-pending")).should("exist");
+    cy.get(tid("nominee-kyc-pending")); //.should("exist");
   });
-
-
 });
-

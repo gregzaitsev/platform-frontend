@@ -15,7 +15,7 @@ interface IDispatchProps {
 
 export const AccountSetupBackupWidgetLayout: React.FunctionComponent<
   IStateProps & IDispatchProps
-> = ({ startBackupProcess }) =>
+> = ({ startBackupProcess }) => (
   <section data-test-id="account-setup-backup-seed-section" className={styles.accountSetupSection}>
     <p className={styles.accountSetupText}>
       <FormattedMessage id="account-setup.backup-seed-widget.text-1" />
@@ -36,3 +36,4 @@ export const AccountSetupBackupWidgetLayout: React.FunctionComponent<
       <FormattedMessage id="settings.backup-seed-widget.backup-phrase" />
     </Button>
   </section>
+);

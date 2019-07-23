@@ -3,7 +3,8 @@ import { assertIssuerEtoView } from "../eto-view/EtoViewUtils";
 import {
   assertDashboard,
   assertEtoDashboard,
-  assertEtoDocuments, assertNomineeDashboard,
+  assertEtoDocuments,
+  assertNomineeDashboard,
   assertPortfolio,
   assertProfile,
   assertWallet,

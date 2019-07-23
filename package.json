@@ -78,6 +78,7 @@
     "@storybook/addon-viewport": "^4.0.12",
     "@storybook/react": "^4.0.9",
     "@storybook/storybook-deployer": "^2.8.1",
+    "@types/chai": "^4.1.7",
     "@types/chai-as-promised": "^7.1.0",
     "@types/chart.js": "^2.7.10",
     "@types/classnames": "^2.2.6",
