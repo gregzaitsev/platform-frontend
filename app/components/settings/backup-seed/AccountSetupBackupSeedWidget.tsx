@@ -27,8 +27,8 @@ const BackupCodesWidgetBase:React.FunctionComponent<IWidgetBaseProps & IDispatch
     className={styles.accountSetupSection}
   >
     {Array.isArray(widgetText)
-      ? widgetText.map(txt =>
-      <p className={styles.accountSetupText}>
+      ? widgetText.map((txt,i) =>
+      <p className={styles.accountSetupText} key={i}>
         {txt}
       </p>)
     : <p className={styles.accountSetupText}>

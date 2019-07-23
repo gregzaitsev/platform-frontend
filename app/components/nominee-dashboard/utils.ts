@@ -45,6 +45,7 @@ export const prepareSetupAccountSteps = (data: IAccountSetupStepData[]): IStepCo
         key: stepData.key,
         title: stepData.title,
         component: stepData.component,
+        isLast: index + 1 === data.length
       };
       acc.data.push(stepComponentProps);
       acc.activeElement = isActive ? stepData.key : acc.activeElement;

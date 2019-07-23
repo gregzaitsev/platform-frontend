@@ -1,10 +1,9 @@
 import * as React from "react";
 import {  FormattedMessage } from "react-intl-phraseapp";
-import * as arrowRight from "../../../assets/img/inline_icons/arrow_right.svg";
 import { ERequestOutsourcedStatus, ERequestStatus } from "../../../lib/api/KycApi.interfaces";
 import { EUserType } from "../../../lib/api/users/interfaces";
 
-import { Button, EButtonLayout, EButtonTheme, EIconPosition } from "../../shared/buttons/Button";
+import { Button, EButtonLayout, EButtonTheme } from "../../shared/buttons/Button";
 import { LoadingIndicator } from "../../shared/loading-indicator/LoadingIndicator";
 import { WarningAlert } from "../../shared/WarningAlert";
 

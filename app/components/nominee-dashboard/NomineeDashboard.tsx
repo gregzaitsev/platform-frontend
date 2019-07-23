@@ -63,10 +63,8 @@ const NomineeAccountSetup: React.FunctionComponent<INomineeAccountSetupSteps> = 
       text={<FormattedMessage id="account-setup.please-complete-setup"/>}
     />
     <Panel className={styles.accountSetupWrapper}>
-      {accountSetupStepsData.map((stepData: IStepComponentProps, index: number) =>
-      { const isLast = index + 1 === accountSetupStepsData.length;
-        return <AccountSetupStep {...stepData} isLast={isLast}/>
-      }
+      {accountSetupStepsData.map((stepData: IStepComponentProps) =>
+        <AccountSetupStep {...stepData} />
       )}
     </Panel>
   </>
