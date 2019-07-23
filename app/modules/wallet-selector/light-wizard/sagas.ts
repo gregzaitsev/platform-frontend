@@ -40,7 +40,7 @@ import { displayInfoModalSaga } from "../../generic-modal/sagas";
 import { neuCall, neuTakeEvery } from "../../sagasUtils";
 import { selectIsUnlocked } from "../../web3/selectors";
 import { EWalletSubType, ILightWalletMetadata } from "../../web3/types";
-import { selectUrlUserTypeForLoginOrRegistration } from "../selectors";
+import { selectUrlUserType } from "../selectors";
 import { mapLightWalletErrorToErrorMessage } from "./errors";
 import { getWalletMetadataByURL } from "./metadata/sagas";
 import { getVaultKey } from "./utils";
@@ -137,7 +137,7 @@ export function* lightWalletRecoverWatch(
 ): Iterator<any> {
   try {
     const userType = yield select((state: IAppState) =>
-      selectUrlUserTypeForLoginOrRegistration(state.router),
+      selectUrlUserType(state.router),
     );
 
     if (action.type !== "LIGHT_WALLET_RECOVER") {

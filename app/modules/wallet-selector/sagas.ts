@@ -5,11 +5,11 @@ import { EUserType } from "../../lib/api/users/interfaces";
 import { IAppState } from "../../store";
 import { neuCall, neuTakeEvery } from "../sagasUtils";
 import { loadPreviousWallet } from "../web3/sagas";
-import { selectUrlUserTypeForLoginOrRegistration } from "./selectors";
+import { selectUrlUserType } from "./selectors";
 
 export function* loadWalletFromUrl(): Iterator<any> {
   const userType: EUserType = yield effects.select((s: IAppState) =>
-    selectUrlUserTypeForLoginOrRegistration(s.router),
+    selectUrlUserType(s.router),
   );
   // when going through default registration/login allow to acquire any previous wallet, otherwise force specific type
   yield neuCall(loadPreviousWallet, userType === EUserType.INVESTOR ? undefined : userType);

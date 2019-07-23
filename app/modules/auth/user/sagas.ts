@@ -16,7 +16,7 @@ import { actions, TActionFromCreator } from "../../actions";
 import { loadKycRequestData } from "../../kyc/sagas";
 import { selectRedirectURLFromQueryString } from "../../routing/selectors";
 import { neuCall } from "../../sagasUtils";
-import { selectUrlUserTypeForLoginOrRegistration } from "../../wallet-selector/selectors";
+import { selectUrlUserType } from "../../wallet-selector/selectors";
 import { loadPreviousWallet } from "../../web3/sagas";
 import { EWalletSubType, EWalletType } from "../../web3/types";
 import { createJwt } from "../jwt/sagas";
@@ -30,7 +30,7 @@ export function* signInUser({
   try {
     // we will try to create with user type from URL but it could happen that account already exists and has different user type
     const probableUserType: EUserType = yield select((s: IAppState) =>
-      selectUrlUserTypeForLoginOrRegistration(s.router),
+      selectUrlUserType(s.router),
     );
     yield put(actions.walletSelector.messageSigning());
 
