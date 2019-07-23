@@ -552,9 +552,10 @@ function* submitBusinessRequestEffect({ apiKycService }: TGlobalDependencies): I
   const result: IHttpResponse<IKycRequestState> = yield apiKycService.submitBusinessRequest();
   yield put(actions.kyc.kycUpdateBusinessRequestState(false, result.body));
 
-  const buttonAction = !kycAndEmailVerified && userType === EUserType.NOMINEE
-    ? actions.routing.goToDashboard()
-    : actions.routing.goToProfile()
+  const buttonAction =
+    !kycAndEmailVerified && userType === EUserType.NOMINEE
+      ? actions.routing.goToDashboard()
+      : actions.routing.goToProfile();
 
   yield put(
     actions.genericModal.showGenericModal(
@@ -562,7 +563,7 @@ function* submitBusinessRequestEffect({ apiKycService }: TGlobalDependencies): I
       createMessage(KycFlowMessage.KYC_VERIFICATION_DESCRIPTION),
       undefined,
       createMessage(KycFlowMessage.KYC_SETTINGS_BUTTON),
-      buttonAction
+      buttonAction,
     ),
   );
 }

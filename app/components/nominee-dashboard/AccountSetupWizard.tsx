@@ -4,8 +4,8 @@ import * as React from "react";
 import { InlineIcon } from "../shared/icons/InlineIcon";
 import { EAccountSetupStepState, IStepComponentProps } from "./utils";
 
-import * as styles from "./NomineeDashboard.module.scss";
 import * as checkMark from "../../assets/img/inline_icons/icon_check.svg";
+import * as styles from "./NomineeDashboard.module.scss";
 
 interface IStepTickerProps {
   stepState: EAccountSetupStepState;
@@ -13,11 +13,11 @@ interface IStepTickerProps {
 }
 
 interface IExternalProps {
-  isLast: boolean
+  isLast: boolean;
 }
 
 export interface IAccountSetupStepState {
-  isOpen: boolean
+  isOpen: boolean;
 }
 
 export interface INomineeAccountSetupSteps {
@@ -29,16 +29,21 @@ const StepTicker: React.FunctionComponent<IStepTickerProps> = ({ stepState, numb
     case EAccountSetupStepState.ACTIVE:
       return <div className={cn(styles.ticker, styles.active)}>{number}</div>;
     case EAccountSetupStepState.DONE:
-      return <div className={cn(styles.ticker, styles.done)}>
-        <InlineIcon svgIcon={checkMark} />
-      </div>;
+      return (
+        <div className={cn(styles.ticker, styles.done)}>
+          <InlineIcon svgIcon={checkMark} />
+        </div>
+      );
     case EAccountSetupStepState.NOT_DONE:
     default:
       return <div className={styles.ticker}>{number}</div>;
   }
 };
 
-export class AccountSetupStep extends React.Component<IStepComponentProps & IExternalProps, IAccountSetupStepState> {
+export class AccountSetupStep extends React.Component<
+  IStepComponentProps & IExternalProps,
+  IAccountSetupStepState
+> {
   state = {
     isOpen: this.props.stepState === EAccountSetupStepState.ACTIVE,
   };
@@ -51,17 +56,14 @@ export class AccountSetupStep extends React.Component<IStepComponentProps & IExt
     const { stepState, title, component, number } = this.props;
     return (
       <div className={styles.accountSetupStepWrapper}>
-          <StepTicker stepState={stepState} number={number}/>
-        <div className={styles.title} >
-          {title}
-        </div>
-        {!this.props.isLast && <span className={styles.line}/>}
-        {this.state.isOpen
-          ? <div className={styles.componentOpen}>
-            {component}
-          </div>
-        : <div className={cn(styles.componentClosed, {[styles.last]:this.props.isLast})}/>
-        }
+        <StepTicker stepState={stepState} number={number} />
+        <div className={styles.title}>{title}</div>
+        {!this.props.isLast && <span className={styles.line} />}
+        {this.state.isOpen ? (
+          <div className={styles.componentOpen}>{component}</div>
+        ) : (
+          <div className={cn(styles.componentClosed, { [styles.last]: this.props.isLast })} />
+        )}
       </div>
     );
   }

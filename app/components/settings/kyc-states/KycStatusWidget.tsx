@@ -349,4 +349,6 @@ const connectKycStatusWidget = <T extends {}>(
 
 export const KycStatusWidget = connectKycStatusWidget<IExternalProps>(KycStatusWidgetBase);
 export const AccountSetupKycComponent = connectKycStatusWidget<{}>(AccountSetupKycStartLayout);
-export const AccountSetupKycPendingComponent = connectKycStatusWidget<{}>(AccountSetupKycPendingLayout);
+export const AccountSetupKycPendingComponent = connectKycStatusWidget<{}>(
+  AccountSetupKycPendingLayout,
+);

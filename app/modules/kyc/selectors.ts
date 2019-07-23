@@ -116,7 +116,7 @@ export const selectIndividualClientName = (state: IAppState) => {
 };
 
 export const selectBusinessClientName = (state: IAppState) =>
-  (state.kyc.businessData && state.kyc.businessData.name)
+  state.kyc.businessData && state.kyc.businessData.name;
 
 export const selectClientName = (state: IAppState) =>
   (state.kyc.businessData && state.kyc.businessData.name) || selectIndividualClientName(state);

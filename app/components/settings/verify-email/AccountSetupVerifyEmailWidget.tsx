@@ -45,7 +45,6 @@ interface INoEMailUser {
   revertCancelEmail: () => void;
 }
 
-
 interface IUnverifiedEmailWidgetProps {
   resendEmail: () => void;
   unverifiedEmail: string;
@@ -83,7 +82,7 @@ const SetEmailFormLayout = injectIntlHelpers<IEnhancedFormProps & FormikProps<IF
           layout={EButtonLayout.SECONDARY}
           onClick={props.revertCancelEmail}
         >
-          <FormattedMessage id="form.button.cancel"/>
+          <FormattedMessage id="form.button.cancel" />
         </Button>
         <Button
           type="submit"
@@ -91,7 +90,7 @@ const SetEmailFormLayout = injectIntlHelpers<IEnhancedFormProps & FormikProps<IF
           disabled={!isValid(props) || props.isLocked}
           data-test-id="verify-email-widget-form-submit"
         >
-          <FormattedMessage id="form.button.submit"/>
+          <FormattedMessage id="form.button.submit" />
         </Button>
       </div>
     </Form>
@@ -103,15 +102,17 @@ const SetEmailForm = withFormik<IEnhancedFormProps, IFormValues>({
   handleSubmit: (values, props) => props.props.handleSubmit(values),
 })(SetEmailFormLayout);
 
-
 const ChangeEmailForm: React.FunctionComponent<INoEMailUser> = ({
   addNewEmail,
   isLocked,
   revertCancelEmail,
 }) => (
-  <section data-test-id="profile.verify-email-widget.no-email-state" className={styles.changeEmailForm}>
+  <section
+    data-test-id="profile.verify-email-widget.no-email-state"
+    className={styles.changeEmailForm}
+  >
     <p className={styles.text}>
-      <FormattedMessage id="settings.verify-email-widget.enter-email"/>
+      <FormattedMessage id="settings.verify-email-widget.enter-email" />
     </p>
     <SetEmailForm
       handleSubmit={addNewEmail}
@@ -122,40 +123,38 @@ const ChangeEmailForm: React.FunctionComponent<INoEMailUser> = ({
 );
 
 const UnverifiedEmail: React.FunctionComponent<IUnverifiedEmailWidgetProps> = ({
-  resendEmail, unverifiedEmail, cancelEmail,
+  resendEmail,
+  unverifiedEmail,
+  cancelEmail,
 }) => (
   <section
     className={styles.section}
     data-test-id="profile.verify-email-widget.unverified-email-state"
   >
     <p className={styles.text}>
-      <FormattedMessage id="account-setup.verify-email-widget.text-1"/>
-      <strong data-test-id="profile.verify-email-widget.unverified-email">
-        {unverifiedEmail}
-      </strong>
+      <FormattedMessage id="account-setup.verify-email-widget.text-1" />
+      <strong data-test-id="profile.verify-email-widget.unverified-email">{unverifiedEmail}</strong>
     </p>
     <p className={styles.text}>
-      <FormattedMessage id="account-setup.verify-email-widget.text-2"/>
+      <FormattedMessage id="account-setup.verify-email-widget.text-2" />
     </p>
-      <Button
-        layout={EButtonLayout.PRIMARY}
-        theme={EButtonTheme.BRAND}
-        onClick={cancelEmail}
-        data-test-id="verify-email-widget.change-email.button"
-      >
-        <FormattedMessage id="account-setup.verify-email-widget.change-email"/>
-      </Button>
-      <Button
-        layout={EButtonLayout.INLINE}
-        onClick={resendEmail}
-        data-test-id="resend-link"
-      >
-        <FormattedMessage id="account-setup.verify-email-widget.resend-link"/>
-      </Button>
+    <Button
+      layout={EButtonLayout.PRIMARY}
+      theme={EButtonTheme.BRAND}
+      onClick={cancelEmail}
+      data-test-id="verify-email-widget.change-email.button"
+    >
+      <FormattedMessage id="account-setup.verify-email-widget.change-email" />
+    </Button>
+    <Button layout={EButtonLayout.INLINE} onClick={resendEmail} data-test-id="resend-link">
+      <FormattedMessage id="account-setup.verify-email-widget.resend-link" />
+    </Button>
   </section>
 );
 
-export const AccountSetupVerifyEmailWidgetLayout: React.FunctionComponent<IStateProps & IDispatchProps> = ({
+export const AccountSetupVerifyEmailWidgetLayout: React.FunctionComponent<
+  IStateProps & IDispatchProps
+> = ({
   resendEmail,
   unverifiedEmail,
   cancelEmail,
@@ -164,19 +163,20 @@ export const AccountSetupVerifyEmailWidgetLayout: React.FunctionComponent<IState
   abortEmailUpdate,
   addNewEmail,
   isLocked,
-}) => <>
-  {isEmailTemporaryCancelled
-    ? <ChangeEmailForm
-      {...{ addNewEmail, isLocked, revertCancelEmail }}
-    />
-    : <UnverifiedEmail
-      {...{
-        resendEmail,
-        cancelEmail,
-        abortEmailUpdate,
-      }}
-      unverifiedEmail={unverifiedEmail!}
-      data-test-id="unverified-section"
-    />
-  }
-</>;
+}) => (
+  <>
+    {isEmailTemporaryCancelled ? (
+      <ChangeEmailForm {...{ addNewEmail, isLocked, revertCancelEmail }} />
+    ) : (
+      <UnverifiedEmail
+        {...{
+          resendEmail,
+          cancelEmail,
+          abortEmailUpdate,
+        }}
+        unverifiedEmail={unverifiedEmail!}
+        data-test-id="unverified-section"
+      />
+    )}
+  </>
+);

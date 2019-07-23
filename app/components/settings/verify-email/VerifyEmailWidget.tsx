@@ -261,7 +261,13 @@ export const VerifyEmailWidgetBase: React.FunctionComponent<
   return (
     <Panel
       columnSpan={columnSpan}
-      headerText={<FormattedHTMLMessage tagName="span" id="settings.verify-email-widget.header" values={{ step }} />}
+      headerText={
+        <FormattedHTMLMessage
+          tagName="span"
+          id="settings.verify-email-widget.header"
+          values={{ step }}
+        />
+      }
       rightComponent={
         isUserEmailVerified && !isThereUnverifiedEmail ? (
           <img src={successIcon} className={styles.icon} aria-hidden="true" alt="" />
@@ -326,4 +332,6 @@ export const connectVerifyEmailComponent = <T extends {}>(
   )(WrappedComponent);
 
 export const VerifyEmailWidget = connectVerifyEmailComponent<IExternalProps>(VerifyEmailWidgetBase);
-export const VerifyEmailComponent = connectVerifyEmailComponent<{}>(AccountSetupVerifyEmailWidgetLayout);
+export const VerifyEmailComponent = connectVerifyEmailComponent<{}>(
+  AccountSetupVerifyEmailWidgetLayout,
+);

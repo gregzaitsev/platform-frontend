@@ -4,7 +4,7 @@
 }
 
 .dashboard-title-wrapper {
-  margin: 2rem 0
+  margin: 2rem 0;
 }
 
 .dashboard-title {
@@ -18,10 +18,6 @@
   font-family: $font-family-roboto;
   font-size: 16px;
   margin-top: 1rem;
-}
-
-.notification {
-  background-color: green;
 }
 
 .dashboard-content-panel {
@@ -48,12 +44,12 @@
 .status {
   height: 1.5rem;
   padding: 3px 12px;
-  border: 1px solid red;
+  border: 1px solid $neu-bright-orange;
   border-radius: 3px;
   vertical-align: middle;
 
   font-size: 12px;
-  color:red;
+  color: $neu-bright-orange;
   text-transform: uppercase;
 }
 
@@ -75,18 +71,18 @@
   width: 24px;
   height: 24px;
 
-  background-color: #94a5b3;
+  background-color: $text-gray;
   border-radius: 12px;
 
   font-family: $font-family-roboto;
   text-align: center;
-  color: #F3F5F7;
+  color: $neu-pale-grey-two;
   font-size: 16px;
   font-weight: 500;
 
   &.active,
   &.done {
-    background-color: #1737D6;
+    background-color: $ticker-blue-two;
   }
 
 }
@@ -100,20 +96,21 @@
 
 .component-open {
   grid-area: component;
-  margin: 20px 20px 27px 0
+  margin: 20px 20px 27px 0;
 }
+
 .component-closed {
   height: 16px;
 
-  &.last{
-    display: none
+  &.last {
+    display: none;
   }
 }
 
 .line {
   width: 2px;
   height: 100%;
-  background-color: #e7ebee;
+  background-color: $new-gray-two;
   margin: 0 auto;
 }
 

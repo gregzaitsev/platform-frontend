@@ -1,6 +1,6 @@
 import * as React from "react";
-import { branch, compose, nest, renderComponent, withProps } from "recompose";
 import { FormattedMessage } from "react-intl-phraseapp";
+import { branch, compose, nest, renderComponent, withProps } from "recompose";
 
 import { ERequestStatus } from "../../lib/api/KycApi.interfaces";
 import { selectBackupCodesVerified, selectIsUserEmailVerified } from "../../modules/auth/selectors";
@@ -13,14 +13,11 @@ import { Layout } from "../layouts/Layout";
 import { Panel } from "../shared/Panel";
 import { SuccessTick } from "../shared/SuccessTick";
 import { nomineeAccountSetupSteps } from "./AccountSetupData";
-import {
-  AccountSetupStep,
-  INomineeAccountSetupSteps,
-} from "./AccountSetupWizard";
+import { AccountSetupStep, INomineeAccountSetupSteps } from "./AccountSetupWizard";
 import { NomineeKycPending } from "./NomineeKycPending";
 import { IStepComponentProps, prepareSetupAccountSteps } from "./utils";
 
-import * as styles from './NomineeDashboard.module.scss'
+import * as styles from "./NomineeDashboard.module.scss";
 
 interface IStateProps {
   emailVerified: boolean;
@@ -29,61 +26,63 @@ interface IStateProps {
   verificationIsComplete: boolean;
 }
 
-
 interface INomineeTask {
-  key: string
+  key: string;
 }
 
-const NomineeDashboardContainer: React.FunctionComponent = ({ children }) =>
+const NomineeDashboardContainer: React.FunctionComponent = ({ children }) => (
   <div data-test-id="nominee-dashboard" className={styles.nomineeDashboardContainer}>
     {children}
   </div>
+);
 
 interface IDashboardTitleProps {
   title: TTranslatedString;
-  text: TTranslatedString
+  text: TTranslatedString;
 }
 
-export const DashboardTitle:React.FunctionComponent<IDashboardTitleProps> = ({title, text}) =>
+export const DashboardTitle: React.FunctionComponent<IDashboardTitleProps> = ({ title, text }) => (
   <div className={styles.dashboardTitleWrapper}>
-    <h1 className={styles.dashboardTitle}>
-      {title}
-    </h1>
-    <p className={styles.dashboardText}>
-      {text}
-    </p>
+    <h1 className={styles.dashboardTitle}>{title}</h1>
+    <p className={styles.dashboardText}>{text}</p>
   </div>
+);
 
 const NomineeAccountSetup: React.FunctionComponent<INomineeAccountSetupSteps> = ({
   accountSetupStepsData,
 }) => (
   <>
     <DashboardTitle
-      title={<FormattedMessage id="account-setup.welcome-to-neufund"/>}
-      text={<FormattedMessage id="account-setup.please-complete-setup"/>}
+      title={<FormattedMessage id="account-setup.welcome-to-neufund" />}
+      text={<FormattedMessage id="account-setup.please-complete-setup" />}
     />
     <Panel className={styles.accountSetupWrapper}>
-      {accountSetupStepsData.map((stepData: IStepComponentProps) =>
+      {accountSetupStepsData.map((stepData: IStepComponentProps) => (
         <AccountSetupStep {...stepData} />
-      )}
+      ))}
     </Panel>
   </>
 );
 
-const NoTasks = () =>
+const NoTasks = () => (
   <>
-    <SuccessTick/>
-    <h2 className={styles.dashboardTitle}><FormattedMessage id="nominee-dashboard.no-tasks-title"/></h2>
-    <p className={styles.dashboardText}><FormattedMessage id="nominee-dashboard.no-tasks-text"/></p>
+    <SuccessTick />
+    <h2 className={styles.dashboardTitle}>
+      <FormattedMessage id="nominee-dashboard.no-tasks-title" />
+    </h2>
+    <p className={styles.dashboardText}>
+      <FormattedMessage id="nominee-dashboard.no-tasks-text" />
+    </p>
   </>
+);
 
-export const NomineeDashboardTasks: React.FunctionComponent<{ nomineeTasks?: INomineeTask[] }> = ({ nomineeTasks }) =>
+export const NomineeDashboardTasks: React.FunctionComponent<{ nomineeTasks?: INomineeTask[] }> = ({
+  nomineeTasks,
+}) => (
   <Panel className={styles.dashboardContentPanel}>
-    {!nomineeTasks
-      ? <NoTasks/>
-      : () => <>tasks</>
-    }
+    {!nomineeTasks ? <NoTasks /> : () => <>tasks</>}
   </Panel>
+);
 
 export const NomineeDashboard = compose<INomineeAccountSetupSteps, {}>(
   withContainer(nest(Layout, NomineeDashboardContainer)),

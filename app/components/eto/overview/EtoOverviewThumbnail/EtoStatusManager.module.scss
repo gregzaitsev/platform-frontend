@@ -1,7 +1,5 @@
 @import "../../../shared/Panel.module";
 
-$text-color: #94a5b3;
-
 .info,
 .successful-info {
   @include remove-panel-padding;
@@ -28,7 +26,7 @@ $text-color: #94a5b3;
   &-text {
     @include font-label;
 
-    color: $text-color;
+    color: $text-gray;
     margin-bottom: px-to-rem(2px);
   }
 }

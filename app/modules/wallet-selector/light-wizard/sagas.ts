@@ -136,9 +136,7 @@ export function* lightWalletRecoverWatch(
   action: TAction,
 ): Iterator<any> {
   try {
-    const userType = yield select((state: IAppState) =>
-      selectUrlUserType(state.router),
-    );
+    const userType = yield select((state: IAppState) => selectUrlUserType(state.router));
 
     if (action.type !== "LIGHT_WALLET_RECOVER") {
       return;

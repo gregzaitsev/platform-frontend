@@ -3,11 +3,7 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { compose } from "recompose";
 
-import * as arrowRight from "../../../assets/img/inline_icons/arrow_right.svg";
-import * as successIcon from "../../../assets/img/notifications/success.svg";
-import * as warningIcon from "../../../assets/img/notifications/warning.svg";
 import { actions } from "../../../modules/actions";
-
 import { selectBackupCodesVerified } from "../../../modules/auth/selectors";
 import { appConnect } from "../../../store";
 import { EColumnSpan } from "../../layouts/Container";
@@ -16,6 +12,9 @@ import { Panel } from "../../shared/Panel";
 import { profileRoutes } from "../routes";
 import { AccountSetupBackupWidgetLayout } from "./AccountSetupBackupSeedWidget";
 
+import * as arrowRight from "../../../assets/img/inline_icons/arrow_right.svg";
+import * as successIcon from "../../../assets/img/notifications/success.svg";
+import * as warningIcon from "../../../assets/img/notifications/warning.svg";
 import * as styles from "./BackupSeedWidget.module.scss";
 
 interface IStateProps {
@@ -23,7 +22,7 @@ interface IStateProps {
 }
 
 interface IDispatchProps {
-  startBackupProcess: () => void
+  startBackupProcess: () => void;
 }
 
 interface IExternalProps {
@@ -96,8 +95,8 @@ const connectBackupSeedWidget = <T extends {}>(
         backupCodesVerified: selectBackupCodesVerified(s),
       }),
       dispatchToProps: dispatch => ({
-        startBackupProcess: () => dispatch(actions.routing.goToSeedBackup())
-      })
+        startBackupProcess: () => dispatch(actions.routing.goToSeedBackup()),
+      }),
     }),
   )(WrappedComponent);
 

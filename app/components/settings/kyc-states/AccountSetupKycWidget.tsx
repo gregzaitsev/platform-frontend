@@ -1,8 +1,8 @@
 import * as React from "react";
-import {  FormattedMessage } from "react-intl-phraseapp";
+import { FormattedMessage } from "react-intl-phraseapp";
+
 import { ERequestOutsourcedStatus, ERequestStatus } from "../../../lib/api/KycApi.interfaces";
 import { EUserType } from "../../../lib/api/users/interfaces";
-
 import { Button, EButtonLayout, EButtonTheme } from "../../shared/buttons/Button";
 import { LoadingIndicator } from "../../shared/loading-indicator/LoadingIndicator";
 import { WarningAlert } from "../../shared/WarningAlert";
@@ -43,7 +43,7 @@ export const AccountSetupKycStartLayout: React.FunctionComponent<IStateProps & I
     return (
       <section className={styles.accountSetupSection}>
         <p className={styles.accountSetupText}>
-          <FormattedMessage id="account-setup.kyc-widget-text"/>
+          <FormattedMessage id="account-setup.kyc-widget-text" />
         </p>
         <Button
           layout={EButtonLayout.PRIMARY}
@@ -59,7 +59,9 @@ export const AccountSetupKycStartLayout: React.FunctionComponent<IStateProps & I
   }
 };
 
-export const AccountSetupKycPendingLayout: React.FunctionComponent<IStateProps & IDispatchProps> = ({onGoToKycHome}) =>
+export const AccountSetupKycPendingLayout: React.FunctionComponent<
+  IStateProps & IDispatchProps
+> = ({ onGoToKycHome }) => (
   <>
     <Button
       layout={EButtonLayout.PRIMARY}
@@ -70,4 +72,5 @@ export const AccountSetupKycPendingLayout: React.FunctionComponent<IStateProps &
     >
       <FormattedMessage id="settings.kyc-status-widget.submit-additional-documents" />
     </Button>
-</>
+  </>
+);
