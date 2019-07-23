@@ -243,7 +243,7 @@ describe("JsonHttpClient", () => {
 
     it("should throw an error on networking problems", async () => {
       fetchMock.mock(`${API_URL}products`, {
-        throws: new Error("test"),
+        throws: true,
       });
 
       await expectToBeRejected(
