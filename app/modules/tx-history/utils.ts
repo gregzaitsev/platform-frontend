@@ -27,12 +27,17 @@ const getCurrencyFromTokenSymbol = (
 const getDecimalsFormat = (
   metadata: TAnalyticsTransactionTokenMetadata | undefined,
 ): ENumberInputFormat => {
-  switch (metadata && metadata.tokenDecimals) {
+  if (!metadata) {
+    return ENumberInputFormat.ULPS;
+  }
+
+  switch (metadata.tokenDecimals) {
     case 0:
       return ENumberInputFormat.FLOAT;
     case 18:
-    default:
       return ENumberInputFormat.ULPS;
+    default:
+      throw new Error(`Unsupported token decimals ${metadata.tokenDecimals} received`);
   }
 };
 

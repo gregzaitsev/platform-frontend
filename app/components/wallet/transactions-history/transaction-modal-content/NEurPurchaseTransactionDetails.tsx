@@ -35,8 +35,8 @@ const NEurPurchaseTransactionDetails: React.FunctionComponent<IExternalProps> = 
     <DataRow
       className={styles.withSpacing}
       caption={"To address"}
-      clipboardCopyValue={transaction.to}
-      value={<EtherscanAddressLink address={transaction.to} />}
+      clipboardCopyValue={transaction.toAddress}
+      value={<EtherscanAddressLink address={transaction.toAddress} />}
     />
 
     <hr className={styles.separator} />

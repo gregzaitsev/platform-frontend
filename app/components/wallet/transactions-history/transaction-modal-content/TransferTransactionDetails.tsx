@@ -38,15 +38,15 @@ const TransferTransactionDetails: React.FunctionComponent<IExternalProps> = ({ t
     <DataRow
       className={styles.withSpacing}
       caption={"From address"}
-      value={<EtherscanAddressLink address={transaction.from} />}
-      clipboardCopyValue={transaction.from}
+      value={<EtherscanAddressLink address={transaction.fromAddress} />}
+      clipboardCopyValue={transaction.fromAddress}
     />
 
     <DataRow
       className={styles.withSpacing}
       caption={"To address"}
-      clipboardCopyValue={transaction.to}
-      value={<EtherscanAddressLink address={transaction.to} />}
+      clipboardCopyValue={transaction.toAddress}
+      value={<EtherscanAddressLink address={transaction.toAddress} />}
     />
 
     <hr className={styles.separator} />

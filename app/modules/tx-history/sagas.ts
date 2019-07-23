@@ -19,21 +19,20 @@ import { selectEurEquivalent } from "../shared/tokenPrice/selectors";
 import { selectEthereumAddressWithChecksum } from "../web3/selectors";
 import { TX_LIMIT, TX_POLLING_INTERVAL } from "./constants";
 import { selectLastTransactionId, selectTimestampOfLastChange, selectTXById } from "./selectors";
-import { ETransactionSubType, TTxHistory } from "./types";
+import { ETransactionSubType, TTxHistory, TTxHistoryCommon } from "./types";
 import { getCurrencyFromTokenSymbol, getDecimalsFormat, getTxUniqueId } from "./utils";
 
 export function* mapAnalyticsApiTransactionResponse(
   { logger }: TGlobalDependencies,
   transaction: TAnalyticsTransaction,
 ): Iterator<any> {
-  const common = {
+  const common: TTxHistoryCommon = {
     amount: transaction.extraData.amount.toString(),
     amountFormat: getDecimalsFormat(transaction.extraData.tokenMetadata),
     blockNumber: transaction.blockNumber,
     date: transaction.blockTime,
     id: getTxUniqueId(transaction),
     logIndex: transaction.logIndex,
-    subType: undefined,
     transactionDirection: transaction.transactionDirection,
     transactionIndex: transaction.transactionIndex,
     txHash: transaction.txHash,
@@ -50,6 +49,7 @@ export function* mapAnalyticsApiTransactionResponse(
 
       tx = {
         ...common,
+        subType: undefined,
         type: transaction.type,
         companyName: transaction.extraData.assetTokenMetadata.companyName!,
         currency: getCurrencyFromTokenSymbol(transaction.extraData.tokenMetadata),
@@ -71,6 +71,7 @@ export function* mapAnalyticsApiTransactionResponse(
         ...common,
         currency,
         amountEur,
+        subType: undefined,
         etoId: transaction.extraData.assetTokenMetadata.tokenCommitmentAddress!,
         toAddress: transaction.extraData.toAddress!,
         type: transaction.type,
@@ -88,8 +89,8 @@ export function* mapAnalyticsApiTransactionResponse(
           currency: transaction.extraData.tokenMetadata!.tokenSymbol,
           etoId: transaction.extraData.tokenMetadata!.tokenCommitmentAddress!,
           icon: transaction.extraData.tokenMetadata!.tokenImage,
-          from: transaction.extraData.fromAddress!,
-          to: transaction.extraData.toAddress!,
+          fromAddress: transaction.extraData.fromAddress!,
+          toAddress: transaction.extraData.toAddress!,
         };
       } else {
         const currency = getCurrencyFromTokenSymbol(transaction.extraData.tokenMetadata);
@@ -102,10 +103,10 @@ export function* mapAnalyticsApiTransactionResponse(
           ...common,
           currency,
           amountEur,
-          type: transaction.type,
           subType: undefined,
-          to: transaction.extraData.toAddress!,
-          from: transaction.extraData.fromAddress!,
+          type: transaction.type,
+          toAddress: transaction.extraData.toAddress!,
+          fromAddress: transaction.extraData.fromAddress!,
         };
       }
       break;
@@ -113,15 +114,17 @@ export function* mapAnalyticsApiTransactionResponse(
     case ETransactionType.NEUR_PURCHASE: {
       tx = {
         ...common,
+        subType: undefined,
         type: transaction.type,
         currency: ECurrency.EUR_TOKEN,
-        to: transaction.extraData.toAddress!,
+        toAddress: transaction.extraData.toAddress!,
       };
       break;
     }
     case ETransactionType.NEUR_REDEEM: {
       tx = {
         ...common,
+        subType: undefined,
         type: transaction.type,
         currency: ECurrency.EUR_TOKEN,
       };
@@ -130,6 +133,7 @@ export function* mapAnalyticsApiTransactionResponse(
     case ETransactionType.NEUR_DESTROY: {
       tx = {
         ...common,
+        subType: undefined,
         type: transaction.type,
         currency: ECurrency.EUR_TOKEN,
         liquidatedByAddress: transaction.extraData.byAddress!,
@@ -152,6 +156,7 @@ export function* mapAnalyticsApiTransactionResponse(
           ...common,
           neuReward,
           neuRewardEur,
+          subType: undefined,
           type: transaction.type,
           amountFormat: getDecimalsFormat(transaction.extraData.assetTokenMetadata),
           currency: transaction.extraData.assetTokenMetadata.tokenSymbol,
@@ -181,6 +186,7 @@ export function* mapAnalyticsApiTransactionResponse(
         currency,
         amountEur,
         toAddress,
+        subType: undefined,
         type: transaction.type,
       };
       break;
@@ -200,6 +206,7 @@ export function* mapAnalyticsApiTransactionResponse(
         ...common,
         currency,
         amountEur,
+        subType: undefined,
         type: transaction.type,
       };
       break;

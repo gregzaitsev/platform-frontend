@@ -14,7 +14,6 @@ export type TTxHistoryCommon = {
   amount: string;
   amountFormat: ENumberInputFormat;
   blockNumber: number;
-  currency: ECurrency | EquityToken;
   date: string;
   id: string;
   logIndex: number;
@@ -27,6 +26,7 @@ export type TEtoInvestmentTx = {
   type: ETransactionType.ETO_INVESTMENT;
   subType: undefined;
   companyName: string;
+  currency: ECurrency;
 };
 
 export type TEtoRefundTx = {
@@ -44,8 +44,8 @@ export type TTransferEquityToken = {
   subType: ETransactionSubType.TRANSFER_EQUITY_TOKEN;
   currency: EquityToken;
   etoId: EthereumAddressWithChecksum;
-  from: EthereumAddressWithChecksum;
-  to: EthereumAddressWithChecksum;
+  fromAddress: EthereumAddressWithChecksum;
+  toAddress: EthereumAddressWithChecksum;
   icon: string | undefined;
 };
 
@@ -54,15 +54,15 @@ export type TTransferWellKnownToken = {
   subType: undefined;
   currency: ECurrency;
   amountEur: string;
-  from: EthereumAddressWithChecksum;
-  to: EthereumAddressWithChecksum;
+  fromAddress: EthereumAddressWithChecksum;
+  toAddress: EthereumAddressWithChecksum;
 };
 
 export type TNEURTransfer = {
   type: ETransactionType.NEUR_PURCHASE;
   subType: undefined;
   currency: ECurrency.EUR_TOKEN;
-  to: EthereumAddressWithChecksum;
+  toAddress: EthereumAddressWithChecksum;
 };
 
 export type TNEURRedeemTransfer = {
