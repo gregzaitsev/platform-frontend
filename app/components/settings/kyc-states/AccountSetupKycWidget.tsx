@@ -41,7 +41,7 @@ export const AccountSetupKycStartLayout: React.FunctionComponent<IStateProps & I
     );
   } else {
     return (
-      <section className={styles.accountSetupSection}>
+      <section className={styles.accountSetupSection} data-test-id="account-setup-start-kyc-section">
         <p className={styles.accountSetupText}>
           <FormattedMessage id="account-setup.kyc-widget-text" />
         </p>

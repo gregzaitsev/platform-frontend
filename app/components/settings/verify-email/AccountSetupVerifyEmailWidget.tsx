@@ -2,6 +2,7 @@ import { FormikProps, withFormik } from "formik";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import * as Yup from "yup";
+import { TDataTestId } from "../../../types";
 
 import { injectIntlHelpers } from "../../../utils/injectIntlHelpers.unsafe";
 import { Button, EButtonLayout, EButtonTheme } from "../../shared/buttons/index";
@@ -122,14 +123,15 @@ const ChangeEmailForm: React.FunctionComponent<INoEMailUser> = ({
   </section>
 );
 
-const UnverifiedEmail: React.FunctionComponent<IUnverifiedEmailWidgetProps> = ({
+const UnverifiedEmail: React.FunctionComponent<IUnverifiedEmailWidgetProps & TDataTestId> = ({
   resendEmail,
   unverifiedEmail,
   cancelEmail,
+  'data-test-id':dataTestId
 }) => (
   <section
     className={styles.section}
-    data-test-id="profile.verify-email-widget.unverified-email-state"
+    data-test-id={dataTestId}
   >
     <p className={styles.text}>
       <FormattedMessage id="account-setup.verify-email-widget.text-1" />
@@ -175,7 +177,7 @@ export const AccountSetupVerifyEmailWidgetLayout: React.FunctionComponent<
           abortEmailUpdate,
         }}
         unverifiedEmail={unverifiedEmail!}
-        data-test-id="unverified-section"
+        data-test-id="account-setup-email-unverified-section"
       />
     )}
   </>

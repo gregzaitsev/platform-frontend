@@ -3,7 +3,7 @@ import { assertIssuerEtoView } from "../eto-view/EtoViewUtils";
 import {
   assertDashboard,
   assertEtoDashboard,
-  assertEtoDocuments,
+  assertEtoDocuments, assertNomineeDashboard,
   assertPortfolio,
   assertProfile,
   assertWallet,
@@ -40,6 +40,11 @@ export const goToEtoDashboard = () => {
 export const goToEtoPreview = () => {
   cy.visit("/eto/view");
   assertIssuerEtoView();
+};
+
+export const goToNomineeDashboard = () => {
+  cy.visit("/dashboard");
+  assertNomineeDashboard();
 };
 
 export const goToProfile = () => {

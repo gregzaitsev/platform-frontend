@@ -16,12 +16,14 @@ import {
 import { makeEthereumAddressChecksummed } from "../../modules/web3/utils";
 import { EthereumAddress } from "../../types";
 import { mockApiUrl } from "../config";
+import { kycCompanyDocsForm, kycCorporateCompanyForm, kycLegalRepDocsForm, kycLegalRepForm } from "../kyc/fixtures";
 import {
   assertDashboard,
   assertEtoDashboard,
   assertUserInLanding,
   assertWaitForExternalPendingTransactionCount,
 } from "./assertions";
+import { fillForm } from "./forms";
 import { goToWallet } from "./navigation";
 import { tid } from "./selectors";
 import { DEFAULT_PASSWORD } from "./userHelpers";
@@ -129,7 +131,7 @@ export const getLatestVerifyUserEmailLink = (
     }
   });
 
-export const verifyLatestUserEmail = (email: string, attempts = 3) => {
+const verifyLatestUserEmailBase = (email: string, finalCheckTid?:string, attempts = 3) => {
   cy.request({ url: mockApiUrl + "sendgrid/session/mails", method: "GET" }).then(r => {
     const latestEmailByUser = r.body.find(
       (body: { personalizations: { to: { email: string }[] }[] }) =>
@@ -148,10 +150,21 @@ export const verifyLatestUserEmail = (email: string, attempts = 3) => {
       // we need to replace the loginlink pointing to a remote destination with one pointing to our local instance
       const cleanedActivationLink = activationLink.replace("platform.neufund.io", "localhost:9090");
       cy.visit(cleanedActivationLink);
-      cy.get(tid("email-verified")); // wait for the email verified button to show
+      if(finalCheckTid){
+        cy.get(tid(finalCheckTid));
+      }
     }
-  });
+  })
+}
+
+export const verifyLatestUserEmail = (email: string, attempts = 3) => {
+  verifyLatestUserEmailBase(email, "email-verified",attempts)
 };
+
+export const verifyLatestUserEmailAccountSetup = (email: string, attempts = 3) => {
+  verifyLatestUserEmailBase(email, undefined,attempts)
+};
+
 
 export const registerWithLightWallet = (
   email: string,
@@ -195,6 +208,25 @@ export const logoutViaAccountMenu = () => {
 
   assertUserInLanding();
 };
+
+export const goThroughKycCorporateProcess = () => {
+  // fill out and submit business form
+  fillForm(kycCorporateCompanyForm);
+  fillForm(kycCompanyDocsForm);
+
+  // uplaod legal rep data
+  fillForm(kycLegalRepForm);
+  fillForm(kycLegalRepDocsForm, { submit: false });
+
+  // add a new beneficial owner entry
+  cy.get(tid("kyc-beneficial-owner-add-new")).awaitedClick();
+  // remove him again
+  cy.get(tid("kyc-beneficial-owner-delete")).awaitedClick();
+
+  // submit and accept
+  cy.get(tid("kyc-company-legal-representative-upload-and-submit")).awaitedClick();
+  confirmAccessModal();
+}
 
 export const goToUserAccountSettings = () => {
   cy.get(tid("account-menu-open-button"))
