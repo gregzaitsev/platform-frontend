@@ -40,6 +40,7 @@ import { videoModalActions } from "./video-modal/actions";
 import { walletSelectorActions } from "./wallet-selector/actions";
 import { walletActions } from "./wallet/actions";
 import { web3Actions } from "./web3/actions";
+import { nomineeFlowActions } from "./nominee-flow/actions";
 
 /** You should add new actions also here (with a namespace).*/
 export const actions = {
@@ -81,6 +82,7 @@ export const actions = {
   personProfileModal: personProfileModalActions,
   tosModal: tosModalActions,
   portfolio: portfolioActions,
+  nomineeFlow: nomineeFlowActions
 };
 
 /**
