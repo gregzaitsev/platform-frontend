@@ -7,12 +7,12 @@ export function* displayInfoModalSaga(title: TMessage, description?: TMessage): 
   yield put(actions.genericModal.showInfoModal(title, description));
 
   // wait until its dismissed
-  yield take("GENERIC_MODAL_HIDE");
+  yield take(actions.genericModal.hideGenericModal);
 }
 
 export function* displayErrorModalSaga(title: TMessage, description?: TMessage): any {
   yield put(actions.genericModal.showErrorModal(title, description));
 
   // wait until its dismissed
-  yield take("GENERIC_MODAL_HIDE");
+  yield take(actions.genericModal.hideGenericModal);
 }

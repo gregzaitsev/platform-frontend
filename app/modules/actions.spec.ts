@@ -18,7 +18,7 @@ describe("modules", () => {
           const type: string = action.type;
 
           // we have aliases for displaying generic modals
-          if (type === "GENERIC_MODAL_SHOW") {
+          if (type === actions.genericModal.showGenericModal.getType()) {
             return;
           }
 

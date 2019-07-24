@@ -1,9 +1,11 @@
-import { createAction } from "../actionsUtils";
+import { createActionFactory } from "../actionsUtils";
 import { EInitType } from "./reducer";
 
 export const initActions = {
-  start: (initType: EInitType) => createAction("INIT_START", { initType }),
-  done: (initType: EInitType) => createAction("INIT_DONE", { initType }),
-  error: (initType: EInitType, errorMsg?: string) =>
-    createAction("INIT_ERROR", { initType, errorMsg }),
+  start: createActionFactory("INIT_START", (initType: EInitType) => ({ initType })),
+  done: createActionFactory("INIT_DONE", (initType: EInitType) => ({ initType })),
+  error: createActionFactory("INIT_ERROR", (initType: EInitType, errorMsg?: string) => ({
+    initType,
+    errorMsg,
+  })),
 };

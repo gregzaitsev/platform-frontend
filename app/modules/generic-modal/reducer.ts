@@ -2,6 +2,7 @@ import { genericModalIcons } from "../../components/modals/GenericModal";
 import { TMessage } from "../../components/translatedMessages/utils";
 import { AppActionTypes, AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
+import { actions } from "../actions";
 
 export interface IGenericModalState {
   isOpen: boolean;
@@ -32,7 +33,7 @@ export const genericModalReducer: AppReducer<IGenericModalState> = (
   action,
 ): DeepReadonly<IGenericModalState> => {
   switch (action.type) {
-    case "GENERIC_MODAL_SHOW":
+    case actions.genericModal.showGenericModal.getType():
       return {
         ...state,
         isOpen: true,
@@ -45,7 +46,7 @@ export const genericModalReducer: AppReducer<IGenericModalState> = (
         component: action.payload.component,
         componentProps: action.payload.props,
       };
-    case "GENERIC_MODAL_HIDE":
+    case actions.genericModal.hideGenericModal.getType():
       return initialState;
   }
 

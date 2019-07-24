@@ -8,10 +8,10 @@ import { LockedAccount } from "../../lib/contracts/LockedAccount";
 import { EthereumAddress } from "../../types";
 import { actions } from "../actions";
 import { numericValuesToString } from "../contracts/utils";
+import { EInitType } from "../init/reducer";
 import { selectIsSmartContractInitDone } from "../init/selectors";
 import { neuCall, neuTakeEvery, neuTakeOnly, neuTakeUntil } from "../sagasUtils";
 import { selectEthereumAddressWithChecksum } from "../web3/selectors";
-import { EInitType } from "./../init/reducer";
 import { ILockedWallet, IWalletStateData } from "./reducer";
 
 const WALLET_DATA_FETCHING_INTERVAL = 12000;
@@ -20,7 +20,7 @@ function* loadWalletDataSaga({ logger }: TGlobalDependencies): any {
   try {
     const ethAddress = yield select(selectEthereumAddressWithChecksum);
     yield put(actions.gas.gasApiEnsureLoading());
-    yield take("GAS_API_LOADED");
+    yield take(actions.gas.gasApiLoaded);
 
     const state: IWalletStateData = yield neuCall(loadWalletDataAsync, ethAddress);
     yield put(actions.wallet.saveWalletData(state));
@@ -80,7 +80,7 @@ function* walletBalanceWatcher(): any {
   const isSmartContractsInitialized = yield select(selectIsSmartContractInitDone);
 
   if (!isSmartContractsInitialized) {
-    yield neuTakeOnly("INIT_DONE", { initType: EInitType.START_CONTRACTS_INIT });
+    yield neuTakeOnly(actions.init.done, { initType: EInitType.START_CONTRACTS_INIT });
   }
 
   while (true) {

@@ -5,15 +5,14 @@ import { call, fork } from "redux-saga/effects";
 import { IpfsMessage } from "../../components/translatedMessages/messages";
 import { createMessage } from "../../components/translatedMessages/utils";
 import { TGlobalDependencies } from "../../di/setupBindings";
-import { actions, TAction } from "../actions";
+import { actions, TActionFromCreator } from "../actions";
 import { neuTakeEvery } from "../sagasUtils";
 import { downloadLink } from "./utils";
 
 export function* downloadFile(
   { apiImmutableStorage, notificationCenter, logger }: TGlobalDependencies,
-  action: TAction,
-): any {
-  if (action.type !== "IMMUTABLE_STORAGE_DOWNLOAD_FILE") return;
+  action: TActionFromCreator<typeof actions.immutableStorage.downloadImmutableFile>,
+): Iterator<any> {
   try {
     const immutableFileId = action.payload.immutableFileId;
     const downloadedFile = yield apiImmutableStorage.getFile(immutableFileId);
@@ -35,6 +34,6 @@ export function* downloadFile(
   }
 }
 
-export const immutableFileSagas = function*(): any {
-  yield fork(neuTakeEvery, "IMMUTABLE_STORAGE_DOWNLOAD_FILE", downloadFile);
-};
+export function* immutableFileSagas(): Iterator<any> {
+  yield fork(neuTakeEvery, actions.immutableStorage.downloadImmutableFile, downloadFile);
+}

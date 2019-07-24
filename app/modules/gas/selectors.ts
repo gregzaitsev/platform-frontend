@@ -1,6 +1,6 @@
 import { GasModelShape } from "../../lib/api/GasApi";
+import { IAppState } from "../../store";
 import { calculateGasPriceWithOverhead } from "../tx/utils";
-import { IAppState } from "./../../store";
 
 export const selectIsGasPriceAlreadyLoaded = (state: IAppState): boolean =>
   !state.gas.loading && !!state.gas.gasPrice;

@@ -1,6 +1,7 @@
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
-import { ILockedWallet } from "./../wallet/reducer";
+import { actions } from "../actions";
+import { ILockedWallet } from "../wallet/reducer";
 
 export type TWalletMigrationSteps = 1 | 2;
 export interface IWalletMigrationData {
@@ -35,49 +36,49 @@ export const icbmWalletBalanceModalReducer: AppReducer<IIcbmWalletBalanceModal> 
   action,
 ): DeepReadonly<IIcbmWalletBalanceModal> => {
   switch (action.type) {
-    case "ICBM_WALLET_BALANCE_MODAL_SHOW":
+    case actions.icbmWalletBalanceModal.showIcbmWalletBalanceModal.getType():
       return {
         ...state,
         isOpen: true,
       };
-    case "ICBM_WALLET_BALANCE_MODAL_HIDE":
+    case actions.icbmWalletBalanceModal.hideIcbmWalletBalanceModal.getType():
       return {
         ...initialState,
         isOpen: false,
       };
-    case "ICBM_WALLET_BALANCE_MODAL_GET_WALLET_DATA":
+    case actions.icbmWalletBalanceModal.getWalletData.getType():
       return {
         ...state,
         icbmWalletEthAddress: action.payload.icbmWalletEthAddress,
       };
-    case "ICBM_WALLET_BALANCE_MODAL_LOAD_WALLET_DATA":
+    case actions.icbmWalletBalanceModal.loadIcbmWalletData.getType():
       return {
         ...state,
         loading: false,
         icbmLockedEthWallet: action.payload.data,
       };
-    case "ICBM_WALLET_BALANCE_MODAL_LOAD_MIGRATION_DATA":
+    case actions.icbmWalletBalanceModal.loadIcbmMigrationData.getType():
       return {
         ...state,
         loading: false,
         walletMigrationData: action.payload.walletMigrationData,
       };
-    case "ICBM_WALLET_BALANCE_MODAL_START_MIGRATION":
+    case actions.icbmWalletBalanceModal.startMigrationFlow.getType():
       return {
         ...state,
         isMigrating: true,
       };
-    case "ICBM_WALLET_BALANCE_MODAL_FIRST_TRANSACTION_DONE":
+    case actions.icbmWalletBalanceModal.setFirstTxDone.getType():
       return {
         ...state,
         firstTransactionDone: true,
       };
-    case "ICBM_WALLET_BALANCE_MODAL_SECOND_TRANSACTION_DONE":
+    case actions.icbmWalletBalanceModal.setSecondTxDone.getType():
       return {
         ...state,
         secondTransactionDone: true,
       };
-    case "ICBM_WALLET_BALANCE_MODAL_SET_MIGRATION_STEP_TO_NEXT":
+    case actions.icbmWalletBalanceModal.setMigrationStepToNextStep.getType():
       return {
         ...state,
         currentMigrationStep: 2,

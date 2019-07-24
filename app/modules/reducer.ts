@@ -16,7 +16,6 @@ import { initReducer } from "./init/reducer";
 import { investmentFlowReducer } from "./investment-flow/reducer";
 import { investorTicketsReducer } from "./investor-portfolio/reducer";
 import { kycReducer } from "./kyc/reducer";
-import { moneyReducer } from "./money/reducer";
 import { notificationsReducer } from "./notifications/reducer";
 import { personProfileModalReducer } from "./person-profile-modal/reducer";
 import { profileReducer } from "./profile/reducer";
@@ -53,7 +52,6 @@ export const appReducers = {
   tokenPrice: tokenPriceReducer,
   init: initReducer,
   lightWalletWizard: lightWalletWizardReducer,
-  money: moneyReducer,
   wallet: walletReducer,
   txHistory: txHistoryReducer,
   notifications: notificationsReducer,

@@ -458,7 +458,7 @@ function* verifyEtoAccess(
 
       const { confirmed, denied } = yield race({
         confirmed: take(actions.eto.confirmJurisdictionDisclaimer),
-        denied: take("GENERIC_MODAL_HIDE"),
+        denied: take(actions.genericModal.hideGenericModal),
       });
 
       if (denied) {
@@ -472,7 +472,7 @@ function* verifyEtoAccess(
   }
 }
 
-export function* etoSagas(): any {
+export function* etoSagas(): Iterator<any> {
   yield fork(neuTakeEvery, actions.eto.loadEtoPreview, loadEtoPreview);
   yield fork(neuTakeEvery, actions.eto.loadEto, loadEto);
   yield fork(neuTakeEvery, actions.eto.loadEtos, loadEtos);

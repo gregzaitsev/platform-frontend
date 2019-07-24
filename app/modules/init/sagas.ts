@@ -4,7 +4,7 @@ import { fork, put, select } from "redux-saga/effects";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { IAppState } from "../../store";
 import { isJwtExpiringLateEnough } from "../../utils/JWTUtils";
-import { actions, TAction } from "../actions";
+import { actions, TActionFromCreator } from "../actions";
 import { loadJwt, setJwt } from "../auth/jwt/sagas";
 import { selectUserType } from "../auth/selectors";
 import { loadUser } from "../auth/user/sagas";
@@ -71,9 +71,10 @@ function* initApp({ logger }: TGlobalDependencies): any {
   }
 }
 
-export function* initStartSaga(_: TGlobalDependencies, action: TAction): Iterator<any> {
-  if (action.type !== "INIT_START") return;
-
+export function* initStartSaga(
+  _: TGlobalDependencies,
+  action: TActionFromCreator<typeof actions.init.start>,
+): Iterator<any> {
   const { initType } = action.payload;
 
   switch (initType) {

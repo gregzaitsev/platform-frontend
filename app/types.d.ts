@@ -65,6 +65,11 @@ export type TDataTestId = {
 export type ToastWithTestData = ToastOptions & TDataTestId;
 
 /**
+ * Allows either T or T[]
+ */
+export type TSingleOrArray<T> = T | T[];
+
+/**
  * From T, omit a set of properties whose keys are in the union K
  * @example OmitKeys<{ foo: boolean, bar: string }, "foo"> // { bar: string }
  */

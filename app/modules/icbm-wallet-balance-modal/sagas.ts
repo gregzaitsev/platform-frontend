@@ -7,7 +7,7 @@ import { hashFromIpfsLink } from "../../components/documents/utils";
 import { IcbmWalletMessage } from "../../components/translatedMessages/messages";
 import { createMessage } from "../../components/translatedMessages/utils";
 import { TGlobalDependencies } from "../../di/setupBindings";
-import { actions, TAction, TActionFromCreator } from "../actions";
+import { actions, TActionFromCreator } from "../actions";
 import { downloadLink } from "../immutable-file/utils";
 import { neuCall, neuTakeEvery, neuTakeUntil } from "../sagasUtils";
 import { ETokenType } from "../tx/types";
@@ -88,13 +88,9 @@ function* loadIcbmWalletMigrationTransactionSaga({
   }
 }
 
-function* loadIcbmWalletMigrationSaga(
-  { logger, notificationCenter }: TGlobalDependencies,
-  action: TAction,
-): any {
+function* loadIcbmWalletMigrationSaga({ logger, notificationCenter }: TGlobalDependencies): any {
   const ethAddress = yield select(selectIcbmWalletEthAddress);
 
-  if (action.type !== "ICBM_WALLET_BALANCE_MODAL_GET_WALLET_DATA") return;
   try {
     const userAddress = yield select(selectEthereumAddressWithChecksum);
     if (userAddress === ethAddress) throw new SameUserError();
@@ -196,18 +192,18 @@ function* downloadICBMWalletAgreement(
 export function* icbmWalletGetDataSagas(): any {
   yield fork(
     neuTakeEvery,
-    "ICBM_WALLET_BALANCE_MODAL_GET_WALLET_DATA",
+    actions.icbmWalletBalanceModal.getWalletData,
     loadIcbmWalletMigrationSaga,
   );
   yield fork(
     neuTakeUntil,
-    "ICBM_WALLET_BALANCE_MODAL_SHOW",
-    "ICBM_WALLET_BALANCE_MODAL_HIDE",
+    actions.icbmWalletBalanceModal.showIcbmWalletBalanceModal,
+    actions.icbmWalletBalanceModal.hideIcbmWalletBalanceModal,
     icbmWalletMigrationTransactionWatcher,
   );
   yield fork(
     neuTakeEvery,
-    "ICBM_WALLET_BALANCE_MODAL_DOWNLOAD_AGREEMENT",
+    actions.icbmWalletBalanceModal.downloadICBMWalletAgreement,
     downloadICBMWalletAgreement,
   );
 }
