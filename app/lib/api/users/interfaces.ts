@@ -103,3 +103,10 @@ export type TxPendingWithMetadata = YupTS.TypeOf<typeof TxPendingWithMetadataSch
   transactionAdditionalData?: any;
 };
 export type TPendingTxs = YupTS.TypeOf<typeof PendingTxsSchema>;
+
+export const NomineeRequestResponseSchema = YupTS.object({
+  new_state: Yup.string().oneOf(['pending', 'approved', 'rejected']),
+  nomineeId: YupTS.string()
+});
+
+export type TNomineeRequestResponse = YupTS.TypeOf<typeof NomineeRequestResponseSchema>

@@ -9,8 +9,8 @@ import {
   IEmailStatus,
   IUser,
   IUserInput,
-  IVerifyEmailUser,
-  OOO_TRANSACTION_TYPE,
+  IVerifyEmailUser, NomineeRequestResponseSchema,
+  OOO_TRANSACTION_TYPE, TNomineeRequestResponse,
   TPendingTxs,
   TxPendingWithMetadata,
   TxWithMetadata,
@@ -183,5 +183,25 @@ export class UsersApi {
       baseUrl: USER_API_ROOT,
       url: `/pending_transactions/me/${txHash}`,
     });
+  }
+
+  public async createNomineeRequest(issuerId: string): Promise<TNomineeRequestResponse> {
+    const response = await this.httpClient.put<TNomineeRequestResponse>({
+      baseUrl: USER_API_ROOT,
+      url: `/user/me/nominee_request`,
+      responseSchema: NomineeRequestResponseSchema,
+      body: {
+        issuer_id: issuerId
+      },
+    });
+    return response.body;
+  }
+
+  // todo this is a dummy, won't work
+  public async getNomineeTasksStatus(): Promise<void> {
+    await this.httpClient.get<void>({
+      baseUrl: USER_API_ROOT,
+      url: `/user/me/nominee_task_status`,
+    })
   }
 }
