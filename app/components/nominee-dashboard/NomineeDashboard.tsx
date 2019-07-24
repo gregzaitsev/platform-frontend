@@ -1,10 +1,7 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
-import { branch, compose, nest, renderComponent, renderNothing, withProps } from "recompose";
+import { branch, compose, nest, renderComponent } from "recompose";
 
-import { ERequestStatus } from "../../lib/api/KycApi.interfaces";
-import { selectBackupCodesVerified, selectIsUserEmailVerified } from "../../modules/auth/selectors";
-import { selectNomineeKycRequestStatus } from "../../modules/kyc/selectors";
 import { SelectIsVerificationFullyDone } from "../../modules/selectors";
 import { appConnect } from "../../store";
 import { TTranslatedString } from "../../types";
@@ -12,25 +9,20 @@ import { withContainer } from "../../utils/withContainer.unsafe";
 import { Layout } from "../layouts/Layout";
 import { Panel } from "../shared/Panel";
 import { SuccessTick } from "../shared/SuccessTick";
-import { nomineeAccountSetupSteps } from "./AccountSetupData";
-import { AccountSetupStep, INomineeAccountSetupSteps } from "./AccountSetupWizard";
-import { NomineeKycPending } from "./NomineeKycPending";
-import { IStepComponentProps, prepareSetupAccountSteps } from "./utils";
 
 import * as styles from "./NomineeDashboard.module.scss";
+import { NomineeAccountSetup } from "./NomineeAccountSetup";
 
 interface IStateProps {
-  emailVerified: boolean;
-  backupCodesVerified: boolean;
-  kycRequestStatus: ERequestStatus;
   verificationIsComplete: boolean;
+  nomineeTasks: INomineeTask[];
 }
 
 interface INomineeTask {
   key: string;
 }
 
-const NomineeDashboardContainer: React.FunctionComponent = ({ children }) => (
+export const NomineeDashboardContainer: React.FunctionComponent = ({ children }) => (
   <div data-test-id="nominee-dashboard" className={styles.nomineeDashboardContainer}>
     {children}
   </div>
@@ -48,21 +40,7 @@ export const DashboardTitle: React.FunctionComponent<IDashboardTitleProps> = ({ 
   </div>
 );
 
-const NomineeAccountSetup: React.FunctionComponent<INomineeAccountSetupSteps> = ({
-  accountSetupStepsData,
-}) => (
-  <>
-    <DashboardTitle
-      title={<FormattedMessage id="account-setup.welcome-to-neufund" />}
-      text={<FormattedMessage id="account-setup.please-complete-setup" />}
-    />
-    <Panel className={styles.accountSetupWrapper}>
-      {accountSetupStepsData.map((stepData: IStepComponentProps) => (
-        <AccountSetupStep {...stepData} />
-      ))}
-    </Panel>
-  </>
-);
+
 
 const NoTasks = () => (
   <>
@@ -76,55 +54,22 @@ const NoTasks = () => (
   </>
 );
 
-export const NomineeDashboardTasks: React.FunctionComponent<{ nomineeTasks?: INomineeTask[] }> = ({
+export const NomineeDashboardTasks: React.FunctionComponent<IStateProps> = ({
   nomineeTasks,
 }) => (
   <Panel className={styles.dashboardContentPanel}>
-    {!nomineeTasks ? <NoTasks /> : () => <>tasks</>}
+    {nomineeTasks.length ? () => <>tasks</> :<NoTasks /> }
   </Panel>
 );
 
-export const NomineeDashboard = compose<INomineeAccountSetupSteps, {}>(
+export const NomineeDashboard = compose<IStateProps, {}>(
   withContainer(nest(Layout, NomineeDashboardContainer)),
-  appConnect<IStateProps | null>({
-    stateToProps: state => {
-      const kycRequestStatus = selectNomineeKycRequestStatus(state);
-      if (kycRequestStatus !== undefined) {
-        return ({
-          emailVerified: selectIsUserEmailVerified(state.auth),
-          backupCodesVerified: selectBackupCodesVerified(state),
-          kycRequestStatus,
-          verificationIsComplete: SelectIsVerificationFullyDone(state),
-        })
-      } else {
-        return null
-      }
-    }
+  appConnect<IStateProps>({
+    stateToProps: state => ({
+      nomineeTasks: [],
+      verificationIsComplete: SelectIsVerificationFullyDone(state),
+    })
   }),
-  branch<IStateProps | null>(props => props === null, renderNothing),
-
-  /*TODO: the after-setup logic of nominee dashboard is not entirely clear yet.
-       Most likely when I sort out the component structure these two branches will be merged in one */
-  branch<IStateProps>(
-    props =>
-      [ERequestStatus.PENDING, ERequestStatus.IGNORED, ERequestStatus.REJECTED].includes(props.kycRequestStatus),
-    renderComponent(
-      withProps<{ kycRequestStatus: ERequestStatus }, IStateProps>(({ kycRequestStatus }) =>
-        ({ kycRequestStatus }))(NomineeKycPending)),
-  ),
-  branch<IStateProps>(
-    props => props.verificationIsComplete,
-    renderComponent(NomineeDashboardTasks),
-  ),
-  withProps<INomineeAccountSetupSteps, IStateProps>(
-    ({ emailVerified, backupCodesVerified, kycRequestStatus }: IStateProps) => ({
-      accountSetupStepsData: prepareSetupAccountSteps(
-        nomineeAccountSetupSteps(
-          emailVerified,
-          backupCodesVerified,
-          kycRequestStatus !== ERequestStatus.DRAFT,
-        ),
-      ),
-    }),
-  ),
-)(NomineeAccountSetup);
+  // fixme add watcher to renew verificationIsComplete!!
+  branch<IStateProps>(({verificationIsComplete}) => !verificationIsComplete, renderComponent(NomineeAccountSetup) )
+)(NomineeDashboardTasks);

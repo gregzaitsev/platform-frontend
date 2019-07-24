@@ -18,7 +18,7 @@ export const NomineeKycPending: React.FunctionComponent<IKycPending> = ({kycRequ
       title={<FormattedHTMLMessage tagName="span" id="account-setup.thank-you-title" />}
       text={<FormattedMessage id="account-setup.thank-you-text" />}
     />
-    <Panel className={styles.dashboardContentPanel} data-test-id={`nominee-kyc-${kycRequestStatus}`}>
+    <Panel className={styles.dashboardContentPanel} data-test-id="nominee-kyc-status">
       <h1 className={styles.dashboardContentTitle}>
         <FormattedMessage id="account-setup.pending-kyc.title" />{" "}
         <span className={styles.status}>{kycRequestStatus}</span>
