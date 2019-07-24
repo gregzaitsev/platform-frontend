@@ -1,6 +1,6 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
-import { branch, compose, nest, renderComponent, withProps } from "recompose";
+import { branch, compose, nest, renderComponent, renderNothing, withProps } from "recompose";
 
 import { ERequestStatus } from "../../lib/api/KycApi.interfaces";
 import { selectBackupCodesVerified, selectIsUserEmailVerified } from "../../modules/auth/selectors";
@@ -22,7 +22,7 @@ import * as styles from "./NomineeDashboard.module.scss";
 interface IStateProps {
   emailVerified: boolean;
   backupCodesVerified: boolean;
-  kycRequestStatus: ERequestStatus | undefined;
+  kycRequestStatus: ERequestStatus;
   verificationIsComplete: boolean;
 }
 
@@ -86,19 +86,31 @@ export const NomineeDashboardTasks: React.FunctionComponent<{ nomineeTasks?: INo
 
 export const NomineeDashboard = compose<INomineeAccountSetupSteps, {}>(
   withContainer(nest(Layout, NomineeDashboardContainer)),
-  appConnect<IStateProps>({
-    stateToProps: state => ({
-      emailVerified: selectIsUserEmailVerified(state.auth),
-      backupCodesVerified: selectBackupCodesVerified(state),
-      kycRequestStatus: selectNomineeKycRequestStatus(state),
-      verificationIsComplete: SelectIsVerificationFullyDone(state),
-    }),
+  appConnect<IStateProps | null>({
+    stateToProps: state => {
+      const kycRequestStatus = selectNomineeKycRequestStatus(state);
+      if (kycRequestStatus !== undefined) {
+        return ({
+          emailVerified: selectIsUserEmailVerified(state.auth),
+          backupCodesVerified: selectBackupCodesVerified(state),
+          kycRequestStatus,
+          verificationIsComplete: SelectIsVerificationFullyDone(state),
+        })
+      } else {
+        return null
+      }
+    }
   }),
+  branch<IStateProps | null>(props => props === null, renderNothing),
+
   /*TODO: the after-setup logic of nominee dashboard is not entirely clear yet.
        Most likely when I sort out the component structure these two branches will be merged in one */
   branch<IStateProps>(
-    props => props.kycRequestStatus === ERequestStatus.PENDING,
-    renderComponent(NomineeKycPending),
+    props =>
+      [ERequestStatus.PENDING, ERequestStatus.IGNORED, ERequestStatus.REJECTED].includes(props.kycRequestStatus),
+    renderComponent(
+      withProps<{ kycRequestStatus: ERequestStatus }, IStateProps>(({ kycRequestStatus }) =>
+        ({ kycRequestStatus }))(NomineeKycPending)),
   ),
   branch<IStateProps>(
     props => props.verificationIsComplete,
