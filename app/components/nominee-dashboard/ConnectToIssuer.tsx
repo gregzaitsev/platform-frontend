@@ -7,15 +7,74 @@ import { Button, EButtonLayout, EButtonTheme } from "../shared/buttons/Button";
 import { appConnect } from "../../store";
 import { actions } from "../../modules/actions";
 import { FormField } from "../shared/forms/fields/FormField";
+import { selectUnits } from "../shared/formatters/utils";
+import { InputLayout } from "../shared/forms/layouts/InputLayout";
+import { TDataTestId, TTranslatedString } from "../../types";
 
 interface IDispatchProps {
   sendNomineeConnectRequest: (issuerId: string) => void
 }
 
+interface IMaskedFormProps {
+  reportValue: (value?: string) => void;
+  reportError: (error:EMaskedFormError) => void;
+  name: string;
+  placeholder?: string;
+  disabled?: boolean
+}
+
+interface IMaskedFormState {
+  value: string | undefined,
+  error: EMaskedFormError | undefined
+}
+
+enum EMaskedFormError {
+  GENERIC_ERROR = "genericError",
+  ILLEGAL_CHARACTER = "illegalCharacter",
+}
+
+export class MaskedInput extends React.Component<IMaskedFormProps & TDataTestId, IMaskedFormState> {
+  state = {
+    value: undefined,
+    error: undefined
+  };
+
+  onFocus = (value: string | undefined) => undefined;
+  onBlur = (value: string | undefined) => undefined;
+
+  onPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    this.onChange(e.clipboardData.getData("text"));
+  };
+
+  onChange = (value: string | undefined) => {
+    this.setState({ value })
+  };
+
+  render(): React.ReactNode {
+    return (
+      <InputLayout
+        value={this.state.value}
+        name={this.props.name}
+        data-test-id={this.props["data-test-id"]}
+        placeholder={this.props.placeholder}
+        onBlur={(e: React.FocusEvent<HTMLInputElement>) => this.onBlur(e.target.value)}
+        onFocus={(e: React.FocusEvent<HTMLInputElement>) => this.onFocus(e.target.value)}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.onChange(e.target.value)}
+        onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => this.onPaste(e)}
+        errorMsg={this.props.errorMsg}
+        disabled={this.props.disabled}
+      />
+    );
+  };
+}
+
 const NomineeConnectRequestForm = () =>
-  <Form>
-    <FormField
+  <form>
+    <MaskedInput
       // placeholder={formatIntlMessage("settings.verify-email-widget.email-placeholder")}
+      reportValue={}
+      validate={}
       name="issuerId"
       data-test-id="..."
     />
@@ -27,16 +86,10 @@ const NomineeConnectRequestForm = () =>
     >
       <FormattedMessage id="send request" />
     </Button>
-  </Form>;
+  </form>;
 
-const NomineeConnectRequestConnectedForm = withFormik<IDispatchProps, {issuerId:string}>({
-  // validationSchema: EmailFormSchema,
-  handleSubmit: (values, props) => {
-    return props.props.sendNomineeConnectRequest(values.issuerId)
-  },
-})(NomineeConnectRequestForm);
 
-const ConnectToIssuerLayout:React.FunctionComponent<IDispatchProps> = ({ sendNomineeConnectRequest }) => {
+const ConnectToIssuerLayout: React.FunctionComponent<IDispatchProps> = ({ sendNomineeConnectRequest }) => {
   return <>
     <h1>
       <FormattedMessage id="link with a neufund issuer" />
@@ -44,11 +97,11 @@ const ConnectToIssuerLayout:React.FunctionComponent<IDispatchProps> = ({ sendNom
     <p>
       <FormattedMessage id="Enter the Ethereum address of the company you’re wanting to become a nominee for." />
     </p>
-    <NomineeConnectRequestConnectedForm sendNomineeConnectRequest={sendNomineeConnectRequest}/>
+    <NomineeConnectRequestForm />
   </>
 };
 
-export const ConnectToIssuer = compose<IDispatchProps,{}>(
+export const ConnectToIssuer = compose<IDispatchProps, {}>(
   appConnect<{}, IDispatchProps>({
     dispatchToProps: dispatch => ({
       sendNomineeConnectRequest: (issuerId) => {
