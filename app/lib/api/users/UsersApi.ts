@@ -9,7 +9,8 @@ import {
   IEmailStatus,
   IUser,
   IUserInput,
-  IVerifyEmailUser, NomineeRequestResponseSchema,
+  IVerifyEmailUser,
+  // NomineeRequestResponseSchema,
   OOO_TRANSACTION_TYPE, TNomineeRequestResponse,
   TPendingTxs,
   TxPendingWithMetadata,
@@ -189,7 +190,7 @@ export class UsersApi {
     const response = await this.httpClient.put<TNomineeRequestResponse>({
       baseUrl: USER_API_ROOT,
       url: `/user/me/nominee_request`,
-      responseSchema: NomineeRequestResponseSchema,
+      // responseSchema: NomineeRequestResponseSchema,
       body: {
         issuer_id: issuerId
       },
@@ -197,11 +198,11 @@ export class UsersApi {
     return response.body;
   }
 
-  // todo this is a dummy, won't work
-  public async getNomineeTasksStatus(): Promise<void> {
-    await this.httpClient.get<void>({
-      baseUrl: USER_API_ROOT,
-      url: `/user/me/nominee_task_status`,
-    })
-  }
+  // // todo this is a dummy, won't work
+  // public async getNomineeTasksStatus(): Promise<void> {
+  //   await this.httpClient.get<void>({
+  //     baseUrl: USER_API_ROOT,
+  //     url: `/user/me/nominee_task_status`,
+  //   })
+  // }
 }

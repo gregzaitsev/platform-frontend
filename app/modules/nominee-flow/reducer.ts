@@ -49,7 +49,7 @@ export const nomineeFlowReducer: AppReducer<INomineeFlowState> = (
   action,
 ): DeepReadonly<INomineeFlowState> => {
   switch (action.type) {
-    case actions.nomineeFlow.startNomineeTaskRequest.getType():
+    case actions.nomineeFlow.startNomineeTasksRequest.getType():
       return {
         ...state,
         loading: true,

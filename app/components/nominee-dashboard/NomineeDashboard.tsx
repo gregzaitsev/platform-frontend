@@ -1,6 +1,6 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
-import { branch, compose, nest, renderComponent } from "recompose";
+import { branch, compose, nest, renderComponent, withProps } from "recompose";
 
 import { SelectIsVerificationFullyDone } from "../../modules/selectors";
 import { appConnect } from "../../store";
@@ -9,17 +9,17 @@ import { withContainer } from "../../utils/withContainer.unsafe";
 import { Layout } from "../layouts/Layout";
 import { Panel } from "../shared/Panel";
 import { SuccessTick } from "../shared/SuccessTick";
+import { NomineeAccountSetup } from "./NomineeAccountSetup";
+import { getNomineeTasks, ITask, NomineeTasksData } from "./NomineeTasksData";
 
 import * as styles from "./NomineeDashboard.module.scss";
-import { NomineeAccountSetup } from "./NomineeAccountSetup";
 
 interface IStateProps {
   verificationIsComplete: boolean;
-  nomineeTasks: INomineeTask[];
 }
 
-interface INomineeTask {
-  key: string;
+interface IDashboardProps {
+  nomineeTasks: ITask[];
 }
 
 export const NomineeDashboardContainer: React.FunctionComponent = ({ children }) => (
@@ -40,8 +40,6 @@ export const DashboardTitle: React.FunctionComponent<IDashboardTitleProps> = ({ 
   </div>
 );
 
-
-
 const NoTasks = () => (
   <>
     <SuccessTick />
@@ -54,22 +52,28 @@ const NoTasks = () => (
   </>
 );
 
-export const NomineeDashboardTasks: React.FunctionComponent<IStateProps> = ({
+const NomineeTasks:React.FunctionComponent<any> = ({tasks}) => {
+  return tasks.map((task:ITask) => <>{task.key}</>)
+};
+
+export const NomineeDashboardTasks: React.FunctionComponent<IDashboardProps> = ({
   nomineeTasks,
 }) => (
   <Panel className={styles.dashboardContentPanel}>
-    {nomineeTasks.length ? () => <>tasks</> : <NoTasks /> }
+    {nomineeTasks.length ? () => < NomineeTasks tasks={nomineeTasks}/> : <NoTasks /> }
   </Panel>
 );
 
-export const NomineeDashboard = compose<IStateProps, {}>(
+export const NomineeDashboard = compose<IDashboardProps, {}>(
   withContainer(nest(Layout, NomineeDashboardContainer)),
   appConnect<IStateProps>({
     stateToProps: state => ({
-      nomineeTasks: [],
       verificationIsComplete: SelectIsVerificationFullyDone(state),
     })
   }),
   // fixme add watcher to renew verificationIsComplete!!
-  branch<IStateProps>(({verificationIsComplete}) => !verificationIsComplete, renderComponent(NomineeAccountSetup) )
+  branch<IStateProps>(({verificationIsComplete}) => !verificationIsComplete, renderComponent(NomineeAccountSetup) ),
+  withProps<IDashboardProps,IStateProps>(() => ({
+    nomineeTasks: getNomineeTasks(NomineeTasksData),
+  }))
 )(NomineeDashboardTasks);
