@@ -53,14 +53,16 @@ const NoTasks = () => (
 );
 
 const NomineeTasks:React.FunctionComponent<any> = ({tasks}) => {
-  return tasks.map((task:ITask) => <>{task.key}</>)
+  console.log("NomineeTasks", tasks)
+  return tasks.map((task:ITask) => task.taskRootComponent)
 };
 
 export const NomineeDashboardTasks: React.FunctionComponent<IDashboardProps> = ({
   nomineeTasks,
 }) => (
   <Panel className={styles.dashboardContentPanel}>
-    {nomineeTasks.length ? () => < NomineeTasks tasks={nomineeTasks}/> : <NoTasks /> }
+    {console.log(nomineeTasks.length)}
+    {nomineeTasks.length ? < NomineeTasks tasks={nomineeTasks}/> : <NoTasks /> }
   </Panel>
 );
 
