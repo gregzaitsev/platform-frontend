@@ -52,17 +52,15 @@ const NoTasks = () => (
   </>
 );
 
-const NomineeTasks:React.FunctionComponent<any> = ({tasks}) => {
-  console.log("NomineeTasks", tasks)
-  return tasks.map((task:ITask) => task.taskRootComponent)
+const NomineeTasks: React.FunctionComponent<any> = ({ tasks }) => {
+  return tasks.map((task: ITask) => <task.taskRootComponent key={task.key}/>)
 };
 
 export const NomineeDashboardTasks: React.FunctionComponent<IDashboardProps> = ({
   nomineeTasks,
 }) => (
   <Panel className={styles.dashboardContentPanel}>
-    {console.log(nomineeTasks.length)}
-    {nomineeTasks.length ? < NomineeTasks tasks={nomineeTasks}/> : <NoTasks /> }
+    {nomineeTasks.length ? <NomineeTasks tasks={nomineeTasks} /> : <NoTasks />}
   </Panel>
 );
 
@@ -74,8 +72,8 @@ export const NomineeDashboard = compose<IDashboardProps, {}>(
     })
   }),
   // fixme add watcher to renew verificationIsComplete!!
-  branch<IStateProps>(({verificationIsComplete}) => !verificationIsComplete, renderComponent(NomineeAccountSetup) ),
-  withProps<IDashboardProps,IStateProps>(() => ({
+  branch<IStateProps>(({ verificationIsComplete }) => !verificationIsComplete, renderComponent(NomineeAccountSetup)),
+  withProps<IDashboardProps, IStateProps>(() => ({
     nomineeTasks: getNomineeTasks(NomineeTasksData),
   }))
 )(NomineeDashboardTasks);

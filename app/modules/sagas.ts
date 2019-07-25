@@ -34,6 +34,7 @@ import { lightWalletSagas } from "./wallet-selector/light-wizard/sagas";
 import { walletSelectorSagas } from "./wallet-selector/sagas";
 import { walletSagas } from "./wallet/sagas";
 import { web3Sagas } from "./web3/sagas";
+import { nomineeFlowSagas } from "./nominee-flow/sagas";
 
 /**
  * Restart all sagas on error and report error to sentry
@@ -72,6 +73,7 @@ function* allSagas(): Iterator<effects.Effect> {
     effects.fork(neuRestartIf, actions.auth.logout, txMonitorSagas),
     effects.fork(neuRestartIf, actions.auth.logout, investmentFlowSagas),
     effects.fork(neuRestartIf, actions.auth.logout, txHistorySaga),
+    effects.fork(neuRestartIf, actions.auth.logout, nomineeFlowSagas),
   ]);
 }
 

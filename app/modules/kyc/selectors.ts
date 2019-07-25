@@ -17,7 +17,6 @@ export const selectKyc = (state: IAppState) => state.kyc;
 
 export const selectKycRequestStatus = (state: IAppState): ERequestStatus | undefined => {
   const userKycType = selectKycRequestType(state);
-  console.log("--------userKycType",userKycType)
   switch (userKycType) {
     case EKycRequestType.BUSINESS:
       return state.kyc.businessRequestState!.status === ERequestStatus.ACCEPTED &&
