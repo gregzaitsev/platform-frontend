@@ -1,8 +1,11 @@
 import * as cn from "classnames";
 import * as React from "react";
+import { FormattedMessage } from "react-intl-phraseapp";
 
 import { InlineIcon } from "../shared/icons/InlineIcon";
 import { EAccountSetupStepState, IStepComponentProps } from "./utils";
+import { DashboardTitle } from "./NomineeDashboard";
+import { Panel } from "../shared/Panel";
 
 import * as checkMark from "../../assets/img/inline_icons/icon_check.svg";
 import * as styles from "./NomineeDashboard.module.scss";
@@ -68,3 +71,19 @@ export class AccountSetupStep extends React.Component<
     );
   }
 }
+
+export const AccountSetupLayout: React.FunctionComponent<INomineeAccountSetupSteps> = ({
+  accountSetupStepsData,
+}) => (
+  <>
+    <DashboardTitle
+      title={<FormattedMessage id="account-setup.welcome-to-neufund" />}
+      text={<FormattedMessage id="account-setup.please-complete-setup" />}
+    />
+    <Panel className={styles.accountSetupWrapper}>
+      {accountSetupStepsData.map((stepData: IStepComponentProps) => (
+        <AccountSetupStep {...stepData} />
+      ))}
+    </Panel>
+  </>
+);

@@ -58,7 +58,7 @@ export const NomineeDashboardTasks: React.FunctionComponent<IStateProps> = ({
   nomineeTasks,
 }) => (
   <Panel className={styles.dashboardContentPanel}>
-    {nomineeTasks.length ? () => <>tasks</> :<NoTasks /> }
+    {nomineeTasks.length ? () => <>tasks</> : <NoTasks /> }
   </Panel>
 );
 
