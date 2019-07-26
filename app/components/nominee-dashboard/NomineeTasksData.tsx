@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ConnectToIssuer } from "./ConnectToIssuer";
+import { LinkToIssuer } from "./LinkToIssuer";
 
 export interface ITaskData {
   key: ENomineeTask;
@@ -12,7 +12,7 @@ export interface ITask {
 }
 
 export enum ENomineeTask {
-  CONNECT_TO_ISSUER = "connectToIssuer",
+  LINK_TO_ISSUER = "linkToIssuer",
   ACCEPT_THA = "acceptTha",
   REDEEM_SHARE_CAPITAL = "redeemShareCapital",
   ACCEPT_ISHA = "acceptIsha"
@@ -21,9 +21,9 @@ export enum ENomineeTask {
 type TNomineeTasksData = { [key in ENomineeTask]: ITaskData }
 
 export const NomineeTasksData: TNomineeTasksData = {
-  [ENomineeTask.CONNECT_TO_ISSUER]: {
-    key: ENomineeTask.CONNECT_TO_ISSUER,
-    taskRootComponent: ConnectToIssuer
+  [ENomineeTask.LINK_TO_ISSUER]: {
+    key: ENomineeTask.LINK_TO_ISSUER,
+    taskRootComponent: LinkToIssuer
   },
   [ENomineeTask.ACCEPT_THA]: {
     key: ENomineeTask.ACCEPT_THA,
@@ -40,5 +40,5 @@ export const NomineeTasksData: TNomineeTasksData = {
 };
 //todo here all task choosing logic
 export const getNomineeTasks = (data: TNomineeTasksData):ITask[] => {
-  return [data[ENomineeTask.CONNECT_TO_ISSUER] as ITask]
+  return [data[ENomineeTask.LINK_TO_ISSUER] as ITask]
 };

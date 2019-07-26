@@ -41,7 +41,8 @@ export type TranslatedMessageType =
   | Web3Message
   | ValidationMessage
   | TestMessage
-  | ETxHistoryMessage;
+  | ETxHistoryMessage
+  | EMaskedFormError;
 
 export enum GenericErrorMessage {
   GENERIC_ERROR = "genericError",
@@ -252,6 +253,13 @@ export enum ValidationMessage {
   VALIDATION_RESTRICTED_COUNTRY = "validationRestrictedCountry",
   VALIDATION_PECENTAGE_MAX = "validationPecentageMax",
   VALIDATION_PERCENTAGE_MIN = "validationPercentageMin",
+}
+
+export enum EMaskedFormError {
+  GENERIC_ERROR = "ethAddressValidationGenericError",
+  ILLEGAL_CHARACTER = "illegalCharacter",
+  IVALID_PREFIX = "ivalidPrefix",
+  MAX_LENGTH_EXCEEDED = "maxLengthExceeded"
 }
 
 export enum TestMessage {
@@ -626,6 +634,15 @@ const getMessageTranslation = ({ messageType, messageData }: TMessage): TTransla
       return <FormattedMessage id="form.field.error.percentage.max" values={{ ...messageData }} />;
     case ValidationMessage.VALIDATION_PERCENTAGE_MIN:
       return <FormattedMessage id="form.field.error.percentage.min" values={{ ...messageData }} />;
+
+    case EMaskedFormError.GENERIC_ERROR:
+      return <FormattedMessage id="error-message.eth-address-validation.not-a-valid-eth-address" />;
+    case EMaskedFormError.ILLEGAL_CHARACTER:
+      return <FormattedMessage id="error-message.eth-address-validation.illegal-character" />;
+    case EMaskedFormError.IVALID_PREFIX:
+      return <FormattedMessage id="error-message.eth-address-validation.invalid-prefix" />;
+    case EMaskedFormError.MAX_LENGTH_EXCEEDED:
+      return <FormattedMessage id="error-message.eth-address-validation.max-length-exceeded" />;
 
     // NEVER DO THIS! This is only for tests, so that we don't bloat locales.json with test strings!
     case TestMessage.TEST_MESSAGE:

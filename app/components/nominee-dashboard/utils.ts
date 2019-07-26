@@ -1,3 +1,5 @@
+import { EMaskedFormError } from "../translatedMessages/messages";
+
 export interface IAccountSetupStepData {
   key: string;
   conditionCompleted: boolean;
@@ -55,4 +57,34 @@ export const prepareSetupAccountSteps = (data: IAccountSetupStepData[]): IStepCo
   );
 
   return newData.data;
+};
+
+export const validateEthInput = (value:string | undefined) => {
+  if(value === undefined){
+    return undefined
+  } else if (value.length > 0 || value.length < 42) {
+    return value.split("").reduce((acc:EMaskedFormError | undefined, char: string, i:number) => {
+      if(i === 0 && char !== "0"){
+        return EMaskedFormError.IVALID_PREFIX
+      } else if (i === 1 && char !== "x") {
+        return EMaskedFormError.IVALID_PREFIX
+      } else if (i >= 2 && !RegExp(/[a-fA-F\d]/).test(char)) {
+        return EMaskedFormError.ILLEGAL_CHARACTER
+      } else if (i > 41) {
+        return EMaskedFormError.MAX_LENGTH_EXCEEDED
+      } else {
+        return acc
+      }
+    }, undefined)
+  } else {
+    return validateEthAddress(value) ? undefined : EMaskedFormError.GENERIC_ERROR
+  }
+};
+
+export const validateEthAddress = (value:string | undefined) => {
+  if(value === undefined) {
+    return false
+  } else {
+    return RegExp(/0x[\da-fA-F]{40}/).test(value)
+  }
 };

@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import { EAccountSetupStepState, prepareSetupAccountSteps } from "./utils";
+import { EAccountSetupStepState, EMaskedFormError, prepareSetupAccountSteps, validateEthInput } from "./utils";
 
 describe("prepareSetupAccountSteps", () => {
   it("iterates over data and sets the first not done element open", () => {
@@ -54,4 +54,11 @@ describe("prepareSetupAccountSteps", () => {
 
     expect(prepareSetupAccountSteps(data)).to.deep.eq(expectedData);
   });
+});
+
+describe.only("validateEthInput", () => {
+  it("validates prefix", () => {
+
+    expect(validateEthInput("`")).to.eq(EMaskedFormError.ILLEGAL_CHARACTER)
+  })
 });
