@@ -7,6 +7,7 @@ import { makeTid } from "../../utils/tidUtils";
 import * as styles from "./TransactionData.module.scss";
 
 enum ESize {
+  HUGE = styles.huge,
   LARGE = styles.large,
   MEDIUM = styles.medium,
   NORMAL = styles.normal,

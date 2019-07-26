@@ -33,7 +33,7 @@ export class Web3Adapter {
   constructor(public readonly web3: Web3) {}
 
   public async getNetworkId(): Promise<EthereumNetworkId> {
-    return promisify<string>(this.web3.version.getNetwork)() as any;
+    return promisify<EthereumNetworkId>(this.web3.version.getNetwork)();
   }
 
   public async getBalance(address: string): Promise<BigNumber> {

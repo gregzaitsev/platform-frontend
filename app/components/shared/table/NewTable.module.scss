@@ -51,7 +51,14 @@
   }
 
   min-width: 200%;
-  font-size: px-to-rem(12px);
+
+  &.compact-theme {
+    font-size: px-to-rem(12px);
+  }
+
+  &.normal-theme {
+    font-size: px-to-rem(14px);
+  }
 
   :global(.document-icon),
   :global(.icon) {

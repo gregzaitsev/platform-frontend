@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { NumberSchema } from "yup";
 
 import { DeepReadonly } from "../types";
-import * as YupTS from "./yup-ts";
+import * as YupTS from "./yup-ts.unsafe";
 
 describe("Yup-ts", () => {
   const animalValidator = YupTS.object({

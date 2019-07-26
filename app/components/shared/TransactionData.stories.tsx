@@ -10,4 +10,7 @@ storiesOf("Atoms|TransactionData", module)
   ))
   .add("size large", () => (
     <TransactionData bottom="Claim Tx Transaction" top="today" size={ESize.LARGE} />
+  ))
+  .add("size huge", () => (
+    <TransactionData bottom="Claim Tx Transaction" top="today" size={ESize.HUGE} />
   ));

@@ -1,6 +1,6 @@
 @import "../../shared/Panel.module";
 
-.table {
+.wrapper {
   @include remove-panel-padding;
 
   margin-bottom: 0;
@@ -8,8 +8,6 @@
 }
 
 .amount {
-  @include font-headline-medium;
-
   &--in {
     font-weight: bold;
   }

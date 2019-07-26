@@ -15,7 +15,7 @@ import {
   TEtoProducts,
 } from "../../../../lib/api/eto/EtoProductsApi.interfaces";
 import { ILogger } from "../../../../lib/dependencies/logger";
-import * as YupTS from "../../../../lib/yup-ts";
+import * as YupTS from "../../../../lib/yup-ts.unsafe";
 import { actions } from "../../../../modules/actions";
 import {
   selectAvailableProducts,

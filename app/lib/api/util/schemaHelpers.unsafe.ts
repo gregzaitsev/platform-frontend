@@ -36,7 +36,7 @@ export const dateSchema = (v: Yup.StringSchema) =>
     })
     .test(
       "is-valid",
-      getMessageTranslation(createMessage(ValidationMessage.VALIDATION_INVALID_DATE)) as any,
+      getMessageTranslation(createMessage(ValidationMessage.VALIDATION_INVALID_DATE)),
       s => parse(s).isValid(),
     );
 
@@ -45,7 +45,7 @@ export const date = dateSchema(Yup.string());
 export const personBirthDate = date
   .test(
     "is-old-enough",
-    getMessageTranslation(createMessage(ValidationMessage.VALIDATION_MIN_AGE)) as any,
+    getMessageTranslation(createMessage(ValidationMessage.VALIDATION_MIN_AGE)),
     s => {
       const d = parse(s);
       return d.isValid() && d.isBefore(moment().subtract(18, "years"));
@@ -53,7 +53,7 @@ export const personBirthDate = date
   )
   .test(
     "is-young-enough",
-    getMessageTranslation(createMessage(ValidationMessage.VALIDATION_MAX_AGE)) as any,
+    getMessageTranslation(createMessage(ValidationMessage.VALIDATION_MAX_AGE)),
     s => {
       const d = parse(s);
       return d.isValid() && d.isAfter(moment().subtract(125, "years"));
@@ -62,7 +62,7 @@ export const personBirthDate = date
 
 export const foundingDate = date.test(
   "is-old-enough",
-  getMessageTranslation(createMessage(ValidationMessage.VALIDATION_DATE_IN_THE_FUTURE)) as any,
+  getMessageTranslation(createMessage(ValidationMessage.VALIDATION_DATE_IN_THE_FUTURE)),
   s => {
     const d = parse(s);
     return d.isValid() && d.isBefore(moment());
@@ -73,7 +73,7 @@ export const citizen = Yup.bool();
 
 export const isUsCitizen = citizen.test(
   "is-us-citizen",
-  getMessageTranslation(createMessage(ValidationMessage.VALIDATION_US_CITIZEN)) as any,
+  getMessageTranslation(createMessage(ValidationMessage.VALIDATION_US_CITIZEN)),
   response => response === false,
 );
 
@@ -105,16 +105,14 @@ export const RESTRICTED_COUNTRIES = [
 
 export const restrictedCountry = countryCode.test(
   "country",
-  getMessageTranslation(createMessage(ValidationMessage.VALIDATION_RESTRICTED_COUNTRY)) as any,
+  getMessageTranslation(createMessage(ValidationMessage.VALIDATION_RESTRICTED_COUNTRY)),
   response => !includes(RESTRICTED_COUNTRIES, response),
 );
 
 export const percentage = Yup.number()
-  .max(100, ((values: any) =>
-    getMessageTranslation(
-      createMessage(ValidationMessage.VALIDATION_PECENTAGE_MAX, values),
-    )) as any)
-  .min(0, ((values: any) =>
-    getMessageTranslation(
-      createMessage(ValidationMessage.VALIDATION_PERCENTAGE_MIN, values),
-    )) as any);
+  .max(100, (values: any) =>
+    getMessageTranslation(createMessage(ValidationMessage.VALIDATION_PECENTAGE_MAX, values)),
+  )
+  .min(0, (values: any) =>
+    getMessageTranslation(createMessage(ValidationMessage.VALIDATION_PERCENTAGE_MIN, values)),
+  );

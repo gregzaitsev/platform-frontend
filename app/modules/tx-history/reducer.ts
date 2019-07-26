@@ -1,4 +1,4 @@
-import { keyBy } from "lodash";
+import { compose, keyBy, reverse, sortBy } from "lodash/fp";
 
 import { AppReducer } from "../../store";
 import { DeepReadonly, Dictionary } from "../../types";
@@ -51,7 +51,7 @@ export const txHistoryReducer: AppReducer<ITxHistoryState> = (
       return {
         ...state,
         transactionsOrder: action.payload.transactions.map(tx => tx.id),
-        transactionsByHash: keyBy(action.payload.transactions, tx => tx.id),
+        transactionsByHash: keyBy(tx => tx.id, action.payload.transactions),
         lastTransactionId: action.payload.lastTransactionId,
         timestampOfLastChange: action.payload.timestampOfLastChange,
         status: EModuleStatus.IDLE,
@@ -70,7 +70,7 @@ export const txHistoryReducer: AppReducer<ITxHistoryState> = (
         transactionsOrder: order.concat(action.payload.transactions.map(tx => tx.id)),
         transactionsByHash: {
           ...transactions,
-          ...keyBy(action.payload.transactions, tx => tx.id),
+          ...keyBy(tx => tx.id, action.payload.transactions),
         },
         lastTransactionId: action.payload.lastTransactionId,
         status: EModuleStatus.IDLE,
@@ -78,20 +78,33 @@ export const txHistoryReducer: AppReducer<ITxHistoryState> = (
     }
 
     case actions.txHistory.updateTransactions.getType(): {
-      const order = state.transactionsOrder || [];
-      const transactionsByHash = state.transactionsByHash || {};
+      const currentTransactionsOrder = state.transactionsOrder || [];
+      const currentTransactionsByHash = state.transactionsByHash || {};
 
       const newTransactionsIds = action.payload.transactions
-        .filter(tx => !transactionsByHash[tx.id])
+        .filter(tx => !currentTransactionsByHash[tx.id])
         .map(tx => tx.id);
+
+      const transactionsByHash = {
+        ...currentTransactionsByHash,
+        ...keyBy(tx => tx.id, action.payload.transactions),
+      };
+
+      // sort transactions by block number, transaction index and log index
+      // there is an edge case where new transaction can appear between existing ones
+      const transactionsOrder = compose(
+        reverse,
+        sortBy([
+          tx => transactionsByHash[tx].blockNumber,
+          tx => transactionsByHash[tx].transactionIndex,
+          tx => transactionsByHash[tx].logIndex,
+        ]),
+      )(newTransactionsIds.concat(currentTransactionsOrder));
 
       return {
         ...state,
-        transactionsOrder: newTransactionsIds.concat(order),
-        transactionsByHash: {
-          ...transactionsByHash,
-          ...keyBy(action.payload.transactions, tx => tx.id),
-        },
+        transactionsOrder,
+        transactionsByHash,
         lastTransactionId: action.payload.lastTransactionId,
         timestampOfLastChange: action.payload.timestampOfLastChange,
       };

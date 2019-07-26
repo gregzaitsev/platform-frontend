@@ -4,7 +4,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { compose } from "recompose";
 
 import { externalRoutes } from "../../../../config/externalRoutes";
-import * as YupTS from "../../../../lib/yup-ts";
+import * as YupTS from "../../../../lib/yup-ts.unsafe";
 import { actions } from "../../../../modules/actions";
 import { appConnect } from "../../../../store";
 import { Button, ButtonArrowRight, EButtonLayout } from "../../../shared/buttons";

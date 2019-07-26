@@ -1,4 +1,6 @@
-import * as YupTS from "../../yup-ts";
+import { EquityToken } from "../../../components/shared/formatters/utils";
+import { EthereumAddressWithChecksum, EthereumTxHash } from "../../../types";
+import * as YupTS from "../../yup-ts.unsafe";
 
 export enum ETransactionDirection {
   IN = "in",
@@ -19,7 +21,9 @@ export enum ETransactionType {
 
 export const AnalyticsTransactionTokenMetadataSchema = YupTS.object({
   companyName: YupTS.string().optional(),
-  tokenSymbol: YupTS.string(),
+  tokenImage: YupTS.string().optional(),
+  tokenCommitmentAddress: YupTS.string<EthereumAddressWithChecksum>().optional(),
+  tokenSymbol: YupTS.string<EquityToken>(),
   tokenDecimals: YupTS.number(),
 });
 export type TAnalyticsTransactionTokenMetadata = YupTS.TypeOf<
@@ -28,8 +32,14 @@ export type TAnalyticsTransactionTokenMetadata = YupTS.TypeOf<
 
 export const AnalyticsTransactionExtraDataSchema = YupTS.object({
   amount: YupTS.number(),
+  fromAddress: YupTS.string<EthereumAddressWithChecksum>().optional(),
+  byAddress: YupTS.string<EthereumAddressWithChecksum>().optional(),
+  toAddress: YupTS.string<EthereumAddressWithChecksum>().optional(),
+  tokenAddress: YupTS.string<EthereumAddressWithChecksum>().optional(),
+  tokenInterface: YupTS.string().optional(),
   tokenMetadata: AnalyticsTransactionTokenMetadataSchema.optional(),
   assetTokenMetadata: AnalyticsTransactionTokenMetadataSchema.optional(),
+  neumarkReward: YupTS.number().optional(),
 });
 
 export const AnalyticsTransactionSchema = YupTS.object({
@@ -39,7 +49,7 @@ export const AnalyticsTransactionSchema = YupTS.object({
   logIndex: YupTS.number(),
   transactionDirection: YupTS.string<ETransactionDirection>(),
   transactionIndex: YupTS.number(),
-  txHash: YupTS.string(),
+  txHash: YupTS.string<EthereumTxHash>(),
   type: YupTS.string<ETransactionType>(),
   version: YupTS.number(),
 });

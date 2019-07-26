@@ -23,7 +23,7 @@ jobs:
             - node_modules
             - app/lib/contracts
             - /home/circleci/.cache/Cypress
-          key: v21-deps-{{ checksum "package.json" }}
+          key: v22-deps-{{ checksum "package.json" }}
 
   build-docker-test-e2e:
     docker:
@@ -36,8 +36,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v21-deps-{{ checksum "package.json" }}
-            - v21-deps-
+            - v22-deps-{{ checksum "package.json" }}
+            - v22-deps-
 
       - run: yarn --frozen-lockfile
       - run:
@@ -55,8 +55,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v21-deps-{{ checksum "package.json" }}
-            - v21-deps-
+            - v22-deps-{{ checksum "package.json" }}
+            - v22-deps-
 
       - run: yarn --frozen-lockfile
       - run:
@@ -88,8 +88,8 @@ jobs:
       - run: ./.circleci/install-yarn.sh
       - restore_cache:
           keys:
-            - v21-deps-{{ checksum "package.json" }}
-            - v21-deps-
+            - v22-deps-{{ checksum "package.json" }}
+            - v22-deps-
 
       - run:
           command: source   /opt/circleci/.nvm/nvm.sh && yarn test:e2e
@@ -104,8 +104,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v21-deps-{{ checksum "package.json" }}
-            - v21-deps-
+            - v22-deps-{{ checksum "package.json" }}
+            - v22-deps-
 
       - run: yarn --frozen-lockfile
       - run: yarn build:commit-deployment
@@ -120,8 +120,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v21-deps-{{ checksum "package.json" }}
-            - v21-deps-
+            - v22-deps-{{ checksum "package.json" }}
+            - v22-deps-
 
       - run: yarn --frozen-lockfile
       - run: yarn storybook:screenshots
@@ -136,8 +136,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v21-deps-{{ checksum "package.json" }}
-            - v21-deps-
+            - v22-deps-{{ checksum "package.json" }}
+            - v22-deps-
 
       - run: yarn --frozen-lockfile
       - run: yarn deploy-storybook --ci --host-token-env-variable=DANGER_GITHUB_API_TOKEN

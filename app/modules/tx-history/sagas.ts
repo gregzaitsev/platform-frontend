@@ -1,37 +1,236 @@
 import { delay } from "redux-saga";
-import { fork, put, select } from "redux-saga/effects";
+import { all, fork, put, select } from "redux-saga/effects";
 
+import { ECurrency } from "../../components/shared/formatters/utils";
 import { ETxHistoryMessage } from "../../components/translatedMessages/messages";
 import { createMessage } from "../../components/translatedMessages/utils";
 import { TransactionDetailsModal } from "../../components/wallet/transactions-history/TransactionDetailsModal";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import {
+  ETransactionType,
   TAnalyticsTransaction,
   TAnalyticsTransactionsResponse,
 } from "../../lib/api/analytics-api/interfaces";
 import { IAppState } from "../../store";
+import { EthereumAddressWithChecksum } from "../../types";
 import { actions, TActionFromCreator } from "../actions";
 import { neuCall, neuTakeLatest, neuTakeUntil } from "../sagasUtils";
+import { selectEurEquivalent } from "../shared/tokenPrice/selectors";
+import { selectEthereumAddressWithChecksum } from "../web3/selectors";
 import { TX_LIMIT, TX_POLLING_INTERVAL } from "./constants";
 import { selectLastTransactionId, selectTimestampOfLastChange, selectTXById } from "./selectors";
-import { TTxHistory } from "./types";
-import { mapAnalyticsTransaction } from "./utils";
+import { ETransactionSubType, TTxHistory, TTxHistoryCommon } from "./types";
+import { getCurrencyFromTokenSymbol, getDecimalsFormat, getTxUniqueId } from "./utils";
+
+export function* mapAnalyticsApiTransactionResponse(
+  { logger }: TGlobalDependencies,
+  transaction: TAnalyticsTransaction,
+): Iterator<any> {
+  const common: TTxHistoryCommon = {
+    amount: transaction.extraData.amount.toString(),
+    amountFormat: getDecimalsFormat(transaction.extraData.tokenMetadata),
+    blockNumber: transaction.blockNumber,
+    date: transaction.blockTime,
+    id: getTxUniqueId(transaction),
+    logIndex: transaction.logIndex,
+    transactionDirection: transaction.transactionDirection,
+    transactionIndex: transaction.transactionIndex,
+    txHash: transaction.txHash,
+  };
+
+  // we can return tx in each case but then we will loose type safety
+  let tx: TTxHistory | undefined = undefined;
+
+  switch (transaction.type) {
+    case ETransactionType.ETO_INVESTMENT: {
+      if (!transaction.extraData.assetTokenMetadata || !transaction.extraData.tokenMetadata) {
+        throw new Error("Invalid asset token metadata");
+      }
+
+      tx = {
+        ...common,
+        subType: undefined,
+        type: transaction.type,
+        companyName: transaction.extraData.assetTokenMetadata.companyName!,
+        currency: getCurrencyFromTokenSymbol(transaction.extraData.tokenMetadata),
+      };
+      break;
+    }
+    case ETransactionType.ETO_REFUND: {
+      if (!transaction.extraData.assetTokenMetadata || !transaction.extraData.tokenMetadata) {
+        throw new Error("Invalid asset token metadata");
+      }
+
+      const currency = getCurrencyFromTokenSymbol(transaction.extraData.tokenMetadata);
+
+      const amountEur: string = yield select((state: IAppState) =>
+        selectEurEquivalent(state, common.amount, currency),
+      );
+
+      const toAddress: EthereumAddressWithChecksum = yield select(
+        selectEthereumAddressWithChecksum,
+      );
+
+      tx = {
+        ...common,
+        currency,
+        amountEur,
+        toAddress,
+        subType: undefined,
+        etoId: transaction.extraData.assetTokenMetadata.tokenCommitmentAddress!,
+        type: transaction.type,
+        companyName: transaction.extraData.assetTokenMetadata.companyName!,
+      };
+      break;
+    }
+    case ETransactionType.TRANSFER: {
+      // In case it's an equity token transaction
+      if (transaction.extraData.tokenInterface === "equityTokenInterface") {
+        tx = {
+          ...common,
+          type: transaction.type,
+          subType: ETransactionSubType.TRANSFER_EQUITY_TOKEN,
+          currency: transaction.extraData.tokenMetadata!.tokenSymbol,
+          etoId: transaction.extraData.tokenMetadata!.tokenCommitmentAddress!,
+          icon: transaction.extraData.tokenMetadata!.tokenImage!,
+          fromAddress: transaction.extraData.fromAddress!,
+          toAddress: transaction.extraData.toAddress!,
+        };
+      } else {
+        const currency = getCurrencyFromTokenSymbol(transaction.extraData.tokenMetadata);
+
+        const amountEur: string = yield select((state: IAppState) =>
+          selectEurEquivalent(state, common.amount, currency),
+        );
+
+        tx = {
+          ...common,
+          currency,
+          amountEur,
+          subType: undefined,
+          type: transaction.type,
+          toAddress: transaction.extraData.toAddress!,
+          fromAddress: transaction.extraData.fromAddress!,
+        };
+      }
+      break;
+    }
+    case ETransactionType.NEUR_PURCHASE: {
+      tx = {
+        ...common,
+        subType: undefined,
+        type: transaction.type,
+        currency: ECurrency.EUR_TOKEN,
+        toAddress: transaction.extraData.toAddress!,
+      };
+      break;
+    }
+    case ETransactionType.NEUR_REDEEM: {
+      tx = {
+        ...common,
+        subType: undefined,
+        type: transaction.type,
+        currency: ECurrency.EUR_TOKEN,
+      };
+      break;
+    }
+    case ETransactionType.NEUR_DESTROY: {
+      tx = {
+        ...common,
+        subType: undefined,
+        type: transaction.type,
+        currency: ECurrency.EUR_TOKEN,
+        liquidatedByAddress: transaction.extraData.byAddress!,
+      };
+      break;
+    }
+    case ETransactionType.ETO_TOKENS_CLAIM:
+      {
+        if (!transaction.extraData.assetTokenMetadata) {
+          throw new Error("Asset token metadata should be provided");
+        }
+
+        const neuReward = transaction.extraData.neumarkReward!.toString();
+
+        const neuRewardEur: string = yield select((state: IAppState) =>
+          selectEurEquivalent(state, neuReward, ECurrency.NEU),
+        );
+
+        tx = {
+          ...common,
+          neuReward,
+          neuRewardEur,
+          subType: undefined,
+          type: transaction.type,
+          amountFormat: getDecimalsFormat(transaction.extraData.assetTokenMetadata),
+          currency: transaction.extraData.assetTokenMetadata.tokenSymbol,
+          etoId: transaction.extraData.assetTokenMetadata.tokenCommitmentAddress!,
+          icon: transaction.extraData.assetTokenMetadata.tokenImage!,
+        };
+      }
+      break;
+
+    case ETransactionType.PAYOUT: {
+      if (!transaction.extraData.tokenMetadata) {
+        throw new Error("Invalid token metadata");
+      }
+
+      const currency = getCurrencyFromTokenSymbol(transaction.extraData.tokenMetadata);
+
+      const amountEur: string = yield select((state: IAppState) =>
+        selectEurEquivalent(state, common.amount, currency),
+      );
+
+      const toAddress: EthereumAddressWithChecksum = yield select(
+        selectEthereumAddressWithChecksum,
+      );
+
+      tx = {
+        ...common,
+        currency,
+        amountEur,
+        toAddress,
+        subType: undefined,
+        type: transaction.type,
+      };
+      break;
+    }
+    case ETransactionType.REDISTRIBUTE_PAYOUT: {
+      if (!transaction.extraData.tokenMetadata) {
+        throw new Error("Invalid token metadata");
+      }
+
+      const currency = getCurrencyFromTokenSymbol(transaction.extraData.tokenMetadata);
+
+      const amountEur: string = yield select((state: IAppState) =>
+        selectEurEquivalent(state, common.amount, currency),
+      );
+
+      tx = {
+        ...common,
+        currency,
+        amountEur,
+        subType: undefined,
+        type: transaction.type,
+      };
+      break;
+    }
+    default:
+      logger.warn(new Error(`Transaction with unknown type received ${transaction.type}`));
+  }
+
+  return tx;
+}
 
 export function* mapAnalyticsApiTransactionsResponse(
-  { logger }: TGlobalDependencies,
+  _: TGlobalDependencies,
   transactions: TAnalyticsTransaction[],
 ): Iterator<any> {
-  return transactions
-    .map(transaction => {
-      const mappedTransaction = mapAnalyticsTransaction(transaction);
-      if (mappedTransaction === undefined) {
-        logger.warn(new Error(`Transaction with unknown type received ${transaction.type}`));
+  const txHistoryTransactions: ReadonlyArray<TTxHistory | undefined> = yield all(
+    transactions.map(tx => neuCall(mapAnalyticsApiTransactionResponse, tx)),
+  );
 
-        return undefined;
-      }
-      return mappedTransaction;
-    })
-    .filter(Boolean);
+  return txHistoryTransactions.filter(Boolean);
 }
 
 export function* loadTransactionsHistoryNext({
@@ -116,9 +315,11 @@ export function* watchTransactions({ analyticsApi, logger }: TGlobalDependencies
       timestampOfLastChange,
     );
 
+    // check if version is higher than existing and of we have new transactions
     if (
       newTimestampOfLastChange !== undefined &&
-      newTimestampOfLastChange > timestampOfLastChange
+      newTimestampOfLastChange > timestampOfLastChange &&
+      transactions.length > 0
     ) {
       const processedTransactions: TTxHistory[] = yield neuCall(
         mapAnalyticsApiTransactionsResponse,

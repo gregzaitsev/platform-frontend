@@ -16,7 +16,7 @@ import {
   NEW_SHARES_TO_ISSUE_IN_WHITELIST,
 } from "../../../config/constants";
 import { DeepPartial, DeepReadonly } from "../../../types";
-import * as YupTS from "../../yup-ts";
+import * as YupTS from "../../yup-ts.unsafe";
 import { dateSchema, percentage } from "../util/schemaHelpers.unsafe";
 import { TEtoDocumentTemplates } from "./EtoFileApi.interfaces";
 import { TEtoProduct } from "./EtoProductsApi.interfaces";
@@ -274,18 +274,24 @@ export const getEtoTermsSchema = ({
     prospectusLanguage: YupTS.string(),
     minTicketEur: YupTS.number().enhance((v: NumberSchema) =>
       minTicketSize !== undefined
-        ? v.min(minTicketSize, getMessageTranslation(
-            createMessage(ValidationMessage.VALIDATION_TICKET_LESS_THAN_ACCEPTED, minTicketSize),
-          ) as any)
+        ? v.min(
+            minTicketSize,
+            getMessageTranslation(
+              createMessage(ValidationMessage.VALIDATION_TICKET_LESS_THAN_ACCEPTED, minTicketSize),
+            ),
+          )
         : v,
     ),
     maxTicketEur: YupTS.number()
       .optional()
       .enhance(v => {
         v = v.when("minTicketEur", (value: number) =>
-          v.min(value, getMessageTranslation(
-            createMessage(ValidationMessage.VALIDATION_TICKET_LESS_THAN_MINIMUM),
-          ) as any),
+          v.min(
+            value,
+            getMessageTranslation(
+              createMessage(ValidationMessage.VALIDATION_TICKET_LESS_THAN_MINIMUM),
+            ),
+          ),
         );
 
         if (maxTicketSize && maxTicketSize > 0) {
@@ -357,9 +363,12 @@ export const EtoInvestmentTermsType = YupTS.object({
   authorizedCapitalShares: YupTS.number().optional(),
   newSharesToIssue: YupTS.number().enhance(v =>
     v.when("minimumNewSharesToIssue", (value: number) =>
-      v.min(value, getMessageTranslation(
-        createMessage(ValidationMessage.VALIDATION_MAX_NEW_SHARES_LESS_THAN_MINIMUM),
-      ) as any),
+      v.min(
+        value,
+        getMessageTranslation(
+          createMessage(ValidationMessage.VALIDATION_MAX_NEW_SHARES_LESS_THAN_MINIMUM),
+        ),
+      ),
     ),
   ),
   minimumNewSharesToIssue: YupTS.number().enhance(v => v.min(MIN_NEW_SHARES_TO_ISSUE)),

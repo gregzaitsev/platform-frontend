@@ -79,11 +79,7 @@ const SetEtoDateSummaryComponent: React.FunctionComponent<IProps> = ({
         caption={
           <FormattedMessage id="eto.settings.eto-start-date-summary.eto-commitment-contract-address" />
         }
-        value={
-          <EtherscanAddressLink address={etoCommitmentAddress}>
-            {etoCommitmentAddress}
-          </EtherscanAddressLink>
-        }
+        value={<EtherscanAddressLink address={etoCommitmentAddress} />}
       />
       <InfoRow
         caption={
@@ -95,11 +91,7 @@ const SetEtoDateSummaryComponent: React.FunctionComponent<IProps> = ({
       />
       <InfoRow
         caption={<FormattedMessage id="eto.settings.eto-start-date-summary.equity-token-address" />}
-        value={
-          <EtherscanAddressLink address={equityTokenAddress}>
-            {equityTokenAddress}
-          </EtherscanAddressLink>
-        }
+        value={<EtherscanAddressLink address={equityTokenAddress} />}
       />
       <InfoRow
         caption={immutableDocumentName[EEtoDocumentType.APPROVED_INVESTOR_OFFERING_DOCUMENT]}

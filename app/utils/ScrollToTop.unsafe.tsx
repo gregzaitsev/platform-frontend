@@ -17,4 +17,4 @@ class ScrollToTopComponent extends React.Component<RouteProps> {
 
 export const ScrollToTop = appConnect({
   stateToProps: s => ({ location: s.router.location }),
-})(ScrollToTopComponent as any);
+})(ScrollToTopComponent);

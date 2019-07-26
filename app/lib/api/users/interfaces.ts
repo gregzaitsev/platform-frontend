@@ -3,7 +3,7 @@ import * as Yup from "yup";
 import { ETransactionErrorType, ETxSenderState } from "../../../modules/tx/sender/reducer";
 import { ETxSenderType } from "../../../modules/tx/types";
 import { EWalletSubType, EWalletType } from "../../../modules/web3/types";
-import * as YupTS from "../../yup-ts";
+import * as YupTS from "../../yup-ts.unsafe";
 
 export const OOO_TRANSACTION_TYPE = "mempool";
 

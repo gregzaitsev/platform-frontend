@@ -3,12 +3,15 @@ import { get } from "lodash";
 import { mockApiUrl } from "../config";
 import { tid } from "../utils/selectors";
 
-export const assertWaitForBankTransferSummary = (reference: string, timeout: number = 15000) => {
-  expect(timeout, `Email not received in ${timeout} ms`).to.be.gt(0);
+export const assertWaitForBankTransferSummary = (reference: string, timeout: number = 60000) => {
+  expect(timeout, `Bank transfer summary not received in ${timeout} ms`).to.be.gt(0);
   cy.wait(1000);
   cy.request({ url: mockApiUrl + "sendgrid/session/mails", method: "GET" }).then(r => {
     if (r.status === 200) {
-      const purpose = get(r, "body[0].personalizations[0].substitutions.-purpose-");
+      const purpose = get(r, "body[0].personalizations[0].dynamic_template_data.purpose");
+
+      cy.log(r.body);
+
       if (purpose) {
         expect(purpose).to.be.eq(reference);
         return;

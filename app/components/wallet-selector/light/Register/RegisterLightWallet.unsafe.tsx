@@ -43,9 +43,10 @@ const validationSchema = Yup.object().shape({
     .min(8),
   [REPEAT_PASSWORD]: Yup.string()
     .required()
-    .oneOf([Yup.ref(PASSWORD)], (
-      <FormattedMessage id="wallet-selector.neuwallet.passwords-do-not-match" />
-    ) as any),
+    .oneOf(
+      [Yup.ref(PASSWORD)],
+      <FormattedMessage id="wallet-selector.neuwallet.passwords-do-not-match" />,
+    ),
 });
 class RegisterLightWalletForm extends React.Component<
   FormikProps<IFormValues> & IStateProps & IIntlProps & { restore: boolean }

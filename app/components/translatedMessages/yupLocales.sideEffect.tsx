@@ -82,4 +82,4 @@ setLocale({
   object,
   array,
   boolean,
-} as any);
+});

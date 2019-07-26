@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 
-import * as YupTS from "../yup-ts";
+import * as YupTS from "../yup-ts.unsafe";
 import {
   countryCode,
   isUsCitizen,

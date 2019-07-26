@@ -19,7 +19,7 @@ export class AnalyticsApi {
         baseUrl: ANALYTICS_API_ROOT,
         url: `/transactions/me`,
         queryParams: {
-          limit: limit,
+          limit,
           before_transaction: lastTransactionId,
         },
       })

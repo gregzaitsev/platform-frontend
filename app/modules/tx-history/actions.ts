@@ -16,6 +16,7 @@ export const txHistoryActions = {
     (id: string) => ({ id }),
   ),
 
+  // private actions to mutate the store
   setTransactions: createActionFactory(
     "TX_HISTORY_SET_TRANSACTIONS",
     (

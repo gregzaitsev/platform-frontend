@@ -27,6 +27,7 @@ import {
   assertEtoDashboard,
   assertUserInLanding,
   assertWaitForExternalPendingTransactionCount,
+  getLatestEmailByUser,
 } from "./assertions";
 import { fillForm } from "./forms";
 import { goToWallet } from "./navigation";
@@ -118,47 +119,30 @@ export const getLatestVerifyUserEmailLink = (
   attempts = 3,
 ): Cypress.Chainable<string> =>
   cy.request({ url: mockApiUrl + "sendgrid/session/mails", method: "GET" }).then(r => {
-    const latestEmailByUser = r.body.find(
-      (body: { personalizations: { to: { email: string }[] }[] }) =>
-        body.personalizations[0].to[0].email.toLowerCase() === email.toLowerCase(),
-    );
+    const latestEmailByUser = getLatestEmailByUser(r, email);
+
     const activationLink = get(
       latestEmailByUser,
-      "personalizations[0].substitutions.-activationLink-",
+      "personalizations[0].dynamic_template_data.activation_link",
     );
-    if (!activationLink) {
-      expect(attempts).to.be.gt(0);
-      cy.wait(1000);
-      return getLatestVerifyUserEmailLink(email, attempts - 1);
-    } else {
-      // we need to replace the loginlink pointing to a remote destination with one pointing to our local instance
+
+    if (activationLink) {
+      // we need to replace the loginlink pointing to a remote destination
+      // with one pointing to our local instance
       return activationLink.replace("platform.neufund.io", "localhost:9090");
+    } else {
+      expect(attempts, `Failed to find activation link for email ${email}`).to.be.gt(0);
+
+      cy.wait(1000);
+
+      return getLatestVerifyUserEmailLink(email, attempts - 1);
     }
   });
 
-const verifyLatestUserEmailBase = (email: string, finalCheckTid?: string, attempts = 3) => {
-  cy.request({ url: mockApiUrl + "sendgrid/session/mails", method: "GET" }).then(r => {
-    const latestEmailByUser = r.body.find(
-      (body: { personalizations: { to: { email: string }[] }[] }) =>
-        body.personalizations[0].to[0].email.toLowerCase() === email.toLowerCase(),
-    );
-    const activationLink = get(
-      latestEmailByUser,
-      "personalizations[0].substitutions.-activationLink-",
-    );
-
-    if (!activationLink) {
-      expect(attempts).to.be.gt(0);
-      cy.wait(1000);
-      verifyLatestUserEmail(email, attempts - 1);
-    } else {
-      // we need to replace the loginlink pointing to a remote destination with one pointing to our local instance
-      const cleanedActivationLink = activationLink.replace("platform.neufund.io", "localhost:9090");
-      cy.visit(cleanedActivationLink);
-      if (finalCheckTid) {
-        cy.get(tid(finalCheckTid));
-      }
-    }
+export const verifyLatestUserEmail = (email: string) => {
+  getLatestVerifyUserEmailLink(email).then(activationLink => {
+    cy.visit(activationLink);
+    cy.get(tid("email-verified")); // wait for the email verified button to show
   });
 };
 
