@@ -10,25 +10,43 @@ type TExternalProps = { transaction: TTxHistory };
 
 const TransactionName: React.FunctionComponent<TExternalProps> = ({ transaction }) => {
   switch (transaction.type) {
-    case ETransactionType.TRANSFER:
-      return transaction.transactionDirection === ETransactionDirection.IN ? (
-        <FormattedMessage
-          id="wallet.tx-list.name.transfer.received"
-          values={{ currency: selectUnits(transaction.currency) }}
-        />
-      ) : (
-        <FormattedMessage
-          id="wallet.tx-list.name.transfer.transferred"
-          values={{ currency: selectUnits(transaction.currency) }}
-        />
-      );
-    case ETransactionType.ETO_INVESTMENT:
-      return (
-        <FormattedMessage
-          id="wallet.tx-list.name.eto-investment"
-          values={{ companyName: transaction.companyName }}
-        />
-      );
+    case ETransactionType.TRANSFER: {
+      switch (transaction.transactionDirection) {
+        case ETransactionDirection.IN:
+          return (
+            <FormattedMessage
+              id="wallet.tx-list.name.transfer.received"
+              values={{ currency: selectUnits(transaction.currency) }}
+            />
+          );
+        case ETransactionDirection.OUT:
+          return (
+            <FormattedMessage
+              id="wallet.tx-list.name.transfer.transferred"
+              values={{ currency: selectUnits(transaction.currency) }}
+            />
+          );
+        default:
+          return assertNever(transaction.transactionDirection, "Invalid transaction direction");
+      }
+    }
+    case ETransactionType.ETO_INVESTMENT: {
+      if (transaction.isICBMInvestment) {
+        return (
+          <FormattedMessage
+            id="wallet.tx-list.name.eto-icbm-investment"
+            values={{ companyName: transaction.companyName }}
+          />
+        );
+      } else {
+        return (
+          <FormattedMessage
+            id="wallet.tx-list.name.eto-investment"
+            values={{ companyName: transaction.companyName }}
+          />
+        );
+      }
+    }
     case ETransactionType.ETO_REFUND:
       return (
         <FormattedMessage

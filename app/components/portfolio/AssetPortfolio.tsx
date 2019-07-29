@@ -39,7 +39,6 @@ const AssetPortfolioLayoutNoPayouts: React.FunctionComponent = () => (
   <Container>
     <DashboardHeading
       data-test-id="asset-portfolio.no-payouts"
-      className="mb-4"
       title={<FormattedMessage id="portfolio.section.asset-portfolio.title" />}
       description={<FormattedMessage id="portfolio.asset.payouts-from-neu.no-payouts" />}
     />

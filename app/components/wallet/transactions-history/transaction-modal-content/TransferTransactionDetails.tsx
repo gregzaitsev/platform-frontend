@@ -35,16 +35,16 @@ const TransferTransactionDetails: React.FunctionComponent<IExternalProps> = ({ t
       </p>
     )}
 
-    <BasicTransactionDetails transaction={transaction} />
+    <BasicTransactionDetails date={transaction.date} />
 
     <DataRow
-      caption={<FormattedMessage id="wallet.tx-list.modal.transfer.from-address.caption" />}
+      caption={<FormattedMessage id="wallet.tx-list.modal.common.from-address.caption" />}
       value={<EtherscanAddressLink address={transaction.fromAddress} />}
       clipboardCopyValue={transaction.fromAddress}
     />
 
     <DataRow
-      caption={<FormattedMessage id="wallet.tx-list.modal.transfer.to-address.caption" />}
+      caption={<FormattedMessage id="wallet.tx-list.modal.common.to-address.caption" />}
       clipboardCopyValue={transaction.toAddress}
       value={<EtherscanAddressLink address={transaction.toAddress} />}
     />

@@ -32,14 +32,21 @@ export type TAnalyticsTransactionTokenMetadata = YupTS.TypeOf<
 
 export const AnalyticsTransactionExtraDataSchema = YupTS.object({
   amount: YupTS.number(),
-  fromAddress: YupTS.string<EthereumAddressWithChecksum>().optional(),
+  assetTokenMetadata: AnalyticsTransactionTokenMetadataSchema.optional(),
+  baseCurrencyEquivalent: YupTS.number().optional(),
   byAddress: YupTS.string<EthereumAddressWithChecksum>().optional(),
+  fromAddress: YupTS.string<EthereumAddressWithChecksum>().optional(),
+  grantedAmount: YupTS.number().optional(),
+  isClaimed: YupTS.boolean().optional(),
+  isRefunded: YupTS.boolean().optional(),
+  neumarkReward: YupTS.number().optional(),
   toAddress: YupTS.string<EthereumAddressWithChecksum>().optional(),
   tokenAddress: YupTS.string<EthereumAddressWithChecksum>().optional(),
   tokenInterface: YupTS.string().optional(),
   tokenMetadata: AnalyticsTransactionTokenMetadataSchema.optional(),
-  assetTokenMetadata: AnalyticsTransactionTokenMetadataSchema.optional(),
-  neumarkReward: YupTS.number().optional(),
+  walletAddress: YupTS.string<EthereumAddressWithChecksum>().optional(),
+  settledAmount: YupTS.number().optional(),
+  reference: YupTS.string().optional(),
 });
 
 export const AnalyticsTransactionSchema = YupTS.object({
