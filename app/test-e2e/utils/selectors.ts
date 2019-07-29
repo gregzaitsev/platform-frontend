@@ -6,10 +6,6 @@ export function formFieldErrorMessage(key: string): string {
   return tid(`form.${key}.error-message`);
 }
 
-export function formRichTextField(name: string): string {
-  return `${tid(`form.name.${name}`)} .ck.ck-content`;
-}
-
 export function formField(name: string): string {
   return `[name="${name}"], ${tid(name)}, ${tid(`form.name.${name}`)}`;
 }
