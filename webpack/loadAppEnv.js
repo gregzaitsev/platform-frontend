@@ -1,9 +1,9 @@
 const { join } = require("path");
-const { mapValues } = require("lodash");
+const { mapValues, toString } = require("lodash");
 const dotenv = require("dotenv");
 const fs = require("fs");
 
-module.exports = function loadAppEnv(processEnv) {
+module.exports = function loadAppEnv() {
   const universeAddressExists = !!process.env.NF_UNIVERSE_CONTRACT_ADDRESS;
   const envs = dotenv.load({ path: join(__dirname, "../.env") }).parsed;
 
@@ -41,5 +41,5 @@ module.exports = function loadAppEnv(processEnv) {
     rpcProviderUrl.hostname = process.env.NF_SERVE_ON_NETWORK;
     allEnvs.NF_RPC_PROVIDER = rpcProviderUrl.toString();
   }
-  return mapValues(allEnvs, JSON.stringify);
+  return mapValues(allEnvs, toString);
 };

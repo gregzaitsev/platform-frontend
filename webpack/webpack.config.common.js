@@ -2,11 +2,38 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const webpack = require("webpack");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const WorkboxPlugin = require("workbox-webpack-plugin");
+const { default: InjectPlugin, ENTRY_ORDER } = require("webpack-inject-plugin");
 
 const paths = require("./paths");
 const loadAppEnv = require("./loadAppEnv");
 
-const applicationEnv = loadAppEnv(process.env);
+const getEnvPlugin = () => {
+  const applicationEnv = loadAppEnv();
+
+  // Use env proxy for cypress and commit deployment
+  if (process.env.IS_CYPRESS === "1" || process.env.TYPE_OF_DEPLOYMENT === "commit") {
+    return new InjectPlugin(
+      () => {
+        return `
+          const handler = {
+            get(obj, prop) {
+             return localStorage.getItem(prop) || obj[prop];
+            }
+          };
+
+          process.env = new Proxy(${JSON.stringify(applicationEnv)}, handler);
+        `;
+      },
+      {
+        entryOrder: ENTRY_ORDER.First,
+      },
+    );
+  }
+
+  return new webpack.DefinePlugin({
+    "process.env": applicationEnv,
+  });
+};
 
 module.exports = {
   entry: ["babel-regenerator-runtime", "./app/index.tsx"],
@@ -18,13 +45,11 @@ module.exports = {
     publicPath: "/",
   },
   plugins: [
+    getEnvPlugin(),
     new CopyWebpackPlugin([{ from: "./app/external/*", to: "./external/", flatten: true }]),
     new HtmlWebpackPlugin({
       template: paths.appHtml,
       favicon: paths.favicon,
-    }),
-    new webpack.DefinePlugin({
-      "process.env": applicationEnv,
     }),
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
     new WorkboxPlugin.GenerateSW({

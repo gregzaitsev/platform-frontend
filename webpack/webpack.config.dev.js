@@ -8,7 +8,7 @@ const configCommon = require("./webpack.config.common");
 const paths = require("./paths");
 const loadAppEnv = require("./loadAppEnv");
 
-const applicationEnv = loadAppEnv(process.env);
+const applicationEnv = loadAppEnv();
 
 if (process.env.NF_VM_CONNECT) {
   console.assert(

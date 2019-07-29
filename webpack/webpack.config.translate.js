@@ -2,7 +2,8 @@ const merge = require("webpack-merge");
 const devRemoteConfig = require("./webpack.config.dev-remote");
 
 const loadAppEnv = require("./loadAppEnv");
-const applicationEnv = loadAppEnv(process.env);
+
+const applicationEnv = loadAppEnv();
 
 if (!applicationEnv.NF_TRANSLATION_ID) {
   throw new Error("Missing NF_TRANSLATION_ID env variable. Add it to your .env file");

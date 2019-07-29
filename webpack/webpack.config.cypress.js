@@ -2,7 +2,7 @@ const webpack = require("webpack");
 
 const loadAppEnv = require("./loadAppEnv");
 
-const applicationEnv = loadAppEnv(process.env);
+const applicationEnv = loadAppEnv();
 
 module.exports = {
   mode: "none",

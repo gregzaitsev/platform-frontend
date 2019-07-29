@@ -3,7 +3,7 @@ const path = require("path");
 const fs = require("fs");
 const loadAppEnv = require("../webpack/loadAppEnv");
 
-loadAppEnv(process.env);
+loadAppEnv();
 
 const artifactsVersion = process.env.NF_CONTRACT_ARTIFACTS_VERSION || "localhost";
 
