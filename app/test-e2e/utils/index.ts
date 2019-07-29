@@ -142,11 +142,11 @@ export const getLatestVerifyUserEmailLink = (
 const verifyLatestUserEmailBase = (email: string, finalCheckTid?: string) => {
   getLatestVerifyUserEmailLink(email).then(activationLink => {
     cy.visit(activationLink);
-    if(finalCheckTid){
+    if (finalCheckTid) {
       cy.get(tid(finalCheckTid)); // wait for the email verified button to show
     }
   });
-    };
+};
 
 export const verifyLatestUserEmail = (email: string) => {
   verifyLatestUserEmailBase(email, "email-verified");
