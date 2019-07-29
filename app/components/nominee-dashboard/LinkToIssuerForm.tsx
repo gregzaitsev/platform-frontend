@@ -1,5 +1,6 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
+import { compose } from "recompose";
 
 import { TDataTestId } from "../../types";
 import { FormError } from "../shared/forms/fields/FormFieldError";
@@ -7,10 +8,21 @@ import { EMaskedFormError, getMessageTranslation } from "../translatedMessages/m
 import { createMessage } from "../translatedMessages/utils";
 import { EKeys } from "../../utils/enums/keys.enum";
 import { Button, EButtonLayout, EButtonTheme } from "../shared/buttons/Button";
-import { IIntlProps } from "../../utils/injectIntlHelpers.unsafe";
+import { IIntlProps, injectIntlHelpers } from "../../utils/injectIntlHelpers.unsafe";
 import { validateEthAddress, validateEthInput } from "./utils";
+import { appConnect } from "../../store";
+import { selectIsLoading, } from "../../modules/nominee-flow/selectors";
+import { actions } from "../../modules/actions";
 
 import * as styles from "./LinkToIssuer.module.scss"
+
+interface IDispatchProps {
+  createNomineeRequest: (issuerId: string) => void
+}
+
+interface IStateProps {
+  isLoading: boolean,
+}
 
 interface IProps {
   createNomineeRequest: (issuerId: string) => void;
@@ -27,7 +39,7 @@ export class NomineeLinkRequestFormBase extends React.Component<IIntlProps & IPr
   state = {
     value: "",
     error: undefined, //this is to indicate illegal chars etc during input. A value can have no errors but be invalid because user is still typing
-    isValid: false // this is to indicate if the value is a valid Eth address
+    isValid: false // this is to indicate if the value is a valid Eth address that can be submitted
   };
 
   onPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
@@ -68,6 +80,7 @@ export class NomineeLinkRequestFormBase extends React.Component<IIntlProps & IPr
 
   render(): React.ReactNode {
     const name = "issuerId";
+
     return (
       <form className={styles.form}>
 
@@ -103,3 +116,17 @@ export class NomineeLinkRequestFormBase extends React.Component<IIntlProps & IPr
     );
   };
 }
+
+export const NomineeLinkRequestForm = compose<IIntlProps & IStateProps & IDispatchProps, {}>(
+  appConnect<IStateProps, IDispatchProps>({
+    stateToProps: state => ({
+      isLoading: selectIsLoading(state),
+    }),
+    dispatchToProps: dispatch => ({
+      createNomineeRequest: (issuerId) => {
+        dispatch(actions.nomineeFlow.createNomineeRequest(issuerId));
+      },
+    })
+  }),
+  injectIntlHelpers
+)(NomineeLinkRequestFormBase);

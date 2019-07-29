@@ -1,5 +1,5 @@
 import { createActionFactory } from "../actionsUtils";
-import { ENomineeConnectRequestStatus } from "./reducer";
+import { ENomineeLinkRequestStatus } from "./reducer";
 
 export const nomineeFlowActions = {
   startNomineeTasksRequest:createActionFactory(
@@ -13,9 +13,9 @@ export const nomineeFlowActions = {
   "NOMINEE_FLOW_CREATE_NOMINEE_REQUEST",
   (issuerId:string) => ({issuerId})
 ),
-  setNomineeRequestStatus:createActionFactory(
-    "NOMINEE_FLOW_SET_NOMINEE_REQUEST_STATUS",
-    (requestStatus:ENomineeConnectRequestStatus) => ({requestStatus})
+  setNomineeLinkRequestStatus:createActionFactory(
+    "NOMINEE_FLOW_SET_NOMINEE_LINK_REQUEST_STATUS",
+    (requestStatus:ENomineeLinkRequestStatus) => ({requestStatus})
   ),
 
 };

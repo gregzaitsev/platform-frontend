@@ -2,12 +2,13 @@ import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
 import { actions } from "../actions";
 
-export enum ENomineeConnectRequestStatus {
+export enum ENomineeLinkRequestStatus {
   NONE = "none",
   PENDING = "pending",
   APPROVED = "approved",
   REJECTED = "rejected",
-  ERROR = "error"
+  ISSUER_ID_ERROR = "issuer_id_error",
+  GENERIC_ERROR = "nominee_request_generic_error"
 }
 
 export enum ENomineeAcceptThaStatus {
@@ -30,7 +31,7 @@ export enum ENomineeUploadIshaStatus {
 
 export interface INomineeFlowState {
   loading: boolean;
-  issuerConnectRequest: ENomineeConnectRequestStatus,
+  nomineeLinkRequestStatus: ENomineeLinkRequestStatus,
   acceptTha: ENomineeAcceptThaStatus,
   redeemShareholderCapital: ENomineeRedeemShareholderCapitalStatus,
   uploadIsha: ENomineeUploadIshaStatus
@@ -38,7 +39,7 @@ export interface INomineeFlowState {
 
 const nomineeFlowInitialState = {
   loading: false,
-  issuerConnectRequest: ENomineeConnectRequestStatus.NONE,
+  nomineeLinkRequestStatus: ENomineeLinkRequestStatus.NONE,
   acceptTha: ENomineeAcceptThaStatus.NOT_DONE,
   redeemShareholderCapital: ENomineeRedeemShareholderCapitalStatus.NOT_DONE,
   uploadIsha: ENomineeUploadIshaStatus.NOT_DONE
@@ -54,9 +55,10 @@ export const nomineeFlowReducer: AppReducer<INomineeFlowState> = (
         ...state,
         loading: true,
       };
-    case actions.nomineeFlow.setNomineeTaskStatus.getType():
+    case actions.nomineeFlow.setNomineeLinkRequestStatus.getType():
       return {
         ...state,
+        nomineeLinkRequestStatus:action.payload.requestStatus,
         loading: false,
       };
     default:

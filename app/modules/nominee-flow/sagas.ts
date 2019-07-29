@@ -2,8 +2,9 @@ import { TGlobalDependencies } from "../../di/setupBindings";
 import { fork, put } from "redux-saga/effects";
 import { actions, TActionFromCreator } from "../actions";
 import { TNomineeRequestResponse } from "../../lib/api/users/interfaces";
-import { ENomineeConnectRequestStatus } from "./reducer";
+import { ENomineeLinkRequestStatus } from "./reducer";
 import { neuTakeLatest } from "../sagasUtils";
+import { IssuerIdInvalid } from "../../lib/api/users/UsersApi";
 
 
 export function* loadNomineeTaskStatus({
@@ -11,7 +12,7 @@ export function* loadNomineeTaskStatus({
   logger,
 }: TGlobalDependencies): Iterator<any> {
   try {
-    const taskStatus = yield apiUserService.getNomineeTasksStatus();
+    const taskStatus = yield apiUserService.getNomineeLinkRequestStatus();
     // const eto: TEtoSpecsData = yield apiEtoService.getMyEto();
     //
     // if (eto.state === EEtoState.ON_CHAIN) {
@@ -27,19 +28,19 @@ export function* loadNomineeTaskStatus({
 }
 
 const NomineeRequestResponseToRequestStatus = (response:TNomineeRequestResponse) => {
-  switch (response.new_state) {
+  switch (response.state) {
     case "pending":
-      return ENomineeConnectRequestStatus.PENDING;
+      return ENomineeLinkRequestStatus.PENDING;
     case "approved":
-      return ENomineeConnectRequestStatus.APPROVED;
+      return ENomineeLinkRequestStatus.APPROVED;
     case "rejected":
-      return ENomineeConnectRequestStatus.REJECTED;
+      return ENomineeLinkRequestStatus.REJECTED;
     default:
       throw new Error("invalid response")
   }
 };
 
-export function* createNomineeRequest({
+export function* createNomineeLinkRequest({
   apiUserService,
   logger,
 }: TGlobalDependencies,
@@ -50,17 +51,24 @@ export function* createNomineeRequest({
 
 
     const requestStatus:TNomineeRequestResponse =
-      yield apiUserService.createNomineeRequest(action.payload.issuerId);
-    const statusConverted:ENomineeConnectRequestStatus = NomineeRequestResponseToRequestStatus(requestStatus);
+      yield apiUserService.createNomineeLinkRequest(action.payload.issuerId);
+    const statusConverted:ENomineeLinkRequestStatus = NomineeRequestResponseToRequestStatus(requestStatus);
 
-    yield put(actions.nomineeFlow.setNomineeRequestStatus(statusConverted));
+    yield put(actions.nomineeFlow.setNomineeLinkRequestStatus(statusConverted));
   } catch (e) {
-    logger.error("Failed to create nominee request", e);
-    yield put(actions.nomineeFlow.setNomineeRequestStatus(ENomineeConnectRequestStatus.ERROR));
+    if (e instanceof IssuerIdInvalid) {
+      logger.error("Failed to create nominee request, issuer id is invalid", e);
+      yield put(actions.nomineeFlow.setNomineeLinkRequestStatus(ENomineeLinkRequestStatus.ISSUER_ID_ERROR));
+
+    } else {
+      logger.error("Failed to create nominee request", e);
+      yield put(actions.nomineeFlow.setNomineeLinkRequestStatus(ENomineeLinkRequestStatus.GENERIC_ERROR));
+    }
+  } finally {
     yield put(actions.routing.goToDashboard());
   }
 }
 
 export function* nomineeFlowSagas(): Iterator<any> {
-  yield fork(neuTakeLatest, actions.nomineeFlow.createNomineeRequest, createNomineeRequest);
+  yield fork(neuTakeLatest, actions.nomineeFlow.createNomineeRequest, createNomineeLinkRequest);
 }

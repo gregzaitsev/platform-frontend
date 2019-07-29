@@ -139,19 +139,21 @@ export const getLatestVerifyUserEmailLink = (
     }
   });
 
-export const verifyLatestUserEmail = (email: string) => {
+const verifyLatestUserEmailBase = (email: string, finalCheckTid?: string) => {
   getLatestVerifyUserEmailLink(email).then(activationLink => {
     cy.visit(activationLink);
-    cy.get(tid("email-verified")); // wait for the email verified button to show
+    if (finalCheckTid) {
+      cy.get(tid(finalCheckTid)); // wait for the email verified button to show
+    }
   });
+    };
+
+export const verifyLatestUserEmail = (email: string) => {
+  verifyLatestUserEmailBase(email, "email-verified");
 };
 
-export const verifyLatestUserEmail = (email: string, attempts = 3) => {
-  verifyLatestUserEmailBase(email, "email-verified", attempts);
-};
-
-export const verifyLatestUserEmailAccountSetup = (email: string, attempts = 3) => {
-  verifyLatestUserEmailBase(email, undefined, attempts);
+export const verifyLatestUserEmailAccountSetup = (email: string) => {
+  verifyLatestUserEmailBase(email, undefined);
 };
 
 export const registerWithLightWallet = (

@@ -3,37 +3,22 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { compose } from "recompose";
 
 import { appConnect } from "../../store";
-import { actions } from "../../modules/actions";
-import { IIntlProps, injectIntlHelpers } from "../../utils/injectIntlHelpers.unsafe";
-import { NomineeLinkRequestFormBase } from "./LinkToIssuerForm";
-import { selectIsLoading } from "../../modules/nominee-flow/selectors";
+import { selectNomineeLinkRequestStatus } from "../../modules/nominee-flow/selectors";
+import { ENomineeLinkRequestStatus } from "../../modules/nominee-flow/reducer";
+import { NomineeLinkRequestForm } from "./LinkToIssuerForm";
 
 import * as styles from "./LinkToIssuer.module.scss"
 
-interface IDispatchProps {
-  createNomineeRequest: (issuerId: string) => void
-}
-
 interface IStateProps {
-  isLoading: boolean
+  linkRequestStatus: ENomineeLinkRequestStatus
 }
 
-const NomineeLinkRequestForm = compose<IIntlProps & IStateProps & IDispatchProps, {}>(
-  appConnect<IStateProps, IDispatchProps>({
-    stateToProps: state => ({
-      isLoading: selectIsLoading(state)
-    }),
-    dispatchToProps: dispatch => ({
-      createNomineeRequest: (issuerId) => {
-        dispatch(actions.nomineeFlow.createNomineeRequest(issuerId));
-      },
-    })
-  }),
-  injectIntlHelpers
-)(NomineeLinkRequestFormBase);
+export const NomineeLinkRequestStatus:React.FunctionComponent<IStateProps> = ({linkRequestStatus}) =>
+  <>{linkRequestStatus}
+  </>;
 
 
-export const LinkToIssuer: React.FunctionComponent<IDispatchProps> = () => {
+export const LinkToIssuerLayout: React.FunctionComponent<IStateProps> = ({linkRequestStatus}) => {
   return <>
     <h1 className={styles.title}>
       <FormattedMessage id="nominee-flow.link-with-issuer.link-with-issuer" />
@@ -41,6 +26,17 @@ export const LinkToIssuer: React.FunctionComponent<IDispatchProps> = () => {
     <p className={styles.text}>
       <FormattedMessage id="nominee-flow.link-with-issuer.enter-wallet-address" />
     </p>
-    <NomineeLinkRequestForm />
+    {linkRequestStatus === ENomineeLinkRequestStatus.NONE
+    ? <NomineeLinkRequestForm />
+    : <NomineeLinkRequestStatus linkRequestStatus={linkRequestStatus} />
+    }
   </>
 };
+
+export const LinkToIssuer = compose<IStateProps, {}>(
+  appConnect<IStateProps>({
+    stateToProps: state => ({
+      linkRequestStatus: selectNomineeLinkRequestStatus(state)
+    }),
+  }),
+)(LinkToIssuerLayout);
