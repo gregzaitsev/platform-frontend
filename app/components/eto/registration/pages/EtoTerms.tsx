@@ -41,7 +41,7 @@ import {
   FormRange,
   FormToggle,
   RadioButtonLayout,
-} from "../../../shared/forms";
+} from "../../../shared/forms/index";
 import { List } from "../../../shared/List";
 import { LoadingIndicator } from "../../../shared/loading-indicator";
 import { Tooltip } from "../../../shared/tooltips";

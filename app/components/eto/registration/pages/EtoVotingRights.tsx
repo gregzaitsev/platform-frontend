@@ -1,8 +1,8 @@
 import { withFormik } from "formik";
 import * as React from "react";
-import { FormattedMessage } from "react-intl-phraseapp";
-import { setDisplayName } from "recompose";
-import { compose } from "redux";
+import { FormattedMessage, FormattedHTMLMessage } from "react-intl-phraseapp";
+import { branch, setDisplayName, renderNothing } from "recompose";
+import { compose } from "recompose";
 
 import {
   EtoVotingRightsType,
@@ -14,19 +14,18 @@ import { selectIssuerEto, selectIssuerEtoState } from "../../../../modules/eto-f
 import { EEtoFormTypes } from "../../../../modules/eto-flow/types";
 import { appConnect } from "../../../../store";
 import { Button, EButtonLayout } from "../../../shared/buttons";
-import { BOOL_TRUE_KEY, FormSelectField } from "../../../shared/forms";
+import { FormSelectField } from "../../../shared/forms/index";
 import { FormFieldLabel } from "../../../shared/forms/fields/FormFieldLabel";
 import { FormToggle } from "../../../shared/forms/fields/FormToggle.unsafe";
 import { applyDefaults, convert, parseStringToFloat } from "../../utils";
 import { EtoFormBase } from "../EtoFormBase.unsafe";
 import { Section } from "../Shared";
+import { FormHighlightGroup } from "../../../shared/forms/FormHighlightGroup";
 
 import * as styles from "../Shared.module.scss";
-
-// TODO: this keys will be replaced dynamically by addresses from an API endpoint, once there are more than one
-const TOKEN_HOLDERS_RIGHTS = {
-  [BOOL_TRUE_KEY]: "Neumini UG",
-};
+import { externalRoutes } from "../../../../config/externalRoutes";
+import { selectUserId } from "../../../../modules/auth/selectors";
+import { AccountAddress } from "../../../shared/AccountAddress";
 
 const LIQUIDATION_PREFERENCE_VALUES = [0, 1, 1.5, 2];
 
@@ -43,26 +42,41 @@ interface IStateProps {
   loadingData: boolean;
   savingData: boolean;
   stateValues: TPartialEtoSpecData;
+  issuerId: string | undefined
+}
+
+interface IComponentProps {
+  loadingData: boolean;
+  savingData: boolean;
+  stateValues: TPartialEtoSpecData;
+  issuerId: string
 }
 
 interface IDispatchProps {
   saveData: (values: TPartialEtoSpecData) => void;
 }
 
-type IProps = IExternalProps & IStateProps & IDispatchProps;
+type IProps = IExternalProps & IComponentProps & IDispatchProps;
 
-const EtoVotingRightsComponent: React.FunctionComponent<IProps> = ({ readonly, savingData }) => (
+const EtoVotingRightsComponent: React.FunctionComponent<IProps> = ({ readonly, savingData, issuerId }) => (
   <EtoFormBase
     title={<FormattedMessage id="eto.form.eto-voting-rights.title" />}
     validator={EtoVotingRightsType.toYup()}
   >
     <Section>
-      <FormSelectField
-        values={TOKEN_HOLDERS_RIGHTS}
-        label={<FormattedMessage id="eto.form.section.token-holders-rights.nominee" />}
-        name="nominee"
-        disabled={readonly}
-      />
+      <FormFieldLabel name="nominee">
+        <FormattedMessage id="eto.form.section.token-holders-rights.nominee" />
+      </FormFieldLabel>
+      <p>
+        <FormattedHTMLMessage
+          tagName="span"
+          id="eto.form.section.token-holders-rights.eto-id-text"
+          values={{ href: externalRoutes.neufundSupportHome }} />
+      </p>
+
+      <FormHighlightGroup>
+        <AccountAddress address={issuerId} data-test-id="issuer-id"/>
+      </FormHighlightGroup>
 
       <FormSelectField
         customOptions={LIQUIDATION_PREFERENCE_VALUES.map(n => (
@@ -107,15 +121,23 @@ const EtoVotingRightsComponent: React.FunctionComponent<IProps> = ({ readonly, s
   </EtoFormBase>
 );
 
-const EtoVotingRights = compose<React.FunctionComponent<IExternalProps>>(
+const EtoVotingRights = compose<IProps, IExternalProps>(
   setDisplayName(EEtoFormTypes.EtoVotingRights),
-  appConnect<IStateProps, IDispatchProps>({
-    stateToProps: s => ({
-      loadingData: s.etoFlow.loading,
-      savingData: s.etoFlow.saving,
-      stateValues: selectIssuerEto(s) as TPartialEtoSpecData,
-      readonly: etoFormIsReadonly(EEtoFormTypes.EtoVotingRights, selectIssuerEtoState(s)),
-    }),
+  appConnect<IStateProps | null, IDispatchProps>({
+    stateToProps: s => {
+      const issuerId = selectUserId(s)
+      if (issuerId !== undefined) {
+        return ({
+          loadingData: s.etoFlow.loading,
+          savingData: s.etoFlow.saving,
+          stateValues: selectIssuerEto(s) as TPartialEtoSpecData,
+          readonly: etoFormIsReadonly(EEtoFormTypes.EtoVotingRights, selectIssuerEtoState(s)),
+          issuerId: selectUserId(s)
+        })
+      } else {
+        return null
+      }
+    },
     dispatchToProps: dispatch => ({
       saveData: (data: TPartialEtoSpecData) => {
         const convertedData = convert(data, fromFormState);
@@ -128,6 +150,7 @@ const EtoVotingRights = compose<React.FunctionComponent<IExternalProps>>(
       },
     }),
   }),
+  branch<IStateProps | null>(props => props === null, renderNothing),
   withFormik<IProps, TPartialEtoSpecData>({
     validationSchema: EtoVotingRightsType.toYup(),
     mapPropsToValues: props => applyDefaults(props.stateValues, defaults),

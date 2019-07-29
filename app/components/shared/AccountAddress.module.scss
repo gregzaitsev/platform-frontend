@@ -27,3 +27,15 @@
   margin-right: px-to-rem(20px);
   padding-left: 10px;
 }
+
+.only-address {
+
+  display: grid;
+  grid-template: 1fr / auto 1fr auto;
+  grid-gap: 10px;
+  align-items: center;
+
+  font-family: $font-family-roboto;
+  font-size: 16px;
+  color: $neu-charcoal-grey2;
+}

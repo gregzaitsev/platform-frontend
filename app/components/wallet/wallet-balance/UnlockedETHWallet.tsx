@@ -4,7 +4,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { CommonHtmlProps } from "../../../types";
 import { isZero } from "../../../utils/Number.utils";
 import { EColumnSpan } from "../../layouts/Container";
-import { AccountAddress } from "../../shared/AccountAddress";
+import { AccountAddressWithHistoryLink } from "../../shared/AccountAddress";
 import { AccountBalance } from "../../shared/AccountBalance";
 import { ECurrency } from "../../shared/formatters/utils";
 import { WalletBalanceContainer } from "./WalletBalance";
@@ -41,7 +41,7 @@ export const UnlockedETHWallet: React.FunctionComponent<
       <h4 className={styles.title}>
         <FormattedMessage id="shared-component.wallet-balance.title.account-address" />
       </h4>
-      <AccountAddress address={address} />
+      <AccountAddressWithHistoryLink address={address} />
     </section>
 
     <section>

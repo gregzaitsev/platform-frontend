@@ -4,7 +4,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { actions } from "../../modules/actions";
 import { selectEthereumAddressWithChecksum } from "../../modules/web3/selectors";
 import { appConnect } from "../../store";
-import { AccountAddress } from "../shared/AccountAddress";
+import { AccountAddressWithHistoryLink } from "../shared/AccountAddress";
 import { EthereumQRCode } from "../shared/EthereumQRCode";
 import { Modal } from "./Modal";
 
@@ -36,7 +36,7 @@ const DepositEthModalComponent: React.FunctionComponent<IStateProps & IDispatchP
       <p className={styles.description}>
         <FormattedMessage id="modal.deposit-eth.description" />
       </p>
-      <AccountAddress
+      <AccountAddressWithHistoryLink
         address={props.address}
         className={styles.address}
         data-test-id="wallet-balance.ether.deposit.address"

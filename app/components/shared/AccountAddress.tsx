@@ -13,9 +13,33 @@ export interface IAccountAddressProps {
   address: string;
 }
 
-const AccountAddress: React.FunctionComponent<
-  IAccountAddressProps & CommonHtmlProps & TDataTestId
-> = ({
+const HistoryLink: React.FunctionComponent<IAccountAddressProps> = ({ address }) =>
+  <div className={styles.transactionHistory}>
+    <FormattedMessage
+      id="shared-components.account-address.transaction-history"
+      values={{
+        etherscan: (
+          <EtherscanAddressLink address={address}>
+            <FormattedMessage id="common.text.etherscan" />
+          </EtherscanAddressLink>
+        ),
+      }}
+    />
+  </div>
+
+const AccountAddress: React.FunctionComponent<IAccountAddressProps & CommonHtmlProps & TDataTestId> = ({
+  address,
+  className,
+  "data-test-id": dataTestId = "account-address.your.ether-address.from-div",
+}) => (
+  <div className={cn(styles.onlyAddress, className)}>
+    <Avatar seed={address} />
+    <span data-test-id={dataTestId}>{address}</span>
+    <CopyToClipboardButton value={address} />
+  </div>
+);
+
+const AccountAddressWithHistoryLink: React.FunctionComponent<IAccountAddressProps & CommonHtmlProps & TDataTestId> = ({
   address,
   className,
   "data-test-id": dataTestId = "account-address.your.ether-address.from-div",
@@ -27,22 +51,11 @@ const AccountAddress: React.FunctionComponent<
       <div className={styles.address} data-test-id={dataTestId}>
         {address}
       </div>
-      <div className={styles.transactionHistory}>
-        <FormattedMessage
-          id="shared-components.account-address.transaction-history"
-          values={{
-            etherscan: (
-              <EtherscanAddressLink address={address}>
-                <FormattedMessage id="common.text.etherscan" />
-              </EtherscanAddressLink>
-            ),
-          }}
-        />
-      </div>
+      <HistoryLink address={address} />
     </div>
 
     <CopyToClipboardButton value={address} />
   </div>
 );
 
-export { AccountAddress };
+export { AccountAddressWithHistoryLink, AccountAddress };

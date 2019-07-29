@@ -4,7 +4,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { selectEthereumAddressWithChecksum } from "../../../modules/web3/selectors";
 import { appConnect } from "../../../store";
 import { EColumnSpan } from "../../layouts/Container";
-import { AccountAddress } from "../../shared/AccountAddress";
+import { AccountAddressWithHistoryLink } from "../../shared/AccountAddress";
 import { Panel } from "../../shared/Panel";
 
 import * as styles from "./YourEthereumAddressWidget.module.scss";
@@ -28,7 +28,7 @@ export const YourEthereumAddressWidgetComponent: React.FunctionComponent<
       <FormattedMessage id="your-ethereum-address-widget.explanation" />
     </p>
     <div className={styles.panelBody}>
-      <AccountAddress address={address} />
+      <AccountAddressWithHistoryLink address={address} />
     </div>
   </Panel>
 );
