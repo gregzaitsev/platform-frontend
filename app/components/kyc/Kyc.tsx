@@ -2,7 +2,7 @@ import * as React from "react";
 import { Redirect } from "react-router";
 import { branch, compose, renderComponent } from "recompose";
 
-import { EKycRequestType, ERequestStatus } from "../../lib/api/KycApi.interfaces";
+import { EKycRequestType, EKycRequestStatus } from "../../lib/api/KycApi.interfaces";
 import { EUserType } from "../../lib/api/users/interfaces";
 import { actions } from "../../modules/actions";
 import { selectIsUserEmailVerified, selectUserType } from "../../modules/auth/selectors";
@@ -24,7 +24,7 @@ const KycLayout = React.lazy(() => import("./KycLayout").then(imp => ({ default:
 interface IStateProps {
   requestLoading?: boolean;
   userType: EUserType;
-  requestStatus?: ERequestStatus;
+  requestStatus?: EKycRequestStatus;
   redirectUrl: string;
   pendingRequestType: EKycRequestType | undefined;
   hasVerifiedEmail: boolean;

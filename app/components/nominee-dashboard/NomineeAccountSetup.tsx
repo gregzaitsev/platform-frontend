@@ -5,14 +5,14 @@ import { prepareSetupAccountSteps } from "./utils";
 import { appConnect } from "../../store";
 import { selectNomineeKycRequestStatus } from "../../modules/kyc/selectors";
 import { selectBackupCodesVerified, selectIsUserEmailVerified } from "../../modules/auth/selectors";
-import { ERequestStatus } from "../../lib/api/KycApi.interfaces";
+import { EKycRequestStatus } from "../../lib/api/KycApi.interfaces";
 import { NomineeKycPending } from "./NomineeKycPending";
 import { nomineeAccountSetupSteps } from "./AccountSetupData";
 
 interface IStateProps {
   emailVerified: boolean;
   backupCodesVerified: boolean;
-  kycRequestStatus: ERequestStatus;
+  kycRequestStatus: EKycRequestStatus;
 }
 
 export const NomineeAccountSetup = compose<INomineeAccountSetupSteps, {}>(
@@ -35,9 +35,9 @@ export const NomineeAccountSetup = compose<INomineeAccountSetupSteps, {}>(
     props =>
       props.emailVerified &&
       props.backupCodesVerified &&
-      [ERequestStatus.PENDING, ERequestStatus.IGNORED, ERequestStatus.REJECTED].includes(props.kycRequestStatus),
+      [EKycRequestStatus.PENDING, EKycRequestStatus.IGNORED, EKycRequestStatus.REJECTED].includes(props.kycRequestStatus),
     renderComponent(
-      withProps<{ kycRequestStatus: ERequestStatus }, IStateProps>(({ kycRequestStatus }) =>
+      withProps<{ kycRequestStatus: EKycRequestStatus }, IStateProps>(({ kycRequestStatus }) =>
         ({ kycRequestStatus }))(NomineeKycPending)),
   ),
   withProps<INomineeAccountSetupSteps, IStateProps>(
@@ -46,7 +46,7 @@ export const NomineeAccountSetup = compose<INomineeAccountSetupSteps, {}>(
         nomineeAccountSetupSteps(
           emailVerified,
           backupCodesVerified,
-          kycRequestStatus !== ERequestStatus.DRAFT,
+          kycRequestStatus !== EKycRequestStatus.DRAFT,
         ),
       ),
     }),

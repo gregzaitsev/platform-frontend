@@ -5,7 +5,7 @@ import { Col, Row } from "reactstrap";
 import { branch, compose, renderNothing } from "recompose";
 
 import { externalRoutes } from "../../../config/externalRoutes";
-import { ERequestOutsourcedStatus, ERequestStatus } from "../../../lib/api/KycApi.interfaces";
+import { ERequestOutsourcedStatus, EKycRequestStatus } from "../../../lib/api/KycApi.interfaces";
 import { EUserType } from "../../../lib/api/users/interfaces";
 import { actions } from "../../../modules/actions";
 import {
@@ -37,7 +37,7 @@ import * as warningIcon from "../../../assets/img/notifications/warning.svg";
 import * as styles from "./KycStatusWidget.module.scss";
 
 interface IStateProps {
-  requestStatus?: ERequestStatus;
+  requestStatus?: EKycRequestStatus;
   requestOutsourcedStatus?: ERequestOutsourcedStatus;
   isUserEmailVerified: boolean;
   isLoading: boolean;
@@ -59,7 +59,7 @@ interface IDispatchProps {
 }
 
 interface IKycStatusLayoutProps {
-  requestStatus?: ERequestStatus;
+  requestStatus?: EKycRequestStatus;
   requestOutsourcedStatus?: ERequestOutsourcedStatus;
   isUserEmailVerified: boolean;
   externalKycUrl?: string;
@@ -69,7 +69,7 @@ interface IKycStatusLayoutProps {
 
 export type IKycStatusWidgetProps = IStateProps & IDispatchProps & IExternalProps;
 
-const statusTextMap: Record<ERequestStatus, React.ReactNode> = {
+const statusTextMap: Record<EKycRequestStatus, React.ReactNode> = {
   Accepted: <FormattedMessage id="settings.kyc-status-widget.status.accepted" />,
   Rejected: (
     <FormattedHTMLMessage
@@ -129,7 +129,7 @@ const outsourcedStatusTextMap: Record<ERequestOutsourcedStatus, React.ReactNode>
 
 const getStatus = (
   selectIsUserEmailVerified: boolean,
-  requestStatus?: ERequestStatus,
+  requestStatus?: EKycRequestStatus,
   requestOutsourcedStatus?: ERequestOutsourcedStatus,
 ): React.ReactNode => {
   if (!selectIsUserEmailVerified) {
@@ -140,7 +140,7 @@ const getStatus = (
     return "";
   }
 
-  if (requestStatus === ERequestStatus.OUTSOURCED && requestOutsourcedStatus) {
+  if (requestStatus === EKycRequestStatus.OUTSOURCED && requestOutsourcedStatus) {
     return outsourcedStatusTextMap[requestOutsourcedStatus];
   }
 
@@ -158,7 +158,7 @@ const ActionButton = ({
   backupCodesVerified,
   cancelInstantId,
 }: IKycStatusLayoutProps & IDispatchProps) => {
-  if (requestStatus === ERequestStatus.ACCEPTED && userType === EUserType.INVESTOR) {
+  if (requestStatus === EKycRequestStatus.ACCEPTED && userType === EUserType.INVESTOR) {
     return (
       <Button
         layout={EButtonLayout.SECONDARY}
@@ -172,7 +172,7 @@ const ActionButton = ({
     );
   }
 
-  if (requestStatus === ERequestStatus.DRAFT) {
+  if (requestStatus === EKycRequestStatus.DRAFT) {
     return (
       <Button
         layout={EButtonLayout.SECONDARY}
@@ -186,7 +186,7 @@ const ActionButton = ({
     );
   }
 
-  if (requestStatus === ERequestStatus.PENDING) {
+  if (requestStatus === EKycRequestStatus.PENDING) {
     return (
       <Button
         layout={EButtonLayout.SECONDARY}
@@ -202,7 +202,7 @@ const ActionButton = ({
 
   if (
     externalKycUrl &&
-    requestStatus === ERequestStatus.OUTSOURCED &&
+    requestStatus === EKycRequestStatus.OUTSOURCED &&
     (requestOutsourcedStatus === ERequestOutsourcedStatus.CANCELED ||
       requestOutsourcedStatus === ERequestOutsourcedStatus.ABORTED ||
       requestOutsourcedStatus === ERequestOutsourcedStatus.STARTED)
@@ -244,8 +244,8 @@ const StatusIcon = ({
   }
 
   if (
-    requestStatus === ERequestStatus.ACCEPTED ||
-    (requestStatus === ERequestStatus.OUTSOURCED &&
+    requestStatus === EKycRequestStatus.ACCEPTED ||
+    (requestStatus === EKycRequestStatus.OUTSOURCED &&
       [ERequestOutsourcedStatus.SUCCESS, ERequestOutsourcedStatus.SUCCESS_DATA_CHANGED].includes(
         requestOutsourcedStatus!,
       ))
@@ -254,8 +254,8 @@ const StatusIcon = ({
   }
 
   if (
-    requestStatus === ERequestStatus.PENDING ||
-    (requestStatus === ERequestStatus.OUTSOURCED &&
+    requestStatus === EKycRequestStatus.PENDING ||
+    (requestStatus === EKycRequestStatus.OUTSOURCED &&
       [
         ERequestOutsourcedStatus.STARTED,
         ERequestOutsourcedStatus.REVIEW_PENDING,

@@ -3,7 +3,7 @@ import { createSelector } from "reselect";
 import {
   EKycRequestType,
   ERequestOutsourcedStatus,
-  ERequestStatus,
+  EKycRequestStatus,
   KycBankQuintessenceBankAccount,
 } from "../../lib/api/KycApi.interfaces";
 import { EUserType } from "../../lib/api/users/interfaces";
@@ -15,25 +15,25 @@ import { TBankAccount } from "./types";
 
 export const selectKyc = (state: IAppState) => state.kyc;
 
-export const selectKycRequestStatus = (state: IAppState): ERequestStatus | undefined => {
+export const selectKycRequestStatus = (state: IAppState): EKycRequestStatus | undefined => {
   const userKycType = selectKycRequestType(state);
   switch (userKycType) {
     case EKycRequestType.BUSINESS:
-      return state.kyc.businessRequestState!.status === ERequestStatus.ACCEPTED &&
+      return state.kyc.businessRequestState!.status === EKycRequestStatus.ACCEPTED &&
         !selectIsClaimsVerified(state)
-        ? ERequestStatus.PENDING
+        ? EKycRequestStatus.PENDING
         : state.kyc.businessRequestState!.status;
     case EKycRequestType.INDIVIDUAL:
-      return state.kyc.individualRequestState!.status === ERequestStatus.ACCEPTED &&
+      return state.kyc.individualRequestState!.status === EKycRequestStatus.ACCEPTED &&
         !selectIsClaimsVerified(state)
-        ? ERequestStatus.PENDING
+        ? EKycRequestStatus.PENDING
         : state.kyc.individualRequestState!.status;
     default:
-      return ERequestStatus.DRAFT;
+      return EKycRequestStatus.DRAFT;
   }
 };
 
-export const selectNomineeKycRequestStatus = (state: IAppState): ERequestStatus | undefined =>
+export const selectNomineeKycRequestStatus = (state: IAppState): EKycRequestStatus | undefined =>
   state.kyc.businessRequestState && state.kyc.businessRequestState.status;
 
 export const selectKycRequestOutsourcedStatus = (
@@ -76,12 +76,12 @@ export const selectKycRequestType = (state: IAppState): EKycRequestType | undefi
     default: {
       if (
         state.kyc.individualRequestState &&
-        state.kyc.individualRequestState.status !== ERequestStatus.DRAFT
+        state.kyc.individualRequestState.status !== EKycRequestStatus.DRAFT
       )
         return EKycRequestType.INDIVIDUAL;
       if (
         state.kyc.businessRequestState &&
-        state.kyc.businessRequestState.status !== ERequestStatus.DRAFT
+        state.kyc.businessRequestState.status !== EKycRequestStatus.DRAFT
       )
         return EKycRequestType.BUSINESS;
       return undefined;

@@ -18,7 +18,7 @@ import {
   EProductName,
   TEtoProduct,
 } from "../../lib/api/eto/EtoProductsApi.interfaces";
-import { ERequestStatus } from "../../lib/api/KycApi.interfaces";
+import { EKycRequestStatus } from "../../lib/api/KycApi.interfaces";
 import { IAppState } from "../../store";
 import { DeepReadonly } from "../../types";
 import { selectIsUserEmailVerified } from "../auth/selectors";
@@ -218,7 +218,7 @@ export const selectSignedInvestmentAgreementUrl = (state: DeepReadonly<IAppState
   state.etoFlow.signedInvestmentAgreementUrl;
 
 export const userHasKycAndEmailVerified = (state: IAppState) =>
-  selectKycRequestStatus(state) === ERequestStatus.ACCEPTED &&
+  selectKycRequestStatus(state) === EKycRequestStatus.ACCEPTED &&
   selectIsUserEmailVerified(state.auth);
 
 export const selectIsGeneralEtoLoading = (state: IAppState) =>

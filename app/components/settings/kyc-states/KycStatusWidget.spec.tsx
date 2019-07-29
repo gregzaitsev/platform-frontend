@@ -4,7 +4,7 @@ import * as React from "react";
 import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 
 import { externalRoutes } from "../../../config/externalRoutes";
-import { ERequestStatus } from "../../../lib/api/KycApi.interfaces";
+import { EKycRequestStatus } from "../../../lib/api/KycApi.interfaces";
 import { EUserType } from "../../../lib/api/users/interfaces";
 import { LoadingIndicator } from "../../shared/loading-indicator";
 import { KycStatusWidgetBase } from "./KycStatusWidget";
@@ -23,7 +23,7 @@ describe("<KycStatusWidgetBase />", () => {
     const component = shallow(
       <KycStatusWidgetBase
         {...defaultProps}
-        requestStatus={ERequestStatus.ACCEPTED}
+        requestStatus={EKycRequestStatus.ACCEPTED}
         isLoading={false}
       />,
     );
@@ -36,7 +36,7 @@ describe("<KycStatusWidgetBase />", () => {
     const component = shallow(
       <KycStatusWidgetBase
         {...defaultProps}
-        requestStatus={ERequestStatus.DRAFT}
+        requestStatus={EKycRequestStatus.DRAFT}
         isLoading={false}
       />,
     );

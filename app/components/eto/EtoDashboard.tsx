@@ -8,7 +8,7 @@ import {
   EEtoState,
 } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { EOfferingDocumentType } from "../../lib/api/eto/EtoProductsApi.interfaces";
-import { ERequestStatus } from "../../lib/api/KycApi.interfaces";
+import { EKycRequestStatus } from "../../lib/api/KycApi.interfaces";
 import { actions } from "../../modules/actions";
 import { selectBackupCodesVerified, selectVerifiedUserEmail } from "../../modules/auth/selectors";
 import {
@@ -63,7 +63,7 @@ interface IStateProps {
   backupCodesVerified: boolean;
   isLightWallet: boolean;
   userHasKycAndEmailVerified: boolean;
-  requestStatus?: ERequestStatus;
+  requestStatus?: EKycRequestStatus;
   eto?: TEtoWithCompanyAndContract;
   canEnableBookbuilding: boolean;
   marketingFormsProgress?: number;
@@ -87,7 +87,7 @@ interface IComponentProps extends ISubmissionProps, IEtoStep {
   verifiedEmail?: string;
   isLightWallet: boolean;
   userHasKycAndEmailVerified: boolean;
-  requestStatus?: ERequestStatus;
+  requestStatus?: EKycRequestStatus;
   eto?: TEtoWithCompanyAndContract;
   canEnableBookbuilding: boolean;
   etoFormProgress?: number;

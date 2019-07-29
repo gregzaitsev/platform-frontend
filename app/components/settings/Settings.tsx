@@ -2,7 +2,7 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { compose } from "redux";
 
-import { EKycRequestType, ERequestStatus } from "../../lib/api/KycApi.interfaces";
+import { EKycRequestType, EKycRequestStatus } from "../../lib/api/KycApi.interfaces";
 import { EUserType } from "../../lib/api/users/interfaces";
 import { actions } from "../../modules/actions";
 import { selectUserType } from "../../modules/auth/selectors";
@@ -36,7 +36,7 @@ interface IStateProps {
   isLockedWalletConnected: boolean;
   userType?: EUserType;
   kycRequestType?: EKycRequestType;
-  kycRequestStatus?: ERequestStatus;
+  kycRequestStatus?: EKycRequestStatus;
 }
 
 export const SettingsComponent: React.FunctionComponent<IStateProps> = ({
@@ -48,7 +48,7 @@ export const SettingsComponent: React.FunctionComponent<IStateProps> = ({
   kycRequestStatus,
 }) => {
   const isPersonalDataProcessed =
-    kycRequestStatus === ERequestStatus.PENDING || kycRequestStatus === ERequestStatus.ACCEPTED;
+    kycRequestStatus === EKycRequestStatus.PENDING || kycRequestStatus === EKycRequestStatus.ACCEPTED;
   const isUserInvestor = userType === EUserType.INVESTOR;
   const isIndividual = kycRequestType === EKycRequestType.INDIVIDUAL;
 

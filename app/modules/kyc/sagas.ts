@@ -9,7 +9,7 @@ import { IHttpResponse } from "../../lib/api/client/IHttpClient";
 import {
   EKycRequestType,
   ERequestOutsourcedStatus,
-  ERequestStatus,
+  EKycRequestStatus,
   IKycBeneficialOwner,
   IKycBusinessData,
   IKycFileInfo,
@@ -51,14 +51,14 @@ function* kycRefreshWidgetSaga({ logger }: TGlobalDependencies): any {
   kycWidgetWatchDelay = 1000;
   while (true) {
     const requestType: EKycRequestType = yield select((s: IAppState) => selectKycRequestType(s));
-    const status: ERequestStatus | undefined = yield select((s: IAppState) =>
+    const status: EKycRequestStatus | undefined = yield select((s: IAppState) =>
       selectKycRequestStatus(s),
     );
 
     if (
-      status === ERequestStatus.ACCEPTED ||
-      status === ERequestStatus.REJECTED ||
-      status === ERequestStatus.IGNORED
+      status === EKycRequestStatus.ACCEPTED ||
+      status === EKycRequestStatus.REJECTED ||
+      status === EKycRequestStatus.IGNORED
     ) {
       return;
     }
@@ -68,8 +68,8 @@ function* kycRefreshWidgetSaga({ logger }: TGlobalDependencies): any {
     );
 
     if (
-      status === ERequestStatus.PENDING ||
-      (status === ERequestStatus.OUTSOURCED &&
+      status === EKycRequestStatus.PENDING ||
+      (status === EKycRequestStatus.OUTSOURCED &&
         outsourcedStatus &&
         (outsourcedStatus === ERequestOutsourcedStatus.STARTED ||
           outsourcedStatus === ERequestOutsourcedStatus.CANCELED ||
@@ -266,7 +266,7 @@ function* cancelIndividualInstantId({
 }: TGlobalDependencies): Iterator<any> {
   try {
     yield apiKycService.cancelInstantId();
-    yield put(actions.kyc.kycUpdateIndividualRequestState(false, { status: ERequestStatus.DRAFT }));
+    yield put(actions.kyc.kycUpdateIndividualRequestState(false, { status: EKycRequestStatus.DRAFT }));
   } catch (e) {
     logger.warn("KYC instant id failed to stop", e);
     notificationCenter.error(createMessage(KycFlowMessage.KYC_SUBMIT_FAILED)); //module.kyc.sagas.problem.submitting

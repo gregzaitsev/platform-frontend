@@ -42,7 +42,8 @@ export type TranslatedMessageType =
   | ValidationMessage
   | TestMessage
   | ETxHistoryMessage
-  | EMaskedFormError;
+  | EMaskedFormError
+  | EKycRequestStatusTranslation;
 
 export enum GenericErrorMessage {
   GENERIC_ERROR = "genericError",
@@ -260,6 +261,15 @@ export enum EMaskedFormError {
   ILLEGAL_CHARACTER = "illegalCharacter",
   IVALID_PREFIX = "ivalidPrefix",
   MAX_LENGTH_EXCEEDED = "maxLengthExceeded"
+}
+
+export enum EKycRequestStatusTranslation {
+  DRAFT = "KycRequestStatusTranslationDraft",
+  PENDING = "KycRequestStatusTranslationPending",
+  OUTSOURCED = "KycRequestStatusTranslationOutsourced",
+  REJECTED = "KycRequestStatusTranslationRejected",
+  ACCEPTED = "KycRequestStatusTranslationAccepted",
+  IGNORED = "KycRequestStatusTranslationIgnored",
 }
 
 export enum TestMessage {
@@ -643,6 +653,20 @@ const getMessageTranslation = ({ messageType, messageData }: TMessage): TTransla
       return <FormattedMessage id="error-message.eth-address-validation.invalid-prefix" />;
     case EMaskedFormError.MAX_LENGTH_EXCEEDED:
       return <FormattedMessage id="error-message.eth-address-validation.max-length-exceeded" />;
+
+    case EKycRequestStatusTranslation.ACCEPTED:
+      return <FormattedMessage id="kyc-request.status.accepted" />;
+    case EKycRequestStatusTranslation.DRAFT:
+      return <FormattedMessage id="kyc-request.status.draft" />;
+    case EKycRequestStatusTranslation.IGNORED:
+      return <FormattedMessage id="kyc-request.status.ignored" />;
+    case EKycRequestStatusTranslation.OUTSOURCED:
+      return <FormattedMessage id="kyc-request.status.outsourced" />;
+    case EKycRequestStatusTranslation.PENDING:
+      return <FormattedMessage id="kyc-request.status.pending" />;
+    case EKycRequestStatusTranslation.REJECTED:
+      return <FormattedMessage id="kyc-request.status.rejected" />;
+
 
     // NEVER DO THIS! This is only for tests, so that we don't bloat locales.json with test strings!
     case TestMessage.TEST_MESSAGE:

@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { ERequestStatus } from "../../../lib/api/KycApi.interfaces";
+import { EKycRequestStatus } from "../../../lib/api/KycApi.interfaces";
 import { EColumnSpan } from "../../layouts/Container";
 import { BackupSeedWidget } from "../backup-seed/BackupSeedWidget";
 import { KycStatusWidget } from "../kyc-states/KycStatusWidget";
@@ -11,7 +11,7 @@ interface IProps {
   isLightWallet?: boolean;
   verifiedEmail?: string;
   backupCodesVerified?: boolean;
-  requestStatus?: ERequestStatus;
+  requestStatus?: EKycRequestStatus;
   columnSpan?: EColumnSpan;
 }
 
@@ -33,7 +33,7 @@ export const SettingsWidgets: React.FunctionComponent<IProps> = ({
       {(!isDynamic || !backupCodesVerified) && isLightWallet && (
         <BackupSeedWidget step={++settingsStepCounter} columnSpan={columnSpan} />
       )}
-      {(!isDynamic || requestStatus !== ERequestStatus.ACCEPTED) && (
+      {(!isDynamic || requestStatus !== EKycRequestStatus.ACCEPTED) && (
         <KycStatusWidget step={++settingsStepCounter} columnSpan={columnSpan} />
       )}
     </>

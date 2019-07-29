@@ -113,7 +113,7 @@ export const KycFileInfoShape = Yup.object().shape({
 });
 
 // request state
-export enum ERequestStatus {
+export enum EKycRequestStatus {
   DRAFT = "Draft",
   PENDING = "Pending",
   OUTSOURCED = "Outsourced",
@@ -133,7 +133,7 @@ export enum ERequestOutsourcedStatus {
 }
 
 export interface IKycRequestState {
-  status: ERequestStatus;
+  status: EKycRequestStatus;
   outsourcedStatus?: ERequestOutsourcedStatus;
   redirectUrl?: string;
 }

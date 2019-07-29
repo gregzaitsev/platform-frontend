@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 
-import { ERequestStatus } from "../../lib/api/KycApi.interfaces";
+import { EKycRequestStatus } from "../../lib/api/KycApi.interfaces";
 import { EUserType, IUser } from "../../lib/api/users/interfaces";
 import { IAppState } from "../../store";
 import { selectIsUserVerifiedOnBlockchain, selectKycRequestStatus } from "../kyc/selectors";
@@ -42,7 +42,7 @@ export const selectDoesEmailExist = (state: IAuthState): boolean =>
  */
 export const selectIsUserVerified = (state: IAppState): boolean =>
   selectIsUserEmailVerified(state.auth) &&
-  selectKycRequestStatus(state) === ERequestStatus.ACCEPTED;
+  selectKycRequestStatus(state) === EKycRequestStatus.ACCEPTED;
 
 /**
  * Check if user is verified by API and Contract

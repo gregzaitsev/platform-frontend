@@ -1,7 +1,7 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
-import { ERequestOutsourcedStatus, ERequestStatus } from "../../../lib/api/KycApi.interfaces";
+import { ERequestOutsourcedStatus, EKycRequestStatus } from "../../../lib/api/KycApi.interfaces";
 import { EUserType } from "../../../lib/api/users/interfaces";
 import { Button, EButtonLayout, EButtonTheme } from "../../shared/buttons/Button";
 import { LoadingIndicator } from "../../shared/loading-indicator/LoadingIndicator";
@@ -10,7 +10,7 @@ import { WarningAlert } from "../../shared/WarningAlert";
 import * as styles from "./AccountSetupKycWidget.module.scss";
 
 interface IStateProps {
-  requestStatus?: ERequestStatus;
+  requestStatus?: EKycRequestStatus;
   requestOutsourcedStatus?: ERequestOutsourcedStatus;
   isUserEmailVerified: boolean;
   isLoading: boolean;
