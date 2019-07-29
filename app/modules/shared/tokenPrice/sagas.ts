@@ -60,5 +60,5 @@ function* tokenPriceMonitor({ logger }: TGlobalDependencies): any {
 }
 
 export function* tokenPriceSagas(): any {
-  yield takeLatest("INIT_DONE", neuCall, tokenPriceMonitor);
+  yield takeLatest(actions.init.done, neuCall, tokenPriceMonitor);
 }

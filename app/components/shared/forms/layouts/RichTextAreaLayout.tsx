@@ -4,8 +4,10 @@ import * as cn from "classnames";
 import { difference } from "lodash";
 import * as React from "react";
 
-import { CommonHtmlProps } from "../../../../types";
+import { CommonHtmlProps, Primitive } from "../../../../types";
 import { SANITIZER_OPTIONS } from "../../SanitizedHtml";
+import { generateErrorId } from "../fields/FormFieldError";
+import { generateLabelId } from "../fields/FormFieldLabel";
 
 import * as fieldStyles from "../../Field.module.scss";
 import * as styles from "./RichTextAreaLayout.module.scss";
@@ -19,7 +21,9 @@ type TExternalProps = {
   disabled?: boolean;
 };
 
-const areTagsAllowed = (...tags: (keyof HTMLElementTagNameMap)[]) =>
+type Element = keyof HTMLElementTagNameMap;
+
+const areTagsAllowed = (...tags: Element[]) =>
   difference(tags, SANITIZER_OPTIONS.allowedTags).length === 0;
 
 const toolbar = [
@@ -32,6 +36,22 @@ const toolbar = [
   areTagsAllowed("ol", "li") && "numberedList",
 ].filter(Boolean);
 
+type TCkEditorWriter = {
+  setAttribute(attr: string, value: Primitive, element: unknown): void;
+};
+
+type TCkEditor = {
+  getData(): string;
+  editing: {
+    view: {
+      change(callback: (writer: TCkEditorWriter) => void): void;
+      document: {
+        getRoot(): unknown;
+      };
+    };
+  };
+};
+
 const RichTextAreaLayout: React.FunctionComponent<TExternalProps & CommonHtmlProps> = ({
   name,
   invalid,
@@ -39,28 +59,55 @@ const RichTextAreaLayout: React.FunctionComponent<TExternalProps & CommonHtmlPro
   value,
   onChange,
   placeholder,
-}) => (
-  <div
-    data-test-id={`form.name.${name}`}
-    className={cn(styles.richTextArea, fieldStyles.richField, {
-      [styles.richTextAreaInvalid]: invalid,
-      // TODO: Should be refactor to pass attributes to CKEditor after we know how (see https://github.com/ckeditor/ckeditor5-react/issues/100)
-      "ck-wrapper__invalid": invalid,
-    })}
-  >
-    <CKEditor
-      config={{
-        placeholder,
-        toolbar: [...toolbar, "undo", "redo"],
-      }}
-      editor={InlineEditor}
-      disabled={disabled}
-      data={value}
-      onChange={(_: unknown, editor: { getData: () => string }) => {
-        onChange(editor.getData());
-      }}
-    />
-  </div>
-);
+}) => {
+  const editorRef = React.useRef<TCkEditor>();
+
+  React.useEffect(() => {
+    const editor = editorRef.current;
+
+    if (editor) {
+      const view = editor.editing.view;
+
+      view.change(writer => {
+        const viewEditableRoot = view.document.getRoot();
+
+        writer.setAttribute("aria-describedby", generateErrorId(name), viewEditableRoot);
+        writer.setAttribute("aria-invalid", invalid, viewEditableRoot);
+        writer.setAttribute("aria-labeledby", generateLabelId(name), viewEditableRoot);
+        writer.setAttribute("aria-multiline", true, viewEditableRoot);
+
+        if (process.env.IS_CYPRESS) {
+          writer.setAttribute("data-test-id", `form.name.${name}`, viewEditableRoot);
+        }
+
+        writer.setAttribute("id", name, viewEditableRoot);
+      });
+    }
+  }, [invalid, name, editorRef.current]);
+
+  return (
+    <div
+      className={cn(styles.richTextArea, fieldStyles.richField, {
+        [styles.richTextAreaInvalid]: invalid,
+      })}
+    >
+      <CKEditor
+        config={{
+          placeholder,
+          toolbar: [...toolbar, "undo", "redo"],
+        }}
+        editor={InlineEditor}
+        disabled={disabled}
+        data={value}
+        onInit={(editor: TCkEditor) => {
+          editorRef.current = editor;
+        }}
+        onChange={(_: unknown, editor: TCkEditor) => {
+          onChange(editor.getData());
+        }}
+      />
+    </div>
+  );
+};
 
 export { RichTextAreaLayout };

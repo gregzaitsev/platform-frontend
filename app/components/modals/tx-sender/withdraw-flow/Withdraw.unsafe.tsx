@@ -6,7 +6,7 @@ import { compose, withHandlers } from "recompose";
 import { NumberSchema } from "yup";
 
 import { ITxData } from "../../../../lib/web3/types";
-import * as YupTS from "../../../../lib/yup-ts";
+import * as YupTS from "../../../../lib/yup-ts.unsafe";
 import { actions } from "../../../../modules/actions";
 import { EValidationState } from "../../../../modules/tx/sender/reducer";
 import { selectTxValidationState } from "../../../../modules/tx/sender/selectors";
@@ -50,9 +50,7 @@ const getWithdrawFormSchema = (maxEther: string) =>
     to: YupTS.string().enhance(v =>
       v.test(
         "isEthereumAddress",
-        (
-          <FormattedMessage id="modals.tx-sender.withdraw-flow.withdraw-component.errors.not-ethereum-address" />
-        ) as any,
+        <FormattedMessage id="modals.tx-sender.withdraw-flow.withdraw-component.errors.not-ethereum-address" />,
         (value: string | undefined) => {
           // allow empty values as they should be handled by required yup validation
           if (value === undefined) {
@@ -68,9 +66,7 @@ const getWithdrawFormSchema = (maxEther: string) =>
         .moreThan(0)
         .test(
           "isEnoughEther",
-          (
-            <FormattedMessage id="modals.tx-sender.withdraw-flow.withdraw-component.errors.value-higher-than-balance" />
-          ) as any,
+          <FormattedMessage id="modals.tx-sender.withdraw-flow.withdraw-component.errors.value-higher-than-balance" />,
           (value: string) => doesUserHaveEnoughEther(value, maxEther),
         ),
     ),

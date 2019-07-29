@@ -1,6 +1,7 @@
 import { GasModelShape } from "../../lib/api/GasApi";
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
+import { actions } from "../actions";
 
 export interface IGasState {
   loading: boolean;
@@ -17,12 +18,12 @@ export const gasReducer: AppReducer<IGasState> = (
   action,
 ): DeepReadonly<IGasState> => {
   switch (action.type) {
-    case "GAS_API_START_LOADING":
+    case actions.gas.gasApiStartLoading.getType():
       return {
         ...state,
         loading: true,
       };
-    case "GAS_API_LOADED":
+    case actions.gas.gasApiLoaded.getType():
       return {
         ...state,
         gasPrice: action.payload.data || state.gasPrice,

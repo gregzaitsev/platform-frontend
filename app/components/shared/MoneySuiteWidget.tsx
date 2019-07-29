@@ -3,31 +3,112 @@ import * as React from "react";
 
 import { TDataTestId, TTranslatedString } from "../../types";
 import { MoneyNew } from "./formatters/Money";
-import { ECurrency, ENumberInputFormat, ENumberOutputFormat } from "./formatters/utils";
+import {
+  ENumberInputFormat,
+  ENumberOutputFormat,
+  THumanReadableFormat,
+  TValueFormat,
+} from "./formatters/utils";
 import { ESize as ETransactionDataSize, TransactionData } from "./TransactionData";
 
 import * as styles from "./MoneySuiteWidget.module.scss";
 
 enum ETheme {
+  /*
+   * @deprecated FRAMED should be moved to a separate component
+   */
   FRAMED = styles.framed,
+  BLACK = styles.black,
+}
+
+export enum ETextPosition {
+  LEFT = styles.positionLeft,
+  RIGHT = styles.positionRight,
 }
 
 enum ESize {
+  HUGE = styles.huge,
   LARGE = styles.large,
+  MEDIUM = styles.medium,
   NORMAL = styles.normal,
 }
 
 interface IMoneySuiteWidgetProps {
   icon: string;
-  currency: ECurrency;
-  currencyTotal: ECurrency;
+  currency: TValueFormat;
+  currencyTotal: TValueFormat;
   largeNumber: string;
   value: string;
-  percentage?: string;
   theme?: ETheme;
   size?: ESize;
+  /*
+   * @deprecated should be moved to a separate component
+   */
   walletName?: TTranslatedString;
+  textPosition?: ETextPosition;
+  outputFormat?: THumanReadableFormat;
+  inputFormat?: ENumberInputFormat;
 }
+
+interface IMoneySingleSuiteWidgetProps {
+  icon: string;
+  currency: TValueFormat;
+  value?: string;
+  theme?: ETheme;
+  size?: ESize;
+  textPosition?: ETextPosition;
+  outputFormat?: THumanReadableFormat;
+  inputFormat?: ENumberInputFormat;
+}
+
+const getSize = (size: ESize | undefined) => {
+  switch (size) {
+    case ESize.HUGE:
+      return ETransactionDataSize.HUGE;
+    case ESize.LARGE:
+      return ETransactionDataSize.LARGE;
+    case ESize.MEDIUM:
+      return ETransactionDataSize.MEDIUM;
+    default:
+      return undefined;
+  }
+};
+
+const Icon: React.FunctionComponent<{ icon: string; walletName?: TTranslatedString }> = ({
+  icon,
+  walletName,
+}) => (
+  <div>
+    <img className={styles.icon} src={icon} alt="" />
+    {walletName}
+  </div>
+);
+
+const MoneySingleSuiteWidget: React.FunctionComponent<
+  IMoneySingleSuiteWidgetProps & TDataTestId
+> = ({
+  icon,
+  currency,
+  value,
+  "data-test-id": dataTestId,
+  theme,
+  size,
+  textPosition = ETextPosition.LEFT,
+  outputFormat = ENumberOutputFormat.ONLY_NONZERO_DECIMALS,
+  inputFormat = ENumberInputFormat.ULPS,
+}) => (
+  <div className={cn(styles.moneySuiteWidget, theme, size, textPosition)}>
+    {textPosition === ETextPosition.LEFT && <Icon icon={icon} />}
+    <MoneyNew
+      data-test-id={dataTestId}
+      value={value}
+      inputFormat={inputFormat}
+      outputFormat={outputFormat}
+      valueType={currency}
+    />
+    {textPosition === ETextPosition.RIGHT && <Icon icon={icon} />}
+  </div>
+);
 
 const MoneySuiteWidget: React.FunctionComponent<IMoneySuiteWidgetProps & TDataTestId> = ({
   icon,
@@ -35,25 +116,24 @@ const MoneySuiteWidget: React.FunctionComponent<IMoneySuiteWidgetProps & TDataTe
   currencyTotal,
   largeNumber,
   value,
-  percentage,
   "data-test-id": dataTestId,
   theme,
   size,
   walletName,
+  textPosition = ETextPosition.LEFT,
+  outputFormat = ENumberOutputFormat.ONLY_NONZERO_DECIMALS,
+  inputFormat = ENumberInputFormat.ULPS,
 }) => (
-  <div className={cn(styles.moneySuiteWidget, theme, size)}>
-    <div>
-      <img className={styles.icon} src={icon} alt="" />
-      {walletName}
-    </div>
+  <div className={cn(styles.moneySuiteWidget, theme, size, textPosition)}>
+    {textPosition === ETextPosition.LEFT && <Icon icon={icon} walletName={walletName} />}
     <TransactionData
-      size={size === ESize.LARGE ? ETransactionDataSize.LARGE : undefined}
+      size={getSize(size)}
       data-test-id={dataTestId}
       top={
         <MoneyNew
           value={largeNumber}
-          inputFormat={ENumberInputFormat.ULPS}
-          outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
+          inputFormat={inputFormat}
+          outputFormat={outputFormat}
           valueType={currency}
         />
       }
@@ -62,20 +142,15 @@ const MoneySuiteWidget: React.FunctionComponent<IMoneySuiteWidgetProps & TDataTe
           ={" "}
           <MoneyNew
             value={value}
-            inputFormat={ENumberInputFormat.ULPS}
-            outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
+            inputFormat={inputFormat}
+            outputFormat={outputFormat}
             valueType={currencyTotal}
           />
-          {percentage && (
-            <span className={`${parseInt(percentage, 10) > 0 ? styles.green : styles.red}`}>
-              {" "}
-              ({percentage}%)
-            </span>
-          )}
         </>
       }
     />
+    {textPosition === ETextPosition.RIGHT && <Icon icon={icon} walletName={walletName} />}
   </div>
 );
 
-export { ETheme, ESize, IMoneySuiteWidgetProps, MoneySuiteWidget };
+export { ETheme, ESize, IMoneySuiteWidgetProps, MoneySuiteWidget, MoneySingleSuiteWidget };

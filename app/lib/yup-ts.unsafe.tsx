@@ -1,9 +1,11 @@
 import { mapValues } from "lodash";
+import * as React from "react";
+import { FormattedMessage } from "react-intl-phraseapp";
 import * as Yup from "yup";
 
 import { DeepReadonly, Dictionary, TTranslatedString } from "../types";
 
-export const object = <T>(objectShape: T) => new ObjectYTS(objectShape);
+export const object = <T extends {}>(objectShape: T) => new ObjectYTS(objectShape);
 export const string = <T extends string>() => new StringYTS<T>();
 export const url = () => new StringYTS().enhance((v: Yup.StringSchema) => v.url());
 export const array = <T extends YTS<any>>(shape: T) => new ArrayYTS(shape);
@@ -13,7 +15,7 @@ export const onlyTrue = (message?: TTranslatedString) =>
   new BooleanYTS().enhance(v =>
     v.test(
       "isTrue",
-      message || ("This field must be set to true" as any),
+      message || <FormattedMessage id="form.field.error.set-to-true" />,
       value => value === undefined || value === true,
     ),
   );

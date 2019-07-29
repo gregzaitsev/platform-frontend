@@ -16,8 +16,8 @@ import { ENumberOutputFormat } from "../../shared/formatters/utils";
 import { Heading } from "../../shared/Heading";
 import { LoadingIndicator } from "../../shared/loading-indicator/LoadingIndicator";
 import { Panel } from "../../shared/Panel";
-import { NewTableRow, Table } from "../../shared/table";
-import { ESize, TransactionData } from "../../shared/TransactionData";
+import { ENewTableTheme, NewTableRow, Table } from "../../shared/table";
+import { TransactionData } from "../../shared/TransactionData";
 import { TransactionName } from "./TransactionName";
 
 import * as styles from "./TransactionsHistory.module.scss";
@@ -38,7 +38,7 @@ const TransactionListLayout: React.FunctionComponent<TStateProps & TDispatchProp
 }) => (
   <Panel>
     {transactionsHistoryPaginated.transactions && (
-      <div className={styles.table}>
+      <div className={styles.wrapper}>
         <Table
           aria-describedby="transactions-history-heading"
           titles={[
@@ -47,6 +47,7 @@ const TransactionListLayout: React.FunctionComponent<TStateProps & TDispatchProp
           ]}
           titlesVisuallyHidden={true}
           placeholder={<FormattedMessage id="wallet.tx-list.placeholder" />}
+          theme={ENewTableTheme.NORMAL}
         >
           {transactionsHistoryPaginated.transactions.map(transaction => {
             const isIncomeTransaction =
@@ -67,7 +68,6 @@ const TransactionListLayout: React.FunctionComponent<TStateProps & TDispatchProp
                       day="2-digit"
                     />
                   }
-                  size={ESize.MEDIUM}
                 />
                 <MoneyNew
                   className={cn(styles.amount, { [styles.amountIn]: isIncomeTransaction })}

@@ -6,7 +6,7 @@ import { ILedgerAccount } from "../../../modules/wallet-selector/ledger-wizard/r
 import { Button, EButtonLayout } from "../../shared/buttons";
 import { MoneyNew } from "../../shared/formatters/Money";
 import { ECurrency, ENumberInputFormat, ENumberOutputFormat } from "../../shared/formatters/utils";
-import { NavigationButton } from "../../shared/Navigation.unsafe";
+import { NavigationButton } from "../../shared/Navigation";
 
 import * as styles from "./WalletLedgerChooserTableAdvanced.module.scss";
 

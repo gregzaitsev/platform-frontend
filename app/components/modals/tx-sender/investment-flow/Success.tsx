@@ -37,7 +37,13 @@ const InvestmentSuccessComponent: React.FunctionComponent<
     text={
       <FormattedMessage
         id="investment-flow.success.congratulation-text"
-        values={{ etherscan: <EtherscanTxLink txHash={txHash} /> }}
+        values={{
+          etherscan: (
+            <EtherscanTxLink txHash={txHash}>
+              <FormattedMessage id="common.text.etherscan" />
+            </EtherscanTxLink>
+          ),
+        }}
       />
     }
   >

@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { TTranslatedString } from "../../types";
+import { Field } from "./Field";
 import { InlineIcon } from "./icons";
 
 import * as indicatorIcon from "../../assets/img/inline_icons/accordion_arrow.svg";
@@ -25,10 +26,7 @@ interface IAccordionProps {
   children?: IAccordionChildren | IAccordionChildren[];
 }
 
-export class AccordionElement extends React.Component<
-  IAccordionElementProps,
-  IAccordionElementState
-> {
+class AccordionElement extends React.Component<IAccordionElementProps, IAccordionElementState> {
   state = {
     isOpened: this.props.isOpened || false,
   };
@@ -53,7 +51,7 @@ export class AccordionElement extends React.Component<
   }
 }
 
-export const Accordion: React.FunctionComponent<IAccordionProps> = ({ children, openFirst }) => (
+const Accordion: React.FunctionComponent<IAccordionProps> = ({ children, openFirst }) => (
   <div className={styles.accordion}>
     {React.Children.toArray(children)
       // filter all empty children
@@ -70,3 +68,18 @@ export const Accordion: React.FunctionComponent<IAccordionProps> = ({ children, 
       )}
   </div>
 );
+
+const AccordionField: React.FunctionComponent<{
+  title: TTranslatedString;
+  value: string | undefined;
+}> = ({ title, value }) => (
+  <>
+    {value ? (
+      <AccordionElement title={title}>
+        <Field name="inspiration" value={value} />
+      </AccordionElement>
+    ) : null}
+  </>
+);
+
+export { Accordion, AccordionElement, AccordionField };

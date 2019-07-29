@@ -2,7 +2,7 @@ import { pick } from "lodash/fp";
 
 import { etoRegisterRoutes } from "../../components/eto/registration/routes";
 import { fillForm, getFieldError } from "../utils/forms";
-import { formRichTextField, tid } from "../utils/selectors";
+import { formField, tid } from "../utils/selectors";
 import { createAndLoginNewUser } from "../utils/userHelpers";
 import { aboutFormRequired, aboutFormSubmit } from "./fixtures";
 
@@ -60,7 +60,7 @@ describe("Eto Company Information Field Validation", function(): void {
       ...aboutFormSubmit,
     });
 
-    cy.focused().should("match", formRichTextField("companyDescription"));
+    cy.focused().should("match", formField("companyDescription"));
   });
 
   it("should correctly validate required fields", () => {

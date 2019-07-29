@@ -1,7 +1,7 @@
 import { findKey, forEach } from "lodash";
 
 import { Dictionary } from "../../types";
-import { acceptWallet, formFieldValue, formRichTextField } from "./index";
+import { acceptWallet, formFieldValue } from "./index";
 import { formField, formFieldErrorMessage, tid } from "./selectors";
 
 type TFormFieldFixture =
@@ -56,15 +56,6 @@ export const fillField = (key: string, value: string, parent: string = "body") =
       .blur();
   });
 
-export const fillRichTextField = (key: string, value: string, parent: string = "body") =>
-  cy.get(parent).within(() => {
-    cy.get(formRichTextField(key))
-      .clear()
-      .wait(200)
-      .type(value)
-      .blur();
-  });
-
 // workaround for cypress issue with range input
 //@see https://github.com/cypress-io/cypress/issues/1570
 export const changeRangeInputValue = ($range: any) => (value: string) => {
@@ -105,7 +96,7 @@ export const fillForm = (
     }
     // rich text area
     else if (field.type === "rich-text") {
-      fillRichTextField(key, field.value);
+      fillField(key, field.value);
     }
     // date
     else if (field.type === "date") {

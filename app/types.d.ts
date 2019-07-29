@@ -11,6 +11,7 @@ export type Dictionary<T> = Record<string, T>;
 type Opaque<K, T> = T & { __TYPE__: K };
 
 export type EthereumNetworkId = Opaque<"EthereumNetworkId", string>;
+export type EthereumTxHash = Opaque<"EthereumTxHash", string>;
 export type EthereumAddress = Opaque<"EthereumAddress", string>;
 export type EthereumAddressWithChecksum = Opaque<"EthereumAddressWithChecksum", string>;
 export type FunctionWithDeps = Opaque<"FunctionWithDeps", Function>;
@@ -63,6 +64,11 @@ export type TDataTestId = {
 };
 
 export type ToastWithTestData = ToastOptions & TDataTestId;
+
+/**
+ * Allows either T or T[]
+ */
+export type TSingleOrArray<T> = T | T[];
 
 /**
  * From T, omit a set of properties whose keys are in the union K

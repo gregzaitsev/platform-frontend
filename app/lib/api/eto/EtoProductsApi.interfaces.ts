@@ -1,4 +1,4 @@
-import * as YupTS from "../../yup-ts";
+import * as YupTS from "../../yup-ts.unsafe";
 
 export enum EAssetType {
   SECURITY = "security",

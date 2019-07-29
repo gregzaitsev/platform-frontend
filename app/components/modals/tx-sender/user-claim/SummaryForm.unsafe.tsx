@@ -3,7 +3,7 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { Col, Container, Row } from "reactstrap";
 
-import * as YupTS from "../../../../lib/yup-ts";
+import * as YupTS from "../../../../lib/yup-ts.unsafe";
 import { Button } from "../../../shared/buttons";
 import { Form, FormFieldBoolean } from "../../../shared/forms";
 

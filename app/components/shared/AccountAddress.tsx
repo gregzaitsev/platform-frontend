@@ -28,8 +28,16 @@ const AccountAddress: React.FunctionComponent<
         {address}
       </div>
       <div className={styles.transactionHistory}>
-        <FormattedMessage id="shared-components.account-address.transaction-history" />{" "}
-        <EtherscanAddressLink address={address} />
+        <FormattedMessage
+          id="shared-components.account-address.transaction-history"
+          values={{
+            etherscan: (
+              <EtherscanAddressLink address={address}>
+                <FormattedMessage id="common.text.etherscan" />
+              </EtherscanAddressLink>
+            ),
+          }}
+        />
       </div>
     </div>
 

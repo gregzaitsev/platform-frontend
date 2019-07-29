@@ -11,12 +11,11 @@ import { actions } from "../../../modules/actions";
 import { appConnect } from "../../../store";
 import { CommonHtmlProps } from "../../../types";
 import { getDocumentTitles } from "../../documents/utils";
-import { EColumnSpan } from "../../layouts/Container";
-import { DocumentLink, DocumentTemplateButton } from "../../shared/DocumentLink";
-import { InlineIcon } from "../../shared/icons";
+import { Container, EColumnSpan } from "../../layouts/Container";
+import { DocumentTemplateButton } from "../../shared/DocumentLink";
 import { Panel } from "../../shared/Panel";
+import { DashboardHeading } from "../shared/DashboardHeading";
 
-import * as icon_link from "../../../assets/img/inline_icons/social_link.svg";
 import * as styles from "./DocumentsWidget.module.scss";
 
 type TExternalProps = {
@@ -35,7 +34,6 @@ const DocumentsWidgetLayout: React.FunctionComponent<
   TDispatchProps & TExternalProps & CommonHtmlProps
 > = ({
   downloadDocument,
-  companyMarketingLinks,
   etoDocuments,
   etoTemplates,
   className,
@@ -43,32 +41,14 @@ const DocumentsWidgetLayout: React.FunctionComponent<
   columnSpan,
 }) => {
   const documentTitles = getDocumentTitles(offeringDocumentType);
-  return (
-    <Panel className={className} columnSpan={columnSpan}>
-      <section className={styles.group}>
-        <div className={styles.groupName}>
-          <FormattedMessage id="eto.public-view.documents.marketing-links" />
-        </div>
-        <Row>
-          {companyMarketingLinks &&
-            companyMarketingLinks.map((link, i) =>
-              link.url && link.url !== "" ? (
-                <Col sm="6" md="12" lg="6" key={i} className={styles.document}>
-                  <DocumentLink
-                    url={link.url || ""}
-                    name={link.title || ""}
-                    altIcon={<InlineIcon svgIcon={icon_link} />}
-                  />
-                </Col>
-              ) : null,
-            )}
-        </Row>
-      </section>
-      {(etoTemplates || etoDocuments) && (
+
+  return etoTemplates || etoDocuments ? (
+    <Container columnSpan={EColumnSpan.ONE_COL}>
+      <DashboardHeading
+        title={<FormattedMessage id="eto.public-view.documents.legal-documents" />}
+      />
+      <Panel className={className} columnSpan={columnSpan}>
         <section className={styles.group}>
-          <div className={styles.groupName}>
-            <FormattedMessage id="eto.public-view.documents.legal-documents" />
-          </div>
           <Row>
             {Object.keys(etoTemplates)
               .filter(key => !ignoredTemplates.some(template => template === key))
@@ -95,9 +75,9 @@ const DocumentsWidgetLayout: React.FunctionComponent<
               ))}
           </Row>
         </section>
-      )}
-    </Panel>
-  );
+      </Panel>
+    </Container>
+  ) : null;
 };
 
 const DocumentsWidget = compose<

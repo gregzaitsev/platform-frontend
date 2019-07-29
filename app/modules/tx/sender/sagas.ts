@@ -88,7 +88,7 @@ function* txControllerSaga(controlledEffect: Iterator<Effect>): any {
   const gasPrice: IGasState = yield select(selectGasPrice);
 
   if (!gasPrice) {
-    yield take("GAS_API_LOADED");
+    yield take(actions.gas.gasApiLoaded);
   }
 
   const { cancel } = yield race({

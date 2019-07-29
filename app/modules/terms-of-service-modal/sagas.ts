@@ -29,7 +29,7 @@ export function* loadCurrentAgreement({
   const isSmartContractsInitialized = yield select(selectIsSmartContractInitDone);
 
   if (!isSmartContractsInitialized) {
-    yield neuTakeOnly("INIT_DONE", { initType: EInitType.START_CONTRACTS_INIT });
+    yield neuTakeOnly(actions.init.done, { initType: EInitType.START_CONTRACTS_INIT });
   }
 
   try {
@@ -63,7 +63,7 @@ function* handleAcceptCurrentAgreement({
     );
   } catch (e) {
     notificationCenter.error(createMessage(AuthMessage.AUTH_TOC_ACCEPT_ERROR));
-    logger.error(new Error("Could not accept Terms and Conditions"), e);
+    logger.error("Could not accept Terms and Conditions", e);
   }
 }
 

@@ -1,5 +1,6 @@
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
+import { actions } from "../actions";
 
 export enum EInitType {
   APP_INIT = "appInit",
@@ -34,7 +35,7 @@ export const initReducer: AppReducer<IInitState> = (
   action,
 ): DeepReadonly<IInitState> => {
   switch (action.type) {
-    case "INIT_START":
+    case actions.init.start.getType():
       return {
         ...state,
         [action.payload.initType]: {
@@ -42,7 +43,7 @@ export const initReducer: AppReducer<IInitState> = (
           done: false,
         },
       };
-    case "INIT_DONE":
+    case actions.init.done.getType():
       return {
         ...state,
         [action.payload.initType]: {
@@ -50,7 +51,7 @@ export const initReducer: AppReducer<IInitState> = (
           done: true,
         },
       };
-    case "INIT_ERROR":
+    case actions.init.error.getType():
       return {
         ...state,
         [action.payload.initType]: {

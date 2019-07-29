@@ -1,4 +1,4 @@
-import { get } from "lodash";
+import { find, get } from "lodash";
 
 import { appRoutes } from "../../components/appRoutes";
 import { walletRegisterRoutes } from "../../components/wallet-selector/walletRoutes";
@@ -46,23 +46,22 @@ export const assertProfile = () => {
   cy.get(tid("eto-profile")).should("exist");
 };
 
-const getLatestEmailByUser = (r: any, userEmail: string) =>
-  r.body.find(
-    (body: { personalizations: { to: { email: string }[] }[] }) =>
-      body.personalizations[0].to[0].email.toLowerCase() === userEmail.toLowerCase(),
-  );
+export const getLatestEmailByUser = (r: any, email: string) =>
+  find(r.body, ["personalizations[0].to[0].email", email]);
 
 export const assertWaitForLatestEmailSentWithSalt = (
   userEmail: string,
   timeout: number = 20000,
 ) => {
   expect(timeout, `Email not received in ${timeout} ms`).to.be.gt(0);
+
   cy.wait(1000);
+
   cy.request({ url: mockApiUrl + "sendgrid/session/mails", method: "GET" }).then(r => {
     if (r.status === 200 && getLatestEmailByUser(r, userEmail)) {
       const loginLink = get(
         getLatestEmailByUser(r, userEmail),
-        "personalizations[0].substitutions.-loginLink-",
+        "personalizations[0].dynamic_template_data.login_link",
       );
 
       expect(loginLink).to.contain("salt");

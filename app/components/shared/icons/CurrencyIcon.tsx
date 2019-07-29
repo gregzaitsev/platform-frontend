@@ -35,4 +35,4 @@ const CurrencyIcon: React.FunctionComponent<{ currency: ECurrency } & CommonHtml
   />
 );
 
-export { CurrencyIcon };
+export { CurrencyIcon, getIconForCurrency };

@@ -20,18 +20,20 @@ export interface IBookBuildingStats {
 
 export const generateCampaigningValidation = (minPledge: number, maxPledge?: number) => {
   const amount = Yup.number()
-    .typeError(getMessageTranslation(createMessage(ValidationMessage.VALIDATION_INTEGER)) as any)
-    .min(minPledge, getMessageTranslation(
-      createMessage(ValidationMessage.VALIDATION_MIN_PLEDGE, minPledge),
-    ) as any)
+    .typeError(getMessageTranslation(createMessage(ValidationMessage.VALIDATION_INTEGER)))
+    .min(
+      minPledge,
+      getMessageTranslation(createMessage(ValidationMessage.VALIDATION_MIN_PLEDGE, minPledge)),
+    )
     .integer()
     .required();
 
   return Yup.object({
     amount: maxPledge
-      ? amount.max(maxPledge, getMessageTranslation(
-          createMessage(ValidationMessage.VALIDATION_MAX_PLEDGE, maxPledge),
-        ) as any)
+      ? amount.max(
+          maxPledge,
+          getMessageTranslation(createMessage(ValidationMessage.VALIDATION_MAX_PLEDGE, maxPledge)),
+        )
       : amount,
   });
 };

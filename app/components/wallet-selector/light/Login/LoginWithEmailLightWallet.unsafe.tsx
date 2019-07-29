@@ -21,9 +21,9 @@ const PASSWORD = "password";
 const emailValidator = Yup.string().email();
 
 export const LoginValidator = Yup.object().shape({
-  password: Yup.string().required((
-    <FormattedMessage id="wallet-selector.neuwallet.password-is-mandatory" />
-  ) as any),
+  password: Yup.string().required(
+    <FormattedMessage id="wallet-selector.neuwallet.password-is-mandatory" />,
+  ),
   email: emailValidator,
 });
 

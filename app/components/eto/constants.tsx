@@ -19,3 +19,5 @@ export const FUNDING_ROUNDS: IRounds = {
   pre_ipo: "Pre-IPO",
   public: "PUBLIC",
 };
+
+export const DEFAULT_PLACEHOLDER = "N/A";

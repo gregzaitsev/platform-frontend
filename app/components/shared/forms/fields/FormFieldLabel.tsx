@@ -18,6 +18,8 @@ export type FormFieldLabelExternalProps = {
   inheritFont?: boolean;
 };
 
+const generateLabelId = (name: string) => `${name}-label`;
+
 const FormLabel: React.FunctionComponent<FormLabelExternalProps & CommonHtmlProps> = ({
   for: htmlFor,
   children,
@@ -26,6 +28,7 @@ const FormLabel: React.FunctionComponent<FormLabelExternalProps & CommonHtmlProp
 }) => (
   <label
     htmlFor={htmlFor}
+    id={generateLabelId(htmlFor)}
     className={cn(styles.formLabel, className, { [styles.inheritFont]: inheritFont })}
   >
     {children}
@@ -64,4 +67,4 @@ const FormFieldLabel = compose<
   ),
 )(FormFieldLabelLayout);
 
-export { FormFieldLabel, FormLabel };
+export { FormFieldLabel, FormLabel, generateLabelId };

@@ -1,4 +1,5 @@
 import { LocationChangeAction } from "connected-react-router";
+import { StringableActionCreator } from "redux-saga/effects";
 
 import { portfolioActions } from "../components/portfolio/actions";
 import { TDictionaryValues } from "../types";
@@ -104,4 +105,17 @@ export type TActionFromCreator<T extends (...args: any[]) => any> = Extract<
 >;
 
 type ExtractPayload<T extends TAction> = T extends { payload: infer P } ? P : never;
-export type TActionPayload<T extends TActionType> = ExtractPayload<Extract<TAction, { type: T }>>;
+
+type TActionPayloadFromType<T extends TActionType> = ExtractPayload<Extract<TAction, { type: T }>>;
+
+export type TPattern = TActionType | StringableActionCreator<TAction>;
+
+export type TActionPayload<T extends TPattern> = T extends StringableActionCreator<TAction>
+  ? TActionPayloadFromCreator<T>
+  : T extends TActionType
+  ? TActionPayloadFromType<T>
+  : never;
+
+export type TActionPayloadFromCreator<T extends (...args: any[]) => any> = ExtractPayload<
+  Extract<TAction, { type: ExtractActionTypeFromCreator<T> }>
+>;

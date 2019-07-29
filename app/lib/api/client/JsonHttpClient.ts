@@ -12,7 +12,7 @@ import * as Yup from "yup";
 
 import { Dictionary } from "../../../types";
 import { toCamelCase } from "../../../utils/transformObjectKeys";
-import { isYTS, Schema } from "../../yup-ts";
+import { isYTS, Schema } from "../../yup-ts.unsafe";
 import { HttpClient, ResponseParsingError } from "./HttpClient";
 import { HttpMethod, IHttpRequestCommon, IHttpResponse } from "./IHttpClient";
 
