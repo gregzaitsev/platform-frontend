@@ -43,7 +43,9 @@ export type TranslatedMessageType =
   | TestMessage
   | ETxHistoryMessage
   | EMaskedFormError
-  | EKycRequestStatusTranslation;
+  | EKycRequestStatusTranslation
+  | ENomineeLinkRequestStatusTranslation
+  |ENomineeLinkErrorNotifications;
 
 export enum GenericErrorMessage {
   GENERIC_ERROR = "genericError",
@@ -270,6 +272,20 @@ export enum EKycRequestStatusTranslation {
   REJECTED = "KycRequestStatusTranslationRejected",
   ACCEPTED = "KycRequestStatusTranslationAccepted",
   IGNORED = "KycRequestStatusTranslationIgnored",
+}
+
+export enum ENomineeLinkRequestStatusTranslation {
+  NONE = "nomineeLinkRequestNone",
+  PENDING = "nomineeLinkRequestPending",
+  APPROVED = "nomineeLinkRequestApproved",
+  REJECTED = "nomineeLinkRequestRejected",
+  ISSUER_ID_ERROR = "nomineeLinkRequestIssuerIdError",
+  GENERIC_ERROR = "nomineeLinkRequestGenericError"
+}
+
+export enum ENomineeLinkErrorNotifications {
+  ISSUER_ID_ERROR = "nomineeLinkIssuerIdError",
+  GENERIC_ERROR = "nomineeLinkGenericError"
 }
 
 export enum TestMessage {
@@ -667,6 +683,23 @@ const getMessageTranslation = ({ messageType, messageData }: TMessage): TTransla
     case EKycRequestStatusTranslation.REJECTED:
       return <FormattedMessage id="kyc-request.status.rejected" />;
 
+    case ENomineeLinkRequestStatusTranslation.APPROVED:
+      return <FormattedMessage id="nominee-link-request.status.approved" />;
+    case ENomineeLinkRequestStatusTranslation.GENERIC_ERROR:
+      return <FormattedMessage id="nominee-link-request.status.generic_error" />;
+    case ENomineeLinkRequestStatusTranslation.ISSUER_ID_ERROR:
+      return <FormattedMessage id="nominee-link-request.status.issuer_id_error" />;
+    case ENomineeLinkRequestStatusTranslation.NONE:
+      return <FormattedMessage id="nominee-link-request.status.none" />;
+    case ENomineeLinkRequestStatusTranslation.PENDING:
+      return <FormattedMessage id="nominee-link-request.status.pending" />;
+    case ENomineeLinkRequestStatusTranslation.REJECTED:
+      return <FormattedMessage id="nominee-link-request.status.rejected" />;
+
+    case ENomineeLinkErrorNotifications.GENERIC_ERROR:
+      return <FormattedMessage id="nominee-flow.link-with-issuer.generic-error-notification" />;
+      case ENomineeLinkErrorNotifications.ISSUER_ID_ERROR:
+      return <FormattedMessage id="nominee-flow.link-with-issuer.issuer-id-error-notification" />;
 
     // NEVER DO THIS! This is only for tests, so that we don't bloat locales.json with test strings!
     case TestMessage.TEST_MESSAGE:

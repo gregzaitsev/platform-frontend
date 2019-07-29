@@ -5,6 +5,8 @@ import { TNomineeRequestResponse } from "../../lib/api/users/interfaces";
 import { ENomineeLinkRequestStatus } from "./reducer";
 import { neuTakeLatest } from "../sagasUtils";
 import { IssuerIdInvalid } from "../../lib/api/users/UsersApi";
+import { createMessage } from "../../components/translatedMessages/utils";
+import { ENomineeLinkErrorNotifications } from "../../components/translatedMessages/messages";
 
 
 export function* loadNomineeTaskStatus({
@@ -27,7 +29,7 @@ export function* loadNomineeTaskStatus({
   }
 }
 
-const NomineeRequestResponseToRequestStatus = (response:TNomineeRequestResponse) => {
+const NomineeRequestResponseToRequestStatus = (response: TNomineeRequestResponse) => {
   switch (response.state) {
     case "pending":
       return ENomineeLinkRequestStatus.PENDING;
@@ -41,28 +43,30 @@ const NomineeRequestResponseToRequestStatus = (response:TNomineeRequestResponse)
 };
 
 export function* createNomineeLinkRequest({
-  apiUserService,
-  logger,
-}: TGlobalDependencies,
+    apiUserService,
+    logger,
+    notificationCenter
+  }: TGlobalDependencies,
   action: TActionFromCreator<typeof actions.nomineeFlow.createNomineeRequest>,
 ): Iterator<any> {
   try {
     yield put(actions.nomineeFlow.startNomineeTasksRequest());
 
 
-    const requestStatus:TNomineeRequestResponse =
+    const requestStatus: TNomineeRequestResponse =
       yield apiUserService.createNomineeLinkRequest(action.payload.issuerId);
-    const statusConverted:ENomineeLinkRequestStatus = NomineeRequestResponseToRequestStatus(requestStatus);
+    const statusConverted: ENomineeLinkRequestStatus = NomineeRequestResponseToRequestStatus(requestStatus);
 
     yield put(actions.nomineeFlow.setNomineeLinkRequestStatus(statusConverted));
   } catch (e) {
     if (e instanceof IssuerIdInvalid) {
       logger.error("Failed to create nominee request, issuer id is invalid", e);
       yield put(actions.nomineeFlow.setNomineeLinkRequestStatus(ENomineeLinkRequestStatus.ISSUER_ID_ERROR));
-
+      notificationCenter.error(createMessage(ENomineeLinkErrorNotifications.ISSUER_ID_ERROR));
     } else {
       logger.error("Failed to create nominee request", e);
       yield put(actions.nomineeFlow.setNomineeLinkRequestStatus(ENomineeLinkRequestStatus.GENERIC_ERROR));
+      notificationCenter.error(createMessage(ENomineeLinkErrorNotifications.GENERIC_ERROR));
     }
   } finally {
     yield put(actions.routing.goToDashboard());

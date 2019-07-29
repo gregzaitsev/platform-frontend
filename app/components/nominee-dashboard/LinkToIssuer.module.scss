@@ -15,6 +15,10 @@ $border-color-focused: $neu-charcoal-grey;
   margin: 0;
 }
 
+.error {
+  color: $neu-bright-orange
+}
+
 .form {
   justify-self: stretch;
 }
