@@ -5,7 +5,7 @@ import * as cn from 'classnames';
 
 import { appConnect } from "../../store";
 import { selectNomineeLinkRequestStatus } from "../../modules/nominee-flow/selectors";
-import { ENomineeLinkRequestStatus } from "../../modules/nominee-flow/reducer";
+import { ENomineeRequestStatus } from "../../modules/nominee-flow/reducer";
 import { NomineeLinkRequestForm } from "./LinkToIssuerForm";
 import { StepStatus } from "./DashboardStepStatus";
 import { getMessageTranslation } from "../translatedMessages/messages";
@@ -23,22 +23,22 @@ enum ENextState {
 }
 
 interface IStateProps {
-  linkRequestStatus: ENomineeLinkRequestStatus
+  linkRequestStatus: ENomineeRequestStatus
 }
 
 interface IBranchProps {
   nextState: ENextState,
-  linkRequestStatus: ENomineeLinkRequestStatus,
+  linkRequestStatus: ENomineeRequestStatus,
 }
 
-const nextState = (linkRequestStatus: ENomineeLinkRequestStatus) => {
-  if (linkRequestStatus === ENomineeLinkRequestStatus.APPROVED) { //this shouldn't happen here
+const nextState = (linkRequestStatus: ENomineeRequestStatus) => {
+  if (linkRequestStatus === ENomineeRequestStatus.APPROVED) { //this shouldn't happen here
     return ENextState.SUCCESS
-  } else if (linkRequestStatus === ENomineeLinkRequestStatus.PENDING) {
+  } else if (linkRequestStatus === ENomineeRequestStatus.PENDING) {
     return ENextState.WAIT_WHILE_PENDING
-  } else if (linkRequestStatus === ENomineeLinkRequestStatus.GENERIC_ERROR ||
-    linkRequestStatus === ENomineeLinkRequestStatus.ISSUER_ID_ERROR ||
-    linkRequestStatus === ENomineeLinkRequestStatus.REJECTED) {
+  } else if (linkRequestStatus === ENomineeRequestStatus.GENERIC_ERROR ||
+    linkRequestStatus === ENomineeRequestStatus.ISSUER_ID_ERROR ||
+    linkRequestStatus === ENomineeRequestStatus.REJECTED) {
     return ENextState.REPEAT_LINK_REQUEST
   } else {
     return ENextState.SEND_REQUEST
@@ -64,16 +64,16 @@ export const LinkToIssuerPendingState:React.FunctionComponent = () => {
       <FormattedMessage id="nominee-flow.link-with-issuer.pending.text1" />,
       <FormattedHTMLMessage tagName="span" id="nominee-flow.link-with-issuer.pending.text2" values={{href:externalRoutes.neufundSupportHome}}/>
     ]}
-    status={getMessageTranslation(linkRequestToTranslationMessage(ENomineeLinkRequestStatus.PENDING))}
+    status={getMessageTranslation(linkRequestToTranslationMessage(ENomineeRequestStatus.PENDING))}
   />
 };
 
-const getText = (requestStatus:ENomineeLinkRequestStatus):TTranslatedString => {
-  if(requestStatus === ENomineeLinkRequestStatus.REJECTED){
+const getText = (requestStatus:ENomineeRequestStatus):TTranslatedString => {
+  if(requestStatus === ENomineeRequestStatus.REJECTED){
     return <FormattedMessage id="nominee-flow.link-with-issuer.error-link-rejected-text" />
-  } else if (requestStatus === ENomineeLinkRequestStatus.ISSUER_ID_ERROR) {
+  } else if (requestStatus === ENomineeRequestStatus.ISSUER_ID_ERROR) {
     return <FormattedMessage id="nominee-flow.link-with-issuer.issuer-id-error-text" />
-  } else if (requestStatus === ENomineeLinkRequestStatus.GENERIC_ERROR) {
+  } else if (requestStatus === ENomineeRequestStatus.GENERIC_ERROR) {
     return <FormattedMessage id="nominee-flow.link-with-issuer.generic-error-text" />
   } else {
     throw new Error("invalid request status passed into this component")

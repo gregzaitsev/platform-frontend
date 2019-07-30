@@ -1,18 +1,25 @@
 import * as React from "react";
+
 import { LinkToIssuer } from "./LinkToIssuer";
+import { AcceptTha } from "./AcceptTha";
+import { RedeemShareCapital } from "./RedeemShareCapital";
+import { AcceptIsha } from "./AcceptIsha";
+import { ENomineeRequestStatus } from "../../modules/nominee-flow/reducer";
+import { LinkBankAccount } from "./LinkBankAccount";
 
 export interface ITaskData {
   key: ENomineeTask;
-  taskRootComponent: React.ComponentClass
+  taskRootComponent: React.ComponentType,
 }
 
 export interface ITask {
   key: ENomineeTask;
-  taskRootComponent: React.ComponentClass
+  taskRootComponent: React.ComponentType
 }
 
 export enum ENomineeTask {
   LINK_TO_ISSUER = "linkToIssuer",
+  LINK_BANK_ACCOUNT = "linkBankAccount",
   ACCEPT_THA = "acceptTha",
   REDEEM_SHARE_CAPITAL = "redeemShareCapital",
   ACCEPT_ISHA = "acceptIsha"
@@ -25,20 +32,28 @@ export const NomineeTasksData: TNomineeTasksData = {
     key: ENomineeTask.LINK_TO_ISSUER,
     taskRootComponent: LinkToIssuer
   },
+  [ENomineeTask.LINK_BANK_ACCOUNT]: {
+    key: ENomineeTask.LINK_BANK_ACCOUNT,
+    taskRootComponent: LinkBankAccount
+  },
   [ENomineeTask.ACCEPT_THA]: {
     key: ENomineeTask.ACCEPT_THA,
-    taskRootComponent: () =><>{ENomineeTask.ACCEPT_THA}</>
+    taskRootComponent: AcceptTha
   },
   [ENomineeTask.REDEEM_SHARE_CAPITAL]: {
     key: ENomineeTask.REDEEM_SHARE_CAPITAL,
-    taskRootComponent: <>{ENomineeTask.REDEEM_SHARE_CAPITAL}</>
+    taskRootComponent: RedeemShareCapital
   },
   [ENomineeTask.ACCEPT_ISHA]: {
     key: ENomineeTask.ACCEPT_ISHA,
-    taskRootComponent: () =><>{ENomineeTask.ACCEPT_ISHA}</>
+    taskRootComponent: AcceptIsha
   }
 };
 //todo here all task choosing logic
-export const getNomineeTasks = (data: TNomineeTasksData):ITask[] => {
-  return [data[ENomineeTask.LINK_TO_ISSUER] as ITask]
+export const getNomineeTasks = (data: TNomineeTasksData, nomineeRequestStatus: ENomineeRequestStatus):ITask[] => {
+  if(nomineeRequestStatus !== ENomineeRequestStatus.APPROVED){
+    return [data[ENomineeTask.LINK_TO_ISSUER] as ITask]
+  } else {
+    return [data[ENomineeTask.LINK_BANK_ACCOUNT] as ITask]
+  }
 };

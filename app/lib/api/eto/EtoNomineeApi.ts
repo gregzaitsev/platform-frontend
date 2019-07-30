@@ -7,6 +7,7 @@ import { TNomineeRequestResponse } from "./EtoApi.interfaces.unsafe";
 
 const BASE_PATH = "/api/eto-listing/etos";
 const CREATE_NOMINEE_REQUEST_PATH = "/:etoId/nominee-requests/me";
+const GET_NOMINEE_REQUEST_PATH = "/nominee-requests/me";
 
 export class EtoNomineeApiError extends Error {}
 export class IssuerIdInvalid extends EtoNomineeApiError {}
@@ -33,11 +34,11 @@ export class EtoNomineeApi {
 
   }
 
-  // todo this is a dummy, won't work
-  public async getNomineeLinkRequestStatus(): Promise<void> {
-    await this.httpClient.get<void>({
+  public async getNomineeLinkRequestStatus(): Promise<TNomineeRequestResponse[]> {
+    const response = await this.httpClient.get<TNomineeRequestResponse[]>({
       baseUrl: BASE_PATH,
-      url: `/user/me/nominee_task_status`,
-    })
+      url: GET_NOMINEE_REQUEST_PATH,
+    });
+    return response.body;
   }
 }

@@ -11,11 +11,18 @@ import { Panel } from "../shared/Panel";
 import { SuccessTick } from "../shared/SuccessTick";
 import { NomineeAccountSetup } from "./NomineeAccountSetup";
 import { getNomineeTasks, ITask, NomineeTasksData } from "./NomineeTasksData";
+import { onEnterAction } from "../../utils/OnEnterAction";
+import { actions } from "../../modules/actions";
+import { selectNomineeLinkRequestStatus, selectNomineeStateIsLoading } from "../../modules/nominee-flow/selectors";
+import { LoadingIndicator } from "../shared/loading-indicator/LoadingIndicator";
+import { ENomineeRequestStatus } from "../../modules/nominee-flow/reducer";
 
 import * as styles from "./NomineeDashboard.module.scss";
 
 interface IStateProps {
   verificationIsComplete: boolean;
+  isLoading: boolean;
+  nomineeRequestStatus: ENomineeRequestStatus;
 }
 
 interface IDashboardProps {
@@ -68,12 +75,18 @@ export const NomineeDashboard = compose<IDashboardProps, {}>(
   withContainer(nest(Layout, NomineeDashboardContainer)),
   appConnect<IStateProps>({
     stateToProps: state => ({
+      isLoading: selectNomineeStateIsLoading(state),
+      nomineeRequestStatus: selectNomineeLinkRequestStatus(state),
       verificationIsComplete: SelectIsVerificationFullyDone(state),
     })
   }),
   // fixme add watcher to renew verificationIsComplete!!
   branch<IStateProps>(({ verificationIsComplete }) => !verificationIsComplete, renderComponent(NomineeAccountSetup)),
-  withProps<IDashboardProps, IStateProps>(() => ({
-    nomineeTasks: getNomineeTasks(NomineeTasksData),
+  onEnterAction({
+    actionCreator:dispatch => dispatch(actions.nomineeFlow.loadNomineeTaskData())
+  }),
+  branch<IStateProps>(({isLoading}) => isLoading, renderComponent(LoadingIndicator)),
+  withProps<IDashboardProps, IStateProps>(({nomineeRequestStatus}) => ({
+    nomineeTasks: getNomineeTasks(NomineeTasksData, nomineeRequestStatus),
   }))
 )(NomineeDashboardTasks);

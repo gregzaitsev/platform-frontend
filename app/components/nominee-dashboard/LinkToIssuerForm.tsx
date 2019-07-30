@@ -11,7 +11,7 @@ import { Button, EButtonLayout, EButtonTheme } from "../shared/buttons/Button";
 import { IIntlProps, injectIntlHelpers } from "../../utils/injectIntlHelpers.unsafe";
 import { validateEthAddress, validateEthInput } from "./utils";
 import { appConnect } from "../../store";
-import { selectIsLoading, } from "../../modules/nominee-flow/selectors";
+import { selectNomineeStateIsLoading, } from "../../modules/nominee-flow/selectors";
 import { actions } from "../../modules/actions";
 
 import * as styles from "./LinkToIssuer.module.scss"
@@ -120,7 +120,7 @@ export class NomineeLinkRequestFormBase extends React.Component<IIntlProps & IPr
 export const NomineeLinkRequestForm = compose<IIntlProps & IStateProps & IDispatchProps, {}>(
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: state => ({
-      isLoading: selectIsLoading(state),
+      isLoading: selectNomineeStateIsLoading(state),
     }),
     dispatchToProps: dispatch => ({
       createNomineeRequest: (issuerId) => {

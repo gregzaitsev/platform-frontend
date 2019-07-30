@@ -1,8 +1,8 @@
 import { IAppState } from "../../store";
-import { ENomineeLinkRequestStatus } from "./reducer";
+import { ENomineeRequestStatus } from "./reducer";
 
-export const selectIsLoading = (state: IAppState) =>
+export const selectNomineeStateIsLoading = (state: IAppState) =>
   state.nomineeFlow.loading;
 
-export const selectNomineeLinkRequestStatus = (state: IAppState):ENomineeLinkRequestStatus =>
-  state.nomineeFlow.nomineeLinkRequestStatus;
+export const selectNomineeLinkRequestStatus = (state: IAppState):ENomineeRequestStatus =>
+  state.nomineeFlow.nomineeRequestStatus;

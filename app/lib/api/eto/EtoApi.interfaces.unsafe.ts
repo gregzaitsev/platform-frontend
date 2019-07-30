@@ -466,17 +466,10 @@ export const EtoSettingDataType = YupTS.object({
   ...EtoNomineeType.shape,
 });
 
-//
-// export const NomineeRequestResponseSchema = Yup.object({
-//   state: Yup.string().oneOf(['pending', 'approved', 'rejected']),
-//   etoId: Yup.string(),
-//   nomineeId: Yup.string(),
-//   insertedAt:  Yup.date(),
-//   updatedAt:  Yup.date(),
-// });
-
-
 export type TNomineeRequestResponse = {
   state: 'pending'| 'approved'| 'rejected',
-  nomineeId: string
+  nomineeId: string,
+  etoId: string,
+  insertedAt: string,
+  updatedAt: string,
 }
