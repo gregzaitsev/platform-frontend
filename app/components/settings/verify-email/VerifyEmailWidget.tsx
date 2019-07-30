@@ -2,26 +2,15 @@ import * as cn from "classnames";
 import { FormikProps, withFormik } from "formik";
 import * as React from "react";
 import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
-import { compose } from "recompose";
 import * as Yup from "yup";
 
-import { actions } from "../../../modules/actions";
-import {
-  selectIsThereUnverifiedEmail,
-  selectIsUserEmailVerified,
-  selectUnverifiedUserEmail,
-  selectVerifiedUserEmail,
-} from "../../../modules/auth/selectors";
-import { selectIsCancelEmail } from "../../../modules/profile/reducer";
-import { selectIsConnectedButtonLocked } from "../../../modules/verify-email-widget/reducer";
-import { appConnect } from "../../../store";
 import { injectIntlHelpers } from "../../../utils/injectIntlHelpers.unsafe";
 import { EColumnSpan } from "../../layouts/Container";
 import { Button, EButtonLayout } from "../../shared/buttons";
 import { ButtonArrowRight } from "../../shared/buttons/Button";
 import { Form, FormField } from "../../shared/forms/index";
 import { Panel } from "../../shared/Panel";
-import { AccountSetupVerifyEmailWidgetLayout } from "./AccountSetupVerifyEmailWidget";
+import { connectVerifyEmailComponent } from "./ConnectVerifyEmail";
 
 import * as successIcon from "../../../assets/img/notifications/success.svg";
 import * as warningIcon from "../../../assets/img/notifications/warning.svg";
@@ -302,36 +291,4 @@ export const VerifyEmailWidgetBase: React.FunctionComponent<
   );
 };
 
-export const connectVerifyEmailComponent = <T extends {}>(
-  WrappedComponent: React.ComponentType<IStateProps & IDispatchProps & T>,
-) =>
-  compose<IStateProps & IDispatchProps & T, T>(
-    appConnect<IStateProps, IDispatchProps, T>({
-      stateToProps: s => ({
-        isUserEmailVerified: selectIsUserEmailVerified(s.auth),
-        isThereUnverifiedEmail: selectIsThereUnverifiedEmail(s.auth),
-        isEmailTemporaryCancelled: selectIsCancelEmail(s.profile),
-        verifiedEmail: selectVerifiedUserEmail(s.auth),
-        unverifiedEmail: selectUnverifiedUserEmail(s.auth),
-        isLocked: selectIsConnectedButtonLocked(s.verifyEmailWidgetState),
-      }),
-      dispatchToProps: dispatch => ({
-        resendEmail: () => {
-          dispatch(actions.profile.resendEmail());
-        },
-        addNewEmail: (values: { email: string }) => {
-          dispatch(actions.profile.addNewEmail(values.email));
-        },
-        cancelEmail: () => {
-          dispatch(actions.profile.cancelEmail());
-        },
-        revertCancelEmail: () => dispatch(actions.profile.revertCancelEmail()),
-        abortEmailUpdate: () => dispatch(actions.profile.abortEmailUpdate()),
-      }),
-    }),
-  )(WrappedComponent);
-
 export const VerifyEmailWidget = connectVerifyEmailComponent<IExternalProps>(VerifyEmailWidgetBase);
-export const VerifyEmailComponent = connectVerifyEmailComponent<{}>(
-  AccountSetupVerifyEmailWidgetLayout,
-);

@@ -4,7 +4,7 @@ import { branch, compose, nest, renderComponent, withProps } from "recompose";
 
 import { ERequestStatus } from "../../lib/api/KycApi.interfaces";
 import { selectBackupCodesVerified, selectIsUserEmailVerified } from "../../modules/auth/selectors";
-import { selectNomineeKycRequestStatus } from "../../modules/kyc/selectors";
+import { selectKycRequestStatus } from "../../modules/kyc/selectors";
 import { SelectIsVerificationFullyDone } from "../../modules/selectors";
 import { appConnect } from "../../store";
 import { TTranslatedString } from "../../types";
@@ -90,12 +90,10 @@ export const NomineeDashboard = compose<INomineeAccountSetupSteps, {}>(
     stateToProps: state => ({
       emailVerified: selectIsUserEmailVerified(state.auth),
       backupCodesVerified: selectBackupCodesVerified(state),
-      kycRequestStatus: selectNomineeKycRequestStatus(state),
+      kycRequestStatus: selectKycRequestStatus(state),
       verificationIsComplete: SelectIsVerificationFullyDone(state),
     }),
   }),
-  /*TODO: the after-setup logic of nominee dashboard is not entirely clear yet.
-       Most likely when I sort out the component structure these two branches will be merged in one */
   branch<IStateProps>(
     props => props.kycRequestStatus === ERequestStatus.PENDING,
     renderComponent(NomineeKycPending),

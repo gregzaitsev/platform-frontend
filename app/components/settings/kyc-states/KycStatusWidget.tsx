@@ -2,33 +2,16 @@ import * as cn from "classnames";
 import * as React from "react";
 import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 import { Col, Row } from "reactstrap";
-import { branch, compose, renderNothing } from "recompose";
 
 import { externalRoutes } from "../../../config/externalRoutes";
 import { ERequestOutsourcedStatus, ERequestStatus } from "../../../lib/api/KycApi.interfaces";
 import { EUserType } from "../../../lib/api/users/interfaces";
-import { actions } from "../../../modules/actions";
-import {
-  selectBackupCodesVerified,
-  selectIsUserEmailVerified,
-  selectUserType,
-} from "../../../modules/auth/selectors";
-import {
-  selectExternalKycUrl,
-  selectKycLoading,
-  selectKycRequestOutsourcedStatus,
-  selectKycRequestStatus,
-  selectWidgetError,
-} from "../../../modules/kyc/selectors";
-import { appConnect } from "../../../store";
-import { onEnterAction } from "../../../utils/OnEnterAction";
-import { onLeaveAction } from "../../../utils/OnLeaveAction";
 import { EColumnSpan } from "../../layouts/Container";
 import { Button, ButtonLink, EButtonLayout, EIconPosition } from "../../shared/buttons/index";
 import { LoadingIndicator } from "../../shared/loading-indicator";
 import { Panel } from "../../shared/Panel";
 import { WarningAlert } from "../../shared/WarningAlert";
-import { AccountSetupKycPendingLayout, AccountSetupKycStartLayout } from "./AccountSetupKycWidget";
+import { connectKycStatusWidget } from "./ConnectKycStatus";
 
 import * as arrowRight from "../../../assets/img/inline_icons/arrow_right.svg";
 import * as infoIcon from "../../../assets/img/notifications/info.svg";
@@ -309,46 +292,4 @@ export const KycStatusWidgetBase: React.FunctionComponent<IKycStatusWidgetProps>
   );
 };
 
-const connectKycStatusWidget = <T extends {}>(
-  WrappedComponent: React.ComponentType<IStateProps & IDispatchProps & T>,
-) =>
-  compose<(IStateProps | null) & IDispatchProps & T, T>(
-    appConnect<IStateProps | null, IDispatchProps, T>({
-      stateToProps: state => {
-        const userType = selectUserType(state);
-        if (userType !== undefined) {
-          return {
-            userType,
-            isUserEmailVerified: selectIsUserEmailVerified(state.auth),
-            backupCodesVerified: selectBackupCodesVerified(state),
-            requestStatus: selectKycRequestStatus(state),
-            requestOutsourcedStatus: selectKycRequestOutsourcedStatus(state.kyc),
-            externalKycUrl: selectExternalKycUrl(state.kyc),
-            isLoading: selectKycLoading(state.kyc),
-            error: selectWidgetError(state.kyc),
-          };
-        } else {
-          return null;
-        }
-      },
-      dispatchToProps: dispatch => ({
-        onGoToDashboard: () => dispatch(actions.routing.goToDashboard()),
-        cancelInstantId: () => dispatch(actions.kyc.kycCancelInstantId()),
-        onGoToKycHome: () => dispatch(actions.routing.goToKYCHome()),
-      }),
-    }),
-    branch<IStateProps | null>(props => props === null, renderNothing),
-    // note: initial data for this view are loaded as part of app init process
-    onEnterAction({
-      actionCreator: d => d(actions.kyc.kycStartWatching()),
-    }),
-    onLeaveAction({
-      actionCreator: d => d(actions.kyc.kycStopWatching()),
-    }),
-  )(WrappedComponent);
-
 export const KycStatusWidget = connectKycStatusWidget<IExternalProps>(KycStatusWidgetBase);
-export const AccountSetupKycComponent = connectKycStatusWidget<{}>(AccountSetupKycStartLayout);
-export const AccountSetupKycPendingComponent = connectKycStatusWidget<{}>(
-  AccountSetupKycPendingLayout,
-);

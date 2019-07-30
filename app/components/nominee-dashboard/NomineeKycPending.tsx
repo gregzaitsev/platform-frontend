@@ -1,7 +1,7 @@
 import * as React from "react";
 import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 
-import { AccountSetupKycPendingComponent } from "../settings/kyc-states/KycStatusWidget";
+import { AccountSetupKycPendingComponent } from "../settings/kyc-states/AccountSetupKycComponent";
 import { Panel } from "../shared/Panel";
 import { DashboardTitle } from "./NomineeDashboard";
 

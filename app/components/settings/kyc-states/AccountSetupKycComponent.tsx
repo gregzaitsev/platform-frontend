@@ -6,8 +6,9 @@ import { EUserType } from "../../../lib/api/users/interfaces";
 import { Button, EButtonLayout, EButtonTheme } from "../../shared/buttons/Button";
 import { LoadingIndicator } from "../../shared/loading-indicator/LoadingIndicator";
 import { WarningAlert } from "../../shared/WarningAlert";
+import { connectKycStatusWidget } from "./ConnectKycStatus";
 
-import * as styles from "./AccountSetupKycWidget.module.scss";
+import * as styles from "./AccountSetupKycComponent.module.scss";
 
 interface IStateProps {
   requestStatus?: ERequestStatus;
@@ -76,4 +77,9 @@ export const AccountSetupKycPendingLayout: React.FunctionComponent<
       <FormattedMessage id="settings.kyc-status-widget.submit-additional-documents" />
     </Button>
   </>
+);
+
+export const AccountSetupKycComponent = connectKycStatusWidget<{}>(AccountSetupKycStartLayout);
+export const AccountSetupKycPendingComponent = connectKycStatusWidget<{}>(
+  AccountSetupKycPendingLayout,
 );

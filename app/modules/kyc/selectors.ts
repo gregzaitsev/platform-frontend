@@ -33,9 +33,6 @@ export const selectKycRequestStatus = (state: IAppState): ERequestStatus | undef
   }
 };
 
-export const selectNomineeKycRequestStatus = (state: IAppState): ERequestStatus | undefined =>
-  state.kyc.businessRequestState && state.kyc.businessRequestState.status;
-
 export const selectKycRequestOutsourcedStatus = (
   state: DeepReadonly<IKycState>,
 ): ERequestOutsourcedStatus | undefined => {
