@@ -19,8 +19,8 @@ const header = (contentTitleComponent: React.ReactChild, status: TTranslatedStri
 
 const text = (textComponents: React.ReactChild | React.ReactChild[]) => {
   if (Array.isArray(textComponents)) {
-    return textComponents.map(component =>
-      <p className={styles.dashboardContentText}>
+    return textComponents.map((component,i) =>
+      <p className={styles.dashboardContentText} key={i}>
         {component}
       </p>
     )

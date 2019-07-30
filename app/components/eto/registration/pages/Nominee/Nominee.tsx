@@ -75,7 +75,7 @@ const Nominee = compose<IProps, IExternalProps>(
     stateToProps: s => ({
       loadingData: s.etoFlow.loading,
       savingData: s.etoFlow.saving,
-      currentNominee: selectEtoNominee(s),
+      currentNominee: undefined,//selectEtoNominee(s),
       currentNomineeName: selectEtoNomineeDisplayName(s),
       readonly: etoFormIsReadonly(EEtoFormTypes.Nominee, selectIssuerEtoState(s)),
     }),

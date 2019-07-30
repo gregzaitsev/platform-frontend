@@ -45,6 +45,7 @@ import {
   AsyncIntervalSchedulerFactoryType,
 } from "../utils/AsyncIntervalScheduler";
 import { symbols } from "./symbols";
+import { EtoNomineeApi } from "../lib/api/eto/EtoNomineeApi";
 
 export function setupBindings(config: IConfig): Container {
   const container = new Container();
@@ -159,6 +160,10 @@ export function setupBindings(config: IConfig): Container {
     .to(EtoFileApi)
     .inSingletonScope();
   container
+    .bind<EtoNomineeApi>(symbols.apiEtoNomineeService)
+    .to(EtoNomineeApi)
+    .inSingletonScope();
+  container
     .bind<WalletStorage>(symbols.walletStorage)
     .to(WalletStorage)
     .inSingletonScope();
@@ -254,6 +259,7 @@ export const createGlobalDependencies = (container: Container) => ({
   apiEtoPledgeService: container.get<EtoPledgeApi>(symbols.apiEtoPledgeService),
   apiEtoProductService: container.get<EtoProductApi>(symbols.apiEtoProductService),
   apiEtoFileService: container.get<EtoFileApi>(symbols.apiEtoFileService),
+  apiEtoNomineeService: container.get<EtoNomineeApi>(symbols.apiEtoNomineeService),
   apiUserService: container.get<UsersApi>(symbols.usersApi),
   vaultApi: container.get<VaultApi>(symbols.vaultApi),
   analyticsApi: container.get<AnalyticsApi>(symbols.analyticsApi),

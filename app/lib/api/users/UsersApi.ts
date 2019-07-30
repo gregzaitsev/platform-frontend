@@ -9,9 +9,8 @@ import {
   IEmailStatus,
   IUser,
   IUserInput,
-  IVerifyEmailUser, NomineeRequestResponseSchema,
-  // NomineeRequestResponseSchema,
-  OOO_TRANSACTION_TYPE, TNomineeRequestResponse,
+  IVerifyEmailUser,
+  OOO_TRANSACTION_TYPE,
   TPendingTxs,
   TxPendingWithMetadata,
   TxWithMetadata,
@@ -23,7 +22,6 @@ const USER_API_ROOT = "/api/user";
 export class UserApiError extends Error {}
 export class UserNotExisting extends UserApiError {}
 export class EmailAlreadyExists extends UserApiError {}
-export class IssuerIdInvalid extends UserApiError {}
 
 const ensureWalletTypesInUser = (userApiResponse: IUser): IUser => ({
   ...userApiResponse,
@@ -185,31 +183,5 @@ export class UsersApi {
       baseUrl: USER_API_ROOT,
       url: `/pending_transactions/me/${txHash}`,
     });
-  }
-
-  public async createNomineeLinkRequest(issuerId: string): Promise<TNomineeRequestResponse> {
-    const response = await this.httpClient.put<TNomineeRequestResponse>({
-      baseUrl: USER_API_ROOT,
-      url: `/user/me/nominee_request`,
-      responseSchema: NomineeRequestResponseSchema,
-      allowedStatusCodes: [400, 404],
-      body: {
-        issuer_id: issuerId
-      },
-    });
-    if (response.statusCode === 400 || response.statusCode === 404) {
-      throw new IssuerIdInvalid();
-    } else {
-      return response.body;
-    }
-
-  }
-
-  // todo this is a dummy, won't work
-  public async getNomineeLinkRequestStatus(): Promise<void> {
-    await this.httpClient.get<void>({
-      baseUrl: USER_API_ROOT,
-      url: `/user/me/nominee_task_status`,
-    })
   }
 }

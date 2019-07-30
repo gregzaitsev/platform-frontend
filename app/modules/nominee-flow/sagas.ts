@@ -1,27 +1,25 @@
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { fork, put } from "redux-saga/effects";
 import { actions, TActionFromCreator } from "../actions";
-import { TNomineeRequestResponse } from "../../lib/api/users/interfaces";
 import { ENomineeLinkRequestStatus } from "./reducer";
 import { neuTakeLatest } from "../sagasUtils";
-import { IssuerIdInvalid } from "../../lib/api/users/UsersApi";
 import { createMessage } from "../../components/translatedMessages/utils";
 import { ENomineeLinkErrorNotifications } from "../../components/translatedMessages/messages";
+import { TNomineeRequestResponse } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
+import { IssuerIdInvalid } from "../../lib/api/eto/EtoNomineeApi";
 
 
 export function* loadNomineeTaskStatus({
-  apiUserService,
   logger,
 }: TGlobalDependencies): Iterator<any> {
   try {
-    const taskStatus = yield apiUserService.getNomineeLinkRequestStatus();
+    // const taskStatus = yield apiUserService.getNomineeLinkRequestStatus();
     // const eto: TEtoSpecsData = yield apiEtoService.getMyEto();
     //
     // if (eto.state === EEtoState.ON_CHAIN) {
     //   yield neuCall(loadEtoContract, eto);
     // }
 
-    yield put(actions.nomineeFlow.setNomineeTaskStatus({ taskStatus }));
   } catch (e) {
     logger.error("Failed to load Nominee tasks", e);
     // notificationCenter.error(createMessage(EtoFlowMessage.ETO_LOAD_FAILED));
@@ -43,7 +41,7 @@ const NomineeRequestResponseToRequestStatus = (response: TNomineeRequestResponse
 };
 
 export function* createNomineeLinkRequest({
-    apiUserService,
+    apiEtoNomineeService,
     logger,
     notificationCenter
   }: TGlobalDependencies,
@@ -54,7 +52,7 @@ export function* createNomineeLinkRequest({
 
 
     const requestStatus: TNomineeRequestResponse =
-      yield apiUserService.createNomineeLinkRequest(action.payload.issuerId);
+      yield apiEtoNomineeService.createNomineeLinkRequest(action.payload.issuerId);
     const statusConverted: ENomineeLinkRequestStatus = NomineeRequestResponseToRequestStatus(requestStatus);
 
     yield put(actions.nomineeFlow.setNomineeLinkRequestStatus(statusConverted));
