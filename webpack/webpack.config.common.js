@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const webpack = require("webpack");
+const { mapValues } = require("lodash");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const WorkboxPlugin = require("workbox-webpack-plugin");
 const { default: InjectPlugin, ENTRY_ORDER } = require("webpack-inject-plugin");
@@ -31,7 +32,7 @@ const getEnvPlugin = () => {
   }
 
   return new webpack.DefinePlugin({
-    "process.env": applicationEnv,
+    "process.env": mapValues(applicationEnv, JSON.stringify),
   });
 };
 

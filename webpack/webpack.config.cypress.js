@@ -1,4 +1,5 @@
 const webpack = require("webpack");
+const { mapValues } = require("lodash");
 
 const loadAppEnv = require("./loadAppEnv");
 
@@ -27,7 +28,7 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      "process.env": applicationEnv,
+      "process.env": mapValues(applicationEnv, JSON.stringify),
     }),
   ],
 };

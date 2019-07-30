@@ -1,7 +1,6 @@
 const { join } = require("path");
 const { mapValues, toString } = require("lodash");
 const dotenv = require("dotenv");
-const fs = require("fs");
 
 module.exports = function loadAppEnv() {
   const universeAddressExists = !!process.env.NF_UNIVERSE_CONTRACT_ADDRESS;
