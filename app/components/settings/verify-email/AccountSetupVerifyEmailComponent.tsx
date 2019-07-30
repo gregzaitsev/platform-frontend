@@ -8,8 +8,9 @@ import { injectIntlHelpers } from "../../../utils/injectIntlHelpers.unsafe";
 import { Button, EButtonLayout, EButtonTheme } from "../../shared/buttons/index";
 import { FormField } from "../../shared/forms/fields/FormField";
 import { Form } from "../../shared/forms/Form";
+import { connectVerifyEmailComponent } from "./ConnectVerifyEmail";
 
-import * as styles from "./AccountSetupVerifyEmailWidget.module.scss";
+import * as styles from "./AccountSetupVerifyEmailComponent.module.scss";
 
 interface IStateProps {
   isUserEmailVerified: boolean;
@@ -151,7 +152,7 @@ const UnverifiedEmail: React.FunctionComponent<IUnverifiedEmailWidgetProps & TDa
   </section>
 );
 
-export const AccountSetupVerifyEmailWidgetLayout: React.FunctionComponent<
+const AccountSetupVerifyEmailWidgetLayout: React.FunctionComponent<
   IStateProps & IDispatchProps
 > = ({
   resendEmail,
@@ -179,3 +180,7 @@ export const AccountSetupVerifyEmailWidgetLayout: React.FunctionComponent<
     )}
   </>
 );
+
+const VerifyEmailComponent = connectVerifyEmailComponent<{}>(AccountSetupVerifyEmailWidgetLayout);
+
+export { AccountSetupVerifyEmailWidgetLayout, VerifyEmailComponent };

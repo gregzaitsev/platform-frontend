@@ -1,9 +1,9 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
-import { BackupSeedComponent } from "../settings/backup-seed/BackupSeedWidget";
-import { AccountSetupKycComponent } from "../settings/kyc-states/KycStatusWidget";
-import { VerifyEmailComponent } from "../settings/verify-email/VerifyEmailWidget";
+import { AccountSetupBackupSeedComponent } from "../settings/backup-seed/AccountSetupBackupSeedComponent";
+import { AccountSetupKycComponent } from "../settings/kyc-states/AccountSetupKycComponent";
+import { VerifyEmailComponent } from "../settings/verify-email/AccountSetupVerifyEmailComponent";
 import { IAccountSetupStepData } from "./utils";
 
 export const nomineeAccountSetupSteps = (
@@ -21,7 +21,7 @@ export const nomineeAccountSetupSteps = (
     key: "verifyBackupCodes",
     conditionCompleted: backupCodesVerified,
     title: <FormattedMessage id="account-setup.verify-backup-codes" />,
-    component: <BackupSeedComponent />,
+    component: <AccountSetupBackupSeedComponent />,
   },
   {
     key: "startKyc",

@@ -2,8 +2,9 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
 import { Button, EButtonLayout, EButtonTheme } from "../../shared/buttons/Button";
+import { connectBackupSeedWidget } from "./ConnectSetupWidget";
 
-import * as styles from "./AccountSetupBackupSeedWidget.module.scss";
+import * as styles from "./AccountSetupBackupSeedComponent.module.scss";
 
 interface IStateProps {
   backupCodesVerified: boolean;
@@ -37,3 +38,7 @@ export const AccountSetupBackupWidgetLayout: React.FunctionComponent<
     </Button>
   </section>
 );
+
+const AccountSetupBackupSeedComponent = connectBackupSeedWidget<{}>(AccountSetupBackupWidgetLayout);
+
+export { AccountSetupBackupSeedComponent };

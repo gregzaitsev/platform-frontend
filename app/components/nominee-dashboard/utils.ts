@@ -35,11 +35,11 @@ const determineStepState = (isActive: boolean, completed: boolean): EAccountSetu
 export const prepareSetupAccountSteps = (data: IAccountSetupStepData[]): IStepComponentProps[] => {
   const newData = data.reduce(
     (
-      acc: { activeElement: string | null; data: IStepComponentProps[] },
+      acc: { activeElement: string | undefined; data: IStepComponentProps[] },
       stepData: IAccountSetupStepData,
       index: number,
     ) => {
-      const isActive = !stepData.conditionCompleted && acc.activeElement === null;
+      const isActive = !stepData.conditionCompleted && acc.activeElement === undefined;
 
       const stepComponentProps = {
         stepState: determineStepState(isActive, stepData.conditionCompleted),
@@ -53,7 +53,7 @@ export const prepareSetupAccountSteps = (data: IAccountSetupStepData[]): IStepCo
       acc.activeElement = isActive ? stepData.key : acc.activeElement;
       return acc;
     },
-    { activeElement: null, data: [] },
+    { activeElement: undefined, data: [] },
   );
 
   return newData.data;

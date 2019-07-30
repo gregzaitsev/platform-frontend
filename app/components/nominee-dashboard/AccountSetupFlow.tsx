@@ -19,10 +19,6 @@ interface IExternalProps {
   isLast: boolean;
 }
 
-export interface IAccountSetupStepState {
-  isOpen: boolean;
-}
-
 export interface INomineeAccountSetupSteps {
   accountSetupStepsData: IStepComponentProps[];
 }
@@ -43,34 +39,28 @@ const StepTicker: React.FunctionComponent<IStepTickerProps> = ({ stepState, numb
   }
 };
 
-export class AccountSetupStep extends React.Component<
-  IStepComponentProps & IExternalProps,
-  IAccountSetupStepState
-> {
-  state = {
-    isOpen: this.props.stepState === EAccountSetupStepState.ACTIVE,
-  };
+const AccountSetupStep: React.FunctionComponent<IStepComponentProps & IExternalProps> = ({
+  isLast,
+  stepState,
+  title,
+  component,
+  number,
+}) => (
+  <div className={styles.accountSetupStepWrapper}>
+    <StepTicker stepState={stepState} number={number} />
 
-  toggleOpen = () => {
-    this.setState(s => ({ isOpen: !s.isOpen }));
-  };
+    <div className={styles.title}>{title}</div>
+    {!isLast && <span className={styles.line} />}
 
-  render(): React.ReactNode {
-    const { stepState, title, component, number } = this.props;
-    return (
-      <div className={styles.accountSetupStepWrapper}>
-        <StepTicker stepState={stepState} number={number} />
-        <div className={styles.title}>{title}</div>
-        {!this.props.isLast && <span className={styles.line} />}
-        {this.state.isOpen ? (
-          <div className={styles.componentOpen}>{component}</div>
-        ) : (
-          <div className={cn(styles.componentClosed, { [styles.last]: this.props.isLast })} />
-        )}
-      </div>
-    );
-  }
-}
+    {stepState === EAccountSetupStepState.ACTIVE ? (
+      <div className={styles.componentOpen}>{component}</div>
+    ) : (
+      <div className={cn(styles.componentClosed, { [styles.last]: isLast })} />
+    )}
+  </div>
+);
+
+export { AccountSetupStep };
 
 export const AccountSetupLayout: React.FunctionComponent<INomineeAccountSetupSteps> = ({
   accountSetupStepsData,

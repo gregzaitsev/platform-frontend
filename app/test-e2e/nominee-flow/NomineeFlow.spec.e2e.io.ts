@@ -23,16 +23,16 @@ describe("Nominee flow", () => {
     loginWithLightWallet(email, password);
     assertNomineeDashboard();
 
-    cy.get(tid("account-setup-email-unverified-section")); //.should("exist");
+    cy.get(tid("account-setup-email-unverified-section"));
     verifyLatestUserEmailAccountSetup(email); //;
 
-    cy.get(tid("account-setup-backup-seed-section")); //.should("exist");
+    cy.get(tid("account-setup-backup-seed-section"));
     backupLightWalletSeedFromAccountSetupDashboard();
 
-    cy.get(tid("account-setup-start-kyc-section")); //.should("exist");
+    cy.get(tid("account-setup-start-kyc-section"));
     cy.get(tid("start-kyc-button")).awaitedClick();
     goThroughKycCorporateProcess();
     cy.get(tid("generic-modal-dismiss-button")).awaitedClick();
-    cy.get(tid("nominee-kyc-status")); //.should("exist");
+    cy.get(tid("nominee-kyc-status"));
   });
 });
