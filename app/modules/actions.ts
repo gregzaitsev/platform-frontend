@@ -41,6 +41,7 @@ import { walletSelectorActions } from "./wallet-selector/actions";
 import { walletActions } from "./wallet/actions";
 import { web3Actions } from "./web3/actions";
 import { nomineeFlowActions } from "./nominee-flow/actions";
+import { etoNomineeActions } from "./eto-nominee/actions";
 
 /** You should add new actions also here (with a namespace).*/
 export const actions = {
@@ -68,6 +69,7 @@ export const actions = {
   notificationModal: notificationModalActions,
   etoFlow: etoFlowActions,
   etoDocuments: etoDocumentsActions,
+  etoNominee: etoNomineeActions,
   eto: etoActions,
   bookBuilding: bookBuildingFlowActions,
   formSingleFileUpload: formSingleFileUploadActions,

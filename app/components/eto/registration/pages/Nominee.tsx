@@ -1,4 +1,3 @@
-import { withFormik } from "formik";
 import * as React from "react";
 import { FormattedMessage, FormattedHTMLMessage } from "react-intl-phraseapp";
 import { branch, setDisplayName, renderNothing } from "recompose";
@@ -17,7 +16,7 @@ import { Button, EButtonLayout } from "../../../shared/buttons";
 import { FormSelectField } from "../../../shared/forms/index";
 import { FormFieldLabel } from "../../../shared/forms/fields/FormFieldLabel";
 import { FormToggle } from "../../../shared/forms/fields/FormToggle.unsafe";
-import { applyDefaults, convert, parseStringToFloat } from "../../utils";
+import { convert, parseStringToFloat } from "../../utils";
 import { EtoFormBase } from "../EtoFormBase.unsafe";
 import { Section } from "../Shared";
 import { FormHighlightGroup } from "../../../shared/forms/FormHighlightGroup";
@@ -26,14 +25,7 @@ import * as styles from "../Shared.module.scss";
 import { externalRoutes } from "../../../../config/externalRoutes";
 import { selectUserId } from "../../../../modules/auth/selectors";
 import { AccountAddress } from "../../../shared/AccountAddress";
-import { onEnterAction } from "../../../../utils/OnEnterAction";
 
-const LIQUIDATION_PREFERENCE_VALUES = [0, 1, 1.5, 2];
-
-const defaults = {
-  liquidationPreferenceMultiplier: 0,
-  generalVotingRule: "positive",
-};
 
 interface IExternalProps {
   readonly: boolean;
@@ -79,32 +71,7 @@ const EtoVotingRightsComponent: React.FunctionComponent<IProps> = ({ readonly, s
         <AccountAddress address={issuerId} data-test-id="issuer-id"/>
       </FormHighlightGroup>
 
-      <FormSelectField
-        customOptions={LIQUIDATION_PREFERENCE_VALUES.map(n => (
-          <option key={n} value={n}>
-            {n}
-          </option>
-        ))}
-        label={
-          <FormattedMessage id="eto.form.section.token-holders-rights.liquidation-preference" />
-        }
-        name="liquidationPreferenceMultiplier"
-        disabled={readonly}
-      />
 
-      <div className="form-group">
-        <FormFieldLabel name="generalVotingRule">
-          <FormattedMessage id="eto.form.section.token-holders-rights.voting-rights-enabled" />
-        </FormFieldLabel>
-        <FormToggle
-          name="generalVotingRule"
-          trueValue="positive"
-          falseValue="no_voting_rights"
-          disabledLabel={<FormattedMessage id="form.select.no" />}
-          enabledLabel={<FormattedMessage id="form.select.yes" />}
-          disabled={readonly}
-        />
-      </div>
     </Section>
 
     {!readonly && (
@@ -113,7 +80,7 @@ const EtoVotingRightsComponent: React.FunctionComponent<IProps> = ({ readonly, s
           layout={EButtonLayout.PRIMARY}
           type="submit"
           isLoading={savingData}
-          data-test-id="eto-registration-voting-rights-submit"
+          data-test-id="eto-nominee-submit"
         >
           <FormattedMessage id="form.button.save" />
         </Button>
@@ -152,12 +119,6 @@ const EtoVotingRights = compose<IProps, IExternalProps>(
     }),
   }),
   branch<IStateProps | null>(props => props === null, renderNothing),
-  withFormik<IProps, TPartialEtoSpecData>({
-    validationSchema: EtoVotingRightsType.toYup(),
-    mapPropsToValues: props => applyDefaults(props.stateValues, defaults),
-    handleSubmit: (values, props) => props.props.saveData(values),
-  }),
-  onEnterAction
 )(EtoVotingRightsComponent);
 
 const fromFormState = {
