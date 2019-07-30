@@ -3,7 +3,7 @@ import { branch, compose, renderComponent, renderNothing, withProps } from "reco
 import { INomineeAccountSetupSteps, AccountSetupLayout } from "./AccountSetupFlow";
 import { prepareSetupAccountSteps } from "./utils";
 import { appConnect } from "../../store";
-import { selectNomineeKycRequestStatus } from "../../modules/kyc/selectors";
+import { selectKycRequestStatus } from "../../modules/kyc/selectors";
 import { selectBackupCodesVerified, selectIsUserEmailVerified } from "../../modules/auth/selectors";
 import { EKycRequestStatus } from "../../lib/api/KycApi.interfaces";
 import { NomineeKycPending } from "./NomineeKycPending";
@@ -18,7 +18,7 @@ interface IStateProps {
 export const NomineeAccountSetup = compose<INomineeAccountSetupSteps, {}>(
   appConnect<IStateProps | null>({
     stateToProps: state => {
-      const kycRequestStatus = selectNomineeKycRequestStatus(state);
+      const kycRequestStatus = selectKycRequestStatus(state);
       if (kycRequestStatus !== undefined) {
         return ({
           emailVerified: selectIsUserEmailVerified(state.auth),

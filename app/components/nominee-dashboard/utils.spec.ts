@@ -1,6 +1,7 @@
 import { expect } from "chai";
 
-import { EAccountSetupStepState, EMaskedFormError, prepareSetupAccountSteps, validateEthInput } from "./utils";
+import { EAccountSetupStepState, prepareSetupAccountSteps, validateEthInput } from "./utils";
+import { EMaskedFormError } from "../translatedMessages/messages";
 
 describe("prepareSetupAccountSteps", () => {
   it("iterates over data and sets the first not done element open", () => {
