@@ -2,17 +2,34 @@ import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
 import { actions } from "../actions";
 
-interface IEtoNomineeState {}
+export interface IEtoNomineeState {
+  isLoading: boolean;
+  nomineeRequests: IEtoNomineeRequest[]
+}
 
-const etoNomineeInitialState = {};
+export interface IEtoNomineeRequest {}
+
+const etoNomineeInitialState:IEtoNomineeState = {
+  isLoading: false,
+  nomineeRequests: []
+};
 
 export const etoNomineeReducer: AppReducer<IEtoNomineeState> = (
   state = etoNomineeInitialState,
   action,
 ): DeepReadonly<IEtoNomineeState> => {
   switch (action.type) {
-    case actions.etoNominee.setNomineeRequests.getType():
-      return {};
+    case actions.etoNominee.getNomineeRequests.getType():
+      return {
+        ...state,
+        isLoading:true
+      };
+    case actions.etoNominee.storeNomineeRequests.getType():
+      return {
+        ...state,
+        nomineeRequests: action.payload.requests,
+        isLoading:false
+      };
     default:
       return state
   }

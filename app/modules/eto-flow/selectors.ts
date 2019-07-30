@@ -39,6 +39,16 @@ export const selectIssuerEto: (state: IAppState) => TEtoSpecsData | undefined = 
   (state: DeepReadonly<IEtoFlowState>) => state.eto,
 );
 
+export const selectEtoNominee: (state: IAppState) => string | undefined = createSelector(
+  selectIssuerEtoFlow,
+  (state: DeepReadonly<IEtoFlowState>) => state.eto && state.eto.nominee,
+);
+
+export const selectEtoNomineeDisplayName: (state: IAppState) => string | undefined = createSelector(
+  selectIssuerEtoFlow,
+  (state: DeepReadonly<IEtoFlowState>) => state.eto && state.eto.nomineeDisplayName,
+);
+
 export const selectIssuerEtoPreviewCode = createSelector(
   selectIssuerEto,
   (eto: TEtoSpecsData | undefined) => (eto ? eto.previewCode : undefined),
