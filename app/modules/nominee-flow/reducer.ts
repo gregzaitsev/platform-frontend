@@ -8,6 +8,7 @@ export enum ENomineeLinkRequestStatus {
   APPROVED = "approved",
   REJECTED = "rejected",
   ISSUER_ID_ERROR = "issuer_id_error",
+  REQUEST_EXISTS = "REQUEST_EXISTS",
   GENERIC_ERROR = "nominee_request_generic_error"
 }
 

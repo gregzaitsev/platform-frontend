@@ -6,7 +6,7 @@ import { neuTakeLatest } from "../sagasUtils";
 import { createMessage } from "../../components/translatedMessages/utils";
 import { ENomineeLinkErrorNotifications } from "../../components/translatedMessages/messages";
 import { TNomineeRequestResponse } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
-import { IssuerIdInvalid } from "../../lib/api/eto/EtoNomineeApi";
+import { IssuerIdInvalid, NomineeRequestExists } from "../../lib/api/eto/EtoNomineeApi";
 
 
 export function* loadNomineeTaskStatus({
@@ -61,6 +61,10 @@ export function* createNomineeLinkRequest({
       logger.error("Failed to create nominee request, issuer id is invalid", e);
       yield put(actions.nomineeFlow.setNomineeLinkRequestStatus(ENomineeLinkRequestStatus.ISSUER_ID_ERROR));
       notificationCenter.error(createMessage(ENomineeLinkErrorNotifications.ISSUER_ID_ERROR));
+    } else if (e instanceof NomineeRequestExists) {
+      logger.error(`Nominee request to issuerId ${action.payload.issuerId} already exists`, e);
+      yield put(actions.nomineeFlow.setNomineeLinkRequestStatus(ENomineeLinkRequestStatus.REQUEST_EXISTS));
+      notificationCenter.error(createMessage(ENomineeLinkErrorNotifications.REQUEST_EXISTS));
     } else {
       logger.error("Failed to create nominee request", e);
       yield put(actions.nomineeFlow.setNomineeLinkRequestStatus(ENomineeLinkRequestStatus.GENERIC_ERROR));

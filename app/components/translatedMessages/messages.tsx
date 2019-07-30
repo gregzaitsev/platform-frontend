@@ -45,7 +45,7 @@ export type TranslatedMessageType =
   | EMaskedFormError
   | EKycRequestStatusTranslation
   | ENomineeLinkRequestStatusTranslation
-  |ENomineeLinkErrorNotifications;
+  | ENomineeLinkErrorNotifications;
 
 export enum GenericErrorMessage {
   GENERIC_ERROR = "genericError",
@@ -280,12 +280,14 @@ export enum ENomineeLinkRequestStatusTranslation {
   APPROVED = "nomineeLinkRequestApproved",
   REJECTED = "nomineeLinkRequestRejected",
   ISSUER_ID_ERROR = "nomineeLinkRequestIssuerIdError",
-  GENERIC_ERROR = "nomineeLinkRequestGenericError"
+  GENERIC_ERROR = "nomineeLinkRequestGenericError",
+  REQUEST_EXISTS = "requestExists"
 }
 
 export enum ENomineeLinkErrorNotifications {
   ISSUER_ID_ERROR = "nomineeLinkIssuerIdError",
-  GENERIC_ERROR = "nomineeLinkGenericError"
+  GENERIC_ERROR = "nomineeLinkGenericError",
+  REQUEST_EXISTS = "requestExists"
 }
 
 export enum TestMessage {
@@ -695,11 +697,15 @@ const getMessageTranslation = ({ messageType, messageData }: TMessage): TTransla
       return <FormattedMessage id="nominee-link-request.status.pending" />;
     case ENomineeLinkRequestStatusTranslation.REJECTED:
       return <FormattedMessage id="nominee-link-request.status.rejected" />;
+    case ENomineeLinkRequestStatusTranslation.REQUEST_EXISTS:
+      return <FormattedMessage id="nominee-link-request.status.request_exists" />;
 
     case ENomineeLinkErrorNotifications.GENERIC_ERROR:
       return <FormattedMessage id="nominee-flow.link-with-issuer.generic-error-notification" />;
-      case ENomineeLinkErrorNotifications.ISSUER_ID_ERROR:
+    case ENomineeLinkErrorNotifications.ISSUER_ID_ERROR:
       return <FormattedMessage id="nominee-flow.link-with-issuer.issuer-id-error-notification" />;
+    case ENomineeLinkErrorNotifications.REQUEST_EXISTS:
+      return <FormattedMessage id="nominee-flow.link-with-issuer.request-exists-error-notification" />;
 
     // NEVER DO THIS! This is only for tests, so that we don't bloat locales.json with test strings!
     case TestMessage.TEST_MESSAGE:
