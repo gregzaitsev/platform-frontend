@@ -13,13 +13,14 @@ import {
 } from "../../lib/api/analytics-api/interfaces";
 import { IAppState } from "../../store";
 import { EthereumAddressWithChecksum } from "../../types";
+import { subtractBigNumbers } from "../../utils/BigNumberUtils";
 import { actions, TActionFromCreator } from "../actions";
 import { neuCall, neuTakeLatest, neuTakeUntil } from "../sagasUtils";
 import { selectEurEquivalent } from "../shared/tokenPrice/selectors";
 import { selectEthereumAddressWithChecksum } from "../web3/selectors";
 import { TX_LIMIT, TX_POLLING_INTERVAL } from "./constants";
 import { selectLastTransactionId, selectTimestampOfLastChange, selectTXById } from "./selectors";
-import { ETransactionSubType, TTxHistory, TTxHistoryCommon } from "./types";
+import { ETransactionStatus, ETransactionSubType, TTxHistory, TTxHistoryCommon } from "./types";
 import { getCurrencyFromTokenSymbol, getDecimalsFormat, getTxUniqueId } from "./utils";
 
 export function* mapAnalyticsApiTransactionResponse(
@@ -47,12 +48,36 @@ export function* mapAnalyticsApiTransactionResponse(
         throw new Error("Invalid asset token metadata");
       }
 
+      const neuReward = transaction.extraData.neumarkReward!.toString();
+      const neuRewardEur: string = yield select((state: IAppState) =>
+        selectEurEquivalent(state, neuReward, ECurrency.NEU),
+      );
+
+      const address: EthereumAddressWithChecksum = yield select(selectEthereumAddressWithChecksum);
+
+      // if funds from ICBM were used then wallet_address != address
+      const isICBMInvestment = transaction.extraData.walletAddress !== address;
+
+      // investment is completed when it was either claimed or refunded
+      const isCompleted = !!transaction.extraData.isClaimed || !!transaction.extraData.isRefunded;
+
       tx = {
         ...common,
-        subType: undefined,
-        type: transaction.type,
+        neuReward,
+        neuRewardEur,
+        isICBMInvestment,
+        amountEur: transaction.extraData.baseCurrencyEquivalent!.toString(),
         companyName: transaction.extraData.assetTokenMetadata.companyName!,
         currency: getCurrencyFromTokenSymbol(transaction.extraData.tokenMetadata),
+        equityTokenAmount: transaction.extraData.grantedAmount!.toString(),
+        equityTokenAmountFormat: getDecimalsFormat(transaction.extraData.assetTokenMetadata),
+        equityTokenCurrency: transaction.extraData.assetTokenMetadata.tokenSymbol,
+        equityTokenIcon: transaction.extraData.assetTokenMetadata.tokenImage!,
+        etoId: transaction.extraData.assetTokenMetadata.tokenCommitmentAddress!,
+        toAddress: transaction.extraData.toAddress!,
+        fromAddress: transaction.extraData.tokenAddress!,
+        subType: isCompleted ? ETransactionStatus.COMPLETED : ETransactionStatus.PENDING,
+        type: transaction.type,
       };
       break;
     }
@@ -126,12 +151,31 @@ export function* mapAnalyticsApiTransactionResponse(
       break;
     }
     case ETransactionType.NEUR_REDEEM: {
-      tx = {
-        ...common,
-        subType: undefined,
-        type: transaction.type,
-        currency: ECurrency.EUR_TOKEN,
-      };
+      if (transaction.extraData.settledAmount) {
+        tx = {
+          ...common,
+          subType: ETransactionStatus.COMPLETED,
+          type: transaction.type,
+          currency: ECurrency.EUR_TOKEN,
+          reference: transaction.extraData.reference!,
+          fromAddress: transaction.extraData.fromAddress!,
+          settledAmount: transaction.extraData.settledAmount.toString(),
+          feeAmount: subtractBigNumbers([
+            transaction.extraData.amount,
+            transaction.extraData.settledAmount,
+          ]),
+        };
+      } else {
+        tx = {
+          ...common,
+          subType: ETransactionStatus.PENDING,
+          type: transaction.type,
+          currency: ECurrency.EUR_TOKEN,
+          reference: transaction.extraData.reference!,
+          fromAddress: transaction.extraData.fromAddress!,
+        };
+      }
+
       break;
     }
     case ETransactionType.NEUR_DESTROY: {

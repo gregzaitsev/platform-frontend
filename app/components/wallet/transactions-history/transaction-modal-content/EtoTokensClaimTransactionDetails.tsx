@@ -31,7 +31,7 @@ const EtoTokensClaimTransactionDetails: React.FunctionComponent<IExternalProps> 
       </ExternalLink>
     </p>
 
-    <BasicTransactionDetails transaction={transaction} />
+    <BasicTransactionDetails date={transaction.date} />
 
     <DataRow
       caption={<FormattedMessage id="wallet.tx-list.modal.eto-tokens-claim.neu-reward.caption" />}

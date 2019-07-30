@@ -6,10 +6,12 @@ import { CommonHtmlProps, TTranslatedString } from "../../../types";
 import { assertNever } from "../../../utils/assertNever";
 import { EHeadingSize, Heading } from "../../shared/Heading";
 import { EtherscanTxLink } from "../../shared/links/EtherscanLink";
+import { EtoInvestmentTransactionDetails } from "./transaction-modal-content/EtoInvestmentTransactionDetails";
 import { EtoRefundTransactionsDetails } from "./transaction-modal-content/EtoRefundTransactionDetails";
 import { EtoTokensClaimTransactionDetails } from "./transaction-modal-content/EtoTokensClaimTransactionDetails";
 import { NEurDestroyTransactionDetails } from "./transaction-modal-content/NEurDestroyTransactionDetails";
 import { NEurPurchaseTransactionDetails } from "./transaction-modal-content/NEurPurchaseTransactionDetails";
+import { NEurRedeemTransactionDetails } from "./transaction-modal-content/NEurRedeemTransactionDetails";
 import { PayoutTransactionsDetails } from "./transaction-modal-content/PayoutTransactionDetails";
 import { RedistributePayoutTransactionsDetails } from "./transaction-modal-content/RedistributePayoutTransactionDetails";
 import { TransferTransactionDetails } from "./transaction-modal-content/TransferTransactionDetails";
@@ -56,8 +58,9 @@ const TransactionTypeToComponentMap: React.FunctionComponent<IExternalProps> = (
     case ETransactionType.PAYOUT:
       return <PayoutTransactionsDetails transaction={transaction} />;
     case ETransactionType.ETO_INVESTMENT:
+      return <EtoInvestmentTransactionDetails transaction={transaction} />;
     case ETransactionType.NEUR_REDEEM:
-      return null;
+      return <NEurRedeemTransactionDetails transaction={transaction} />;
     default:
       return assertNever(transaction, "Can't find component related to transaction");
   }

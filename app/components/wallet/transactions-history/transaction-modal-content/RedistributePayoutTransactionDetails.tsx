@@ -17,7 +17,7 @@ const RedistributePayoutTransactionsDetails: React.FunctionComponent<IExternalPr
   transaction,
 }) => (
   <>
-    <BasicTransactionDetails transaction={transaction} />
+    <BasicTransactionDetails date={transaction.date} />
 
     <DataRow
       caption={<FormattedMessage id="wallet.tx-list.modal.redistribute-payout.amount.caption" />}

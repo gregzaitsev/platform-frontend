@@ -16,7 +16,7 @@ interface IExternalProps {
 
 const PayoutTransactionsDetails: React.FunctionComponent<IExternalProps> = ({ transaction }) => (
   <>
-    <BasicTransactionDetails transaction={transaction} />
+    <BasicTransactionDetails date={transaction.date} />
 
     <DataRow
       caption={<FormattedMessage id="wallet.tx-list.modal.payout.to-address.caption" />}

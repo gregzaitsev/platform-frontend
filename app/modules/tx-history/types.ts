@@ -10,6 +10,11 @@ export enum ETransactionSubType {
   TRANSFER_EQUITY_TOKEN = "tokenTransfer",
 }
 
+export enum ETransactionStatus {
+  COMPLETED = "completed",
+  PENDING = "pending",
+}
+
 export type TTxHistoryCommon = {
   amount: string;
   amountFormat: ENumberInputFormat;
@@ -24,9 +29,20 @@ export type TTxHistoryCommon = {
 
 export type TEtoInvestmentTx = {
   type: ETransactionType.ETO_INVESTMENT;
-  subType: undefined;
+  subType: ETransactionStatus;
+  isICBMInvestment: boolean;
+  amountEur: string;
   companyName: string;
   currency: ECurrency;
+  equityTokenAmount: string;
+  equityTokenAmountFormat: ENumberInputFormat;
+  equityTokenCurrency: EquityToken;
+  equityTokenIcon: string;
+  etoId: EthereumAddressWithChecksum;
+  toAddress: EthereumAddressWithChecksum;
+  fromAddress: EthereumAddressWithChecksum;
+  neuReward: string;
+  neuRewardEur: string;
 };
 
 export type TEtoRefundTx = {
@@ -65,10 +81,22 @@ export type TNEURTransfer = {
   toAddress: EthereumAddressWithChecksum;
 };
 
-export type TNEURRedeemTransfer = {
+export type TNEURRedeemPendingTransfer = {
   type: ETransactionType.NEUR_REDEEM;
-  subType: undefined;
+  subType: ETransactionStatus.PENDING;
   currency: ECurrency.EUR_TOKEN;
+  reference: string;
+  fromAddress: EthereumAddressWithChecksum;
+};
+
+export type TNEURRedeemCompletedTransfer = {
+  type: ETransactionType.NEUR_REDEEM;
+  subType: ETransactionStatus.COMPLETED;
+  currency: ECurrency.EUR_TOKEN;
+  reference: string;
+  fromAddress: EthereumAddressWithChecksum;
+  settledAmount: string;
+  feeAmount: string;
 };
 
 export type TNEURDestroyTransfer = {
@@ -111,7 +139,8 @@ export type TTxHistory = (
   | TTransferEquityToken
   | TTransferWellKnownToken
   | TNEURTransfer
-  | TNEURRedeemTransfer
+  | TNEURRedeemPendingTransfer
+  | TNEURRedeemCompletedTransfer
   | TNEURDestroyTransfer
   | EtoTokensClaimTransfer) &
   TTxHistoryCommon;

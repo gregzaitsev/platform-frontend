@@ -20,7 +20,7 @@ const NEurPurchaseTransactionDetails: React.FunctionComponent<IExternalProps> = 
   transaction,
 }) => (
   <>
-    <BasicTransactionDetails transaction={transaction} />
+    <BasicTransactionDetails date={transaction.date} />
 
     <DataRow
       caption={<FormattedMessage id="wallet.tx-list.modal.neur-purchase.handled-by.caption" />}
@@ -32,7 +32,7 @@ const NEurPurchaseTransactionDetails: React.FunctionComponent<IExternalProps> = 
     />
 
     <DataRow
-      caption={<FormattedMessage id="wallet.tx-list.modal.neur-purchase.to-address.caption" />}
+      caption={<FormattedMessage id="wallet.tx-list.modal.common.to-address.caption" />}
       clipboardCopyValue={transaction.toAddress}
       value={<EtherscanAddressLink address={transaction.toAddress} />}
     />

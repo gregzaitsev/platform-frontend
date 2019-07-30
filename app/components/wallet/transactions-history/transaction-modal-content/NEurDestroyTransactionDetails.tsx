@@ -18,7 +18,7 @@ const NEurDestroyTransactionDetails: React.FunctionComponent<IExternalProps> = (
   transaction,
 }) => (
   <>
-    <BasicTransactionDetails transaction={transaction} />
+    <BasicTransactionDetails date={transaction.date} />
 
     <DataRow
       caption={<FormattedMessage id="wallet.tx-list.modal.neur-destroy.liquidated-by.caption" />}
