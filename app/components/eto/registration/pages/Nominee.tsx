@@ -3,28 +3,23 @@ import { FormattedMessage, FormattedHTMLMessage } from "react-intl-phraseapp";
 import { branch, setDisplayName, renderNothing } from "recompose";
 import { compose } from "recompose";
 
-import {
-  EtoVotingRightsType,
-  TPartialEtoSpecData,
-} from "../../../../lib/api/eto/EtoApi.interfaces.unsafe";
+import {  TPartialEtoSpecData } from "../../../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { etoFormIsReadonly } from "../../../../lib/api/eto/EtoApiUtils";
 import { actions } from "../../../../modules/actions";
 import { selectIssuerEto, selectIssuerEtoState } from "../../../../modules/eto-flow/selectors";
 import { EEtoFormTypes } from "../../../../modules/eto-flow/types";
 import { appConnect } from "../../../../store";
 import { Button, EButtonLayout } from "../../../shared/buttons";
-import { FormSelectField } from "../../../shared/forms/index";
 import { FormFieldLabel } from "../../../shared/forms/fields/FormFieldLabel";
-import { FormToggle } from "../../../shared/forms/fields/FormToggle.unsafe";
 import { convert, parseStringToFloat } from "../../utils";
-import { EtoFormBase } from "../EtoFormBase.unsafe";
 import { Section } from "../Shared";
 import { FormHighlightGroup } from "../../../shared/forms/FormHighlightGroup";
-
-import * as styles from "../Shared.module.scss";
 import { externalRoutes } from "../../../../config/externalRoutes";
 import { selectUserId } from "../../../../modules/auth/selectors";
 import { AccountAddress } from "../../../shared/AccountAddress";
+import { Form } from "../../../shared/forms/Form";
+
+import * as styles from "../Shared.module.scss";
 
 
 interface IExternalProps {
@@ -51,11 +46,13 @@ interface IDispatchProps {
 
 type IProps = IExternalProps & IComponentProps & IDispatchProps;
 
-const EtoVotingRightsComponent: React.FunctionComponent<IProps> = ({ readonly, savingData, issuerId }) => (
-  <EtoFormBase
-    title={<FormattedMessage id="eto.form.eto-voting-rights.title" />}
-    validator={EtoVotingRightsType.toYup()}
-  >
+const NomineeComponent: React.FunctionComponent<IProps> = ({ readonly, savingData, issuerId }) => (
+
+  <Form className={styles.form}>
+    <h4 className={styles.header}>
+      <FormattedMessage id="eto.form.eto-voting-rights.title" />
+    </h4>
+
     <Section>
       <FormFieldLabel name="nominee">
         <FormattedMessage id="eto.form.section.token-holders-rights.nominee" />
@@ -68,7 +65,7 @@ const EtoVotingRightsComponent: React.FunctionComponent<IProps> = ({ readonly, s
       </p>
 
       <FormHighlightGroup>
-        <AccountAddress address={issuerId} data-test-id="issuer-id"/>
+        <AccountAddress address={issuerId} data-test-id="issuer-id" />
       </FormHighlightGroup>
 
 
@@ -86,10 +83,10 @@ const EtoVotingRightsComponent: React.FunctionComponent<IProps> = ({ readonly, s
         </Button>
       </Section>
     )}
-  </EtoFormBase>
+  </Form>
 );
 
-const EtoVotingRights = compose<IProps, IExternalProps>(
+const Nominee = compose<IProps, IExternalProps>(
   setDisplayName(EEtoFormTypes.EtoVotingRights),
   appConnect<IStateProps | null, IDispatchProps>({
     stateToProps: s => {
@@ -119,10 +116,10 @@ const EtoVotingRights = compose<IProps, IExternalProps>(
     }),
   }),
   branch<IStateProps | null>(props => props === null, renderNothing),
-)(EtoVotingRightsComponent);
+)(NomineeComponent);
 
 const fromFormState = {
   liquidationPreferenceMultiplier: parseStringToFloat(),
 };
 
-export { EtoVotingRightsComponent, EtoVotingRights };
+export { NomineeComponent, Nominee };

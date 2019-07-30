@@ -27,6 +27,7 @@ export enum EEtoFormTypes {
   EtoInvestmentTerms = "etoInvestmentTerms",
   EtoMedia = "etoMedia",
   EtoVotingRights = "etoVotingRights",
+  Nominee = "nominee",
   EtoEquityTokenInfo = "etoEquityTokenInfo",
   EtoRiskAssessment = "etoRiskAssessment",
 }

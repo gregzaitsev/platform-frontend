@@ -348,12 +348,17 @@ export const EtoEquityTokenInfoType = YupTS.object({
 export type TEtoEquityTokenInfoType = YupTS.TypeOf<typeof EtoEquityTokenInfoType>;
 
 export const EtoVotingRightsType = YupTS.object({
-  nominee: YupTS.string(),
   liquidationPreferenceMultiplier: YupTS.number(),
   generalVotingRule: YupTS.string(),
 });
 
 export type TEtoVotingRightsType = YupTS.TypeOf<typeof EtoVotingRightsType>;
+
+export const EtoNomineeType = YupTS.object({
+  nominee: YupTS.string(),
+});
+
+export type TEtoNomineeType = YupTS.TypeOf<typeof EtoNomineeType>;
 
 export const EtoInvestmentTermsType = YupTS.object({
   equityTokensPerShare: YupTS.number(),
@@ -417,6 +422,7 @@ export type TBookbuildingStatsType = {
 export type TEtoSpecsData = TEtoTermsType &
   TEtoEquityTokenInfoType &
   TEtoVotingRightsType &
+  TEtoNomineeType &
   TEtoInvestmentTermsType &
   IAdditionalEtoType;
 
@@ -457,4 +463,5 @@ export const EtoSettingDataType = YupTS.object({
   ...EtoInvestmentTermsType.shape,
   ...getEtoTermsSchema().shape,
   ...EtoVotingRightsType.shape,
+  ...EtoNomineeType.shape,
 });

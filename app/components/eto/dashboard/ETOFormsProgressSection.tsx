@@ -23,7 +23,7 @@ import {
   calculateEtoTermsProgress,
   calculateEtoVotingRightsProgress,
   calculateInvestmentTermsProgress,
-  calculateLegalInformationProgress,
+  calculateLegalInformationProgress, calculateNomineeProgress,
   calculateProductVisionProgress,
 } from "../../../modules/eto-flow/utils";
 import { appConnect } from "../../../store";
@@ -61,6 +61,7 @@ export interface IStateProps {
   etoRiskAssessmentProgress: number;
   etoEquityTokenInfoProgress: number;
   etoVotingRightsProgress: number;
+  nomineeProgress: number;
   etoInvestmentTermsProgress: number;
   isMarketingDataVisibleInPreview?: EEtoMarketingDataVisibleInPreview;
 }
@@ -84,6 +85,7 @@ export const ETOFormsProgressSectionComponent: React.FunctionComponent<
   etoRiskAssessmentProgress,
   etoEquityTokenInfoProgress,
   etoVotingRightsProgress,
+  nomineeProgress,
   etoInvestmentTermsProgress,
   shouldViewEtoSettings,
 }) => {
@@ -147,6 +149,12 @@ export const ETOFormsProgressSectionComponent: React.FunctionComponent<
       testingId: "eto-progress-widget-voting-right",
     },
     {
+      id: EEtoFormTypes.Nominee,
+      progress: nomineeProgress,
+      name: <FormattedMessage id="eto.form-progress-widget.eto-settings.nominee" />,
+      testingId: "eto-progress-widget-nominee",
+    },
+    {
       id: EEtoFormTypes.EtoRiskAssessment,
       progress: etoRiskAssessmentProgress,
       name: <FormattedMessage id="eto.form-progress-widget.eto-settings.risk-assessment" />,
@@ -208,6 +216,7 @@ export const ETOFormsProgressSection = appConnect<IStateProps, {}, IExternalProp
     productVisionProgress: calculateProductVisionProgress(selectIssuerCompany(state)),
     etoMediaProgress: calculateEtoMediaProgress(selectIssuerCompany(state)),
     etoVotingRightsProgress: calculateEtoVotingRightsProgress(selectIssuerEto(state)),
+    nomineeProgress: calculateNomineeProgress(selectIssuerEto(state)),
     etoEquityTokenInfoProgress: calculateEtoEquityTokenInfoProgress(selectIssuerEto(state)),
     etoRiskAssessmentProgress: calculateEtoRiskAssessmentProgress(selectIssuerCompany(state)),
     etoInvestmentTermsProgress: calculateInvestmentTermsProgress(selectIssuerEto(state)),
