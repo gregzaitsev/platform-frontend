@@ -1,16 +1,8 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
-import { compose } from "redux";
 
-import { actions } from "../../../modules/actions";
-import { selectIsUserFullyVerified } from "../../../modules/auth/selectors";
-import { EBankTransferType } from "../../../modules/bank-transfer-flow/reducer";
-import { selectIsBankAccountVerified } from "../../../modules/bank-transfer-flow/selectors";
-import { selectBankAccount } from "../../../modules/kyc/selectors";
 import { TBankAccount } from "../../../modules/kyc/types";
-import { appConnect } from "../../../store";
 import { DeepReadonly } from "../../../types";
-import { onEnterAction } from "../../../utils/OnEnterAction";
 import { EColumnSpan } from "../../layouts/Container";
 import { Button, ButtonSize, EButtonLayout, EIconPosition } from "../../shared/buttons";
 import { Panel } from "../../shared/Panel";
@@ -19,6 +11,7 @@ import { BankAccount } from "../../wallet/BankAccount";
 import * as bankIcon from "../../../assets/img/bank-transfer/bank-icon.svg";
 import * as arrowRight from "../../../assets/img/inline_icons/arrow_right.svg";
 import * as styles from "./LinkedBankAccountWidget.module.scss";
+import { connectLinkBankAccountComponent } from "./ConnectLinkBankAccount";
 
 interface IDispatchProps {
   verifyBankAccount: () => void;
@@ -87,23 +80,6 @@ const LinkedBankAccountComponent: React.FunctionComponent<
   </Panel>
 );
 
-const LinkedBankAccountWidget = compose<React.FunctionComponent<IExternalProps>>(
-  onEnterAction({
-    actionCreator: dispatch => {
-      dispatch(actions.kyc.loadBankAccountDetails());
-    },
-  }),
-  appConnect<IStateProps, IDispatchProps, {}>({
-    stateToProps: state => ({
-      bankAccount: selectBankAccount(state),
-      isBankAccountVerified: selectIsBankAccountVerified(state),
-      isUserFullyVerified: selectIsUserFullyVerified(state),
-    }),
-    dispatchToProps: dispatch => ({
-      verifyBankAccount: () =>
-        dispatch(actions.bankTransferFlow.startBankTransfer(EBankTransferType.VERIFY)),
-    }),
-  }),
-)(LinkedBankAccountComponent);
+const LinkedBankAccountWidget = connectLinkBankAccountComponent<IExternalProps>(LinkedBankAccountComponent)
 
 export { LinkedBankAccountWidget, LinkedBankAccountComponent };
