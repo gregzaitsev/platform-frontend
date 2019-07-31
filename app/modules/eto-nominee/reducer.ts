@@ -1,17 +1,16 @@
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
 import { actions } from "../actions";
+import { TNomineeRequestStorage } from "../nominee-flow/reducer";
 
 export interface IEtoNomineeState {
   isLoading: boolean;
-  nomineeRequests: IEtoNomineeRequest[]
+  nomineeRequests: TNomineeRequestStorage
 }
-
-export interface IEtoNomineeRequest {}
 
 const etoNomineeInitialState:IEtoNomineeState = {
   isLoading: false,
-  nomineeRequests: []
+  nomineeRequests: {}
 };
 
 export const etoNomineeReducer: AppReducer<IEtoNomineeState> = (
@@ -20,6 +19,7 @@ export const etoNomineeReducer: AppReducer<IEtoNomineeState> = (
 ): DeepReadonly<IEtoNomineeState> => {
   switch (action.type) {
     case actions.etoNominee.getNomineeRequests.getType():
+      console.log("reducer actions.etoNominee.getNomineeRequests")
       return {
         ...state,
         isLoading:true

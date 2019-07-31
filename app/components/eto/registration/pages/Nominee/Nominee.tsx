@@ -7,7 +7,6 @@ import { TPartialEtoSpecData } from "../../../../../lib/api/eto/EtoApi.interface
 import { etoFormIsReadonly } from "../../../../../lib/api/eto/EtoApiUtils";
 import { actions } from "../../../../../modules/actions";
 import {
-  selectEtoNominee,
   selectEtoNomineeDisplayName,
   selectIssuerEtoState
 } from "../../../../../modules/eto-flow/selectors";
@@ -75,7 +74,7 @@ const Nominee = compose<IProps, IExternalProps>(
     stateToProps: s => ({
       loadingData: s.etoFlow.loading,
       savingData: s.etoFlow.saving,
-      currentNominee: undefined,//selectEtoNominee(s),
+      currentNominee: undefined,//selectEtoNominee(s), //fixme for now api always returns a default nominee
       currentNomineeName: selectEtoNomineeDisplayName(s),
       readonly: etoFormIsReadonly(EEtoFormTypes.Nominee, selectIssuerEtoState(s)),
     }),

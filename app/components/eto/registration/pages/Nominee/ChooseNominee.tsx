@@ -13,17 +13,21 @@ import { onEnterAction } from "../../../../../utils/OnEnterAction";
 import { actions } from "../../../../../modules/actions";
 import { LoadingIndicator } from "../../../../shared/loading-indicator/LoadingIndicator";
 import { selectNomineeRequests } from "../../../../../modules/eto-nominee/selectors";
-import { IEtoNomineeRequest } from "../../../../../modules/eto-nominee/reducer";
-import { DeepReadonly } from "../../../../../types";
+import { INomineeRequest } from "../../../../../modules/nominee-flow/reducer";
+import { nomineeRequestsToArray } from "../../../../../modules/nominee-flow/utils";
 
 interface IStateProps {
   isLoading:boolean;
-  selectNomineeRequests: DeepReadonly<IEtoNomineeRequest[]>
+  nomineeRequests: INomineeRequest[]
+}
+
+interface IPendingNomineesProps {
+  nomineeRequests: INomineeRequest[]
 }
 
 interface IDispatchProps {}
 
-const PendingNomineesComponent = ({}) =>
+const PendingNomineesComponent:React.FunctionComponent<IPendingNomineesProps> = ({nomineeRequests}) =>
   <>
     <Section>
       <FormFieldLabel name="nominee">
@@ -35,20 +39,24 @@ const PendingNomineesComponent = ({}) =>
           id="eto.form.section.token-holders-rights.eto-id-text"
           values={{ href: externalRoutes.neufundSupportHome }} />
       </p>
-
-      <FormHighlightGroup>
-      </FormHighlightGroup>
-
-
+      {nomineeRequests.map((request) =>
+        <FormHighlightGroup key={request.nomineeId}>
+          nomineeId:{request.nomineeId}
+          <br/>
+          request created at: {request.insertedAt}
+          <br/>
+          request updated at: {request.updatedAt ? request.updatedAt : null}
+        </FormHighlightGroup>
+      )}
     </Section>
   </>;
 
 const ChooseNominee = compose<IStateProps, {}>(
-  setDisplayName(EEtoFormTypes.EtoVotingRights),
+  setDisplayName(EEtoFormTypes.Nominee),
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: s => ({
       isLoading: s.etoFlow.loading,
-      selectNomineeRequests: selectNomineeRequests(s)
+      nomineeRequests: nomineeRequestsToArray(selectNomineeRequests(s))
 
     }),
     // dispatchToProps: dispatch => ({
@@ -60,7 +68,7 @@ const ChooseNominee = compose<IStateProps, {}>(
     actionCreator: d => d(actions.etoNominee.getNomineeRequests()),
   }),
   branch<IStateProps>(({ isLoading }) => isLoading, renderComponent(LoadingIndicator)),
-  branch<IStateProps>(({ selectNomineeRequests }) => selectNomineeRequests.length === 0, renderComponent(NoPendingNominees))
+  branch<IStateProps>(({ nomineeRequests }) => Object.keys(nomineeRequests).length === 0, renderComponent(NoPendingNominees))
 )(PendingNomineesComponent);
 
 

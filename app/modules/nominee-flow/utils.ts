@@ -43,3 +43,22 @@ export const nomineeRequestResponseToRequestStatus = (response: TNomineeRequestR
       throw new Error("invalid response")
   }
 };
+
+const compareByDate = (a:INomineeRequest, b:INomineeRequest) => {
+  const dateA = new Date(a.updatedAt === null ? a.insertedAt : a.updatedAt);
+  const dateB = new Date(b.updatedAt === null ? b.insertedAt : b.updatedAt);
+  if(dateA === dateB) {
+    return 0
+  } else {
+    return dateA > dateB ? -1 : 1
+  }
+};
+
+export const nomineeRequestsToArray = (requests:TNomineeRequestStorage):INomineeRequest[] => {
+  const requestsArray = Object.keys(requests).reduce((acc:INomineeRequest[], etoId:string) => {
+    acc.push(requests[etoId]);
+    return acc
+  },[]);
+
+  return requestsArray.filter((request:INomineeRequest)=>request.state === ENomineeRequestStatus.PENDING).sort(compareByDate)
+};

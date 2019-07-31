@@ -1,4 +1,5 @@
 import { createActionFactory } from "../actionsUtils";
+import { TNomineeRequestStorage } from "../nominee-flow/reducer";
 
 export const etoNomineeActions = {
 
@@ -7,7 +8,7 @@ export const etoNomineeActions = {
   ),
   storeNomineeRequests:createActionFactory(
     "ETO_NOMINEE_STORE_NOMINEE_REQUESTS",
-    (requests) => ({requests})
+    (requests:TNomineeRequestStorage) => ({requests})
   ),
 
 };

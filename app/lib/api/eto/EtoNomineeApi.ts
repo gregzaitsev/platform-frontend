@@ -8,6 +8,7 @@ import { TNomineeRequestResponse } from "./EtoApi.interfaces.unsafe";
 const BASE_PATH = "/api/eto-listing/etos";
 const CREATE_NOMINEE_REQUEST_PATH = "/:etoId/nominee-requests/me";
 const GET_NOMINEE_REQUEST_PATH = "/nominee-requests/me";
+const ETO_GET_NOMINEE_REQUEST_PATH = "/me/nominee-requests";
 
 export class EtoNomineeApiError extends Error {}
 export class IssuerIdInvalid extends EtoNomineeApiError {}
@@ -17,8 +18,8 @@ export class NomineeRequestExists extends EtoNomineeApiError {}
 export class EtoNomineeApi {
   constructor(@inject(symbols.authorizedJsonHttpClient) private httpClient: IHttpClient) {}
 
-  //according to our convention, etoId === issuerId during the eto preview stage
-  public async createNomineeLinkRequest(issuerId: string): Promise<TNomineeRequestResponse> {
+  public async createNomineeRequest(issuerId: string): Promise<TNomineeRequestResponse> {
+    //according to our convention, etoId === issuerId during the eto preview stage
     const response = await this.httpClient.post<TNomineeRequestResponse>({
       baseUrl: BASE_PATH,
       url: withParams(CREATE_NOMINEE_REQUEST_PATH, { etoId:issuerId }),
@@ -31,13 +32,20 @@ export class EtoNomineeApi {
     } else {
       return response.body;
     }
-
   }
 
-  public async getNomineeLinkRequestStatus(): Promise<TNomineeRequestResponse[]> {
+  public async getNomineeRequests(): Promise<TNomineeRequestResponse[]> {
     const response = await this.httpClient.get<TNomineeRequestResponse[]>({
       baseUrl: BASE_PATH,
       url: GET_NOMINEE_REQUEST_PATH,
+    });
+    return response.body;
+  }
+
+  public async etoGetNomineeRequest(): Promise<TNomineeRequestResponse[]> {
+    const response = await this.httpClient.get<TNomineeRequestResponse[]>({
+      baseUrl: BASE_PATH,
+      url: ETO_GET_NOMINEE_REQUEST_PATH,
     });
     return response.body;
   }

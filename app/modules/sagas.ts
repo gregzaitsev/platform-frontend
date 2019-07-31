@@ -35,6 +35,7 @@ import { walletSelectorSagas } from "./wallet-selector/sagas";
 import { walletSagas } from "./wallet/sagas";
 import { web3Sagas } from "./web3/sagas";
 import { nomineeFlowSagas } from "./nominee-flow/sagas";
+import { etoNomineeSagas } from "./eto-nominee/sagas";
 
 /**
  * Restart all sagas on error and report error to sentry
@@ -63,6 +64,7 @@ function* allSagas(): Iterator<effects.Effect> {
     effects.fork(neuRestartIf, actions.auth.logout, etoFlowSagas),
     effects.fork(neuRestartIf, actions.auth.logout, immutableFileSagas),
     effects.fork(neuRestartIf, actions.auth.logout, etoSagas),
+    effects.fork(neuRestartIf, actions.auth.logout, etoNomineeSagas),
     effects.fork(neuRestartIf, actions.auth.logout, bookBuildingFlowSagas),
     effects.fork(neuRestartIf, actions.auth.logout, formSingleFileUploadSagas),
     effects.fork(neuRestartIf, actions.auth.logout, remoteFileSagas),

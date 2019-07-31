@@ -22,7 +22,7 @@ export function* loadNomineeTaskData({
 }: TGlobalDependencies): Iterator<any> {
   try {
     const taskData = yield all({
-      nomineeRequests: apiEtoNomineeService.getNomineeLinkRequestStatus(),
+      nomineeRequests: apiEtoNomineeService.getNomineeRequests(),
       // todo query here if data not in the store yet
       // linkBankAccount:
       // acceptTha:
@@ -63,7 +63,7 @@ export function* createNomineeLinkRequest({
 ): Iterator<any> {
   try {
     const nomineeRequest: TNomineeRequestResponse =
-      yield apiEtoNomineeService.createNomineeLinkRequest(action.payload.issuerId);
+      yield apiEtoNomineeService.createNomineeRequest(action.payload.issuerId);
     const nomineeRequestConverted: INomineeRequest = nomineeRequestResponseToRequestStatus(nomineeRequest);
 
     yield put(actions.nomineeFlow.storeNomineeRequest(action.payload.issuerId,nomineeRequestConverted));
