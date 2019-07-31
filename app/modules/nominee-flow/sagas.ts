@@ -1,14 +1,20 @@
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { all, fork, put } from "redux-saga/effects";
 import { actions, TActionFromCreator } from "../actions";
-import { ENomineeRequestStatus } from "./reducer";
+import {
+  ENomineeAcceptThaStatus,
+  ENomineeLinkBankAccountStatus, ENomineeRedeemShareholderCapitalStatus,
+  ENomineeRequestError,
+  ENomineeUploadIshaStatus,
+  INomineeRequest,
+  TNomineeRequestStorage
+} from "./reducer";
 import { neuTakeLatest } from "../sagasUtils";
 import { createMessage } from "../../components/translatedMessages/utils";
 import { ENomineeLinkErrorNotifications } from "../../components/translatedMessages/messages";
 import { TNomineeRequestResponse } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { IssuerIdInvalid, NomineeRequestExists } from "../../lib/api/eto/EtoNomineeApi";
-import { takeLatestNomineeRequest } from "./utils";
-
+import { apiDataToNomineeRequests, nomineeRequestResponseToRequestStatus } from "./utils";
 
 export function* loadNomineeTaskData({
   apiEtoNomineeService,
@@ -16,36 +22,37 @@ export function* loadNomineeTaskData({
 }: TGlobalDependencies): Iterator<any> {
   try {
     const taskData = yield all({
-      nomineeRequestStatus: apiEtoNomineeService.getNomineeLinkRequestStatus(),
-    })
-    console.log("-->taskData.nomineeRequestStatus", taskData.nomineeRequestStatus)
-    //only take the latest one for now
-    const nomineeRequestStatusConverted = takeLatestNomineeRequest(taskData.nomineeRequestStatus);
-    const etoId = nomineeRequestStatusConverted.etoId
+      nomineeRequests: apiEtoNomineeService.getNomineeLinkRequestStatus(),
+      // todo query here if data not in the store yet
+      // linkBankAccount:
+      // acceptTha:
+      // redeemShareholderCapital:
+      // uploadIsha:
+    });
 
-    // todo move takeLatestNomineeRequest to component
-    //  rewrite reducer to store ALL requests under etoIds,
-    //  task state == empty/nonempty object
-    yield put(actions.nomineeFlow.setNomineeRequestStatus(NomineeRequestResponseToRequestStatus(taskData.nomineeRequestStatus[0])));
+    console.log("-->taskData.nomineeRequestStatus", taskData.nomineeRequests);
+
+    const nomineeRequestsConverted: TNomineeRequestStorage = apiDataToNomineeRequests(taskData.nomineeRequests);
+    // const linkBankAccountConverted = ...
+    // const acceptThaConverted = ...
+    // const redeemShareholderCapitalConverted = ...
+    // const uploadIshaConverted = ...
+
+    yield put(actions.nomineeFlow.storeNomineeTaskData({
+      nomineeRequests:nomineeRequestsConverted,
+      linkBankAccount:ENomineeLinkBankAccountStatus.NOT_DONE,
+      acceptTha:ENomineeAcceptThaStatus.NOT_DONE,
+      redeemShareholderCapital:ENomineeRedeemShareholderCapitalStatus.NOT_DONE,
+      uploadIsha:ENomineeUploadIshaStatus.NOT_DONE,
+    }));
   } catch (e) {
     logger.error("Failed to load Nominee tasks", e);
-    // notificationCenter.error(createMessage(EtoFlowMessage.ETO_LOAD_FAILED));
-    // yield put(actions.routing.goToDashboard());
+
+    //fixme add error notification
   }
 }
 
-const NomineeRequestResponseToRequestStatus = (response: TNomineeRequestResponse) => {
-  switch (response.state) {
-    case "pending":
-      return ENomineeRequestStatus.PENDING;
-    case "approved":
-      return ENomineeRequestStatus.APPROVED;
-    case "rejected":
-      return ENomineeRequestStatus.REJECTED;
-    default:
-      throw new Error("invalid response")
-  }
-};
+
 
 export function* createNomineeLinkRequest({
     apiEtoNomineeService,
@@ -55,26 +62,24 @@ export function* createNomineeLinkRequest({
   action: TActionFromCreator<typeof actions.nomineeFlow.createNomineeRequest>,
 ): Iterator<any> {
   try {
-    // yield put(actions.nomineeFlow.startNomineeTasksRequest());
-
-
-    const requestStatus: TNomineeRequestResponse =
+    const nomineeRequest: TNomineeRequestResponse =
       yield apiEtoNomineeService.createNomineeLinkRequest(action.payload.issuerId);
-    const statusConverted: ENomineeRequestStatus = NomineeRequestResponseToRequestStatus(requestStatus);
+    const nomineeRequestConverted: INomineeRequest = nomineeRequestResponseToRequestStatus(nomineeRequest);
 
-    yield put(actions.nomineeFlow.setNomineeRequestStatus(statusConverted));
+    yield put(actions.nomineeFlow.storeNomineeRequest(action.payload.issuerId,nomineeRequestConverted));
+
   } catch (e) {
     if (e instanceof IssuerIdInvalid) {
       logger.error("Failed to create nominee request, issuer id is invalid", e);
-      yield put(actions.nomineeFlow.setNomineeRequestStatus(ENomineeRequestStatus.ISSUER_ID_ERROR));
+      yield put(actions.nomineeFlow.storeNomineeRequestError(action.payload.issuerId,ENomineeRequestError.ISSUER_ID_ERROR));
       notificationCenter.error(createMessage(ENomineeLinkErrorNotifications.ISSUER_ID_ERROR));
     } else if (e instanceof NomineeRequestExists) {
       logger.error(`Nominee request to issuerId ${action.payload.issuerId} already exists`, e);
-      yield put(actions.nomineeFlow.setNomineeRequestStatus(ENomineeRequestStatus.REQUEST_EXISTS));
+      yield put(actions.nomineeFlow.storeNomineeRequestError(action.payload.issuerId,ENomineeRequestError.REQUEST_EXISTS));
       notificationCenter.error(createMessage(ENomineeLinkErrorNotifications.REQUEST_EXISTS));
     } else {
       logger.error("Failed to create nominee request", e);
-      yield put(actions.nomineeFlow.setNomineeRequestStatus(ENomineeRequestStatus.GENERIC_ERROR));
+      yield put(actions.nomineeFlow.storeNomineeRequestError(action.payload.issuerId,ENomineeRequestError.GENERIC_ERROR));
       notificationCenter.error(createMessage(ENomineeLinkErrorNotifications.GENERIC_ERROR));
     }
   } finally {

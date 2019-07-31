@@ -1,8 +1,11 @@
 import { IAppState } from "../../store";
-import { ENomineeRequestStatus } from "./reducer";
+import { TNomineeRequestStorage } from "./reducer";
 
 export const selectNomineeStateIsLoading = (state: IAppState) =>
   state.nomineeFlow.loading;
 
-export const selectNomineeLinkRequestStatus = (state: IAppState):ENomineeRequestStatus =>
-  state.nomineeFlow.nomineeRequestStatus;
+export const selectNomineeStateError = (state: IAppState) =>
+  state.nomineeFlow.error;
+
+export const selectNomineeRequests = (state: IAppState):TNomineeRequestStorage =>
+  state.nomineeFlow.nomineeRequests;

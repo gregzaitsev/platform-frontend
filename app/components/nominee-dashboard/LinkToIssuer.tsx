@@ -1,51 +1,62 @@
 import * as React from "react";
-import { FormattedMessage,FormattedHTMLMessage } from "react-intl-phraseapp";
+import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 import { branch, compose, renderComponent, renderNothing, withProps } from "recompose";
 import * as cn from 'classnames';
 
 import { appConnect } from "../../store";
-import { selectNomineeLinkRequestStatus } from "../../modules/nominee-flow/selectors";
-import { ENomineeRequestStatus } from "../../modules/nominee-flow/reducer";
+import { selectNomineeRequests, selectNomineeStateError } from "../../modules/nominee-flow/selectors";
+import { ENomineeRequestError, ENomineeRequestStatus, INomineeRequest } from "../../modules/nominee-flow/reducer";
 import { NomineeLinkRequestForm } from "./LinkToIssuerForm";
 import { StepStatus } from "./DashboardStepStatus";
 import { getMessageTranslation } from "../translatedMessages/messages";
-import { linkRequestToTranslationMessage } from "../../modules/nominee-flow/utils";
+import { nomineeRequestToTranslationMessage, takeLatestNomineeRequest } from "../../modules/nominee-flow/utils";
 import { externalRoutes } from "../../config/externalRoutes";
 import { TTranslatedString } from "../../types";
 
 import * as styles from "./LinkToIssuer.module.scss"
 
 enum ENextState {
-  SUCCESS,
-  WAIT_WHILE_PENDING,
-  REPEAT_LINK_REQUEST,
-  SEND_REQUEST,
+  SUCCESS= "success",
+  WAIT_WHILE_PENDING= "waitWhilePending",
+  REPEAT_LINK_REQUEST= "repeatLinkRequest",
+  SEND_REQUEST= "sendRequest",
 }
 
 interface IStateProps {
-  linkRequestStatus: ENomineeRequestStatus
+  nomineeRequest: INomineeRequest | undefined;
+  nomineeRequestError: ENomineeRequestError
+}
+
+interface IRepeatRequestProps {
+  nomineeRequest: INomineeRequest;
+  nomineeRequestError: ENomineeRequestError
 }
 
 interface IBranchProps {
   nextState: ENextState,
-  linkRequestStatus: ENomineeRequestStatus,
+  nomineeRequest: INomineeRequest | undefined,
+  nomineeRequestError: ENomineeRequestError
 }
 
-const nextState = (linkRequestStatus: ENomineeRequestStatus) => {
-  if (linkRequestStatus === ENomineeRequestStatus.APPROVED) { //this shouldn't happen here
+const nextState = (nomineeRequest: INomineeRequest | undefined, nomineeRequestError:ENomineeRequestError) => {
+  if(!nomineeRequest && nomineeRequestError === ENomineeRequestError.NONE) {
+    return ENextState.SEND_REQUEST
+  } else if (!nomineeRequest && nomineeRequestError === ENomineeRequestError.REQUEST_EXISTS) {
+    throw new Error("invalid nominee request state");
+  } else if (!nomineeRequest && nomineeRequestError !== ENomineeRequestError.NONE){
+    return ENextState.REPEAT_LINK_REQUEST
+  } else if(nomineeRequest && nomineeRequest.state === ENomineeRequestStatus.APPROVED){
     return ENextState.SUCCESS
-  } else if (linkRequestStatus === ENomineeRequestStatus.PENDING) {
+  } else if(nomineeRequest && nomineeRequest.state === ENomineeRequestStatus.PENDING) {
     return ENextState.WAIT_WHILE_PENDING
-  } else if (linkRequestStatus === ENomineeRequestStatus.GENERIC_ERROR ||
-    linkRequestStatus === ENomineeRequestStatus.ISSUER_ID_ERROR ||
-    linkRequestStatus === ENomineeRequestStatus.REJECTED) {
+  } else if(nomineeRequest && nomineeRequest.state === ENomineeRequestStatus.REJECTED) {
     return ENextState.REPEAT_LINK_REQUEST
   } else {
-    return ENextState.SEND_REQUEST
+    throw new Error("invalid nominee request state")
   }
 };
 
-export const LinkToIssuerLayout: React.FunctionComponent = () => {
+export const CreateNomineeRequestLayout: React.FunctionComponent = () => {
   return <>
     <h1 className={styles.title}>
       <FormattedMessage id="nominee-flow.link-with-issuer.link-with-issuer" />
@@ -57,50 +68,52 @@ export const LinkToIssuerLayout: React.FunctionComponent = () => {
   </>
 };
 
-export const LinkToIssuerPendingState:React.FunctionComponent = () => {
+export const NomineeRequestPendingLayout:React.FunctionComponent = () => {
   return <StepStatus
     contentTitleComponent={<FormattedMessage id="nominee-flow.link-with-issuer.link-with-issuer" />}
     contentTextComponent={[
       <FormattedMessage id="nominee-flow.link-with-issuer.pending.text1" />,
       <FormattedHTMLMessage tagName="span" id="nominee-flow.link-with-issuer.pending.text2" values={{href:externalRoutes.neufundSupportHome}}/>
     ]}
-    status={getMessageTranslation(linkRequestToTranslationMessage(ENomineeRequestStatus.PENDING))}
+    status={getMessageTranslation(nomineeRequestToTranslationMessage(ENomineeRequestStatus.PENDING))}
   />
 };
 
-const getText = (requestStatus:ENomineeRequestStatus):TTranslatedString => {
-  if(requestStatus === ENomineeRequestStatus.REJECTED){
+const getText = (requestStatus:INomineeRequest, nomineeRequestError:ENomineeRequestError):TTranslatedString => {
+  if(requestStatus.state === ENomineeRequestStatus.REJECTED &&
+    (nomineeRequestError === ENomineeRequestError.NONE||nomineeRequestError === ENomineeRequestError.REQUEST_EXISTS)
+  ){
     return <FormattedMessage id="nominee-flow.link-with-issuer.error-link-rejected-text" />
-  } else if (requestStatus === ENomineeRequestStatus.ISSUER_ID_ERROR) {
+  } else if (nomineeRequestError === ENomineeRequestError.ISSUER_ID_ERROR) {
     return <FormattedMessage id="nominee-flow.link-with-issuer.issuer-id-error-text" />
-  } else if (requestStatus === ENomineeRequestStatus.GENERIC_ERROR) {
+  } else if (nomineeRequestError === ENomineeRequestError.GENERIC_ERROR) {
     return <FormattedMessage id="nominee-flow.link-with-issuer.generic-error-text" />
   } else {
-    throw new Error("invalid request status passed into this component")
+    throw new Error("invalid nominee request status ")
   }
 };
 
-export const RepeatLinkToIssuerLayout: React.FunctionComponent<IStateProps> = ({linkRequestStatus}) => {
+export const RepeatNomineeRequestLayout: React.FunctionComponent<IRepeatRequestProps> = ({nomineeRequest,nomineeRequestError}) => {
   return <>
     <h1 className={styles.title}>
       <FormattedMessage id="nominee-flow.link-with-issuer.link-with-issuer" />
     </h1>
     <p className={cn(styles.text,styles.error)}>
-      {getText(linkRequestStatus)}
+      {getText(nomineeRequest,nomineeRequestError)}
     </p>
     <NomineeLinkRequestForm />
   </>
 };
 
-
 export const LinkToIssuer = compose<IStateProps, {}>(
   appConnect<IStateProps>({
     stateToProps: state => ({
-      linkRequestStatus: selectNomineeLinkRequestStatus(state)
+      nomineeRequest: takeLatestNomineeRequest(selectNomineeRequests(state)),//only take the latest one for now
+      nomineeRequestError: selectNomineeStateError(state),
     }),
   }),
-  withProps<{ nextState: ENextState }, IStateProps>(({ linkRequestStatus }) => ({ nextState: nextState(linkRequestStatus) })),
+  withProps<{ nextState: ENextState }, IStateProps>(({ nomineeRequest,nomineeRequestError }) => ({ nextState: nextState(nomineeRequest,nomineeRequestError) })),
   branch<IBranchProps>(({ nextState }) => nextState === ENextState.SUCCESS, renderNothing), //this state should be caught before
-  branch<IBranchProps>(({ nextState }) => nextState === ENextState.WAIT_WHILE_PENDING, renderComponent(LinkToIssuerPendingState)),
-  branch<IBranchProps>(({ nextState }) => nextState === ENextState.REPEAT_LINK_REQUEST, renderComponent(RepeatLinkToIssuerLayout)),
-)(LinkToIssuerLayout);
+  branch<IBranchProps>(({ nextState }) => nextState === ENextState.WAIT_WHILE_PENDING, renderComponent(NomineeRequestPendingLayout)),
+  branch<IBranchProps>(({ nextState }) => nextState === ENextState.REPEAT_LINK_REQUEST, renderComponent(RepeatNomineeRequestLayout)),
+)(CreateNomineeRequestLayout);

@@ -1,11 +1,11 @@
 import { createActionFactory } from "../actionsUtils";
-import { ENomineeRequestStatus } from "./reducer";
+import { ENomineeRequestError, INomineeRequest } from "./reducer";
 
 export const nomineeFlowActions = {
   loadNomineeTaskData:createActionFactory(
     "NOMINEE_FLOW_LOAD_NOMINEE_TASK_DATA",
   ),
-  setNomineeTaskStatus:createActionFactory(
+  storeNomineeTaskData:createActionFactory(
     "NOMINEE_FLOW_SET_NOMINEE_TASKS_STATUS",
     (tasks) => ({tasks})
   ),
@@ -13,9 +13,12 @@ export const nomineeFlowActions = {
   "NOMINEE_FLOW_CREATE_NOMINEE_REQUEST",
   (issuerId:string) => ({issuerId})
 ),
-  setNomineeRequestStatus:createActionFactory(
-    "NOMINEE_FLOW_SET_NOMINEE_LINK_REQUEST_STATUS",
-    (requestStatus:ENomineeRequestStatus) => ({requestStatus})
+  storeNomineeRequest:createActionFactory(
+    "NOMINEE_FLOW_SET_NOMINEE_LINK_REQUEST",
+    (etoId:string,nomineeRequest:INomineeRequest) => ({etoId,nomineeRequest})
   ),
-
+  storeNomineeRequestError:createActionFactory(
+    "NOMINEE_FLOW_SET_NOMINEE_LINK_REQUEST_ERROR",
+    (etoId:string,requestError:ENomineeRequestError) => ({etoId,requestError})
+  ),
 };

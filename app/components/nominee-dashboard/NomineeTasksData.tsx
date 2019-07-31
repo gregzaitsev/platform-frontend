@@ -4,7 +4,7 @@ import { LinkToIssuer } from "./LinkToIssuer";
 import { AcceptTha } from "./AcceptTha";
 import { RedeemShareCapital } from "./RedeemShareCapital";
 import { AcceptIsha } from "./AcceptIsha";
-import { ENomineeRequestStatus } from "../../modules/nominee-flow/reducer";
+import { ENomineeRequestStatus, INomineeRequest } from "../../modules/nominee-flow/reducer";
 import { LinkBankAccount } from "./LinkBankAccount";
 
 export interface ITaskData {
@@ -49,9 +49,11 @@ export const NomineeTasksData: TNomineeTasksData = {
     taskRootComponent: AcceptIsha
   }
 };
+
 //todo here all task choosing logic
-export const getNomineeTasks = (data: TNomineeTasksData, nomineeRequestStatus: ENomineeRequestStatus):ITask[] => {
-  if(nomineeRequestStatus !== ENomineeRequestStatus.APPROVED){
+export const getNomineeTasks = (data: TNomineeTasksData, nomineeRequest: INomineeRequest | undefined):ITask[] => {
+  console.log("-->nomineeRequest", nomineeRequest)
+  if(!nomineeRequest ||nomineeRequest.state !== ENomineeRequestStatus.APPROVED){
     return [data[ENomineeTask.LINK_TO_ISSUER] as ITask]
   } else {
     return [data[ENomineeTask.LINK_BANK_ACCOUNT] as ITask]

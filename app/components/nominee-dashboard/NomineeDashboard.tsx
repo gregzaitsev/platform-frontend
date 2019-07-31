@@ -13,16 +13,17 @@ import { NomineeAccountSetup } from "./NomineeAccountSetup";
 import { getNomineeTasks, ITask, NomineeTasksData } from "./NomineeTasksData";
 import { onEnterAction } from "../../utils/OnEnterAction";
 import { actions } from "../../modules/actions";
-import { selectNomineeLinkRequestStatus, selectNomineeStateIsLoading } from "../../modules/nominee-flow/selectors";
+import { selectNomineeRequests, selectNomineeStateIsLoading } from "../../modules/nominee-flow/selectors";
 import { LoadingIndicator } from "../shared/loading-indicator/LoadingIndicator";
-import { ENomineeRequestStatus } from "../../modules/nominee-flow/reducer";
+import {  INomineeRequest } from "../../modules/nominee-flow/reducer";
 
 import * as styles from "./NomineeDashboard.module.scss";
+import { takeLatestNomineeRequest } from "../../modules/nominee-flow/utils";
 
 interface IStateProps {
   verificationIsComplete: boolean;
   isLoading: boolean;
-  nomineeRequestStatus: ENomineeRequestStatus;
+  nomineeRequest: INomineeRequest | undefined;
 }
 
 interface IDashboardProps {
@@ -76,7 +77,7 @@ export const NomineeDashboard = compose<IDashboardProps, {}>(
   appConnect<IStateProps>({
     stateToProps: state => ({
       isLoading: selectNomineeStateIsLoading(state),
-      nomineeRequestStatus: selectNomineeLinkRequestStatus(state),
+      nomineeRequest: takeLatestNomineeRequest(selectNomineeRequests(state)),//only take the latest one for now
       verificationIsComplete: SelectIsVerificationFullyDone(state),
     })
   }),
@@ -86,7 +87,7 @@ export const NomineeDashboard = compose<IDashboardProps, {}>(
     actionCreator:dispatch => dispatch(actions.nomineeFlow.loadNomineeTaskData())
   }),
   branch<IStateProps>(({isLoading}) => isLoading, renderComponent(LoadingIndicator)),
-  withProps<IDashboardProps, IStateProps>(({nomineeRequestStatus}) => ({
-    nomineeTasks: getNomineeTasks(NomineeTasksData, nomineeRequestStatus),
+  withProps<IDashboardProps, IStateProps>(({nomineeRequest}) => ({
+    nomineeTasks: getNomineeTasks(NomineeTasksData, nomineeRequest),
   }))
 )(NomineeDashboardTasks);

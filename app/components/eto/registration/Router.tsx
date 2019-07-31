@@ -41,7 +41,7 @@ export const EtoRegisterRouter: React.FunctionComponent = () => (
     <Route path={etoRegisterRoutes.etoTerms} component={EtoRegistrationTerms} exact />
     <Route path={etoRegisterRoutes.etoEquityTokenInfo} component={EtoEquityTokenInfo} exact />
     <Route path={etoRegisterRoutes.etoVotingRights} component={EtoVotingRights} exact />
-    <Route path={etoRegisterRoutes.selectNominee} component={Nominee} exact />
+    <Route path={etoRegisterRoutes.nominee} component={Nominee} exact />
     <Route path={etoRegisterRoutes.etoInvestmentTerms} component={EtoInvestmentTerms} exact />
     <Route path={etoRegisterRoutes.etoMedia} component={EtoRegistrationMedia} exact />
     <Redirect to={etoRegisterRoutes.companyInformation} />

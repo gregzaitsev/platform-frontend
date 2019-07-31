@@ -3,10 +3,13 @@ import { DeepReadonly } from "../../types";
 import { actions } from "../actions";
 
 export enum ENomineeRequestStatus {
-  NONE = "none",
   PENDING = "pending",
   APPROVED = "approved",
   REJECTED = "rejected",
+}
+
+export enum ENomineeRequestError {
+  NONE = "none",
   ISSUER_ID_ERROR = "issuer_id_error",
   REQUEST_EXISTS = "REQUEST_EXISTS",
   GENERIC_ERROR = "nominee_request_generic_error"
@@ -24,15 +27,33 @@ export enum ENomineeRedeemShareholderCapitalStatus {
   ERROR = "error"
 }
 
+export enum ENomineeLinkBankAccountStatus {
+  NOT_DONE = "not_done",
+  DONE = "done",
+  ERROR = "error"
+}
+
 export enum ENomineeUploadIshaStatus {
   NOT_DONE = "not_done",
   DONE = "done",
   ERROR = "error"
 }
 
+export interface INomineeRequest {
+  state: ENomineeRequestStatus,
+  nomineeId: string,
+  etoId: string,
+  insertedAt: string,
+  updatedAt: string,
+}
+
+export type TNomineeRequestStorage = {[etoId: string]:INomineeRequest}
+
 export interface INomineeFlowState {
   loading: boolean;
-  nomineeRequestStatus: ENomineeRequestStatus,
+  error: ENomineeRequestError,
+  nomineeRequests: TNomineeRequestStorage,
+  linkBankAccount: ENomineeLinkBankAccountStatus,
   acceptTha: ENomineeAcceptThaStatus,
   redeemShareholderCapital: ENomineeRedeemShareholderCapitalStatus,
   uploadIsha: ENomineeUploadIshaStatus
@@ -40,8 +61,10 @@ export interface INomineeFlowState {
 
 const nomineeFlowInitialState = {
   loading: false,
-  nomineeRequestStatus: ENomineeRequestStatus.NONE,
+  error:ENomineeRequestError.NONE,
+  nomineeRequests: {},
   acceptTha: ENomineeAcceptThaStatus.NOT_DONE,
+  linkBankAccount: ENomineeLinkBankAccountStatus.NOT_DONE,
   redeemShareholderCapital: ENomineeRedeemShareholderCapitalStatus.NOT_DONE,
   uploadIsha: ENomineeUploadIshaStatus.NOT_DONE
 };
@@ -57,10 +80,20 @@ export const nomineeFlowReducer: AppReducer<INomineeFlowState> = (
         ...state,
         loading: true,
       };
-    case actions.nomineeFlow.setNomineeRequestStatus.getType():
+    case actions.nomineeFlow.storeNomineeTaskData.getType():
       return {
         ...state,
-        nomineeRequestStatus:action.payload.requestStatus,
+        loading:false,
+        nomineeRequests: action.payload.tasks.nomineeRequests,
+      }
+    case actions.nomineeFlow.storeNomineeRequest.getType():
+      return {
+        ...state,
+        nomineeRequests: {
+          ...state.nomineeRequests,
+          [action.payload.etoId]: action.payload.nomineeRequest
+        },
+        error: ENomineeRequestError.NONE,
         loading: false,
       };
     default:

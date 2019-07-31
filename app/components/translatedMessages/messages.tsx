@@ -275,13 +275,9 @@ export enum EKycRequestStatusTranslation {
 }
 
 export enum ENomineeLinkRequestStatusTranslation {
-  NONE = "nomineeLinkRequestNone",
   PENDING = "nomineeLinkRequestPending",
   APPROVED = "nomineeLinkRequestApproved",
   REJECTED = "nomineeLinkRequestRejected",
-  ISSUER_ID_ERROR = "nomineeLinkRequestIssuerIdError",
-  GENERIC_ERROR = "nomineeLinkRequestGenericError",
-  REQUEST_EXISTS = "requestExists"
 }
 
 export enum ENomineeLinkErrorNotifications {
@@ -687,18 +683,10 @@ const getMessageTranslation = ({ messageType, messageData }: TMessage): TTransla
 
     case ENomineeLinkRequestStatusTranslation.APPROVED:
       return <FormattedMessage id="nominee-link-request.status.approved" />;
-    case ENomineeLinkRequestStatusTranslation.GENERIC_ERROR:
-      return <FormattedMessage id="nominee-link-request.status.generic_error" />;
-    case ENomineeLinkRequestStatusTranslation.ISSUER_ID_ERROR:
-      return <FormattedMessage id="nominee-link-request.status.issuer_id_error" />;
-    case ENomineeLinkRequestStatusTranslation.NONE:
-      return <FormattedMessage id="nominee-link-request.status.none" />;
     case ENomineeLinkRequestStatusTranslation.PENDING:
       return <FormattedMessage id="nominee-link-request.status.pending" />;
     case ENomineeLinkRequestStatusTranslation.REJECTED:
       return <FormattedMessage id="nominee-link-request.status.rejected" />;
-    case ENomineeLinkRequestStatusTranslation.REQUEST_EXISTS:
-      return <FormattedMessage id="nominee-link-request.status.request_exists" />;
 
     case ENomineeLinkErrorNotifications.GENERIC_ERROR:
       return <FormattedMessage id="nominee-flow.link-with-issuer.generic-error-notification" />;
