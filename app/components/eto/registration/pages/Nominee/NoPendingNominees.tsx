@@ -24,7 +24,7 @@ const NoPendingNomineesComponent: React.FunctionComponent<IProps> = ({ issuerId 
       <p>
         <FormattedHTMLMessage
           tagName="span"
-          id="eto.form.section.token-holders-rights.eto-id-text"
+          id="eto.form.eto-nominee.select-nominee-text"
           values={{ href: externalRoutes.neufundSupportHome }} />
       </p>
 

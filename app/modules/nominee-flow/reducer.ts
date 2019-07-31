@@ -52,7 +52,7 @@ export interface INomineeRequest {
   updatedAt: string,
 }
 
-export type TNomineeRequestStorage = {[etoId: string]:INomineeRequest}
+export type TNomineeRequestStorage = {[id: string]:INomineeRequest} //can be etoId or nomineeId
 
 export interface INomineeFlowState {
   loading: boolean;

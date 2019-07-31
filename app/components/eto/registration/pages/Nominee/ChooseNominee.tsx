@@ -1,7 +1,6 @@
 import { Section } from "../../Shared";
 import { FormFieldLabel } from "../../../../shared/forms/fields/FormFieldLabel";
-import { FormattedMessage, FormattedHTMLMessage } from "react-intl-phraseapp";
-import { externalRoutes } from "../../../../../config/externalRoutes";
+import { FormattedMessage } from "react-intl-phraseapp";
 import * as React from "react";
 import { branch, compose, renderComponent, setDisplayName } from "recompose";
 
@@ -82,12 +81,6 @@ const PendingNomineesComponent: React.FunctionComponent<IPendingNomineesProps> =
       <FormFieldLabel name="nominee">
         <FormattedMessage id="eto.form.section.token-holders-rights.nominee" />
       </FormFieldLabel>
-      <p>
-        <FormattedHTMLMessage
-          tagName="span"
-          id="eto.form.section.token-holders-rights.eto-id-text"
-          values={{ href: externalRoutes.neufundSupportHome }} />
-      </p>
       {nomineeRequests.map((request) =>
         <FormHighlightGroup key={request.nomineeId}>
           nomineeId:{request.nomineeId}

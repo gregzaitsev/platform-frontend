@@ -83,7 +83,7 @@ const getText = (requestStatus:INomineeRequest, nomineeRequestError:ENomineeRequ
   if(requestStatus.state === ENomineeRequestStatus.REJECTED &&
     (nomineeRequestError === ENomineeRequestError.NONE||nomineeRequestError === ENomineeRequestError.REQUEST_EXISTS)
   ){
-    return <FormattedMessage id="nominee-flow.link-with-issuer.error-link-rejected-text" />
+    return <FormattedHTMLMessage tagName="span" id="nominee-flow.link-with-issuer.error-link-rejected-text" values={{etoId: requestStatus.etoId}} />
   } else if (nomineeRequestError === ENomineeRequestError.ISSUER_ID_ERROR) {
     return <FormattedMessage id="nominee-flow.link-with-issuer.issuer-id-error-text" />
   } else if (nomineeRequestError === ENomineeRequestError.GENERIC_ERROR) {

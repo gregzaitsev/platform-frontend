@@ -19,7 +19,6 @@ export const etoNomineeReducer: AppReducer<IEtoNomineeState> = (
 ): DeepReadonly<IEtoNomineeState> => {
   switch (action.type) {
     case actions.etoNominee.getNomineeRequests.getType():
-      console.log("reducer actions.etoNominee.getNomineeRequests")
       return {
         ...state,
         isLoading:true

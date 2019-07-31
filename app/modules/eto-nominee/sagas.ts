@@ -13,7 +13,6 @@ export function* etoGetNomineeRequests({
 }: TGlobalDependencies): Iterator<any> {
   try {
     const nomineeRequests:TNomineeRequestResponse[] = yield apiEtoNomineeService.etoGetNomineeRequest();
-    console.log("--->etoGetNomineeRequests: nomineeRequests", nomineeRequests);
     const nomineeRequestsConverted: TNomineeRequestStorage = apiDataToNomineeRequests(nomineeRequests);
 
     yield put(actions.etoNominee.storeNomineeRequests(nomineeRequestsConverted));
