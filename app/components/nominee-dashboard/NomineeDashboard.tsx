@@ -19,6 +19,7 @@ import {  INomineeRequest } from "../../modules/nominee-flow/reducer";
 
 import * as styles from "./NomineeDashboard.module.scss";
 import { takeLatestNomineeRequest } from "../../modules/nominee-flow/utils";
+import { NomineeDashboardContainer } from "./NomineeDashboardContainer";
 
 interface IStateProps {
   verificationIsComplete: boolean;
@@ -30,11 +31,7 @@ interface IDashboardProps {
   nomineeTasks: ITask[];
 }
 
-export const NomineeDashboardContainer: React.FunctionComponent = ({ children }) => (
-  <div data-test-id="nominee-dashboard" className={styles.nomineeDashboardContainer}>
-    {children}
-  </div>
-);
+
 
 interface IDashboardTitleProps {
   title: TTranslatedString;
