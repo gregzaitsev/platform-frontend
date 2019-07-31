@@ -15,19 +15,68 @@ import { LoadingIndicator } from "../../../../shared/loading-indicator/LoadingIn
 import { selectNomineeRequests } from "../../../../../modules/eto-nominee/selectors";
 import { INomineeRequest } from "../../../../../modules/nominee-flow/reducer";
 import { nomineeRequestsToArray } from "../../../../../modules/nominee-flow/utils";
+import { Button, EButtonLayout } from "../../../../shared/buttons/Button";
 
 interface IStateProps {
-  isLoading:boolean;
+  isLoading: boolean;
   nomineeRequests: INomineeRequest[]
+}
+
+interface IDispatchProps {
+  acceptNominee: (nomineeId: string) => void
+  rejectNominee: (nomineeId: string) => void
 }
 
 interface IPendingNomineesProps {
   nomineeRequests: INomineeRequest[]
+  acceptNominee: (nomineeId: string) => void
+  rejectNominee: (nomineeId: string) => void
 }
 
-interface IDispatchProps {}
+interface IFullButtonBlockProps {
+  acceptNominee: (nomineeId: string) => void
+  rejectNominee: (nomineeId: string) => void
+  nomineeId: string
+}
 
-const PendingNomineesComponent:React.FunctionComponent<IPendingNomineesProps> = ({nomineeRequests}) =>
+interface IOneButtonBlockProps {
+  acceptNominee: (nomineeId: string) => void
+  nomineeId: string
+}
+
+const FullButtonBlock:React.FunctionComponent<IFullButtonBlockProps> = ({acceptNominee, rejectNominee, nomineeId}) =>
+  <div>
+    <Button
+    layout={EButtonLayout.PRIMARY}
+    onClick={() => acceptNominee(nomineeId)}
+    // isLoading={props.savingData}
+    data-test-id="eto-registration-product-vision-submit"
+  >
+    Accept
+  </Button>
+    <Button
+      layout={EButtonLayout.PRIMARY}
+      onClick={()=> rejectNominee(nomineeId)}
+      // isLoading={props.savingData}
+      data-test-id="eto-registration-product-vision-submit"
+    >
+      Reject
+    </Button>
+  </div>;
+
+const OneButtonBlock:React.FunctionComponent<IOneButtonBlockProps> = ({acceptNominee, nomineeId}) =>
+  <div>
+    <Button
+      layout={EButtonLayout.PRIMARY}
+      onClick={() => acceptNominee(nomineeId)}
+      // isLoading={props.savingData}
+      data-test-id="eto-registration-product-vision-submit"
+    >
+      Choose
+    </Button>
+  </div>;
+
+const PendingNomineesComponent: React.FunctionComponent<IPendingNomineesProps> = ({ nomineeRequests, acceptNominee, rejectNominee }) =>
   <>
     <Section>
       <FormFieldLabel name="nominee">
@@ -42,27 +91,30 @@ const PendingNomineesComponent:React.FunctionComponent<IPendingNomineesProps> = 
       {nomineeRequests.map((request) =>
         <FormHighlightGroup key={request.nomineeId}>
           nomineeId:{request.nomineeId}
-          <br/>
+          <br />
           request created at: {request.insertedAt}
-          <br/>
+          <br />
           request updated at: {request.updatedAt ? request.updatedAt : null}
+          {nomineeRequests.length > 1
+            ? <OneButtonBlock acceptNominee={acceptNominee} nomineeId={request.nomineeId}/>
+            : <FullButtonBlock acceptNominee={acceptNominee} rejectNominee={rejectNominee} nomineeId={request.nomineeId}/>
+          }
         </FormHighlightGroup>
       )}
     </Section>
   </>;
 
-const ChooseNominee = compose<IStateProps, {}>(
+const ChooseNominee = compose<IStateProps & IDispatchProps, {}>(
   setDisplayName(EEtoFormTypes.Nominee),
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: s => ({
       isLoading: s.etoFlow.loading,
       nomineeRequests: nomineeRequestsToArray(selectNomineeRequests(s))
-
     }),
-    // dispatchToProps: dispatch => ({
-    //
-    //
-    // }),
+    dispatchToProps: dispatch => ({
+      acceptNominee: (nomineeId: string) => dispatch(actions.etoNominee.acceptNomineeRequest(nomineeId)),
+      rejectNominee: (nomineeId: string) => dispatch(actions.etoNominee.rejectNomineeRequest(nomineeId))
+    }),
   }),
   onEnterAction({
     actionCreator: d => d(actions.etoNominee.getNomineeRequests()),

@@ -76,9 +76,9 @@ const RichTextAreaLayout: React.FunctionComponent<TExternalProps & CommonHtmlPro
         writer.setAttribute("aria-labeledby", generateLabelId(name), viewEditableRoot);
         writer.setAttribute("aria-multiline", true, viewEditableRoot);
 
-        // if (process.env.IS_CYPRESS) {
+        if (process.env.IS_CYPRESS) {
           writer.setAttribute("data-test-id", `form.name.${name}`, viewEditableRoot);
-        // }
+        }
 
         writer.setAttribute("id", name, viewEditableRoot);
       });

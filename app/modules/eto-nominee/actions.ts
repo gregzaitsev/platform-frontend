@@ -10,5 +10,12 @@ export const etoNomineeActions = {
     "ETO_NOMINEE_STORE_NOMINEE_REQUESTS",
     (requests:TNomineeRequestStorage) => ({requests})
   ),
-
+  acceptNomineeRequest: createActionFactory(
+    "ETO_NOMINEE_ACCEPT_NOMINEE_REQUEST",
+    (nomineeId:string) => ({nomineeId})
+  ),
+  rejectNomineeRequest: createActionFactory(
+    "ETO_NOMINEE_REJECT_NOMINEE_REQUEST",
+    (nomineeId:string) => ({nomineeId})
+  ),
 };
