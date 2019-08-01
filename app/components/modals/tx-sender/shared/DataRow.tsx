@@ -7,7 +7,7 @@ import { CopyToClipboardButton } from "../../../shared/CopyToClipboardButton";
 import * as styles from "./DataRow.module.scss";
 
 interface IDataRowProps {
-  caption: React.ReactNode;
+  caption?: React.ReactNode;
   value: React.ReactNode;
   clipboardCopyValue?: string;
 }
@@ -23,7 +23,7 @@ const DataRow: React.FunctionComponent<IDataRowProps & CommonHtmlProps & TDataTe
   className,
 }) => (
   <section className={cn(styles.section, className)}>
-    {caption}
+    <span>{caption}</span>
     <span className={styles.value}>
       <span data-test-id={dataTestId}>{value}</span>
       {clipboardCopyValue && (

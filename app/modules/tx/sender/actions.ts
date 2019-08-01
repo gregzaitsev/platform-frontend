@@ -1,6 +1,11 @@
 import { ITxData } from "../../../lib/web3/types";
 import { createAction, createActionFactory, createSimpleAction } from "../../actionsUtils";
-import { ETxSenderType, TAdditionalDataByType, TSpecificTransactionState } from "../types";
+import {
+  ETxSenderType,
+  IAdditionalValidationData,
+  TAdditionalDataByType,
+  TSpecificTransactionState,
+} from "../types";
 import { ETransactionErrorType, ITxSenderState } from "./reducer";
 
 export const txSenderActions = {
@@ -39,4 +44,11 @@ export const txSenderActions = {
   // reducer setters
   setTransactionData: (txData?: ITxData) =>
     createAction("TX_SENDER_SET_TRANSACTION_DATA", { txData }),
+  setAdditionalData: createActionFactory(
+    "TX_SENDER_SET_ADDITIONAL_DATA",
+    (additionalData: IAdditionalValidationData) => ({ additionalData }),
+  ),
+  setTimestamp: createActionFactory("TX_SENDER_SET_TIMESTAMP", (txTimestamp: number) => ({
+    txTimestamp,
+  })),
 };

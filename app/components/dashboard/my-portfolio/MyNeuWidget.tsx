@@ -32,7 +32,7 @@ export const MyNeuWidget: React.FunctionComponent<IProps> = props => (
             value={props.balanceEur}
             currencyTotal={ECurrency.EUR}
             data-test-id="my-neu-widget-neumark-balance"
-            size={ESize.LARGE}
+            size={ESize.HUGE}
           />
         </div>
       </Col>

@@ -46,7 +46,7 @@ export const UnlockFundsSummaryComponent: React.FunctionComponent<TComponentProp
           innerClassName="mt-4"
           data-test-id="modals.tx-sender.withdraw-flow.summery.unlock-funds-summary.accept"
         >
-          <FormattedMessage id="withdraw-flow.confirm" />
+          <FormattedMessage id="unlock-flow.confirm" />
         </Button>
       </Col>
     </Row>

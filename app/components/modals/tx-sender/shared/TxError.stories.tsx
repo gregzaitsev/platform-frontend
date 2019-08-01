@@ -1,19 +1,16 @@
 import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
+import { ETransactionErrorType } from "../../../../modules/tx/sender/reducer";
 import { ETxSenderType } from "../../../../modules/tx/types";
+import { convertToBigInt } from "../../../../utils/Number.utils";
+import { withStore } from "../../../../utils/storeDecorator.unsafe";
 import { withModalBody } from "../../../../utils/storybookHelpers.unsafe";
 import { TxErrorLayout } from "./TxError";
 
-const txData: React.ComponentProps<typeof TxErrorLayout> = {
+const baseTxData = {
   blockId: 4623487932,
   txHash: "af908098b968d7564564362c51836",
-  type: ETxSenderType.WITHDRAW,
-  additionalData: {
-    to: "0xfb6916095ca1df60bb79ce92ce3ea74c37c5d359",
-    value: "5500000000000000000",
-    cost: "313131232312331212",
-  },
   txData: {
     from: "0x0020d330ef4de5c07d4271e0a67e8fd67a21d523",
     gas: "0x7b0c",
@@ -29,8 +26,49 @@ const txData: React.ComponentProps<typeof TxErrorLayout> = {
     chainId: undefined,
     transactionIndex: undefined,
   },
+  error: ETransactionErrorType.REVERTED_TX,
+};
+
+const txData: React.ComponentProps<typeof TxErrorLayout> = {
+  type: ETxSenderType.WITHDRAW,
+  additionalData: {
+    value: "5500000000000000000",
+    walletAddress: "0xfb6916095ca1df60bb79ce92ce3ea74c37c5d359",
+    to: "0xfb6916095ca1df60bb79ce92ce3ea74c37c5d359",
+    amount: "5500000000000000000",
+    amountEur: "5500000000000000000",
+    cost: "313131232312331212",
+    costEur: "313131232312331212",
+    total: "313131232312331212",
+    totalEur: "313131232312331212",
+    inputValue: "5500000000000000000",
+  },
+  ...baseTxData,
+};
+
+const investTxData: React.ComponentProps<typeof TxErrorLayout> = {
+  type: ETxSenderType.INVEST,
+  additionalData: {
+    eto: {
+      etoId: "123",
+      companyName: "Test Co",
+      existingCompanyShares: 20,
+      preMoneyValuationEur: 100,
+      equityTokensPerShare: 10,
+    },
+    equityTokens: "211",
+    estimatedReward: convertToBigInt("125"),
+    etherPriceEur: "2542.22",
+    gasCostEth: convertToBigInt("0.124"),
+    investmentEth: convertToBigInt("120"),
+    investmentEur: convertToBigInt("22506"),
+    isIcbm: false,
+  },
+  ...baseTxData,
 };
 
 storiesOf("TxError", module)
   .addDecorator(withModalBody())
-  .add("no specific error", () => <TxErrorLayout {...txData} />);
+  .addDecorator(withStore({ txSender: txData }))
+  .add("default", () => <TxErrorLayout {...investTxData} />)
+  .add("withdraw transaction error", () => <TxErrorLayout {...txData} />);

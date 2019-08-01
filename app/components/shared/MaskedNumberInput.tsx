@@ -17,6 +17,7 @@ import {
   TValueFormat,
 } from "./formatters/utils";
 import { InputLayout } from "./forms";
+import { EInputTheme } from "./forms/layouts/InputLayout";
 
 interface IProps {
   name: string;
@@ -33,6 +34,9 @@ interface IProps {
   errorMsg?: TTranslatedString;
   invalid?: boolean;
   disabled?: boolean;
+  className?: string;
+  theme?: EInputTheme;
+  icon?: string;
 }
 
 export class MaskedNumberInput extends React.Component<IProps> {
@@ -132,6 +136,7 @@ export class MaskedNumberInput extends React.Component<IProps> {
   render(): React.ReactNode {
     return (
       <InputLayout
+        className={this.props.className}
         value={this.state.value}
         name={this.props.name}
         data-test-id={this.props["data-test-id"]}
@@ -148,6 +153,8 @@ export class MaskedNumberInput extends React.Component<IProps> {
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.changeValue(e.target.value)}
         onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => this.onPaste(e)}
         disabled={this.props.disabled}
+        theme={this.props.theme}
+        icon={this.props.icon}
       />
     );
   }

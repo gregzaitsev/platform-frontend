@@ -82,7 +82,7 @@ const TextArea: React.FunctionComponent<TFieldGroupProps & TFormikConnect> = ({
     <Field
       name={name}
       render={({ field }: FieldProps) => (
-        <>
+        <section>
           <Input
             {...field}
             type="textarea"
@@ -98,9 +98,11 @@ const TextArea: React.FunctionComponent<TFieldGroupProps & TFormikConnect> = ({
               setFieldValue(name, applyCharactersLimit(e.target.value, charactersLimit));
             }}
           />
-          <FormFieldError name={name} />
-          {charactersLimit && withCountedCharacters(field.value, charactersLimit)}
-        </>
+          <div className={styles.inputMeta}>
+            {charactersLimit && withCountedCharacters(field.value, charactersLimit)}
+            <FormFieldError name={name} />
+          </div>
+        </section>
       )}
     />
   );

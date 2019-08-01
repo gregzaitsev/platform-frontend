@@ -19,7 +19,6 @@ storiesOf("Core|Molecules/MoneySuiteWidget", module)
       largeNumber={"1100000000000000000"}
       value={"3050000000000000000"}
       currencyTotal={ECurrency.EUR}
-      theme={ETheme.BLACK}
       size={ESize.NORMAL}
       icon={neuIcon}
     />
@@ -31,7 +30,6 @@ storiesOf("Core|Molecules/MoneySuiteWidget", module)
       largeNumber={"1100000000000000000"}
       value={"3050000000000000000"}
       currencyTotal={ECurrency.EUR}
-      theme={ETheme.BLACK}
       size={ESize.NORMAL}
       icon={neuIcon}
     />
@@ -42,7 +40,6 @@ storiesOf("Core|Molecules/MoneySuiteWidget", module)
       largeNumber={"1100000000000000000"}
       value={"3050000000000000000"}
       currencyTotal={ECurrency.EUR}
-      theme={ETheme.BLACK}
       size={ESize.NORMAL}
       walletName={"NEU Balance"}
       icon={neuIcon}
@@ -52,8 +49,19 @@ storiesOf("Core|Molecules/MoneySuiteWidget", module)
     <MoneySingleSuiteWidget
       currency={ECurrency.NEU}
       value={"3050000000000000000"}
-      theme={ETheme.BLACK}
       size={ESize.NORMAL}
+      icon={neuIcon}
+    />
+  ))
+  .add("with black theme", () => (
+    <MoneySuiteWidget
+      currency={ECurrency.NEU}
+      largeNumber={"1100000000000000000"}
+      value={"3050000000000000000"}
+      currencyTotal={ECurrency.EUR}
+      size={ESize.NORMAL}
+      theme={ETheme.BLACK}
+      walletName={"NEU Balance"}
       icon={neuIcon}
     />
   ));
