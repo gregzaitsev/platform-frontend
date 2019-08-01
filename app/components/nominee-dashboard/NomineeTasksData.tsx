@@ -51,11 +51,18 @@ export const NomineeTasksData: TNomineeTasksData = {
 };
 
 //todo here all task choosing logic
-export const getNomineeTasks = (data: TNomineeTasksData, nomineeRequest: INomineeRequest | undefined):ITask[] => {
-  console.log("-->nomineeRequest", nomineeRequest)
+export const getNomineeTasks = (
+  data: TNomineeTasksData,
+  nomineeRequest: INomineeRequest | undefined,
+  isBankAccountVerified: boolean
+):ITask[] => {
+  console.log("nomineeRequest", nomineeRequest && nomineeRequest.state,"isBankAccountVerified",isBankAccountVerified)
   if(!nomineeRequest ||nomineeRequest.state !== ENomineeRequestStatus.APPROVED){
     return [data[ENomineeTask.LINK_TO_ISSUER] as ITask]
-  } else {
+  } else if(!isBankAccountVerified) {
     return [data[ENomineeTask.LINK_BANK_ACCOUNT] as ITask]
+  }
+  else {
+    return []
   }
 };

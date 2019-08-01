@@ -3,12 +3,13 @@ import * as styles from "./NomineeDashboard.module.scss";
 import { branch, compose, renderComponent, renderNothing } from "recompose";
 import { appConnect } from "../../store";
 import {
-  selectLinkedNomineeEto,
+  selectLinkedNomineeEtoId,
 } from "../../modules/nominee-flow/selectors";
 import { onEnterAction } from "../../utils/OnEnterAction";
 import { actions } from "../../modules/actions";
 import { selectEtoWithCompanyAndContractById } from "../../modules/eto/selectors";
 import { TEtoWithCompanyAndContract } from "../../modules/eto/types";
+import { EtoOverviewThumbnail } from "../eto/overview/EtoOverviewThumbnail/EtoOverviewThumbnail";
 
 interface IStateProps {
   linkedNomineeEtoId: string | undefined
@@ -35,7 +36,7 @@ const NomineeDashboardContainerLayout: React.FunctionComponent = ({ children }) 
 const LinkedNomineeDashboardContainerLayout: React.FunctionComponent<ILinkedNomineeComponentProps> = ({ children, eto }) => (
   <div data-test-id="nominee-dashboard" className={styles.nomineeDashboardContainer}>
     {children}
-    {eto}
+    {eto && <EtoOverviewThumbnail eto={eto} shouldOpenInNewWindow={false} />}
   </div>
 );
 
@@ -45,23 +46,23 @@ const LinkedNomineeDashboardContainer = compose<ILinkedNomineeComponentProps, IL
       eto: selectEtoWithCompanyAndContractById(state,props.linkedNomineeEtoId)
     })
   }),
-  branch<ILinkedNomineeStateProps>(({eto}) => eto === undefined, renderNothing),
+  // branch<ILinkedNomineeStateProps>(({eto}) => eto === undefined, renderNothing),
   onEnterAction<IStateProps>({
     actionCreator: (dispatch, { linkedNomineeEtoId }) => {
       if (linkedNomineeEtoId !== undefined)
         dispatch(actions.eto.loadEto(linkedNomineeEtoId))
     }
   }),
-)(LinkedNomineeDashboardContainerLayout)
+)(LinkedNomineeDashboardContainerLayout);
 
 
 const NomineeDashboardContainer = compose(
   appConnect<IStateProps>({
     stateToProps: state => ({
-      linkedNomineeEtoId:selectLinkedNomineeEto(state),
+      linkedNomineeEtoId:selectLinkedNomineeEtoId(state),
     })
   }),
   branch<IStateProps>(({linkedNomineeEtoId}) => linkedNomineeEtoId !== undefined, renderComponent(LinkedNomineeDashboardContainer))
-)(NomineeDashboardContainerLayout)
+)(NomineeDashboardContainerLayout);
 
 export { NomineeDashboardContainer, NomineeDashboardContainerLayout }

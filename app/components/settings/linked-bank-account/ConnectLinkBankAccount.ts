@@ -1,5 +1,6 @@
-import { compose } from "recompose";
+import { branch, compose, renderNothing } from "recompose";
 import * as React from "react";
+
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { actions } from "../../../modules/actions";
 import { appConnect } from "../../../store";
@@ -15,16 +16,23 @@ interface IDispatchProps {
 }
 
 interface IStateProps {
-  bankAccount?: DeepReadonly<TBankAccount>;
+  bankAccount: DeepReadonly<TBankAccount> | undefined;
   isBankAccountVerified: boolean;
   isUserFullyVerified: boolean;
 }
 
+interface IComponentProps {
+  bankAccount: DeepReadonly<TBankAccount>;
+  isBankAccountVerified: boolean;
+  isUserFullyVerified: boolean;
+  verifyBankAccount: () => void;
+}
+
 const connectLinkBankAccountComponent =<T extends {}>(
-  WrappedComponent: React.ComponentType<IStateProps & IDispatchProps & T>,
+  WrappedComponent: React.ComponentType<IComponentProps & T>,
 ) =>
 
-  compose<IStateProps & IDispatchProps & T, T>(
+  compose<IComponentProps & T, T>(
   onEnterAction({
     actionCreator: dispatch => {
       dispatch(actions.kyc.loadBankAccountDetails());
@@ -41,6 +49,7 @@ const connectLinkBankAccountComponent =<T extends {}>(
         dispatch(actions.bankTransferFlow.startBankTransfer(EBankTransferType.VERIFY)),
     }),
   }),
+    branch<IStateProps>(({bankAccount})=> bankAccount === undefined, renderNothing)
 )(WrappedComponent);
 
 export { connectLinkBankAccountComponent };

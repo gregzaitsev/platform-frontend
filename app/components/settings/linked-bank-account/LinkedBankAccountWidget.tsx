@@ -7,18 +7,18 @@ import { EColumnSpan } from "../../layouts/Container";
 import { Button, ButtonSize, EButtonLayout, EIconPosition } from "../../shared/buttons";
 import { Panel } from "../../shared/Panel";
 import { BankAccount } from "../../wallet/BankAccount";
+import { connectLinkBankAccountComponent } from "./ConnectLinkBankAccount";
 
 import * as bankIcon from "../../../assets/img/bank-transfer/bank-icon.svg";
 import * as arrowRight from "../../../assets/img/inline_icons/arrow_right.svg";
 import * as styles from "./LinkedBankAccountWidget.module.scss";
-import { connectLinkBankAccountComponent } from "./ConnectLinkBankAccount";
 
 interface IDispatchProps {
   verifyBankAccount: () => void;
 }
 
 interface IStateProps {
-  bankAccount?: DeepReadonly<TBankAccount>;
+  bankAccount: DeepReadonly<TBankAccount>;
   isBankAccountVerified: boolean;
   isUserFullyVerified: boolean;
 }
@@ -58,7 +58,7 @@ const LinkedBankAccountComponent: React.FunctionComponent<
   >
     <div className={styles.bankAccountButtonWrapper}>
       <section className={styles.bankAccountButton}>
-        {props.isBankAccountVerified && props.bankAccount && props.bankAccount.hasBankAccount ? (
+        {props.isBankAccountVerified && props.bankAccount.hasBankAccount ? (
           <BankAccount details={props.bankAccount.details} />
         ) : (
           <LinkAccount {...props} />
@@ -80,6 +80,6 @@ const LinkedBankAccountComponent: React.FunctionComponent<
   </Panel>
 );
 
-const LinkedBankAccountWidget = connectLinkBankAccountComponent<IExternalProps>(LinkedBankAccountComponent)
+const LinkedBankAccountWidget = connectLinkBankAccountComponent<IExternalProps>(LinkedBankAccountComponent);
 
 export { LinkedBankAccountWidget, LinkedBankAccountComponent };

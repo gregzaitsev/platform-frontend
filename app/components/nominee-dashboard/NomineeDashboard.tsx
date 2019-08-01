@@ -20,10 +20,12 @@ import {  INomineeRequest } from "../../modules/nominee-flow/reducer";
 import * as styles from "./NomineeDashboard.module.scss";
 import { takeLatestNomineeRequest } from "../../modules/nominee-flow/utils";
 import { NomineeDashboardContainer } from "./NomineeDashboardContainer";
+import { selectIsBankAccountVerified } from "../../modules/bank-transfer-flow/selectors";
 
 interface IStateProps {
   verificationIsComplete: boolean;
   isLoading: boolean;
+  isBankAccountVerified: boolean;
   nomineeRequest: INomineeRequest | undefined;
 }
 
@@ -65,6 +67,7 @@ export const NomineeDashboardTasks: React.FunctionComponent<IDashboardProps> = (
   nomineeTasks,
 }) => (
   <Panel className={styles.dashboardContentPanel}>
+    {console.log("nomineeTasks.length", nomineeTasks)}
     {nomineeTasks.length ? <NomineeTasks tasks={nomineeTasks} /> : <NoTasks />}
   </Panel>
 );
@@ -75,6 +78,7 @@ export const NomineeDashboard = compose<IDashboardProps, {}>(
     stateToProps: state => ({
       isLoading: selectNomineeStateIsLoading(state),
       nomineeRequest: takeLatestNomineeRequest(selectNomineeRequests(state)),//only take the latest one for now
+      isBankAccountVerified: selectIsBankAccountVerified(state),
       verificationIsComplete: SelectIsVerificationFullyDone(state),
     })
   }),
@@ -84,7 +88,7 @@ export const NomineeDashboard = compose<IDashboardProps, {}>(
     actionCreator:dispatch => dispatch(actions.nomineeFlow.loadNomineeTaskData())
   }),
   branch<IStateProps>(({isLoading}) => isLoading, renderComponent(LoadingIndicator)),
-  withProps<IDashboardProps, IStateProps>(({nomineeRequest}) => ({
-    nomineeTasks: getNomineeTasks(NomineeTasksData, nomineeRequest),
+  withProps<IDashboardProps, IStateProps>(({nomineeRequest,isBankAccountVerified}) => ({
+    nomineeTasks: getNomineeTasks(NomineeTasksData, nomineeRequest, isBankAccountVerified),
   }))
 )(NomineeDashboardTasks);
