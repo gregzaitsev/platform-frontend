@@ -26,7 +26,15 @@ export const takeLatestNomineeRequest = (nomineeRequests: TNomineeRequestStorage
     }
   }, undefined);
 
-export const apiDataToNomineeRequests = (requests: TNomineeRequestResponse[]) =>
+
+export const nomineeApiDataToNomineeRequests = (requests: TNomineeRequestResponse[]) =>
+  requests.reduce((acc: TNomineeRequestStorage, request: TNomineeRequestResponse) => {
+    acc[request.etoId] = nomineeRequestResponseToRequestStatus(request);
+    return acc
+  }, {});
+
+
+export const etoApiDataToNomineeRequests = (requests: TNomineeRequestResponse[]) =>
   requests.reduce((acc: TNomineeRequestStorage, request: TNomineeRequestResponse) => {
     acc[request.nomineeId] = nomineeRequestResponseToRequestStatus(request);
     return acc

@@ -5,7 +5,7 @@ import { actions, TActionFromCreator } from "../actions";
 import { neuTakeLatest } from "../sagasUtils";
 import { TNomineeRequestResponse } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { ENomineeUpdateRequestStatus, TNomineeRequestStorage } from "../nominee-flow/reducer";
-import { apiDataToNomineeRequests } from "../nominee-flow/utils";
+import { etoApiDataToNomineeRequests } from "../nominee-flow/utils";
 
 export function* etoGetNomineeRequests({
   apiEtoNomineeService,
@@ -13,7 +13,7 @@ export function* etoGetNomineeRequests({
 }: TGlobalDependencies): Iterator<any> {
   try {
     const nomineeRequests:TNomineeRequestResponse[] = yield apiEtoNomineeService.etoGetNomineeRequest();
-    const nomineeRequestsConverted: TNomineeRequestStorage = apiDataToNomineeRequests(nomineeRequests);
+    const nomineeRequestsConverted: TNomineeRequestStorage = etoApiDataToNomineeRequests(nomineeRequests);
 
     yield put(actions.etoNominee.storeNomineeRequests(nomineeRequestsConverted));
   } catch (e) {

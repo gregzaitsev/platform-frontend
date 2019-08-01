@@ -14,7 +14,7 @@ import { createMessage } from "../../components/translatedMessages/utils";
 import { ENomineeLinkErrorNotifications } from "../../components/translatedMessages/messages";
 import { TNomineeRequestResponse } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { IssuerIdInvalid, NomineeRequestExists } from "../../lib/api/eto/EtoNomineeApi";
-import { apiDataToNomineeRequests, nomineeRequestResponseToRequestStatus } from "./utils";
+import { nomineeApiDataToNomineeRequests, nomineeRequestResponseToRequestStatus } from "./utils";
 
 export function* loadNomineeTaskData({
   apiEtoNomineeService,
@@ -32,7 +32,7 @@ export function* loadNomineeTaskData({
 
     console.log("-->taskData.nomineeRequestStatus", taskData.nomineeRequests);
 
-    const nomineeRequestsConverted: TNomineeRequestStorage = apiDataToNomineeRequests(taskData.nomineeRequests);
+    const nomineeRequestsConverted: TNomineeRequestStorage = nomineeApiDataToNomineeRequests(taskData.nomineeRequests);
     // const linkBankAccountConverted = ...
     // const acceptThaConverted = ...
     // const redeemShareholderCapitalConverted = ...
