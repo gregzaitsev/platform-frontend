@@ -28,7 +28,7 @@ import { userHasKycAndEmailVerified } from "../eto-flow/selectors";
 import { displayErrorModalSaga } from "../generic-modal/sagas";
 import { EInitType } from "../init/reducer";
 import { selectIsSmartContractInitDone } from "../init/selectors";
-import { neuCall, neuTakeEvery, neuTakeOnly } from "../sagasUtils";
+import { neuCall, neuFork, neuTakeEvery, neuTakeOnly } from "../sagasUtils";
 import {
   selectCombinedBeneficialOwnerOwnership,
   selectKycLoading,
@@ -100,17 +100,19 @@ function expandWatchTimeout(): void {
 
 let watchTask: any;
 
-function* kycRefreshWidgetSagaWatcher(): any {
+function* kycRefreshWidgetSagaWatcher({ logger }: TGlobalDependencies): any {
   while (true) {
     yield take("KYC_WATCHER_START");
+    logger.info("started KYC watcher");
     watchTask = yield fork(neuCall, kycRefreshWidgetSaga);
   }
 }
 
-function* kycRefreshWidgetSagaWatcherStop(): any {
+function* kycRefreshWidgetSagaWatcherStop({ logger }: TGlobalDependencies): any {
   while (true) {
     yield take("KYC_WATCHER_STOP");
     if (watchTask) {
+      logger.info("stopped KYC watcher");
       yield cancel(watchTask);
     }
   }
@@ -728,6 +730,6 @@ export function* kycSagas(): any {
   yield fork(neuTakeEvery, "KYC_LOAD_CLAIMS", loadIdentityClaim);
 
   yield fork(waitForKycStatusLoad);
-  yield fork(kycRefreshWidgetSagaWatcher);
-  yield fork(kycRefreshWidgetSagaWatcherStop);
+  yield neuFork(kycRefreshWidgetSagaWatcher);
+  yield neuFork(kycRefreshWidgetSagaWatcherStop);
 }

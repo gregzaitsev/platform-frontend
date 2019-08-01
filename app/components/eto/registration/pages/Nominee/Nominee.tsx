@@ -74,7 +74,7 @@ const Nominee = compose<IProps, IExternalProps>(
     stateToProps: s => ({
       loadingData: s.etoFlow.loading,
       savingData: s.etoFlow.saving,
-      currentNomineeId: selectEtoNominee(s), //fixme for now api always returns a default nominee
+      currentNomineeId: selectEtoNominee(s),
       currentNomineeName: selectEtoNomineeDisplayName(s),
       readonly: etoFormIsReadonly(EEtoFormTypes.Nominee, selectIssuerEtoState(s)),
     }),
