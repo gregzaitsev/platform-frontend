@@ -26,6 +26,24 @@ export class EtoNomineeApi {
   constructor(@inject(symbols.authorizedJsonHttpClient) private httpClient: IHttpClient) {
   }
 
+  //nominee side
+  public async getNomineeRequests(): Promise<TNomineeRequestResponse[]> {
+    const response = await this.httpClient.get<TNomineeRequestResponse[]>({
+      baseUrl: BASE_PATH,
+      url: GET_NOMINEE_REQUEST_PATH,
+    });
+    return response.body;
+  }
+
+  //issuer side
+  public async etoGetNomineeRequest(): Promise<TNomineeRequestResponse[]> {
+    const response = await this.httpClient.get<TNomineeRequestResponse[]>({
+      baseUrl: BASE_PATH,
+      url: ETO_GET_NOMINEE_REQUEST_PATH,
+    });
+    return response.body;
+  }
+
   public async createNomineeRequest(issuerId: string): Promise<TNomineeRequestResponse> {
     //according to our convention, etoId === issuerId during the eto preview stage
     const response = await this.httpClient.post<TNomineeRequestResponse>({
@@ -40,22 +58,6 @@ export class EtoNomineeApi {
     } else {
       return response.body;
     }
-  }
-
-  public async getNomineeRequests(): Promise<TNomineeRequestResponse[]> {
-    const response = await this.httpClient.get<TNomineeRequestResponse[]>({
-      baseUrl: BASE_PATH,
-      url: GET_NOMINEE_REQUEST_PATH,
-    });
-    return response.body;
-  }
-
-  public async etoGetNomineeRequest(): Promise<TNomineeRequestResponse[]> {
-    const response = await this.httpClient.get<TNomineeRequestResponse[]>({
-      baseUrl: BASE_PATH,
-      url: ETO_GET_NOMINEE_REQUEST_PATH,
-    });
-    return response.body;
   }
 
   public async etoUpdateNomineeRequest(nomineeId: string, state: ENomineeUpdateRequestStatus): Promise<void> {

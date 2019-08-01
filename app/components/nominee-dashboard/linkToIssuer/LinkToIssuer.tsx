@@ -3,15 +3,13 @@ import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 import { branch, compose, renderComponent, renderNothing, withProps } from "recompose";
 import * as cn from 'classnames';
 
-import { appConnect } from "../../store";
-import { selectNomineeRequests, selectNomineeStateError } from "../../modules/nominee-flow/selectors";
-import { ENomineeRequestError, ENomineeRequestStatus, INomineeRequest } from "../../modules/nominee-flow/reducer";
+import { appConnect } from "../../../store";
+import { selectNomineeRequests, selectNomineeStateError } from "../../../modules/nominee-flow/selectors";
+import { ENomineeRequestError, ENomineeRequestStatus, INomineeRequest } from "../../../modules/nominee-flow/reducer";
 import { NomineeLinkRequestForm } from "./LinkToIssuerForm";
-import { StepStatus } from "./DashboardStepStatus";
-import { getMessageTranslation } from "../translatedMessages/messages";
-import { nomineeRequestToTranslationMessage, takeLatestNomineeRequest } from "../../modules/nominee-flow/utils";
-import { externalRoutes } from "../../config/externalRoutes";
-import { TTranslatedString } from "../../types";
+import { takeLatestNomineeRequest } from "../../../modules/nominee-flow/utils";
+import { TTranslatedString } from "../../../types";
+import { NomineeRequestPending } from "./NomineeRequestPending";
 
 import * as styles from "./LinkToIssuer.module.scss"
 
@@ -68,16 +66,7 @@ export const CreateNomineeRequestLayout: React.FunctionComponent = () => {
   </>
 };
 
-export const NomineeRequestPendingLayout:React.FunctionComponent = () => {
-  return <StepStatus
-    contentTitleComponent={<FormattedMessage id="nominee-flow.link-with-issuer.link-with-issuer" />}
-    contentTextComponent={[
-      <FormattedMessage id="nominee-flow.link-with-issuer.pending.text1" />,
-      <FormattedHTMLMessage tagName="span" id="nominee-flow.link-with-issuer.pending.text2" values={{href:externalRoutes.neufundSupportHome}}/>
-    ]}
-    status={getMessageTranslation(nomineeRequestToTranslationMessage(ENomineeRequestStatus.PENDING))}
-  />
-};
+
 
 const getText = (requestStatus:INomineeRequest, nomineeRequestError:ENomineeRequestError):TTranslatedString => {
   if(requestStatus.state === ENomineeRequestStatus.REJECTED &&
@@ -114,6 +103,6 @@ export const LinkToIssuer = compose<IStateProps, {}>(
   }),
   withProps<{ nextState: ENextState }, IStateProps>(({ nomineeRequest,nomineeRequestError }) => ({ nextState: nextState(nomineeRequest,nomineeRequestError) })),
   branch<IBranchProps>(({ nextState }) => nextState === ENextState.SUCCESS, renderNothing), //this state should be caught before
-  branch<IBranchProps>(({ nextState }) => nextState === ENextState.WAIT_WHILE_PENDING, renderComponent(NomineeRequestPendingLayout)),
+  branch<IBranchProps>(({ nextState }) => nextState === ENextState.WAIT_WHILE_PENDING, renderComponent(NomineeRequestPending)),
   branch<IBranchProps>(({ nextState }) => nextState === ENextState.REPEAT_LINK_REQUEST, renderComponent(RepeatNomineeRequestLayout)),
 )(CreateNomineeRequestLayout);

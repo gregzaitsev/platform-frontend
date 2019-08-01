@@ -1,5 +1,5 @@
 import { createActionFactory } from "../actionsUtils";
-import { ENomineeRequestError, INomineeRequest } from "./reducer";
+import { ENomineeRequestError, INomineeRequest, TNomineeRequestStorage } from "./reducer";
 
 export const nomineeFlowActions = {
   loadNomineeTaskData:createActionFactory(
@@ -8,6 +8,16 @@ export const nomineeFlowActions = {
   storeNomineeTaskData:createActionFactory(
     "NOMINEE_FLOW_SET_NOMINEE_TASKS_STATUS",
     (tasks) => ({tasks})
+  ),
+  storeNomineeRequests:createActionFactory(
+    "NOMINEE_FLOW_SET_NOMINEE_REQUESTS",
+    (nomineeRequests:TNomineeRequestStorage) => ({nomineeRequests})
+  ),
+  startNomineeRequestsWatcher:createActionFactory(
+    "NOMINEE_FLOW_START_NOMINEE_REQUESTS_WATCHER",
+  ),
+  stopNomineeRequestsWatcher:createActionFactory(
+    "NOMINEE_FLOW_STOP_NOMINEE_REQUESTS_WATCHER",
   ),
   createNomineeRequest:createActionFactory(
   "NOMINEE_FLOW_CREATE_NOMINEE_REQUEST",

@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { LinkToIssuer } from "./LinkToIssuer";
+import { LinkToIssuer } from "./linkToIssuer/LinkToIssuer";
 import { AcceptTha } from "./AcceptTha";
 import { RedeemShareCapital } from "./RedeemShareCapital";
 import { AcceptIsha } from "./AcceptIsha";
@@ -56,7 +56,6 @@ export const getNomineeTasks = (
   nomineeRequest: INomineeRequest | undefined,
   isBankAccountVerified: boolean
 ):ITask[] => {
-  console.log("nomineeRequest", nomineeRequest && nomineeRequest.state,"isBankAccountVerified",isBankAccountVerified)
   if(!nomineeRequest ||nomineeRequest.state !== ENomineeRequestStatus.APPROVED){
     return [data[ENomineeTask.LINK_TO_ISSUER] as ITask]
   } else if(!isBankAccountVerified) {

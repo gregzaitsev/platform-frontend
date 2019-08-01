@@ -67,7 +67,6 @@ export const NomineeDashboardTasks: React.FunctionComponent<IDashboardProps> = (
   nomineeTasks,
 }) => (
   <Panel className={styles.dashboardContentPanel}>
-    {console.log("nomineeTasks.length", nomineeTasks)}
     {nomineeTasks.length ? <NomineeTasks tasks={nomineeTasks} /> : <NoTasks />}
   </Panel>
 );

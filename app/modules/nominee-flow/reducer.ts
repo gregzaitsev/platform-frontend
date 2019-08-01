@@ -91,6 +91,12 @@ export const nomineeFlowReducer: AppReducer<INomineeFlowState> = (
         loading:false,
         nomineeRequests: action.payload.tasks.nomineeRequests,
       };
+    case actions.nomineeFlow.storeNomineeRequests.getType():
+      return {
+        ...state,
+        loading:false,
+        nomineeRequests: action.payload.nomineeRequests,
+      };
     case actions.nomineeFlow.storeNomineeRequest.getType():
       return {
         ...state,
