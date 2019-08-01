@@ -18,6 +18,7 @@ import { ExternalLink } from "../../../shared/links/ExternalLink";
 import { Message } from "../../Message";
 import { TxDetails } from "../TxDetails.unsafe";
 import { TxName } from "../TxName";
+import { WithdrawError } from "../withdraw-flow/Error";
 import { TxHashAndBlock } from "./TxHashAndBlock";
 
 import * as failedImg from "../../../../assets/img/ether_fail.svg";
@@ -108,7 +109,7 @@ type TTxErrorLayoutProps = {
   txTimestamp?: number;
 } & TSpecificTransactionState;
 
-const TxErrorLayout: React.FunctionComponent<TTxErrorLayoutProps> = props => (
+const TxErrorDefaultLayout: React.FunctionComponent<TTxErrorLayoutProps> = props => (
   <Message
     data-test-id="modals.shared.tx-error.modal"
     image={<img src={failedImg} className={cn(styles.eth, "mb-5")} alt="" />}
@@ -121,6 +122,17 @@ const TxErrorLayout: React.FunctionComponent<TTxErrorLayoutProps> = props => (
     <TxHashAndBlock txHash={props.txHash} blockId={props.blockId} />
   </Message>
 );
+
+const TxErrorLayout: React.FunctionComponent<TTxErrorLayoutProps> = props => {
+  switch (props.type) {
+    case ETxSenderType.WITHDRAW:
+      return (
+        <WithdrawError txHash={props.txHash} txTimestamp={props.txTimestamp} error={props.error} />
+      );
+    default:
+      return <TxErrorDefaultLayout {...props} />;
+  }
+};
 
 const TxError = compose<TTxErrorLayoutProps, IProps>(
   appConnect<IStateProps>({

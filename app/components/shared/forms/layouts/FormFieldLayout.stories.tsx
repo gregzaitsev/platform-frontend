@@ -2,6 +2,7 @@ import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
 import { FormFieldLayout } from "./FormFieldLayout";
+import { EInputTheme } from "./InputLayout";
 
 storiesOf("Core|molecules/FormFieldLayout", module)
   .add("default", () => <FormFieldLayout label="Form field" name="value" />)
@@ -15,4 +16,7 @@ storiesOf("Core|molecules/FormFieldLayout", module)
       suffix="fufu"
       prefix="€"
     />
+  ))
+  .add("with full border", () => (
+    <FormFieldLayout label="Form field" name="value" theme={EInputTheme.BOX} />
   ));

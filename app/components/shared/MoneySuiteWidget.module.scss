@@ -11,13 +11,13 @@
 
   &.huge {
     .icon {
-      @include rect(43px);
+      @include rect(36px);
     }
   }
 
   &.large {
     .icon {
-      @include rect(40px);
+      @include rect(36px);
     }
   }
 
@@ -44,5 +44,9 @@
 
   .icon {
     @include rect(34px);
+  }
+
+  .black {
+    color: $neu-charcoal-grey;
   }
 }

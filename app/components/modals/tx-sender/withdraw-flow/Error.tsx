@@ -1,7 +1,8 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
-import { branch, compose } from "recompose";
+import { branch, compose, withProps } from "recompose";
 
+import { ETransactionErrorType } from "../../../../modules/tx/sender/reducer";
 import { selectTxAdditionalData } from "../../../../modules/tx/sender/selectors";
 import { TWithdrawAdditionalData } from "../../../../modules/tx/transactions/withdraw/types";
 import { ETxSenderType } from "../../../../modules/tx/types";
@@ -15,21 +16,30 @@ import * as styles from "./Withdraw.module.scss";
 
 interface IExternalProps {
   txHash: string;
-  txTimestamp: number;
+  txTimestamp?: number;
+  error?: ETransactionErrorType;
 }
 
 interface IStateProps {
   additionalData?: TWithdrawAdditionalData;
 }
 
-type TComponentProps = RequiredByKeys<IStateProps, "additionalData"> & IExternalProps;
+interface IComputedProps {
+  isMined: boolean;
+}
 
-export const WithdrawSuccessLayout: React.FunctionComponent<TComponentProps> = ({
+type TComponentProps = RequiredByKeys<IStateProps, "additionalData"> &
+  IExternalProps &
+  IComputedProps;
+
+export const WithdrawErrorLayout: React.FunctionComponent<TComponentProps> = ({
   additionalData,
   txHash,
   txTimestamp,
+  error,
+  isMined,
 }) => (
-  <section className={styles.contentWrapper} data-test-id="modals.tx-sender.withdraw-flow.success">
+  <section className={styles.contentWrapper} data-test-id="modals.tx-sender.withdraw-flow.error">
     <Heading
       className="mb-4"
       size={EHeadingSize.HUGE}
@@ -42,14 +52,16 @@ export const WithdrawSuccessLayout: React.FunctionComponent<TComponentProps> = (
 
     <WithdrawTransactionDetails
       additionalData={additionalData}
-      status={ETxStatus.SUCCESS}
+      status={ETxStatus.ERROR}
       txHash={txHash}
       txTimestamp={txTimestamp}
+      error={error}
+      isMined={isMined}
     />
   </section>
 );
 
-export const WithdrawSuccess = compose<TComponentProps, {}>(
+export const WithdrawError = compose<TComponentProps, IExternalProps>(
   appConnect<IStateProps, {}>({
     stateToProps: state => ({
       additionalData: selectTxAdditionalData<ETxSenderType.WITHDRAW>(state),
@@ -61,4 +73,7 @@ export const WithdrawSuccess = compose<TComponentProps, {}>(
       throw new Error("Additional transaction data is empty");
     },
   ),
-)(WithdrawSuccessLayout);
+  withProps<IComputedProps, IExternalProps>(props => ({
+    isMined: props.error === ETransactionErrorType.REVERTED_TX,
+  })),
+)(WithdrawErrorLayout);

@@ -2,8 +2,9 @@ import { storiesOf } from "@storybook/react";
 import * as moment from "moment";
 import * as React from "react";
 
+import { ETransactionErrorType } from "../../../../modules/tx/sender/reducer";
 import { withMockedDate, withModalBody } from "../../../../utils/storybookHelpers.unsafe";
-import { WithdrawSuccessLayout } from "./Success";
+import { WithdrawErrorLayout } from "./Error";
 
 const dummyNow = new Date("10/3/2019");
 const date = moment.utc(dummyNow).subtract(1, "day");
@@ -23,9 +24,12 @@ const props = {
     inputValue: "5500000000000000000",
   },
   txTimestamp: date.valueOf(),
+  error: ETransactionErrorType.LEDGER_CONTRACTS_DISABLED,
+  isMined: false,
 };
 
-storiesOf("Withdraw/Success", module)
+storiesOf("Withdraw/Error", module)
   .addDecorator(withModalBody())
   .addDecorator(withMockedDate(dummyNow))
-  .add("default", () => <WithdrawSuccessLayout {...props} />);
+  .add("not mined", () => <WithdrawErrorLayout {...props} />)
+  .add("mined", () => <WithdrawErrorLayout {...props} isMined={true} />);
