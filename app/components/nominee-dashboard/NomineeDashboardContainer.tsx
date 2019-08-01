@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as styles from "./NomineeDashboard.module.scss";
-import { branch, compose, renderComponent, renderNothing } from "recompose";
+import { branch, compose, renderComponent } from "recompose";
 import { appConnect } from "../../store";
 import {
   selectLinkedNomineeEtoId,
@@ -36,7 +36,8 @@ const NomineeDashboardContainerLayout: React.FunctionComponent = ({ children }) 
 const LinkedNomineeDashboardContainerLayout: React.FunctionComponent<ILinkedNomineeComponentProps> = ({ children, eto }) => (
   <div data-test-id="nominee-dashboard" className={styles.nomineeDashboardContainer}>
     {children}
-    {eto && <EtoOverviewThumbnail eto={eto} shouldOpenInNewWindow={false} />}
+    ETO data goes here, need to add an api method (GET /nominees/me/etos)
+    {/*{eto && <EtoOverviewThumbnail eto={eto} shouldOpenInNewWindow={false} />}*/}
   </div>
 );
 
@@ -46,7 +47,6 @@ const LinkedNomineeDashboardContainer = compose<ILinkedNomineeComponentProps, IL
       eto: selectEtoWithCompanyAndContractById(state,props.linkedNomineeEtoId)
     })
   }),
-  // branch<ILinkedNomineeStateProps>(({eto}) => eto === undefined, renderNothing),
   onEnterAction<IStateProps>({
     actionCreator: (dispatch, { linkedNomineeEtoId }) => {
       if (linkedNomineeEtoId !== undefined)

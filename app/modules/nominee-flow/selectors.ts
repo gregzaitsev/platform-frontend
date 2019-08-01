@@ -10,7 +10,7 @@ export const selectNomineeStateError = (state: IAppState) =>
 export const selectNomineeRequests = (state: IAppState):TNomineeRequestStorage =>
   state.nomineeFlow.nomineeRequests;
 
-export const selectLinkedNomineeEto = (state: IAppState):string | undefined =>
+export const selectLinkedNomineeEtoId = (state: IAppState):string | undefined =>
   state.nomineeFlow.nomineeRequests &&
   Object.keys(state.nomineeFlow.nomineeRequests).find(
     (requestId) =>state.nomineeFlow.nomineeRequests[requestId].state ===ENomineeRequestStatus.APPROVED

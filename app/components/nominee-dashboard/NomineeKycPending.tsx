@@ -9,12 +9,17 @@ import { getMessageTranslation } from "../translatedMessages/messages";
 import { kycStatusToTranslationMessage } from "../../modules/kyc/utils";
 import * as styles from "./NomineeDashboard.module.scss";
 import { Panel } from "../shared/Panel";
+import { compose } from "recompose";
+import { onEnterAction } from "../../utils/OnEnterAction";
+import { actions } from "../../modules/actions";
 
-interface IKycPending {
-  kycRequestStatus: EKycRequestStatus
+interface IKycPendingProps {
+  kycRequestStatus: EKycRequestStatus;
+  emailVerified: boolean;
+  backupCodesVerified: boolean;
 }
 
-export const NomineeKycPending: React.FunctionComponent<IKycPending> = ({ kycRequestStatus }) => (
+export const NomineeKycPendingLayout: React.FunctionComponent<IKycPendingProps> = ({ kycRequestStatus }) => (
   <>
     <DashboardTitle
       title={<FormattedHTMLMessage tagName="span" id="account-setup.thank-you-title" />}
@@ -30,3 +35,9 @@ export const NomineeKycPending: React.FunctionComponent<IKycPending> = ({ kycReq
     </Panel>
   </>
 );
+
+export const NomineeKycPending = compose<IKycPendingProps,IKycPendingProps>(
+  onEnterAction({
+    actionCreator:dispatch => dispatch(actions.kyc.kycStartWatching())
+  })
+)(NomineeKycPendingLayout);

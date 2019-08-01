@@ -85,7 +85,11 @@ export const NomineeDashboard = compose<IDashboardProps, {}>(
   // fixme add watcher to renew verificationIsComplete!!
   branch<IStateProps>(({ verificationIsComplete }) => !verificationIsComplete, renderComponent(NomineeAccountSetup)),
   onEnterAction({
-    actionCreator:dispatch => dispatch(actions.nomineeFlow.loadNomineeTaskData())
+    actionCreator:dispatch => {
+      dispatch(actions.nomineeFlow.loadNomineeTaskData());
+        //for the case that it was started in the NomineeKycPending branch
+      dispatch(actions.kyc.kycStopWatching());
+    }
   }),
   branch<IStateProps>(({isLoading}) => isLoading, renderComponent(LoadingIndicator)),
   withProps<IDashboardProps, IStateProps>(({nomineeRequest,isBankAccountVerified}) => ({
