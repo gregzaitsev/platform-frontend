@@ -15,6 +15,7 @@ import { selectNomineeRequests } from "../../../../../modules/eto-nominee/select
 import { INomineeRequest } from "../../../../../modules/nominee-flow/reducer";
 import { nomineeRequestsToArray } from "../../../../../modules/nominee-flow/utils";
 import { Button, EButtonLayout } from "../../../../shared/buttons/Button";
+import { onLeaveAction } from "../../../../../utils/OnLeaveAction";
 
 interface IStateProps {
   isLoading: boolean;
@@ -77,6 +78,7 @@ const OneButtonBlock:React.FunctionComponent<IOneButtonBlockProps> = ({acceptNom
 
 const PendingNomineesComponent: React.FunctionComponent<IPendingNomineesProps> = ({ nomineeRequests, acceptNominee, rejectNominee }) =>
   <>
+    <NoPendingNominees />
     <Section>
       <FormFieldLabel name="nominee">
         <FormattedMessage id="eto.form.section.token-holders-rights.nominee" />
@@ -110,7 +112,10 @@ const ChooseNominee = compose<IStateProps & IDispatchProps, {}>(
     }),
   }),
   onEnterAction({
-    actionCreator: d => d(actions.etoNominee.getNomineeRequests()),
+    actionCreator: d => d(actions.etoNominee.startNomineeRequestsWatcher()),
+  }),
+  onLeaveAction({
+    actionCreator: d => d(actions.etoNominee.stopNomineeRequestsWatcher()),
   }),
   branch<IStateProps>(({ isLoading }) => isLoading, renderComponent(LoadingIndicator)),
   branch<IStateProps>(({ nomineeRequests }) => Object.keys(nomineeRequests).length === 0, renderComponent(NoPendingNominees))

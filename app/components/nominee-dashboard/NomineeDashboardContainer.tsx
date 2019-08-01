@@ -9,7 +9,7 @@ import { onEnterAction } from "../../utils/OnEnterAction";
 import { actions } from "../../modules/actions";
 import { selectEtoWithCompanyAndContractById } from "../../modules/eto/selectors";
 import { TEtoWithCompanyAndContract } from "../../modules/eto/types";
-import { EtoOverviewThumbnail } from "../eto/overview/EtoOverviewThumbnail/EtoOverviewThumbnail";
+// import { EtoOverviewThumbnail } from "../eto/overview/EtoOverviewThumbnail/EtoOverviewThumbnail";
 
 interface IStateProps {
   linkedNomineeEtoId: string | undefined
