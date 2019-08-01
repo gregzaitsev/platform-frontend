@@ -6,10 +6,8 @@ import {
   EKycRequestStatus,
   KycBankQuintessenceBankAccount,
 } from "../../lib/api/KycApi.interfaces";
-import { EUserType } from "../../lib/api/users/interfaces";
 import { IAppState } from "../../store";
 import { DeepReadonly } from "../../types";
-import { selectUserType } from "../auth/selectors";
 import { IKycState } from "./reducer";
 import { TBankAccount } from "./types";
 
@@ -64,26 +62,11 @@ export const selectPendingKycRequestType = (
 };
 
 export const selectKycRequestType = (state: IAppState): EKycRequestType | undefined => {
-  const userType = selectUserType(state);
-  switch (userType) {
-    case EUserType.NOMINEE:
-    case EUserType.ISSUER:
-      return state.kyc.businessRequestState && EKycRequestType.BUSINESS;
-    case EUserType.INVESTOR:
-    default: {
-      if (
-        state.kyc.individualRequestState &&
-        state.kyc.individualRequestState.status !== EKycRequestStatus.DRAFT
-      )
-        return EKycRequestType.INDIVIDUAL;
-      if (
-        state.kyc.businessRequestState &&
-        state.kyc.businessRequestState.status !== EKycRequestStatus.DRAFT
-      )
-        return EKycRequestType.BUSINESS;
-      return undefined;
-    }
-  }
+  if (state.kyc.individualRequestState && state.kyc.individualRequestState.status !== "Draft")
+    return EKycRequestType.INDIVIDUAL;
+  if (state.kyc.businessRequestState && state.kyc.businessRequestState.status !== "Draft")
+    return EKycRequestType.BUSINESS;
+  return undefined;
 };
 
 export const selectKycOutSourcedURL = (state: DeepReadonly<IKycState>): string => {
