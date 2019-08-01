@@ -47,6 +47,7 @@ export function* loadClientData(): Iterable<any> {
  * whole watcher feature is just a temporary workaround for a lack of real time communication with backend
  */
 let kycWidgetWatchDelay: number = 1000;
+
 function* kycRefreshWidgetSaga({ logger }: TGlobalDependencies): any {
   kycWidgetWatchDelay = 1000;
   while (true) {
@@ -98,6 +99,7 @@ function expandWatchTimeout(): void {
 }
 
 let watchTask: any;
+
 function* kycRefreshWidgetSagaWatcher(): any {
   while (true) {
     yield take("KYC_WATCHER_START");
@@ -108,7 +110,9 @@ function* kycRefreshWidgetSagaWatcher(): any {
 function* kycRefreshWidgetSagaWatcherStop(): any {
   while (true) {
     yield take("KYC_WATCHER_STOP");
-    yield cancel(watchTask);
+    if (watchTask) {
+      yield cancel(watchTask);
+    }
   }
 }
 
@@ -285,9 +289,7 @@ function* loadLegalRepresentative(
   if (action.type !== "KYC_LOAD_LEGAL_REPRESENTATIVE") return;
   try {
     yield put(actions.kyc.kycUpdateLegalRepresentative(true));
-    const result: IHttpResponse<
-      IKycLegalRepresentative
-    > = yield apiKycService.getLegalRepresentative();
+    const result: IHttpResponse<IKycLegalRepresentative> = yield apiKycService.getLegalRepresentative();
     yield put(actions.kyc.kycUpdateLegalRepresentative(false, result.body));
   } catch {
     yield put(actions.kyc.kycUpdateLegalRepresentative(false));
@@ -301,9 +303,7 @@ function* submitLegalRepresentative(
   if (action.type !== "KYC_SUBMIT_LEGAL_REPRESENTATIVE") return;
   try {
     yield put(actions.kyc.kycUpdateLegalRepresentative(true));
-    const result: IHttpResponse<
-      IKycLegalRepresentative
-    > = yield apiKycService.putLegalRepresentative(action.payload.data);
+    const result: IHttpResponse<IKycLegalRepresentative> = yield apiKycService.putLegalRepresentative(action.payload.data);
     yield put(actions.kyc.kycUpdateLegalRepresentative(false, result.body));
   } catch {
     yield put(actions.kyc.kycUpdateLegalRepresentative(false));
@@ -319,9 +319,7 @@ function* uploadLegalRepresentativeFile(
   const { file } = action.payload;
   try {
     yield put(actions.kyc.kycUpdateLegalRepresentativeDocument(true));
-    const result: IHttpResponse<
-      IKycFileInfo
-    > = yield apiKycService.uploadLegalRepresentativeDocument(file);
+    const result: IHttpResponse<IKycFileInfo> = yield apiKycService.uploadLegalRepresentativeDocument(file);
     yield put(actions.kyc.kycUpdateLegalRepresentativeDocument(false, result.body));
   } catch {
     yield put(actions.kyc.kycUpdateLegalRepresentativeDocument(false));
@@ -336,9 +334,7 @@ function* loadLegalRepresentativeFiles(
   if (action.type !== "KYC_LOAD_LEGAL_REPRESENTATIVE_FILE_LIST") return;
   try {
     yield put(actions.kyc.kycUpdateLegalRepresentativeDocuments(true));
-    const result: IHttpResponse<
-      IKycFileInfo[]
-    > = yield apiKycService.getLegalRepresentativeDocuments();
+    const result: IHttpResponse<IKycFileInfo[]> = yield apiKycService.getLegalRepresentativeDocuments();
     yield put(actions.kyc.kycUpdateLegalRepresentativeDocuments(false, result.body));
   } catch {
     yield put(actions.kyc.kycUpdateLegalRepresentativeDocuments(false));
@@ -357,7 +353,8 @@ function* setBusinessType(
     try {
       const result: IHttpResponse<IKycBusinessData> = yield apiKycService.getBusinessData();
       institutionData = result.body;
-    } catch (_e) {}
+    } catch (_e) {
+    }
     institutionData = { ...institutionData, legalFormType: action.payload.type };
     yield apiKycService.putBusinessData(institutionData);
     yield put(actions.kyc.kycUpdateBusinessData(false, institutionData));
@@ -533,6 +530,9 @@ function* loadBusinessRequest(
   action: TAction,
 ): Iterator<any> {
   if (action.type !== "KYC_LOAD_BUSINESS_REQUEST_STATE") return;
+
+  yield put(actions.kyc.kycLoadClaims());
+
   try {
     if (!action.payload.inBackground) {
       yield put(actions.kyc.kycUpdateBusinessRequestState(true));
@@ -544,6 +544,7 @@ function* loadBusinessRequest(
     yield put(actions.kyc.kycUpdateBusinessRequestState(false, undefined, e.message));
   }
 }
+
 function* submitBusinessRequestEffect({ apiKycService }: TGlobalDependencies): Iterator<any> {
   const userType = yield select((s: IAppState) => selectUserType(s));
   const kycAndEmailVerified = yield select((s: IAppState) => userHasKycAndEmailVerified(s));
