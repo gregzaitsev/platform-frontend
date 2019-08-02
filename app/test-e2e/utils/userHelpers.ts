@@ -30,7 +30,7 @@ export const getJwtToken = () => JSON.parse(localStorage.getItem(JWT_KEY)!);
  */
 export const createAndLoginNewUser = (
   params: {
-    type: "investor" | "issuer";
+    type: TUserType;
     kyc?: "business" | "individual";
     seed?: string;
     hdPath?: string;
@@ -71,7 +71,7 @@ export const createAndLoginNewUser = (
 
     if (!params.onlyLogin) {
       // create a user object on the backend
-      await createUser(privateKey, params.type, params.kyc);
+      await createUser(params.type, privateKey, params.kyc);
 
       // mark backup codes verified
       await markBackupCodesVerified(jwt);
@@ -181,19 +181,26 @@ export const createLightWalletWithKeyPair = async (
  */
 const CREATE_USER_PATH = "/api/external-services-mock/e2e-tests/user/";
 
+type TUserType = "investor" | "issuer" | "nominee";
+
 export const createUser = (
-  privateKey: string,
-  userType: "investor" | "issuer",
+  userType: TUserType,
+  privateKey?: string,
   kyc?: "business" | "individual",
 ) => {
-  let path = `${CREATE_USER_PATH}?private_key=0x${privateKey}&user_type=${userType}`;
+  let path = `${CREATE_USER_PATH}?user_type=${userType}`;
+
   if (kyc) {
     path += `&kyc=${kyc}`;
   }
 
+  if (privateKey) {
+    path += `&private_key=0x${privateKey}`;
+  }
+
   return fetch(path, {
     method: "POST",
-  });
+  }).then(r => r.json());
 };
 
 /**
@@ -385,15 +392,15 @@ export const getPendingTransactions = (): Cypress.Chainable<
     })
     .then(response => response.body);
 
-export const makeAuthenticatedCall = async (path: string, config: RequestInit) =>
-  await fetch(path, {
+export const makeAuthenticatedCall = (path: string, config: RequestInit = {}) =>
+  fetch(path, {
     ...config,
     headers: {
       ...config.headers,
       "Content-Type": "application/json",
       authorization: `Bearer ${getJwtToken()}`,
     },
-  });
+  }).then(r => r.json());
 
 export const logout = () => {
   cy.log("logging out");

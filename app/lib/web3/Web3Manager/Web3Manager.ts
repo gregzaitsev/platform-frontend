@@ -18,9 +18,8 @@ import { IEthereumNetworkConfig } from "../types";
 import { Web3Adapter } from "../Web3Adapter";
 import { Web3FactoryType } from "../Web3Batch/Web3Batch";
 
-export const DEFAULT_UPPER_GAS_LIMIT = 2000000;
-export const DEFAULT_LOWER_GAS_LIMIT = 21000;
-
+const DEFAULT_UPPER_GAS_LIMIT = 2000000;
+const DEFAULT_LOWER_GAS_LIMIT = 21000;
 export class WalletNotConnectedError extends Error {
   constructor(public readonly wallet: IPersonalWallet) {
     super("Wallet not connected");

@@ -9,17 +9,13 @@ import {
   THumanReadableFormat,
   TValueFormat,
 } from "./formatters/utils";
-import {
-  ESize as ETransactionDataSize,
-  ETheme as ETransactionDataTheme,
-  TransactionData,
-} from "./TransactionData";
+import { ESize as ETransactionDataSize, TransactionData } from "./TransactionData";
 
 import * as styles from "./MoneySuiteWidget.module.scss";
 
 enum ETheme {
   /*
-   * @deprecated FRAMED and BLACK should be moved to a separate component
+   * @deprecated FRAMED should be moved to a separate component
    */
   FRAMED = styles.framed,
   BLACK = styles.black,
@@ -38,7 +34,7 @@ enum ESize {
 }
 
 interface IMoneySuiteWidgetProps {
-  icon?: string;
+  icon: string;
   currency: TValueFormat;
   currencyTotal: TValueFormat;
   largeNumber: string;
@@ -78,21 +74,12 @@ const getSize = (size: ESize | undefined) => {
   }
 };
 
-const getTheme = (theme: ETheme | undefined) => {
-  switch (theme) {
-    case ETheme.BLACK:
-      return ETransactionDataTheme.BLACK;
-    default:
-      return undefined;
-  }
-};
-
-const Icon: React.FunctionComponent<{ icon?: string; walletName?: TTranslatedString }> = ({
+const Icon: React.FunctionComponent<{ icon: string; walletName?: TTranslatedString }> = ({
   icon,
   walletName,
 }) => (
   <div>
-    {icon && <img className={styles.icon} src={icon} alt="" />}
+    <img className={styles.icon} src={icon} alt="" />
     {walletName}
   </div>
 );
@@ -141,7 +128,6 @@ const MoneySuiteWidget: React.FunctionComponent<IMoneySuiteWidgetProps & TDataTe
     {textPosition === ETextPosition.LEFT && <Icon icon={icon} walletName={walletName} />}
     <TransactionData
       size={getSize(size)}
-      theme={getTheme(theme)}
       data-test-id={dataTestId}
       top={
         <MoneyNew

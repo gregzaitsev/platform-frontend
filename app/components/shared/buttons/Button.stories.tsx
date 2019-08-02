@@ -157,9 +157,6 @@ storiesOf("buttons/default", module)
       <br />
       <br />
       <Button width={ButtonWidth.BLOCK}>wide button</Button>
-      <br />
-      <br />
-      <Button width={ButtonWidth.NO_PADDING}>button without padding</Button>
     </>
   ));
 

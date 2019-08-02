@@ -42,16 +42,8 @@ export const requestFromWeb3NodeFetch = (methodName: string, params: string[] | 
 export const getTransactionByHashRpc = (txHash: string) =>
   requestFromWeb3Node("eth_getTransactionByHash", [txHash]);
 
-export const getTransactionReceiptRpc = (txHash: string) =>
-  requestFromWeb3Node("eth_getTransactionReceipt", [txHash]);
-
 export const getBalanceRpc = (address: string) =>
   requestFromWeb3Node("eth_getBalance", [address, "latest"]);
-
-export const getNonceRpc = (address: string) =>
-  requestFromWeb3Node("eth_getTransactionCount", [address, "latest"]);
-
-export const getChainIdRpc = () => requestFromWeb3Node("net_version", []);
 
 export const sendRawTransactionRpc = (data: string) =>
   requestFromWeb3Node("eth_sendRawTransaction", [data]);

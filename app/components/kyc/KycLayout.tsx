@@ -2,7 +2,6 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
 import { EKycRequestType, EKycRequestStatus } from "../../lib/api/KycApi.interfaces";
-import { EUserType } from "../../lib/api/users/interfaces";
 import { Button, EButtonLayout, EIconPosition } from "../shared/buttons";
 import { KycPanel } from "./KycPanel";
 import { KycRouter } from "./Router";
@@ -51,7 +50,6 @@ export const businessSteps = [
 
 type IProps = {
   requestLoading?: boolean;
-  userType: EUserType;
   requestStatus?: EKycRequestStatus;
   redirectUrl: string;
   pendingRequestType: EKycRequestType | undefined;

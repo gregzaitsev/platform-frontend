@@ -1,5 +1,5 @@
-export function tid(id: string, rest?: string): string {
-  return `[data-test-id="${id}"]` + (rest ? ` ${rest}` : "");
+export function tid(id: string): string {
+  return `[data-test-id~="${id}"]`;
 }
 
 export function formFieldErrorMessage(key: string): string {

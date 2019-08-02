@@ -5,7 +5,7 @@ import { branch, compose, renderComponent } from "recompose";
 import { EKycRequestType, EKycRequestStatus } from "../../lib/api/KycApi.interfaces";
 import { EUserType } from "../../lib/api/users/interfaces";
 import { actions } from "../../modules/actions";
-import { selectIsUserEmailVerified, selectUserType } from "../../modules/auth/selectors";
+import { selectIsUserEmailVerified } from "../../modules/auth/selectors";
 import {
   selectKycOutSourcedURL,
   selectKycRequestStatus,

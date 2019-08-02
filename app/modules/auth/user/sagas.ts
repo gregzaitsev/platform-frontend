@@ -64,7 +64,7 @@ export function* signInUser({
 
 export function* loadUser(): Iterator<any> {
   const user: IUser = yield neuCall(loadUserPromise);
-  yield neuCall(loadPreviousWallet, user.type);
+  yield neuCall(loadPreviousWallet);
   yield put(actions.auth.setUser(user));
   yield neuCall(loadKycRequestData);
 }

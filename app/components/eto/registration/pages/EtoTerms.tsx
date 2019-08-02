@@ -224,7 +224,7 @@ const EtoRegistrationProductType: React.FunctionComponent<IProps> = ({
             name="productId"
             label={
               <Tooltip
-                data-test-id={`eto-terms.product.${product.name}.tooltip`}
+                data-test-id={`eto-terms.product.${product.name.replace(/\s/g, "-")}.tooltip`}
                 content={<ProductHighlights product={product} />}
                 placement="right"
                 delay={0}

@@ -1,5 +1,4 @@
-import { effects } from "redux-saga";
-import { getContext } from "redux-saga/effects";
+import { all, call, Effect, fork, getContext } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../di/setupBindings";
 import { actions } from "./actions";
@@ -40,57 +39,57 @@ import { etoNomineeSagas } from "./eto-nominee/sagas";
 /**
  * Restart all sagas on error and report error to sentry
  */
-function* allSagas(): Iterator<effects.Effect> {
-  yield effects.all([
+function* allSagas(): Iterator<Effect> {
+  yield all([
     // Sagas that should keep running even after logout
-    effects.fork(initSagas),
-    effects.fork(authSagas),
-    effects.fork(walletSelectorSagas),
-    effects.fork(lightWalletSagas),
-    effects.fork(browserWalletSagas),
-    effects.fork(ledgerSagas),
-    effects.fork(routingSagas),
-    effects.fork(tokenPriceSagas),
-    effects.fork(notificationModalSagas),
+    fork(initSagas),
+    fork(authSagas),
+    fork(walletSelectorSagas),
+    fork(lightWalletSagas),
+    fork(browserWalletSagas),
+    fork(ledgerSagas),
+    fork(routingSagas),
+    fork(tokenPriceSagas),
+    fork(notificationModalSagas),
     // Sagas that should be restarted immediately when logout occurs
-    effects.fork(neuRestartIf, actions.auth.logout, termsOfServiceSagas),
-    effects.fork(neuRestartIf, actions.auth.logout, bankTransferFlowSaga),
-    effects.fork(neuRestartIf, actions.auth.logout, kycSagas),
-    effects.fork(neuRestartIf, actions.auth.logout, investorTicketsSagas),
-    effects.fork(neuRestartIf, actions.auth.logout, profileSagas),
-    effects.fork(neuRestartIf, actions.auth.logout, web3Sagas),
-    effects.fork(neuRestartIf, actions.auth.logout, walletSagas),
-    effects.fork(neuRestartIf, actions.auth.logout, icbmWalletGetDataSagas),
-    effects.fork(neuRestartIf, actions.auth.logout, etoFlowSagas),
-    effects.fork(neuRestartIf, actions.auth.logout, immutableFileSagas),
-    effects.fork(neuRestartIf, actions.auth.logout, etoSagas),
-    effects.fork(neuRestartIf, actions.auth.logout, etoNomineeSagas),
-    effects.fork(neuRestartIf, actions.auth.logout, bookBuildingFlowSagas),
-    effects.fork(neuRestartIf, actions.auth.logout, formSingleFileUploadSagas),
-    effects.fork(neuRestartIf, actions.auth.logout, remoteFileSagas),
-    effects.fork(neuRestartIf, actions.auth.logout, txValidatorSagasWatcher),
-    effects.fork(neuRestartIf, actions.auth.logout, txTransactionsSagasWatcher),
-    effects.fork(neuRestartIf, actions.auth.logout, gasApiSagas),
-    effects.fork(neuRestartIf, actions.auth.logout, etoDocumentsSagas),
-    effects.fork(neuRestartIf, actions.auth.logout, txMonitorSagas),
-    effects.fork(neuRestartIf, actions.auth.logout, investmentFlowSagas),
-    effects.fork(neuRestartIf, actions.auth.logout, txHistorySaga),
-    effects.fork(neuRestartIf, actions.auth.logout, nomineeFlowSagas),
+    fork(neuRestartIf, actions.auth.logout, termsOfServiceSagas),
+    fork(neuRestartIf, actions.auth.logout, bankTransferFlowSaga),
+    fork(neuRestartIf, actions.auth.logout, kycSagas),
+    fork(neuRestartIf, actions.auth.logout, investorTicketsSagas),
+    fork(neuRestartIf, actions.auth.logout, profileSagas),
+    fork(neuRestartIf, actions.auth.logout, web3Sagas),
+    fork(neuRestartIf, actions.auth.logout, walletSagas),
+    fork(neuRestartIf, actions.auth.logout, icbmWalletGetDataSagas),
+    fork(neuRestartIf, actions.auth.logout, etoFlowSagas),
+    fork(neuRestartIf, actions.auth.logout, immutableFileSagas),
+    fork(neuRestartIf, actions.auth.logout, etoSagas),
+    fork(neuRestartIf, actions.auth.logout, etoNomineeSagas),
+    fork(neuRestartIf, actions.auth.logout, bookBuildingFlowSagas),
+    fork(neuRestartIf, actions.auth.logout, formSingleFileUploadSagas),
+    fork(neuRestartIf, actions.auth.logout, remoteFileSagas),
+    fork(neuRestartIf, actions.auth.logout, txValidatorSagasWatcher),
+    fork(neuRestartIf, actions.auth.logout, txTransactionsSagasWatcher),
+    fork(neuRestartIf, actions.auth.logout, gasApiSagas),
+    fork(neuRestartIf, actions.auth.logout, etoDocumentsSagas),
+    fork(neuRestartIf, actions.auth.logout, txMonitorSagas),
+    fork(neuRestartIf, actions.auth.logout, investmentFlowSagas),
+    fork(neuRestartIf, actions.auth.logout, txHistorySaga),
+    fork(neuRestartIf, actions.auth.logout, nomineeFlowSagas),
   ]);
 }
 
-function* handleRootError(error: Error): Iterator<effects.Effect> {
+function* handleRootError(error: Error): Iterator<Effect> {
   const { logger }: TGlobalDependencies = yield getContext("deps");
 
   logger.error(error);
 }
 
-export function* rootSaga(): Iterator<effects.Effect> {
+export function* rootSaga(): Iterator<Effect> {
   while (true) {
     try {
-      yield effects.call(allSagas);
+      yield call(allSagas);
     } catch (e) {
-      yield effects.call(handleRootError, e);
+      yield call(handleRootError, e);
     }
   }
 }

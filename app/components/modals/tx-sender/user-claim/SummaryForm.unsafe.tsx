@@ -44,7 +44,7 @@ const SummaryForm: React.FunctionComponent<IExternalProps> = ({ onSubmit }) => (
                 onClick={onSubmit}
                 data-test-id="modals.tx-sender.withdraw-flow.summery.withdrawSummery.accept"
               >
-                <FormattedMessage id="unlock-flow.confirm" />
+                <FormattedMessage id="withdraw-flow.confirm" />
               </Button>
             </Col>
           </Row>

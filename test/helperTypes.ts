@@ -1,7 +1,3 @@
-export interface IWindowData {
+export interface IWindowWithData extends Window {
   payoutRequiredAmount?: string;
-  disableNotAcceptingEtherCheck?: boolean;
-  forceLowGas?: boolean;
 }
-
-export type IWindowWithData = IWindowData & Window;

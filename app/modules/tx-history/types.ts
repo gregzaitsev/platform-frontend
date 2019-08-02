@@ -49,7 +49,7 @@ export type TEtoRefundTx = {
   type: ETransactionType.ETO_REFUND;
   subType: undefined;
   companyName: string;
-  etoId: string;
+  etoId: EthereumAddressWithChecksum;
   currency: ECurrency;
   amountEur: string;
   toAddress: EthereumAddressWithChecksum;

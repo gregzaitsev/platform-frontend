@@ -1,5 +1,5 @@
 import { kycRoutes } from "../../components/kyc/routes";
-import { goThroughKycCorporateProcess } from "../utils";
+import { goThroughKycCorporateProcess } from "../utils/index";
 import { tid } from "../utils/selectors";
 import { createAndLoginNewUser } from "../utils/userHelpers";
 
