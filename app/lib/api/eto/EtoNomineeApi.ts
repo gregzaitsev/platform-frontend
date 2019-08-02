@@ -69,5 +69,4 @@ export class EtoNomineeApi {
     return response.body;
   }
 
-
 }

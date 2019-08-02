@@ -114,5 +114,6 @@ export function* createNomineeLinkRequest({
 export function* nomineeFlowSagas(): Iterator<any> {
   yield fork(neuTakeLatest, actions.nomineeFlow.createNomineeRequest, createNomineeLinkRequest);
   yield fork(neuTakeLatest, actions.nomineeFlow.loadNomineeTaskData, loadNomineeTaskData);
-  yield fork(neuTakeUntil, actions.nomineeFlow.startNomineeRequestsWatcher, actions.nomineeFlow.stopNomineeRequestsWatcher, nomineeRequestsWatcher)
+  yield fork(neuTakeUntil, actions.nomineeFlow.startNomineeRequestsWatcher, actions.nomineeFlow.stopNomineeRequestsWatcher, nomineeRequestsWatcher);
+  // yield fork(neuTakeLatest, actions.nomineeFlow.getNomineeEtos, loadNomineeEtos);
 }

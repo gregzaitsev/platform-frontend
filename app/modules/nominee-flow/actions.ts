@@ -30,5 +30,5 @@ export const nomineeFlowActions = {
   storeNomineeRequestError:createActionFactory(
     "NOMINEE_FLOW_SET_NOMINEE_LINK_REQUEST_ERROR",
     (etoId:string,requestError:ENomineeRequestError) => ({etoId,requestError})
-  ),
+  )
 };

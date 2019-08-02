@@ -9,6 +9,8 @@ import { onEnterAction } from "../../utils/OnEnterAction";
 import { actions } from "../../modules/actions";
 import { selectEtoWithCompanyAndContractById } from "../../modules/eto/selectors";
 import { TEtoWithCompanyAndContract } from "../../modules/eto/types";
+import { EtoOverviewThumbnail } from "../eto/overview/EtoOverviewThumbnail/EtoOverviewThumbnail";
+
 // import { EtoOverviewThumbnail } from "../eto/overview/EtoOverviewThumbnail/EtoOverviewThumbnail";
 
 interface IStateProps {
@@ -36,21 +38,20 @@ const NomineeDashboardContainerLayout: React.FunctionComponent = ({ children }) 
 const LinkedNomineeDashboardContainerLayout: React.FunctionComponent<ILinkedNomineeComponentProps> = ({ children, eto }) => (
   <div data-test-id="nominee-dashboard" className={styles.nomineeDashboardContainer}>
     {children}
-    ETO data goes here, need to add an api method (GET /nominees/me/etos)
-    {/*{eto && <EtoOverviewThumbnail eto={eto} shouldOpenInNewWindow={false} />}*/}
+    {/*ETO data goes here, need to add an api method (GET /nominees/me/etos)*/}
+    {eto && <EtoOverviewThumbnail eto={eto} shouldOpenInNewWindow={false} />}
   </div>
 );
 
 const LinkedNomineeDashboardContainer = compose<ILinkedNomineeComponentProps, ILinkedNomineeExternalProps>(
-  appConnect<ILinkedNomineeStateProps,{},ILinkedNomineeExternalProps>({
+  appConnect<ILinkedNomineeStateProps, {}, ILinkedNomineeExternalProps>({
     stateToProps: (state, props) => ({
-      eto: selectEtoWithCompanyAndContractById(state,props.linkedNomineeEtoId)
+      eto: selectEtoWithCompanyAndContractById(state, props.linkedNomineeEtoId)
     })
   }),
-  onEnterAction<IStateProps>({
-    actionCreator: (dispatch, { linkedNomineeEtoId }) => {
-      if (linkedNomineeEtoId !== undefined)
-        dispatch(actions.eto.loadEto(linkedNomineeEtoId))
+  onEnterAction<ILinkedNomineeExternalProps>({
+    actionCreator: (dispatch) => {
+      dispatch(actions.eto.getNomineeEtos())
     }
   }),
 )(LinkedNomineeDashboardContainerLayout);
@@ -59,10 +60,10 @@ const LinkedNomineeDashboardContainer = compose<ILinkedNomineeComponentProps, IL
 const NomineeDashboardContainer = compose(
   appConnect<IStateProps>({
     stateToProps: state => ({
-      linkedNomineeEtoId:selectLinkedNomineeEtoId(state),
+      linkedNomineeEtoId: selectLinkedNomineeEtoId(state),
     })
   }),
-  branch<IStateProps>(({linkedNomineeEtoId}) => linkedNomineeEtoId !== undefined, renderComponent(LinkedNomineeDashboardContainer))
+  branch<IStateProps>(({ linkedNomineeEtoId }) => linkedNomineeEtoId !== undefined, renderComponent(LinkedNomineeDashboardContainer))
 )(NomineeDashboardContainerLayout);
 
 export { NomineeDashboardContainer, NomineeDashboardContainerLayout }

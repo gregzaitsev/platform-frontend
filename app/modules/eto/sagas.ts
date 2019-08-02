@@ -472,11 +472,43 @@ function* verifyEtoAccess(
   }
 }
 
+function* loadNomineeEtos({ apiEtoService, logger, notificationCenter }: TGlobalDependencies): any {
+  try {
+    const etos: TEtoData[] = yield apiEtoService.loadNomineeEtos();
+
+    yield all(
+      etos
+        .filter(eto => eto.state === EEtoState.ON_CHAIN)
+        .map(eto => neuCall(loadEtoContract, eto)),
+    );
+
+    const companies = compose(
+      keyBy((eto: TCompanyEtoData) => eto.companyId),
+      map((eto: TEtoData) => eto.company),
+    )(etos);
+
+    const etosByPreviewCode = compose(
+      keyBy((eto: TEtoSpecsData) => eto.previewCode),
+      // remove company prop from eto
+      // it's saved separately for consistency with other endpoints
+      map(omit("company")),
+    )(etos);
+
+    yield put(actions.eto.setEtos({ etos: etosByPreviewCode, companies }));
+
+  } catch (e) {
+    logger.error("nominee ETOs could not be loaded", e);
+
+    notificationCenter.error(createMessage(EtoMessage.COULD_NOT_LOAD_ETOS));
+  }
+}
+
 export function* etoSagas(): Iterator<any> {
   yield fork(neuTakeEvery, actions.eto.loadEtoPreview, loadEtoPreview);
   yield fork(neuTakeEvery, actions.eto.loadEto, loadEto);
   yield fork(neuTakeEvery, actions.eto.loadEtos, loadEtos);
   yield fork(neuTakeEvery, actions.eto.loadTokensData, loadTokensData);
+  yield fork(neuTakeLatest, actions.eto.getNomineeEtos, loadNomineeEtos);
 
   yield fork(neuTakeEvery, actions.eto.downloadEtoDocument, downloadDocument);
   yield fork(neuTakeEvery, actions.eto.downloadEtoTemplateByType, downloadTemplateByType);
