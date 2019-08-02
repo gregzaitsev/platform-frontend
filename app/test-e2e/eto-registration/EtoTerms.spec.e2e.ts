@@ -12,7 +12,7 @@ describe("Eto Terms", () => {
 
     goToEtoDashboard();
 
-    cy.get(tid("eto-progress-widget-eto-terms", "button")).click();
+    cy.get(`${tid("eto-progress-widget-eto-terms")} button`).click();
 
     cy.get(formField("productId")).should("have.length", 6);
   });
@@ -25,11 +25,11 @@ describe("Eto Terms", () => {
 
     goToEtoDashboard();
 
-    cy.get(tid("eto-progress-widget-eto-terms", "button")).click();
+    cy.get(`${tid("eto-progress-widget-eto-terms")} button`).click();
 
-    cy.get(tid("eto-terms.product.hnwi eto de vma.tooltip.trigger")).trigger("mouseover");
+    cy.get(tid("eto-terms.product.hnwi-eto-de-vma.tooltip.trigger")).trigger("mouseover");
 
-    cy.get(tid("eto-terms.product.hnwi eto de vma.tooltip.popover")).should("exist");
+    cy.get(tid("eto-terms.product.hnwi-eto-de-vma.tooltip.popover")).should("exist");
   });
 
   it("should hide and show transferable toggle", () => {
@@ -40,7 +40,7 @@ describe("Eto Terms", () => {
 
     goToEtoDashboard();
 
-    cy.get(tid("eto-progress-widget-eto-terms", "button")).click();
+    cy.get(`${tid("eto-progress-widget-eto-terms")} button`).click();
 
     // should not show transferable toggle
     fillForm(

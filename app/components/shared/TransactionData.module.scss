@@ -12,6 +12,7 @@
   &.large {
     .top {
       @include font-headline-medium;
+
     }
   }
 
@@ -21,42 +22,13 @@
     }
   }
 
-  &.black {
-    .top {
-      font-weight: bold;
-      color: $neu-charcoal-grey;
-    }
-
-    .bottom {
-      color: $neu-shuttle-gray;
-    }
-  }
-
-  &.black-thin {
-    .top {
-      color: $neu-charcoal-grey;
-    }
-
-    .bottom {
-      color: $neu-shuttle-gray;
-    }
-  }
-
-  &.silver {
-    .top {
-      color: $neu-slate-grey;
-    }
-
-    .bottom {
-      color: $neu-silver;
-    }
-  }
-
   .top {
     @include font-default;
   }
 
   .bottom {
     @include font-tab;
+
+    color: $neu-silver;
   }
 }

@@ -1,6 +1,6 @@
 import * as cn from "classnames";
 import * as React from "react";
-import { Input, InputGroup, InputGroupAddon, InputGroupText, InputProps } from "reactstrap";
+import { Input, InputGroup, InputGroupAddon, InputProps } from "reactstrap";
 
 import { CommonHtmlProps, Omit, TDataTestId, TTranslatedString } from "../../../../types";
 import { FormFieldError, generateErrorId } from "../fields/FormFieldError";
@@ -11,11 +11,6 @@ import * as styles from "../fields/FormStyles.module.scss";
 enum EInputSize {
   NORMAL = "",
   SMALL = "sm",
-}
-
-enum EInputTheme {
-  BOTTOM_BORDER = styles.bottomBorder,
-  BOX = styles.box,
 }
 
 interface IExternalProps {
@@ -29,8 +24,6 @@ interface IExternalProps {
   prefix?: TTranslatedString;
   size?: EInputSize;
   suffix?: TTranslatedString;
-  theme?: EInputTheme;
-  icon?: string;
 }
 
 type TProps = IExternalProps & CommonHtmlProps & TDataTestId & Omit<InputProps, IExternalProps>;
@@ -55,11 +48,9 @@ const InputLayout: React.FunctionComponent<TProps> = ({
   onFocus,
   onBlur,
   ["data-test-id"]: dataTestId,
-  theme,
-  icon,
   ...props
 }) => (
-  <section>
+  <>
     <InputGroup size={size}>
       {prefix && (
         <InputGroupAddon
@@ -76,7 +67,7 @@ const InputLayout: React.FunctionComponent<TProps> = ({
         name={name}
         id={name}
         maxLength={maxLength}
-        className={cn(className, styles.inputField, theme)}
+        className={cn(className, styles.inputField)}
         onChange={onChange}
         onBlur={e => {
           if (onBlur) {
@@ -95,31 +86,24 @@ const InputLayout: React.FunctionComponent<TProps> = ({
         data-test-id={dataTestId}
         {...props}
       />
-      {(suffix || icon) && (
+      {suffix && (
         <InputGroupAddon addonType="append" className={cn(styles.addon, { "is-invalid": invalid })}>
-          <InputGroupText>
-            {suffix}
-            {icon && <img className={styles.icon} src={icon} alt="" />}
-          </InputGroupText>
+          {suffix}
         </InputGroupAddon>
       )}
     </InputGroup>
-    <div className={styles.inputMeta}>
-      {charactersLimit && <div>{withCountedCharacters(value, charactersLimit)}</div>}
-      <FormFieldError
-        invalid={invalid}
-        name={name}
-        defaultMessage={errorMsg}
-        ignoreTouched={ignoreTouched}
-        alignLeft={true}
-      />
-    </div>
-  </section>
+    <FormFieldError
+      invalid={invalid}
+      name={name}
+      defaultMessage={errorMsg}
+      ignoreTouched={ignoreTouched}
+    />
+    {charactersLimit && <div>{withCountedCharacters(value, charactersLimit)}</div>}
+  </>
 );
 
 InputLayout.defaultProps = {
   size: EInputSize.NORMAL,
-  theme: EInputTheme.BOTTOM_BORDER,
 };
 
-export { InputLayout, EInputSize, EInputTheme };
+export { InputLayout, EInputSize };

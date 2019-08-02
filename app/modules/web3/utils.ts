@@ -1,4 +1,3 @@
-import { isValidChecksumAddress } from "ethereumjs-util";
 import { isAddress, toChecksumAddress } from "web3-utils";
 
 import { ERoundingMode } from "../../components/shared/formatters/utils";
@@ -32,18 +31,8 @@ export function ethereumNetworkIdToNetworkName(networkId: EthereumNetworkId): st
   }
 }
 
-export const validateAddress = (value: string): boolean => {
-  const v = value.substring(2);
-
-  // https://github.com/ethereum/EIPs/blob/master/EIPS/eip-55.md
-  if (v !== v.toUpperCase() && v !== v.toLowerCase()) {
-    // Address is checksumed
-    return !!value && isAddress(value.toUpperCase()) && isValidChecksumAddress(value);
-  } else {
-    // Address is not checksumed
-    return !!value && isAddress(value.toUpperCase());
-  }
-};
+export const validateAddress = (value: string): boolean =>
+  !!value && isAddress(value.toUpperCase());
 
 export const doesUserHaveEnoughEther = (
   value: TBigNumberVariant,

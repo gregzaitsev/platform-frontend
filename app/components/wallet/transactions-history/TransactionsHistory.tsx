@@ -57,6 +57,7 @@ const TransactionListLayout: React.FunctionComponent<TStateProps & TDispatchProp
               <NewTableRow
                 key={transaction.id}
                 onClick={() => showTransactionDetails(transaction.id)}
+                data-test-id={`transactions-history-row transactions-history-${transaction.txHash}`}
               >
                 <TransactionData
                   top={<TransactionName transaction={transaction} />}
@@ -83,13 +84,15 @@ const TransactionListLayout: React.FunctionComponent<TStateProps & TDispatchProp
         </Table>
       </div>
     )}
+
     {transactionsHistoryPaginated.canLoadMore && (
       <Button
+        data-test-id="transactions-history-load-more"
         layout={EButtonLayout.SECONDARY}
         isLoading={transactionsHistoryPaginated.isLoading}
         onClick={loadTxHistoryNext}
       >
-        Load more
+        <FormattedMessage id="wallet.tx-list.load-more" />
       </Button>
     )}
   </Panel>

@@ -2,30 +2,18 @@ import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
 import { ETxSenderType } from "../../../../modules/tx/types";
-import { convertToBigInt } from "../../../../utils/Number.utils";
 import { withModalBody } from "../../../../utils/storybookHelpers.unsafe";
 import { TxSuccessLayout } from "./TxSuccess";
 
 const txData: React.ComponentProps<typeof TxSuccessLayout> = {
-  type: ETxSenderType.INVEST,
-  additionalData: {
-    eto: {
-      etoId: "123",
-      companyName: "Test Co",
-      existingCompanyShares: 20,
-      preMoneyValuationEur: 100,
-      equityTokensPerShare: 10,
-    },
-    equityTokens: "211",
-    estimatedReward: convertToBigInt("125"),
-    etherPriceEur: "2542.22",
-    gasCostEth: convertToBigInt("0.124"),
-    investmentEth: convertToBigInt("120"),
-    investmentEur: convertToBigInt("22506"),
-    isIcbm: false,
-  },
   blockId: 4623487932,
   txHash: "af908098b968d7564564362c51836",
+  type: ETxSenderType.WITHDRAW,
+  additionalData: {
+    to: "0xfb6916095ca1df60bb79ce92ce3ea74c37c5d359",
+    value: "5500000000000000000",
+    cost: "313131232312331212",
+  },
   txData: {
     from: "0x0020d330ef4de5c07d4271e0a67e8fd67a21d523",
     gas: "0x7b0c",

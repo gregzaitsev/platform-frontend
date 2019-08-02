@@ -14,12 +14,7 @@ const EtherscanTxLink: React.FunctionComponent<IEtherscanTxLink & CommonHtmlProp
   children,
   ...props
 }) => (
-  <ExternalLink
-    data-test-id={`etherscan-link.${txHash}`}
-    data-test-hash={txHash}
-    href={`https://etherscan.io/tx/${txHash}`}
-    {...props}
-  >
+  <ExternalLink href={`https://etherscan.io/tx/${txHash}`} {...props}>
     {children || trimEthereumHash(txHash)}
   </ExternalLink>
 );

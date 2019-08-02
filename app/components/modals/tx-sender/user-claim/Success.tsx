@@ -33,7 +33,7 @@ export const UserClaimSuccessComponent: React.FunctionComponent<IProps> = ({
   <Message
     data-test-id="modals.tx-sender.withdraw-flow.success"
     image={<ConfettiEthereum className="mb-3" />}
-    title={<FormattedMessage id="user-claim-flow.success" />}
+    title={<FormattedMessage id="withdraw-flow.success" />}
     titleClassName="text-success"
     text={
       <FormattedMessage

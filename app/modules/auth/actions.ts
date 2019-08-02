@@ -1,9 +1,8 @@
-import { EUserType, IUser } from "../../lib/api/users/interfaces";
+import { IUser } from "../../lib/api/users/interfaces";
 import { createActionFactory } from "../actionsUtils";
 import { ELogoutReason } from "./types";
 
 type TLogoutActionOptions = {
-  userType?: EUserType;
   logoutType?: ELogoutReason;
 };
 

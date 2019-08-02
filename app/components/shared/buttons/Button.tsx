@@ -5,7 +5,6 @@ import { CommonHtmlProps } from "../../../types";
 import { InlineIcon } from "../icons";
 import { LoadingIndicator } from "../loading-indicator";
 
-import * as arrowLeft from "../../../assets/img/inline_icons/arrow_left.svg";
 import * as arrowRight from "../../../assets/img/inline_icons/arrow_right.svg";
 import * as styles from "./Button.module.scss";
 
@@ -43,7 +42,6 @@ export enum ButtonWidth {
   NORMAL = "",
   WIDE = "wide",
   BLOCK = "block",
-  NO_PADDING = "no-padding",
 }
 
 export enum ButtonTextPosition {
@@ -142,13 +140,4 @@ const ButtonArrowRight: React.FunctionComponent<IButtonProps> = props => (
   />
 );
 
-const ButtonArrowLeft: React.FunctionComponent<IButtonProps> = props => (
-  <Button
-    {...props}
-    layout={EButtonLayout.SECONDARY}
-    iconPosition={EIconPosition.ICON_BEFORE}
-    svgIcon={arrowLeft}
-  />
-);
-
-export { ButtonArrowRight, ButtonArrowLeft, Button };
+export { ButtonArrowRight, Button };

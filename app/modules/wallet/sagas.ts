@@ -8,9 +8,8 @@ import { LockedAccount } from "../../lib/contracts/LockedAccount";
 import { EthereumAddress } from "../../types";
 import { actions } from "../actions";
 import { numericValuesToString } from "../contracts/utils";
-import { EInitType } from "../init/reducer";
-import { selectIsSmartContractInitDone } from "../init/selectors";
-import { neuCall, neuTakeEvery, neuTakeOnly, neuTakeUntil } from "../sagasUtils";
+import { waitUntilSmartContractsAreInitialized } from "../init/sagas";
+import { neuCall, neuTakeEvery, neuTakeUntil } from "../sagasUtils";
 import { selectEthereumAddressWithChecksum } from "../web3/selectors";
 import { ILockedWallet, IWalletStateData } from "./reducer";
 
@@ -77,11 +76,7 @@ export async function loadWalletDataAsync(
 }
 
 function* walletBalanceWatcher(): any {
-  const isSmartContractsInitialized = yield select(selectIsSmartContractInitDone);
-
-  if (!isSmartContractsInitialized) {
-    yield neuTakeOnly(actions.init.done, { initType: EInitType.START_CONTRACTS_INIT });
-  }
+  yield waitUntilSmartContractsAreInitialized();
 
   while (true) {
     yield neuCall(loadWalletDataSaga);

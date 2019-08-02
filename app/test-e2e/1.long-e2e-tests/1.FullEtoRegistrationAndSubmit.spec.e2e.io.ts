@@ -1,4 +1,4 @@
-import { fillAndAssertFull } from "../eto-registration/EtoRegistrationUtils";
+import { createAndSetNominee, fillAndAssertFull } from "../eto-registration/EtoRegistrationUtils";
 import {
   aboutForm,
   equityTokenInfoForm,
@@ -47,7 +47,7 @@ describe("Eto Forms", () => {
   });
 
   it("will fill and submit key individuals", () => {
-    cy.get(tid("eto-progress-widget-key-individuals", "button")).awaitedClick();
+    cy.get(`${tid("eto-progress-widget-key-individuals")} button`).awaitedClick();
     // first click on all the add buttons to open the fields
     cy.get(tid("key-individuals-group-button-team")).click();
     cy.get(tid("key-individuals-group-button-advisors")).awaitedClick();
@@ -96,6 +96,9 @@ describe("Eto Forms", () => {
   });
 
   it("will fill and submit voting rights", () => {
+    // Connect nominee with issuer
+    createAndSetNominee();
+
     fillAndAssertFull("eto-progress-widget-voting-right", votingRights);
   });
 });

@@ -55,7 +55,7 @@ export const UpgradeSummaryComponent: React.FunctionComponent<TComponentProps> =
           innerClassName="mt-4"
           data-test-id="modals.tx-sender.upgrade-flow.summery.upgradeSummary.accept"
         >
-          <FormattedMessage id="unlock-flow.confirm" />
+          <FormattedMessage id="withdraw-flow.confirm" />
         </Button>
       </Col>
     </Row>

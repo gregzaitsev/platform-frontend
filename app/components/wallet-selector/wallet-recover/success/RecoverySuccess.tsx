@@ -4,9 +4,7 @@ import { Link } from "react-router-dom";
 import { Col, Row } from "reactstrap";
 import { compose } from "redux";
 
-import { EUserType } from "../../../../lib/api/users/interfaces";
 import { actions } from "../../../../modules/actions";
-import { selectUrlUserType } from "../../../../modules/wallet-selector/selectors";
 import { appConnect } from "../../../../store";
 import { withContainer } from "../../../../utils/withContainer.unsafe";
 import { Button } from "../../../shared/buttons";
@@ -16,16 +14,11 @@ import { recoverRoutes } from "../router/recoverRoutes";
 
 import * as styles from "./RecoverySuccess.module.scss";
 
-interface IStateProps {
-  userType: EUserType;
-}
-
 interface IDispatchProps {
-  goToDashboard: (userType: EUserType) => void;
+  goToDashboard: () => void;
 }
-export const RecoverySuccessComponent: React.FunctionComponent<IStateProps & IDispatchProps> = ({
+export const RecoverySuccessComponent: React.FunctionComponent<IDispatchProps> = ({
   goToDashboard,
-  userType,
 }) => (
   <div>
     <Col className="mt-4 pb-5">
@@ -49,10 +42,7 @@ export const RecoverySuccessComponent: React.FunctionComponent<IStateProps & IDi
     </Col>
     <Row className="justify-content-center mb-5 mt-5 pt-4">
       <Col xs={6} sm={5} md={4} lg={3}>
-        <Button
-          onClick={() => goToDashboard(userType)}
-          data-test-id="recovery-success-btn-go-dashboard"
-        >
+        <Button onClick={goToDashboard} data-test-id="recovery-success-btn-go-dashboard">
           <FormattedMessage id="components.wallet-selector.wallet-recover.recovery-success.go-to-dashboard" />
         </Button>
       </Col>
@@ -69,10 +59,7 @@ export const RecoverySuccessComponent: React.FunctionComponent<IStateProps & IDi
 );
 
 export const RecoverySuccess = compose<React.FunctionComponent>(
-  appConnect<IStateProps, IDispatchProps>({
-    stateToProps: s => ({
-      userType: selectUrlUserType(s.router),
-    }),
+  appConnect<void, IDispatchProps>({
     dispatchToProps: dispatch => ({
       goToDashboard: () => dispatch(actions.walletSelector.connected()),
     }),
