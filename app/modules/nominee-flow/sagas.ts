@@ -11,7 +11,7 @@ import {
 } from "./reducer";
 import { neuCall, neuTakeLatest, neuTakeUntil } from "../sagasUtils";
 import { createMessage } from "../../components/translatedMessages/utils";
-import { ENomineeLinkErrorNotifications } from "../../components/translatedMessages/messages";
+import { ENomineeRequestErrorNotifications } from "../../components/translatedMessages/messages";
 import { TNomineeRequestResponse } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { IssuerIdInvalid, NomineeRequestExists } from "../../lib/api/eto/EtoNomineeApi";
 import { nomineeApiDataToNomineeRequests, nomineeRequestResponseToRequestStatus } from "./utils";
@@ -96,15 +96,15 @@ export function* createNomineeLinkRequest({
     if (e instanceof IssuerIdInvalid) {
       logger.error("Failed to create nominee request, issuer id is invalid", e);
       yield put(actions.nomineeFlow.storeNomineeRequestError(action.payload.issuerId, ENomineeRequestError.ISSUER_ID_ERROR));
-      notificationCenter.error(createMessage(ENomineeLinkErrorNotifications.ISSUER_ID_ERROR));
+      notificationCenter.error(createMessage(ENomineeRequestErrorNotifications.ISSUER_ID_ERROR));
     } else if (e instanceof NomineeRequestExists) {
       logger.error(`Nominee request to issuerId ${action.payload.issuerId} already exists`, e);
       yield put(actions.nomineeFlow.storeNomineeRequestError(action.payload.issuerId, ENomineeRequestError.REQUEST_EXISTS));
-      notificationCenter.error(createMessage(ENomineeLinkErrorNotifications.REQUEST_EXISTS));
+      notificationCenter.error(createMessage(ENomineeRequestErrorNotifications.REQUEST_EXISTS));
     } else {
       logger.error("Failed to create nominee request", e);
       yield put(actions.nomineeFlow.storeNomineeRequestError(action.payload.issuerId, ENomineeRequestError.GENERIC_ERROR));
-      notificationCenter.error(createMessage(ENomineeLinkErrorNotifications.GENERIC_ERROR));
+      notificationCenter.error(createMessage(ENomineeRequestErrorNotifications.GENERIC_ERROR));
     }
   } finally {
     yield put(actions.routing.goToDashboard());

@@ -10,16 +10,16 @@ import { appConnect } from "../../../../../store";
 import { NoPendingNominees } from "./NoPendingNominees";
 import { onEnterAction } from "../../../../../utils/OnEnterAction";
 import { actions } from "../../../../../modules/actions";
-import { LoadingIndicator } from "../../../../shared/loading-indicator/LoadingIndicator";
-import { selectNomineeRequests } from "../../../../../modules/eto-nominee/selectors";
+import { selectEtoNomineeIsLoading, selectNomineeRequests } from "../../../../../modules/eto-nominee/selectors";
 import { INomineeRequest } from "../../../../../modules/nominee-flow/reducer";
 import { nomineeRequestsToArray } from "../../../../../modules/nominee-flow/utils";
 import { Button, EButtonLayout } from "../../../../shared/buttons/Button";
 import { onLeaveAction } from "../../../../../utils/OnLeaveAction";
+import { LoadingIndicator } from "../../../../shared/loading-indicator/LoadingIndicator";
 
 interface IStateProps {
-  isLoading: boolean;
   nomineeRequests: INomineeRequest[]
+  isLoading: boolean
 }
 
 interface IDispatchProps {
@@ -57,7 +57,6 @@ const FullButtonBlock:React.FunctionComponent<IFullButtonBlockProps> = ({acceptN
     <Button
       layout={EButtonLayout.PRIMARY}
       onClick={()=> rejectNominee(nomineeId)}
-      // isLoading={props.savingData}
       data-test-id="eto-registration-product-vision-submit"
     >
       Reject
@@ -85,6 +84,7 @@ const PendingNomineesComponent: React.FunctionComponent<IPendingNomineesProps> =
       </FormFieldLabel>
       {nomineeRequests.map((request) =>
         <FormHighlightGroup key={request.nomineeId}>
+          {/*fixme this is a dummy*/}
           nomineeId:{request.nomineeId}
           <br />
           request created at: {request.insertedAt}
@@ -103,7 +103,7 @@ const ChooseNominee = compose<IStateProps & IDispatchProps, {}>(
   setDisplayName(EEtoFormTypes.Nominee),
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: s => ({
-      isLoading: s.etoFlow.loading,
+      isLoading: selectEtoNomineeIsLoading(s),
       nomineeRequests: nomineeRequestsToArray(selectNomineeRequests(s))
     }),
     dispatchToProps: dispatch => ({

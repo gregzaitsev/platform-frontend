@@ -24,4 +24,7 @@ export const etoNomineeActions = {
     "ETO_NOMINEE_REJECT_NOMINEE_REQUEST",
     (nomineeId:string) => ({nomineeId})
   ),
+  nomineeRequestsReady: createActionFactory(
+    "ETO_NOMINEE_REQUESTS_READY",
+  ),
 };

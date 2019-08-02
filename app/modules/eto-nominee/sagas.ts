@@ -1,4 +1,4 @@
-import {  fork, put } from "redux-saga/effects";
+import { fork, put } from "redux-saga/effects";
 import { delay } from "redux-saga";
 
 import { TGlobalDependencies } from "../../di/setupBindings";
@@ -8,10 +8,13 @@ import { TNomineeRequestResponse } from "../../lib/api/eto/EtoApi.interfaces.uns
 import { ENomineeUpdateRequestStatus, TNomineeRequestStorage } from "../nominee-flow/reducer";
 import { etoApiDataToNomineeRequests } from "../nominee-flow/utils";
 import { NOMINEE_REQUESTS_WATCHER_DELAY } from "../../config/constants";
+import { createMessage } from "../../components/translatedMessages/utils";
+import {  EEtoNomineeRequestErrorNotifications} from "../../components/translatedMessages/messages";
 
 export function* etoGetNomineeRequests({
   apiEtoNomineeService,
   logger,
+  notificationCenter
 }: TGlobalDependencies): Iterator<any> {
   try {
     const nomineeRequests:TNomineeRequestResponse[] = yield apiEtoNomineeService.etoGetNomineeRequest();
@@ -20,8 +23,8 @@ export function* etoGetNomineeRequests({
     yield put(actions.etoNominee.storeNomineeRequests(nomineeRequestsConverted));
   } catch (e) {
     logger.error("Failed to load Nominee requests", e);
-
-    //fixme add error notification
+    notificationCenter.error(createMessage(EEtoNomineeRequestErrorNotifications.GENERIC_ERROR));
+    yield put(actions.etoNominee.nomineeRequestsReady())
   }
 }
 
@@ -41,6 +44,7 @@ export function* etoNomineeRequestsWatcher({logger}: TGlobalDependencies): Itera
 export function* updateNomineeRequest({
   apiEtoNomineeService,
   logger,
+    notificationCenter
 }: TGlobalDependencies,
   action:  TActionFromCreator<typeof actions.etoNominee.acceptNomineeRequest> | TActionFromCreator<typeof actions.etoNominee.rejectNomineeRequest>): Iterator<any> {
   try {
@@ -50,8 +54,17 @@ export function* updateNomineeRequest({
 
     yield apiEtoNomineeService.etoUpdateNomineeRequest(action.payload.nomineeId, newStatus);
 
+    if(newStatus === ENomineeUpdateRequestStatus.APPROVED){
+      yield put(actions.etoFlow.loadIssuerEto());
+      yield put(actions.etoNominee.nomineeRequestsReady())
+    } else {
+      yield put(actions.etoNominee.getNomineeRequests());
+    }
+
   } catch (e) {
     logger.error("Failed to update nominee request", e);
+    notificationCenter.error(createMessage(EEtoNomineeRequestErrorNotifications.GENERIC_ERROR));
+    yield put(actions.etoNominee.nomineeRequestsReady())
   }
 }
 

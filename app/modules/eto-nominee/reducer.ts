@@ -18,6 +18,8 @@ export const etoNomineeReducer: AppReducer<IEtoNomineeState> = (
   action,
 ): DeepReadonly<IEtoNomineeState> => {
   switch (action.type) {
+    case actions.etoNominee.acceptNomineeRequest.getType():
+    case actions.etoNominee.rejectNomineeRequest.getType():
     case actions.etoNominee.getNomineeRequests.getType():
       return {
         ...state,
@@ -27,6 +29,12 @@ export const etoNomineeReducer: AppReducer<IEtoNomineeState> = (
       return {
         ...state,
         nomineeRequests: action.payload.requests,
+        isLoading:false
+      };
+    case actions.etoNominee.nomineeRequestsReady.getType():
+      //recover after network failure etc
+      return {
+        ...state,
         isLoading:false
       };
     default:

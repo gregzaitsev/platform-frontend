@@ -3,9 +3,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { branch, renderComponent } from "recompose";
 import { compose } from "recompose";
 
-import { TPartialEtoSpecData } from "../../../../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { etoFormIsReadonly } from "../../../../../lib/api/eto/EtoApiUtils";
-import { actions } from "../../../../../modules/actions";
 import {
   selectEtoNominee,
   selectEtoNomineeDisplayName,
@@ -14,7 +12,6 @@ import {
 import { EEtoFormTypes } from "../../../../../modules/eto-flow/types";
 import { appConnect } from "../../../../../store";
 import { Button, EButtonLayout } from "../../../../shared/buttons/index";
-import { convert, parseStringToFloat } from "../../../utils";
 import { Section } from "../../Shared";
 import { withContainer } from "../../../../../utils/withContainer.unsafe";
 import { FormBase } from "./FormBase";
@@ -27,26 +24,16 @@ interface IExternalProps {
 }
 
 interface IStateProps {
-  loadingData: boolean;
-  savingData: boolean;
   currentNomineeId: string | undefined;
   currentNomineeName: string | undefined
 }
 
 interface IComponentProps {
-  loadingData: boolean;
-  savingData: boolean;
   currentNomineeId: string;
   currentNomineeName: string
 }
 
-interface IDispatchProps {
-  saveData: (values: TPartialEtoSpecData) => void;
-}
-
-type IProps = IExternalProps & IComponentProps & IDispatchProps;
-
-const NomineeChosenComponent: React.FunctionComponent<IProps> = ({ readonly,currentNomineeName,currentNomineeId }) => (
+const NomineeChosenComponent: React.FunctionComponent<IExternalProps & IComponentProps> = ({ readonly,currentNomineeName,currentNomineeId }) => (
   <>
       <p className={styles.text}>
         <FormattedMessage id="eto.form.eto-nominee.text"/>
@@ -69,33 +56,16 @@ const NomineeChosenComponent: React.FunctionComponent<IProps> = ({ readonly,curr
   </>
 );
 
-const Nominee = compose<IProps, IExternalProps>(
-  appConnect<IStateProps, IDispatchProps>({
+const Nominee = compose<IExternalProps & IComponentProps, IExternalProps>(
+  appConnect<IStateProps>({
     stateToProps: s => ({
-      loadingData: s.etoFlow.loading,
-      savingData: s.etoFlow.saving,
       currentNomineeId: selectEtoNominee(s),
       currentNomineeName: selectEtoNomineeDisplayName(s),
       readonly: etoFormIsReadonly(EEtoFormTypes.Nominee, selectIssuerEtoState(s)),
-    }),
-    dispatchToProps: dispatch => ({
-      saveData: (data: TPartialEtoSpecData) => {
-        const convertedData = convert(data, fromFormState);
-        dispatch(
-          actions.etoFlow.saveDataStart({
-            companyData: {},
-            etoData: convertedData,
-          }),
-        );
-      },
     }),
   }),
   withContainer(FormBase),
   branch<IStateProps>(({ currentNomineeId }) => currentNomineeId === undefined, renderComponent(ChooseNominee))
 )(NomineeChosenComponent);
-
-const fromFormState = {
-  liquidationPreferenceMultiplier: parseStringToFloat(),
-};
 
 export { NomineeChosenComponent, Nominee };

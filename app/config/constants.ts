@@ -73,4 +73,4 @@ export const REDIRECT_CHANNEL_WATCH_DELAY = 5000;
 export const IPFS_PROTOCOL = "ipfs";
 export const supportEmail = "support@neufund.org";
 
-export const NOMINEE_REQUESTS_WATCHER_DELAY = 1000;
+export const NOMINEE_REQUESTS_WATCHER_DELAY = 10000;

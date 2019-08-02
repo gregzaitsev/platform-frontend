@@ -1,16 +1,16 @@
 import { createMessage, TMessage } from "../../components/translatedMessages/utils";
 import { ENomineeRequestStatus, INomineeRequest, TNomineeRequestStorage } from "./reducer";
-import { ENomineeLinkRequestStatusTranslation } from "../../components/translatedMessages/messages";
+import { ENomineeRequestStatusTranslation } from "../../components/translatedMessages/messages";
 import { TNomineeRequestResponse } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
 
 export const nomineeRequestToTranslationMessage = (status: ENomineeRequestStatus): TMessage => {
   switch (status) {
     case ENomineeRequestStatus.APPROVED:
-      return createMessage(ENomineeLinkRequestStatusTranslation.APPROVED);
+      return createMessage(ENomineeRequestStatusTranslation.APPROVED);
     case ENomineeRequestStatus.PENDING:
-      return createMessage(ENomineeLinkRequestStatusTranslation.PENDING);
+      return createMessage(ENomineeRequestStatusTranslation.PENDING);
     case ENomineeRequestStatus.REJECTED:
-      return createMessage(ENomineeLinkRequestStatusTranslation.REJECTED);
+      return createMessage(ENomineeRequestStatusTranslation.REJECTED);
   }
 };
 

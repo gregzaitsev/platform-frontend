@@ -424,6 +424,7 @@
   "eto.form.section.token-holders-rights.liquidation-preference": "Liquidation preference",
   "eto.form.section.token-holders-rights.nominee": "Nominee",
   "eto.form.eto-nominee.select-nominee-text": "Before you can select a nominee for your fundraising campaign, you need to share your account address with them and ask them to link their Neufund account to yours. <a href={href} target=\"_blank\">Learn more</a>",
+  "eto.form.eto-nominee.generic-network-error": "An error occurred while trying to get nominee requests data",
   "eto.form.section.token-holders-rights.voting-rights-enabled": "Voting rights enabled",
   "eto.modal.confirm-start-bookbuilding-title": "Please confirm that you would like to start your whitelisting period.",
   "eto.modal.confirm-stop-bookbuilding-title": "Please confirm that you would like to stop your whitelisting period.",
