@@ -20,6 +20,16 @@ export const EtoCardPanelButton: React.FunctionComponent<IBaseProps & TDataTestI
   </button>
 );
 
+export const EtoCardButton: React.FunctionComponent<IBaseProps & TDataTestId> = ({
+  children,
+  onClick,
+  "data-test-id": dataTestId,
+}) => (
+  <button className={styles.etoCardPanelIsButton} onClick={onClick}>
+    <Panel data-test-id={dataTestId}>{children}</Panel>
+  </button>
+);
+
 export const EtoCardPanel: React.FunctionComponent<TDataTestId> = ({
   children,
   "data-test-id": dataTestId,

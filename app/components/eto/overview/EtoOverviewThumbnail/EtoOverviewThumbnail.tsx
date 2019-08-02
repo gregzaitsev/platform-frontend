@@ -12,7 +12,7 @@ import { EHeadingSize, Heading } from "../../../shared/Heading";
 import { FUNDING_ROUNDS } from "../../constants";
 import { ComingSoonEtoState, ETOState, SuccessEtoState } from "../../shared/ETOState";
 import { Cover } from "./Cover";
-import { EtoCardPanelButton } from "./EtoCardPanel";
+import { EtoCardButton, EtoCardPanelButton } from "./EtoCardPanel";
 import { EtoStatusManager, SuccessfulInfo } from "./EtoStatusManager";
 
 import * as styles from "./EtoOverviewThumbnail.module.scss";
@@ -74,14 +74,8 @@ const MockEtoOverviewLayout: React.FunctionComponent<
   </EtoCardPanelButton>
 );
 
-const EtoOverviewLayout: React.FunctionComponent<TEtoProps & CommonHtmlProps & IDispatchProps> = ({
-  eto,
-  open,
-}) => (
-  <EtoCardPanelButton
-    data-test-id={`eto-overview-${eto.etoId}`}
-    onClick={() => open(etoPublicViewLink(eto.previewCode, eto.product.jurisdiction))}
-  >
+const EtoOverviewLayoutBase = ({eto}) =>
+  <EtoCardButton>
     <Cover
       className={styles.cover}
       companyBanner={{
@@ -138,10 +132,21 @@ const EtoOverviewLayout: React.FunctionComponent<TEtoProps & CommonHtmlProps & I
         </>
       )}
     </section>
+  </EtoCardButton>;
+
+const EtoOverviewLayout: React.FunctionComponent<TEtoProps & CommonHtmlProps & IDispatchProps> = ({
+  eto,
+  open,
+}) => (
+  <EtoCardPanelButton
+    data-test-id={`eto-overview-${eto.etoId}`}
+    onClick={() => open(etoPublicViewLink(eto.previewCode, eto.product.jurisdiction))}
+  >
+   <EtoOverviewLayoutBase eto={eto} />
   </EtoCardPanelButton>
 );
 
-const EtoOverviewThumbnail = compose<
+const connectEtoOverviewThumbnail = (WrappedComponent) => compose<
   TEtoProps & CommonHtmlProps & IDispatchProps,
   TExternalProps & TCommonExternalProps & CommonHtmlProps
 >(
@@ -154,6 +159,10 @@ const EtoOverviewThumbnail = compose<
     }),
   }),
   branch<TExternalProps>(props => !!props.mockedEto, renderComponent(MockEtoOverviewLayout)),
-)(EtoOverviewLayout);
+)(WrappedComponent);
 
-export { EtoOverviewLayout, EtoOverviewThumbnail };
+
+const EtoOverviewThumbnail = connectEtoOverviewThumbnail(EtoOverviewLayout);
+const NomineeEtoOverviewThumbnail = connectEtoOverviewThumbnail(EtoOverviewLayoutBase);
+
+export { EtoOverviewLayout, EtoOverviewThumbnail,NomineeEtoOverviewThumbnail };

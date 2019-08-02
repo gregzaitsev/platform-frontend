@@ -3,6 +3,14 @@
   margin: 0 auto;
 }
 
+.linked-nominee-dashboard-container {
+  display: grid;
+  grid-template: 1fr / 748px 360px;
+  grid-gap: 32px;
+
+  align-items: flex-start;
+}
+
 .dashboard-title-wrapper {
   margin: 2rem 0;
 }
@@ -24,6 +32,12 @@
   display: grid;
   grid-gap: 2rem;
   justify-items: flex-start;
+
+  background-color: $neu-white-two;
+  box-shadow: $shadow-bottom-black;
+  padding: $padding;
+  align-items: stretch;
+  grid-auto-rows: 1fr auto;
 }
 
 .dashboard-content-title {

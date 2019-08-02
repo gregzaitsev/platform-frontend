@@ -9,7 +9,9 @@ import { onEnterAction } from "../../utils/OnEnterAction";
 import { actions } from "../../modules/actions";
 import { selectEtoWithCompanyAndContractById } from "../../modules/eto/selectors";
 import { TEtoWithCompanyAndContract } from "../../modules/eto/types";
-import { EtoOverviewThumbnail } from "../eto/overview/EtoOverviewThumbnail/EtoOverviewThumbnail";
+import {
+  NomineeEtoOverviewThumbnail
+} from "../eto/overview/EtoOverviewThumbnail/EtoOverviewThumbnail";
 
 // import { EtoOverviewThumbnail } from "../eto/overview/EtoOverviewThumbnail/EtoOverviewThumbnail";
 
@@ -36,10 +38,9 @@ const NomineeDashboardContainerLayout: React.FunctionComponent = ({ children }) 
 );
 
 const LinkedNomineeDashboardContainerLayout: React.FunctionComponent<ILinkedNomineeComponentProps> = ({ children, eto }) => (
-  <div data-test-id="nominee-dashboard" className={styles.nomineeDashboardContainer}>
+  <div data-test-id="nominee-dashboard" className={styles.linkedNomineeDashboardContainer}>
     {children}
-    {/*ETO data goes here, need to add an api method (GET /nominees/me/etos)*/}
-    {eto && <EtoOverviewThumbnail eto={eto} shouldOpenInNewWindow={false} />}
+    {eto && <NomineeEtoOverviewThumbnail eto={eto} shouldOpenInNewWindow={false} />}
   </div>
 );
 

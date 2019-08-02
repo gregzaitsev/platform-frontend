@@ -66,9 +66,9 @@ const NomineeTasks: React.FunctionComponent<any> = ({ tasks }) => {
 export const NomineeDashboardTasks: React.FunctionComponent<IDashboardProps> = ({
   nomineeTasks,
 }) => (
-  <Panel className={styles.dashboardContentPanel}>
+  <section className={styles.dashboardContentPanel}>
     {nomineeTasks.length ? <NomineeTasks tasks={nomineeTasks} /> : <NoTasks />}
-  </Panel>
+  </section>
 );
 
 export const NomineeDashboard = compose<IDashboardProps, {}>(
