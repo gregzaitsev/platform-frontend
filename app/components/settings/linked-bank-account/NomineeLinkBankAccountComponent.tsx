@@ -1,9 +1,9 @@
-import { connectLinkBankAccountComponent } from "./ConnectLinkBankAccount";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
 import { TBankAccount } from "../../../modules/kyc/types";
 import { Button, ButtonSize, EButtonLayout } from "../../shared/buttons/Button";
+import { connectLinkBankAccountComponent } from "./ConnectLinkBankAccount";
 
 import * as styles from "./LinkedBankAccountWidget.module.scss";
 

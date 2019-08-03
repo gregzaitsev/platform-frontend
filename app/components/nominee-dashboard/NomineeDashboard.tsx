@@ -2,24 +2,24 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { branch, compose, nest, renderComponent, withProps } from "recompose";
 
+import { actions } from "../../modules/actions";
+import { selectIsBankAccountVerified } from "../../modules/bank-transfer-flow/selectors";
+import {  INomineeRequest } from "../../modules/nominee-flow/reducer";
+import { selectNomineeRequests, selectNomineeStateIsLoading } from "../../modules/nominee-flow/selectors";
+import { takeLatestNomineeRequest } from "../../modules/nominee-flow/utils";
 import { SelectIsVerificationFullyDone } from "../../modules/selectors";
 import { appConnect } from "../../store";
 import { TTranslatedString } from "../../types";
+import { onEnterAction } from "../../utils/OnEnterAction";
 import { withContainer } from "../../utils/withContainer.unsafe";
 import { Layout } from "../layouts/Layout";
+import { LoadingIndicator } from "../shared/loading-indicator/LoadingIndicator";
 import { SuccessTick } from "../shared/SuccessTick";
 import { NomineeAccountSetup } from "./NomineeAccountSetup";
+import { NomineeDashboardContainer } from "./NomineeDashboardContainer";
 import { getNomineeTasks, ITask, NomineeTasksData } from "./NomineeTasksData";
-import { onEnterAction } from "../../utils/OnEnterAction";
-import { actions } from "../../modules/actions";
-import { selectNomineeRequests, selectNomineeStateIsLoading } from "../../modules/nominee-flow/selectors";
-import { LoadingIndicator } from "../shared/loading-indicator/LoadingIndicator";
-import {  INomineeRequest } from "../../modules/nominee-flow/reducer";
 
 import * as styles from "./NomineeDashboard.module.scss";
-import { takeLatestNomineeRequest } from "../../modules/nominee-flow/utils";
-import { NomineeDashboardContainer } from "./NomineeDashboardContainer";
-import { selectIsBankAccountVerified } from "../../modules/bank-transfer-flow/selectors";
 
 interface IStateProps {
   verificationIsComplete: boolean;
@@ -58,9 +58,8 @@ const NoTasks = () => (
   </>
 );
 
-const NomineeTasks: React.FunctionComponent<any> = ({ tasks }) => {
-  return tasks.map((task: ITask) => <task.taskRootComponent key={task.key}/>)
-};
+const NomineeTasks: React.FunctionComponent<any> = ({ tasks }) =>
+  tasks.map((task: ITask) => <task.taskRootComponent key={task.key}/>);
 
 export const NomineeDashboardTasks: React.FunctionComponent<IDashboardProps> = ({
   nomineeTasks,
