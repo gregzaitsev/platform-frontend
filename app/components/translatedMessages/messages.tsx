@@ -283,8 +283,9 @@ export enum ENomineeRequestStatusTranslation {
 
 export enum ENomineeRequestErrorNotifications {
   ISSUER_ID_ERROR = "nomineeRequestIssuerIdError",
-  GENERIC_ERROR = "nomineeRequestGenericError",
+  SUBMITTING_ERROR = "nomineeRequestGenericError",
   REQUEST_EXISTS = "requestExists",
+  FETCH_NOMINEE_DATA_ERROR = "fetchNomineeDataError"
 }
 
 export enum EEtoNomineeRequestErrorNotifications {
@@ -693,8 +694,10 @@ const getMessageTranslation = ({ messageType, messageData }: TMessage): TTransla
     case ENomineeRequestStatusTranslation.REJECTED:
       return <FormattedMessage id="nominee-link-request.status.rejected" />;
 
-    case ENomineeRequestErrorNotifications.GENERIC_ERROR:
-      return <FormattedMessage id="nominee-flow.link-with-issuer.generic-error-notification" />;
+    case ENomineeRequestErrorNotifications.SUBMITTING_ERROR:
+      return <FormattedMessage id="nominee-flow.link-with-issuer.submitting-error-notification" />;
+    case ENomineeRequestErrorNotifications.FETCH_NOMINEE_DATA_ERROR:
+      return <FormattedMessage id="nominee-flow.link-with-issuer.fetch-nominee-data-error-notification" />;
     case ENomineeRequestErrorNotifications.ISSUER_ID_ERROR:
       return <FormattedMessage id="nominee-flow.link-with-issuer.issuer-id-error-notification" />;
     case ENomineeRequestErrorNotifications.REQUEST_EXISTS:

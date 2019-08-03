@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import { EMaskedFormError } from "../translatedMessages/messages";
+import { EMaskedFormError } from "../../translatedMessages/messages";
 import { EAccountSetupStepState, prepareSetupAccountSteps, validateEthInput } from "./utils";
 
 describe("prepareSetupAccountSteps", () => {

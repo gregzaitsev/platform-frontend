@@ -9,7 +9,7 @@ import { appConnect } from "../../../store";
 import { nomineeAccountSetupSteps } from "./AccountSetupData";
 import { AccountSetupStep, INomineeAccountSetupSteps } from "./AccountSetupFlow";
 import { AccountSetupKycPending } from "./AccountSetupKycPending";
-import { IStepComponentProps, prepareSetupAccountSteps } from "../utils";
+import { IStepComponentProps, prepareSetupAccountSteps } from "../linkToIssuer/utils";
 import { DashboardTitle } from "../NomineeDashboard";
 import { Panel } from "../../shared/Panel";
 

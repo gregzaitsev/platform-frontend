@@ -1,4 +1,4 @@
-import { EMaskedFormError } from "../translatedMessages/messages";
+import { EMaskedFormError } from "../../translatedMessages/messages";
 
 export interface IAccountSetupStepData {
   key: string;
@@ -62,22 +62,28 @@ export const prepareSetupAccountSteps = (data: IAccountSetupStepData[]): IStepCo
 export const validateEthInput = (value: string | undefined) => {
   if (value === undefined) {
     return undefined;
-  } else if (value.length > 0 || value.length < 42) {
-    return value.split("").reduce((acc: EMaskedFormError | undefined, char: string, i: number) => {
-      if (i === 0 && char !== "0") {
-        return EMaskedFormError.IVALID_PREFIX;
-      } else if (i === 1 && char !== "x") {
-        return EMaskedFormError.IVALID_PREFIX;
-      } else if (i >= 2 && !RegExp(/[a-fA-F\d]/).test(char)) {
-        return EMaskedFormError.ILLEGAL_CHARACTER;
-      } else if (i > 41) {
-        return EMaskedFormError.MAX_LENGTH_EXCEEDED;
-      } else {
-        return acc;
-      }
-    }, undefined);
   } else {
-    return validateEthAddress(value) ? undefined : EMaskedFormError.GENERIC_ERROR;
+    console.log("=====validateEthInput", value)
+
+    let error = undefined;
+    for(let [i,char] of value.split("").entries()) {
+      if (i === 0 && char !== "0") {
+        error =  EMaskedFormError.IVALID_PREFIX;
+        break;
+      } else if (i === 1 && char !== "x") {
+        error =  EMaskedFormError.IVALID_PREFIX;
+        break;
+      } else if (i >= 2 && !RegExp(/[a-fA-F\d]/).test(char)) {
+        error =  EMaskedFormError.ILLEGAL_CHARACTER;
+        break;
+      } else if (i > 41) {
+        error =  EMaskedFormError.MAX_LENGTH_EXCEEDED;
+        break;
+      } else {
+        error = undefined;
+      }
+    }
+    return error
   }
 };
 

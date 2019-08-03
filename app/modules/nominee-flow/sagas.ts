@@ -1,7 +1,9 @@
 import { delay } from "redux-saga";
 import { all, fork, put } from "redux-saga/effects";
 
-import { ENomineeRequestErrorNotifications } from "../../components/translatedMessages/messages";
+import {
+  ENomineeRequestErrorNotifications
+} from "../../components/translatedMessages/messages";
 import { createMessage } from "../../components/translatedMessages/utils";
 import { NOMINEE_REQUESTS_WATCHER_DELAY } from "../../config/constants";
 import { TGlobalDependencies } from "../../di/setupBindings";
@@ -23,6 +25,7 @@ import { nomineeApiDataToNomineeRequests, nomineeRequestResponseToRequestStatus 
 export function* loadNomineeTaskData({
   apiEtoNomineeService,
   logger,
+  notificationCenter
 }: TGlobalDependencies): Iterator<any> {
   try {
     const taskData = yield all({
@@ -54,8 +57,9 @@ export function* loadNomineeTaskData({
     );
   } catch (e) {
     logger.error("Failed to load Nominee tasks", e);
+    notificationCenter.error(createMessage(ENomineeRequestErrorNotifications.FETCH_NOMINEE_DATA_ERROR));
+    //show the user what's already loaded
     yield put(actions.nomineeFlow.dataReady())
-    //fixme add error notification
   }
 }
 
@@ -87,7 +91,7 @@ export function* nomineeRequestsWatcher({ logger }: TGlobalDependencies): Iterat
   }
 }
 
-export function* createNomineeLinkRequest(
+export function* createNomineeRequest(
   { apiEtoNomineeService, logger, notificationCenter }: TGlobalDependencies,
   action: TActionFromCreator<typeof actions.nomineeFlow.createNomineeRequest>,
 ): Iterator<any> {
@@ -129,15 +133,16 @@ export function* createNomineeLinkRequest(
           ENomineeRequestError.GENERIC_ERROR,
         ),
       );
-      notificationCenter.error(createMessage(ENomineeRequestErrorNotifications.GENERIC_ERROR));
+      notificationCenter.error(createMessage(ENomineeRequestErrorNotifications.SUBMITTING_ERROR));
     }
   } finally {
     yield put(actions.routing.goToDashboard());
+    yield put(actions.nomineeFlow.dataReady())
   }
 }
 
 export function* nomineeFlowSagas(): Iterator<any> {
-  yield fork(neuTakeLatest, actions.nomineeFlow.createNomineeRequest, createNomineeLinkRequest);
+  yield fork(neuTakeLatest, actions.nomineeFlow.createNomineeRequest, createNomineeRequest);
   yield fork(neuTakeLatest, actions.nomineeFlow.loadNomineeTaskData, loadNomineeTaskData);
   yield fork(
     neuTakeUntil,

@@ -2,7 +2,7 @@ import * as cn from "classnames";
 import * as React from "react";
 
 import { InlineIcon } from "../../shared/icons/InlineIcon";
-import { EAccountSetupStepState, IStepComponentProps } from "../utils";
+import { EAccountSetupStepState, IStepComponentProps } from "../linkToIssuer/utils";
 
 import * as checkMark from "../../../assets/img/inline_icons/icon_check.svg";
 import * as styles from "../NomineeDashboard.module.scss";
