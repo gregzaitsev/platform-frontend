@@ -1,6 +1,5 @@
 import * as React from "react";
-import { FormattedMessage } from "react-intl-phraseapp";
-import { branch, compose, nest, renderComponent, withProps } from "recompose";
+import {  compose, nest, withProps } from "recompose";
 
 import { actions } from "../../modules/actions";
 import { selectIsBankAccountVerified } from "../../modules/bank-transfer-flow/selectors";
@@ -16,11 +15,9 @@ import { TTranslatedString } from "../../types";
 import { onEnterAction } from "../../utils/OnEnterAction";
 import { withContainer } from "../../utils/withContainer.unsafe";
 import { Layout } from "../layouts/Layout";
-import { LoadingIndicator } from "../shared/loading-indicator/LoadingIndicator";
-import { SuccessTick } from "../shared/SuccessTick";
-import { NomineeAccountSetup } from "./NomineeAccountSetup";
 import { NomineeDashboardContainer } from "./NomineeDashboardContainer";
-import { getNomineeTasks, ITask, NomineeTasksData } from "./NomineeTasksData";
+import { ENomineeTask, getNomineeTaskStep } from "./NomineeTasksData";
+import { NomineeDashboardTasks } from "./NomineeDashboardTasks";
 
 import * as styles from "./NomineeDashboard.module.scss";
 
@@ -32,7 +29,7 @@ interface IStateProps {
 }
 
 interface IDashboardProps {
-  nomineeTasks: ITask[];
+  nomineeTaskStep: ENomineeTask;
 }
 
 interface IDashboardTitleProps {
@@ -47,36 +44,8 @@ export const DashboardTitle: React.FunctionComponent<IDashboardTitleProps> = ({ 
   </div>
 );
 
-const NoTasks = () => (
-  <>
-    <SuccessTick />
-    <h2 className={styles.dashboardTitle}>
-      <FormattedMessage id="nominee-dashboard.no-tasks-title" />
-    </h2>
-    <p className={styles.dashboardText}>
-      <FormattedMessage id="nominee-dashboard.no-tasks-text" />
-    </p>
-  </>
-);
-
-const NomineeTasks: React.FunctionComponent<IDashboardProps> = ({ nomineeTasks }) => (
-  <>
-    {nomineeTasks.map((task: ITask) => (
-      <task.taskRootComponent key={task.key} />
-    ))}
-  </>
-);
-
-export const NomineeDashboardTasks: React.FunctionComponent<IDashboardProps> = ({
-  nomineeTasks,
-}) => (
-  <section className={styles.dashboardContentPanel}>
-    {nomineeTasks.length ? <NomineeTasks nomineeTasks={nomineeTasks} /> : <NoTasks />}
-  </section>
-);
 
 export const NomineeDashboard = compose<IDashboardProps, {}>(
-  withContainer(nest(Layout, NomineeDashboardContainer)),
   appConnect<IStateProps>({
     stateToProps: state => ({
       isLoading: selectNomineeStateIsLoading(state),
@@ -85,20 +54,18 @@ export const NomineeDashboard = compose<IDashboardProps, {}>(
       verificationIsComplete: SelectIsVerificationFullyDone(state),
     }),
   }),
-  // fixme add watcher to renew verificationIsComplete!!
-  branch<IStateProps>(
-    ({ verificationIsComplete }) => !verificationIsComplete,
-    renderComponent(NomineeAccountSetup),
-  ),
-  onEnterAction({
-    actionCreator: dispatch => {
-      dispatch(actions.nomineeFlow.loadNomineeTaskData());
-      //for the case that it was started in the NomineeKycPending branch
-      dispatch(actions.kyc.kycStopWatching());
+  onEnterAction<IStateProps>({
+    actionCreator: (dispatch, { verificationIsComplete }) => {
+      if (verificationIsComplete) {
+        dispatch(actions.nomineeFlow.loadNomineeTaskData());
+      }
     },
   }),
-  branch<IStateProps>(({ isLoading }) => isLoading, renderComponent(LoadingIndicator)),
-  withProps<IDashboardProps, IStateProps>(({ nomineeRequest, isBankAccountVerified }) => ({
-    nomineeTasks: getNomineeTasks(NomineeTasksData, nomineeRequest, isBankAccountVerified),
-  })),
+  withProps<IDashboardProps, IStateProps>(({ verificationIsComplete, nomineeRequest, isBankAccountVerified }) =>
+    ({
+      nomineeTaskStep: getNomineeTaskStep(verificationIsComplete, nomineeRequest, isBankAccountVerified)
+    })
+  ),
+  withContainer<IDashboardProps>(nest(Layout, NomineeDashboardContainer)),
+  // branch<IStateProps>(({ isLoading }) => isLoading, renderComponent(LoadingIndicator)),
 )(NomineeDashboardTasks);

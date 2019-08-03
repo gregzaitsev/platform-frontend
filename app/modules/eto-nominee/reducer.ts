@@ -31,7 +31,7 @@ export const etoNomineeReducer: AppReducer<IEtoNomineeState> = (
         nomineeRequests: action.payload.requests,
         isLoading: false,
       };
-    case actions.etoNominee.nomineeRequestsReady.getType():
+    case actions.etoNominee.dataReady.getType():
       //recover after network failure etc
       return {
         ...state,

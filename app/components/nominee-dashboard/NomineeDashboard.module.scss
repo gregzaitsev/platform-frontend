@@ -1,3 +1,13 @@
+.account-setup-wrapper {
+  max-width: 748px;
+  margin: 0 auto;
+}
+
+.account-setup-container {
+  display: grid;
+  grid-gap: 5px;
+}
+
 .nominee-dashboard-container {
   max-width: 748px;
   margin: 0 auto;
@@ -32,12 +42,12 @@
   display: grid;
   grid-gap: 2rem;
   justify-items: flex-start;
+  align-items: stretch;
+  grid-auto-rows: 1fr auto;
 
   background-color: $neu-white-two;
   box-shadow: $shadow-bottom-black;
   padding: $padding;
-  align-items: stretch;
-  grid-auto-rows: 1fr auto;
 }
 
 .dashboard-content-title {
@@ -67,10 +77,7 @@
   text-transform: uppercase;
 }
 
-.account-setup-wrapper {
-  display: grid;
-  grid-gap: 5px;
-}
+
 
 .account-setup-step-wrapper {
   display: grid;

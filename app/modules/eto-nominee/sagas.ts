@@ -26,7 +26,7 @@ export function* etoGetNomineeRequests({
   } catch (e) {
     logger.error("Failed to load Nominee requests", e);
     notificationCenter.error(createMessage(EEtoNomineeRequestErrorNotifications.GENERIC_ERROR));
-    yield put(actions.etoNominee.nomineeRequestsReady());
+    yield put(actions.etoNominee.dataReady());
   }
 }
 
@@ -59,14 +59,14 @@ export function* updateNomineeRequest(
 
     if (newStatus === ENomineeUpdateRequestStatus.APPROVED) {
       yield put(actions.etoFlow.loadIssuerEto());
-      yield put(actions.etoNominee.nomineeRequestsReady());
+      yield put(actions.etoNominee.dataReady());
     } else {
       yield put(actions.etoNominee.getNomineeRequests());
     }
   } catch (e) {
     logger.error("Failed to update nominee request", e);
     notificationCenter.error(createMessage(EEtoNomineeRequestErrorNotifications.GENERIC_ERROR));
-    yield put(actions.etoNominee.nomineeRequestsReady());
+    yield put(actions.etoNominee.dataReady());
   }
 }
 

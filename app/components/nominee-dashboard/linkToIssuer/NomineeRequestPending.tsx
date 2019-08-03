@@ -10,22 +10,27 @@ import { onEnterAction } from "../../../utils/OnEnterAction";
 import { onLeaveAction } from "../../../utils/OnLeaveAction";
 import { getMessageTranslation } from "../../translatedMessages/messages";
 import { StepStatus } from "../DashboardStepStatus";
+import { Panel } from "../../shared/Panel";
+
+import * as styles from "../NomineeDashboard.module.scss";
 
 export const NomineeRequestPendingLayout: React.FunctionComponent = () => (
-  <StepStatus
-    contentTitleComponent={<FormattedMessage id="nominee-flow.link-with-issuer.link-with-issuer" />}
-    contentTextComponent={[
-      <FormattedMessage id="nominee-flow.link-with-issuer.pending.text1" />,
-      <FormattedHTMLMessage
-        tagName="span"
-        id="nominee-flow.link-with-issuer.pending.text2"
-        values={{ href: externalRoutes.neufundSupportHome }}
-      />,
-    ]}
-    status={getMessageTranslation(
-      nomineeRequestToTranslationMessage(ENomineeRequestStatus.PENDING),
-    )}
-  />
+  <Panel className={styles.dashboardContentPanel} data-test-id="nominee-kyc-status">
+    <StepStatus
+      contentTitleComponent={<FormattedMessage id="nominee-flow.link-with-issuer.link-with-issuer" />}
+      contentTextComponent={[
+        <FormattedMessage id="nominee-flow.link-with-issuer.pending.text1" />,
+        <FormattedHTMLMessage
+          tagName="span"
+          id="nominee-flow.link-with-issuer.pending.text2"
+          values={{ href: externalRoutes.neufundSupportHome }}
+        />,
+      ]}
+      status={getMessageTranslation(
+        nomineeRequestToTranslationMessage(ENomineeRequestStatus.PENDING),
+      )}
+    />
+  </Panel>
 );
 
 export const NomineeRequestPending = compose(

@@ -107,6 +107,11 @@ export const nomineeFlowReducer: AppReducer<INomineeFlowState> = (
         error: ENomineeRequestError.NONE,
         loading: false,
       };
+    case actions.nomineeFlow.dataReady.getType():
+        return {
+          ...state,
+          loading: false,
+        };
     default:
       return state;
   }

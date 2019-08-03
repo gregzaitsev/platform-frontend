@@ -1,13 +1,19 @@
+import * as React from "react";
 import { branch, compose, renderComponent, renderNothing, withProps } from "recompose";
+import { FormattedMessage } from "react-intl-phraseapp";
 
-import { EKycRequestStatus } from "../../lib/api/KycApi.interfaces";
-import { selectBackupCodesVerified, selectIsUserEmailVerified } from "../../modules/auth/selectors";
-import { selectKycRequestStatus } from "../../modules/kyc/selectors";
-import { appConnect } from "../../store";
+import { EKycRequestStatus } from "../../../lib/api/KycApi.interfaces";
+import { selectBackupCodesVerified, selectIsUserEmailVerified } from "../../../modules/auth/selectors";
+import { selectKycRequestStatus } from "../../../modules/kyc/selectors";
+import { appConnect } from "../../../store";
 import { nomineeAccountSetupSteps } from "./AccountSetupData";
-import { AccountSetupLayout, INomineeAccountSetupSteps } from "./AccountSetupFlow";
-import { NomineeKycPending } from "./NomineeKycPending";
-import { prepareSetupAccountSteps } from "./utils";
+import { AccountSetupStep, INomineeAccountSetupSteps } from "./AccountSetupFlow";
+import { AccountSetupKycPending } from "./AccountSetupKycPending";
+import { IStepComponentProps, prepareSetupAccountSteps } from "../utils";
+import { DashboardTitle } from "../NomineeDashboard";
+import { Panel } from "../../shared/Panel";
+
+import * as styles from "../NomineeDashboard.module.scss";
 
 interface IStateProps {
   emailVerified: boolean;
@@ -15,7 +21,25 @@ interface IStateProps {
   kycRequestStatus: EKycRequestStatus;
 }
 
-export const NomineeAccountSetup = compose<INomineeAccountSetupSteps, {}>(
+export interface INomineeAccountSetupSteps {
+  accountSetupStepsData: IStepComponentProps[];
+}
+
+
+export const AccountSetupLayout: React.FunctionComponent<INomineeAccountSetupSteps> = ({ accountSetupStepsData }) =>
+  <>
+    <DashboardTitle
+      title={<FormattedMessage id="account-setup.welcome-to-neufund" />}
+      text={<FormattedMessage id="account-setup.please-complete-setup" />}
+    />
+    <Panel className={styles.accountSetupContainer}>
+      {accountSetupStepsData.map((stepData: IStepComponentProps) => (
+        <AccountSetupStep {...stepData} />
+      ))}
+    </Panel>
+  </>
+
+export const AccountSetup = compose<INomineeAccountSetupSteps, {}>(
   appConnect<IStateProps | null>({
     stateToProps: state => {
       const kycRequestStatus = selectKycRequestStatus(state);
@@ -41,7 +65,7 @@ export const NomineeAccountSetup = compose<INomineeAccountSetupSteps, {}>(
     renderComponent(
       withProps<{ kycRequestStatus: EKycRequestStatus }, IStateProps>(({ kycRequestStatus }) => ({
         kycRequestStatus,
-      }))(NomineeKycPending),
+      }))(AccountSetupKycPending),
     ),
   ),
   withProps<INomineeAccountSetupSteps, IStateProps>(

@@ -17,6 +17,7 @@ import { appConnect } from "../../../store";
 import { TTranslatedString } from "../../../types";
 import { NomineeLinkRequestForm } from "./LinkToIssuerForm";
 import { NomineeRequestPending } from "./NomineeRequestPending";
+import { withContainer } from "../../../utils/withContainer.unsafe";
 
 import * as styles from "./LinkToIssuer.module.scss";
 
@@ -64,18 +65,6 @@ const nextState = (
   }
 };
 
-export const CreateNomineeRequestLayout: React.FunctionComponent = () => (
-  <>
-    <h1 className={styles.title}>
-      <FormattedMessage id="nominee-flow.link-with-issuer.link-with-issuer" />
-    </h1>
-    <p className={styles.text}>
-      <FormattedMessage id="nominee-flow.link-with-issuer.enter-wallet-address" />
-    </p>
-    <NomineeLinkRequestForm />
-  </>
-);
-
 const getText = (
   requestStatus: INomineeRequest,
   nomineeRequestError: ENomineeRequestError,
@@ -109,10 +98,29 @@ export const RepeatNomineeRequestLayout: React.FunctionComponent<IRepeatRequestP
     <h1 className={styles.title}>
       <FormattedMessage id="nominee-flow.link-with-issuer.link-with-issuer" />
     </h1>
-    <p className={cn(styles.text, styles.error)}>{getText(nomineeRequest, nomineeRequestError)}</p>
+    <p className={cn(styles.text, styles.error)}>
+      {getText(nomineeRequest, nomineeRequestError)}
+    </p>
     <NomineeLinkRequestForm />
   </>
 );
+
+export const CreateNomineeRequestLayout: React.FunctionComponent = () => (
+  <>
+    <h1 className={styles.title}>
+      <FormattedMessage id="nominee-flow.link-with-issuer.link-with-issuer" />
+    </h1>
+    <p className={styles.text}>
+      <FormattedMessage id="nominee-flow.link-with-issuer.enter-wallet-address" />
+    </p>
+    <NomineeLinkRequestForm />
+  </>
+);
+
+export const NomineeRequestContainer:React.FunctionComponent = ({children}) =>
+  <section className={styles.linkToIssuerContentPanel}>
+    {children}
+  </section>
 
 export const LinkToIssuer = compose<IStateProps, {}>(
   appConnect<IStateProps>({
@@ -129,6 +137,7 @@ export const LinkToIssuer = compose<IStateProps, {}>(
     ({ nextState }) => nextState === ENextState.WAIT_WHILE_PENDING,
     renderComponent(NomineeRequestPending),
   ),
+  withContainer(NomineeRequestContainer),
   branch<IBranchProps>(
     ({ nextState }) => nextState === ENextState.REPEAT_LINK_REQUEST,
     renderComponent(RepeatNomineeRequestLayout),

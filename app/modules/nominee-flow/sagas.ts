@@ -54,7 +54,7 @@ export function* loadNomineeTaskData({
     );
   } catch (e) {
     logger.error("Failed to load Nominee tasks", e);
-
+    yield put(actions.nomineeFlow.dataReady())
     //fixme add error notification
   }
 }

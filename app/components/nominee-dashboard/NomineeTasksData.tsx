@@ -6,6 +6,8 @@ import { AcceptTha } from "./AcceptTha";
 import { LinkBankAccount } from "./LinkBankAccount";
 import { LinkToIssuer } from "./linkToIssuer/LinkToIssuer";
 import { RedeemShareCapital } from "./RedeemShareCapital";
+import { AccountSetup } from "./accountSetup/AccountSetup";
+import { NoTasks } from "./NoTasks";
 
 export interface ITaskData {
   key: ENomineeTask;
@@ -18,6 +20,8 @@ export interface ITask {
 }
 
 export enum ENomineeTask {
+  NONE = "noTasks",
+  ACCOUNT_SETUP = "accountSetup",
   LINK_TO_ISSUER = "linkToIssuer",
   LINK_BANK_ACCOUNT = "linkBankAccount",
   ACCEPT_THA = "acceptTha",
@@ -28,6 +32,10 @@ export enum ENomineeTask {
 type TNomineeTasksData = { [key in ENomineeTask]: ITaskData };
 
 export const NomineeTasksData: TNomineeTasksData = {
+  [ENomineeTask.ACCOUNT_SETUP]:{
+    key: ENomineeTask.ACCOUNT_SETUP,
+    taskRootComponent: AccountSetup
+  },
   [ENomineeTask.LINK_TO_ISSUER]: {
     key: ENomineeTask.LINK_TO_ISSUER,
     taskRootComponent: LinkToIssuer,
@@ -48,19 +56,30 @@ export const NomineeTasksData: TNomineeTasksData = {
     key: ENomineeTask.ACCEPT_ISHA,
     taskRootComponent: AcceptIsha,
   },
+  [ENomineeTask.NONE]: {
+    key: ENomineeTask.NONE,
+    taskRootComponent: NoTasks,
+  },
 };
 
 //todo here all task choosing logic
-export const getNomineeTasks = (
-  data: TNomineeTasksData,
+export const getNomineeTaskStep = (
+  verificationIsComplete: boolean,
   nomineeRequest: INomineeRequest | undefined,
   isBankAccountVerified: boolean,
-): ITask[] => {
-  if (!nomineeRequest || nomineeRequest.state !== ENomineeRequestStatus.APPROVED) {
-    return [data[ENomineeTask.LINK_TO_ISSUER] as ITask];
+): ENomineeTask => {
+  if(!verificationIsComplete){
+    return ENomineeTask.ACCOUNT_SETUP;
+  } else if (!nomineeRequest || nomineeRequest.state !== ENomineeRequestStatus.APPROVED) {
+    return ENomineeTask.LINK_TO_ISSUER;
   } else if (!isBankAccountVerified) {
-    return [data[ENomineeTask.LINK_BANK_ACCOUNT] as ITask];
+    return ENomineeTask.LINK_BANK_ACCOUNT;
   } else {
-    return [];
+    return ENomineeTask.NONE
   }
 };
+
+export const getNomineeTasks = (data: TNomineeTasksData,step:ENomineeTask ) =>{
+  console.log("getNomineeTasks", step, data[step])
+  return [data[step] as ITask]
+}

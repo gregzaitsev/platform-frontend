@@ -1,10 +1,10 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
-import { AccountSetupBackupSeedComponent } from "../settings/backup-seed/AccountSetupBackupSeedComponent";
-import { AccountSetupKycComponent } from "../settings/kyc-states/AccountSetupKycComponent";
-import { VerifyEmailComponent } from "../settings/verify-email/AccountSetupVerifyEmailComponent";
-import { IAccountSetupStepData } from "./utils";
+import { AccountSetupBackupSeedComponent } from "../../settings/backup-seed/AccountSetupBackupSeedComponent";
+import { AccountSetupKycComponent } from "../../settings/kyc-states/AccountSetupKycComponent";
+import { VerifyEmailComponent } from "../../settings/verify-email/AccountSetupVerifyEmailComponent";
+import { IAccountSetupStepData } from "../utils";
 
 export const nomineeAccountSetupSteps = (
   emailVerified: boolean,

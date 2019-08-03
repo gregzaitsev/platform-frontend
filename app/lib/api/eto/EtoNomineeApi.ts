@@ -18,6 +18,8 @@ export class IssuerIdInvalid extends EtoNomineeApiError {}
 
 export class NomineeRequestExists extends EtoNomineeApiError {}
 
+export class LoadNomineeRequestsError extends EtoNomineeApiError {}
+
 @injectable()
 export class EtoNomineeApi {
   constructor(@inject(symbols.authorizedJsonHttpClient) private httpClient: IHttpClient) {}
@@ -28,7 +30,11 @@ export class EtoNomineeApi {
       baseUrl: BASE_PATH,
       url: GET_NOMINEE_REQUEST_PATH,
     });
-    return response.body;
+    if (response.statusCode === 400) {
+      throw new LoadNomineeRequestsError();
+    } else {
+      return response.body;
+    }
   }
 
   //issuer side

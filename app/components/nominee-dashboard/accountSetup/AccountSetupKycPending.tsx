@@ -2,17 +2,18 @@ import * as React from "react";
 import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 import { compose } from "recompose";
 
-import { EKycRequestStatus } from "../../lib/api/KycApi.interfaces";
-import { actions } from "../../modules/actions";
-import { kycStatusToTranslationMessage } from "../../modules/kyc/utils";
-import { onEnterAction } from "../../utils/OnEnterAction";
-import { AccountSetupKycPendingComponent } from "../settings/kyc-states/AccountSetupKycComponent";
-import { Panel } from "../shared/Panel";
-import { getMessageTranslation } from "../translatedMessages/messages";
-import { StepStatus } from "./DashboardStepStatus";
-import { DashboardTitle } from "./NomineeDashboard";
+import { EKycRequestStatus } from "../../../lib/api/KycApi.interfaces";
+import { actions } from "../../../modules/actions";
+import { kycStatusToTranslationMessage } from "../../../modules/kyc/utils";
+import { onEnterAction } from "../../../utils/OnEnterAction";
+import { AccountSetupKycPendingComponent } from "../../settings/kyc-states/AccountSetupKycComponent";
+import { Panel } from "../../shared/Panel";
+import { getMessageTranslation } from "../../translatedMessages/messages";
+import { StepStatus } from "../DashboardStepStatus";
+import { DashboardTitle } from "../NomineeDashboard";
 
-import * as styles from "./NomineeDashboard.module.scss";
+import * as styles from "../NomineeDashboard.module.scss";
+import { onLeaveAction } from "../../../utils/OnLeaveAction";
 
 interface IKycPendingProps {
   kycRequestStatus: EKycRequestStatus;
@@ -20,7 +21,7 @@ interface IKycPendingProps {
   backupCodesVerified: boolean;
 }
 
-export const NomineeKycPendingLayout: React.FunctionComponent<IKycPendingProps> = ({
+export const AccountSetupKycPendingLayout: React.FunctionComponent<IKycPendingProps> = ({
   kycRequestStatus,
 }) => (
   <>
@@ -41,8 +42,11 @@ export const NomineeKycPendingLayout: React.FunctionComponent<IKycPendingProps> 
   </>
 );
 
-export const NomineeKycPending = compose<IKycPendingProps, IKycPendingProps>(
+export const AccountSetupKycPending = compose<IKycPendingProps, IKycPendingProps>(
   onEnterAction({
     actionCreator: dispatch => dispatch(actions.kyc.kycStartWatching()),
   }),
-)(NomineeKycPendingLayout);
+  onLeaveAction({
+    actionCreator: dispatch => dispatch(actions.kyc.kycStopWatching()),
+  })
+)(AccountSetupKycPendingLayout);

@@ -1,6 +1,18 @@
 $border-color: #cfd7dd;
 $border-color-focused: $neu-charcoal-grey;
 
+.link-to-issuer-content-panel {
+  display: grid;
+  grid-gap: 2rem;
+  grid-auto-rows: auto auto 1fr;
+  justify-items: flex-start;
+  align-items: stretch;
+
+  background-color: $neu-white-two;
+  box-shadow: $shadow-bottom-black;
+  padding: $padding;
+}
+
 .title {
   font-family: $font-family-roboto;
   font-size: 24px;
