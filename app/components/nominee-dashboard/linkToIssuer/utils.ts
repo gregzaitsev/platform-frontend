@@ -1,4 +1,5 @@
 import { EMaskedFormError } from "../../translatedMessages/messages";
+import { ENomineeRequestError, ENomineeRequestStatus, INomineeRequest } from "../../../modules/nominee-flow/reducer";
 
 export interface IAccountSetupStepData {
   key: string;
@@ -20,6 +21,14 @@ export enum EAccountSetupStepState {
   DONE = "done",
   ACTIVE = "active",
   NOT_DONE = "notDone",
+}
+
+
+export enum ENomineeRequestComponentState {
+  SUCCESS = "nomineeRequestSuccess",
+  WAIT_WHILE_RQUEST_PENDING = "waitWhileNomineeRequestPending",
+  REPEAT_REQUEST = "repeatNomineeRequest",
+  SEND_REQUEST = "sendNomineeRequest",
 }
 
 const determineStepState = (isActive: boolean, completed: boolean): EAccountSetupStepState => {
@@ -94,3 +103,26 @@ export const validateEthAddress = (value: string | undefined) => {
     return RegExp(/^0x[\da-fA-F]{40}$/).test(value);
   }
 };
+
+export const getNomineeRequestComponentState = (
+  nomineeRequest: INomineeRequest | undefined,
+  nomineeRequestError: ENomineeRequestError,
+) => {
+  if (!nomineeRequest && nomineeRequestError === ENomineeRequestError.NONE) {
+    return ENomineeRequestComponentState.SEND_REQUEST;
+  } else if (!nomineeRequest && nomineeRequestError === ENomineeRequestError.REQUEST_EXISTS) {
+    throw new Error("invalid nominee request state");
+  } else if (!nomineeRequest && nomineeRequestError !== ENomineeRequestError.NONE) {
+    return ENomineeRequestComponentState.REPEAT_REQUEST;
+  } else if (nomineeRequest && nomineeRequest.state === ENomineeRequestStatus.APPROVED) {
+    return ENomineeRequestComponentState.SUCCESS;
+  } else if (nomineeRequest && nomineeRequest.state === ENomineeRequestStatus.PENDING) {
+    return ENomineeRequestComponentState.WAIT_WHILE_RQUEST_PENDING;
+  } else if (nomineeRequest && nomineeRequest.state === ENomineeRequestStatus.REJECTED) {
+    return ENomineeRequestComponentState.REPEAT_REQUEST;
+  } else {
+    throw new Error("invalid nominee request state");
+  }
+};
+
+//todo write tests for this

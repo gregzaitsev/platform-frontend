@@ -49,9 +49,17 @@ export class NomineeLinkRequestFormBase extends React.Component<IIntlProps & IPr
   };
 
   onChange = (value: string | undefined) => {
-    const error = validateEthInput(value);
-    const isValid = validateEthAddress(value);
-    this.setState({ value, error, isValid });
+    if (value === "" || value === undefined) {
+      this.setState({
+        value: undefined,
+        error: undefined,
+        isValid: false
+      })
+    } else {
+      const error = validateEthInput(value);
+      const isValid = validateEthAddress(value);
+      this.setState({ value, error, isValid });
+    }
   };
 
   onBlur = (value: string | undefined) => {
