@@ -79,7 +79,5 @@ export const getNomineeTaskStep = (
   }
 };
 
-export const getNomineeTasks = (data: TNomineeTasksData,step:ENomineeTask ) =>{
-  console.log("getNomineeTasks", step, data[step])
-  return [data[step] as ITask]
-}
+export const getNomineeTasks = (data: TNomineeTasksData,step:ENomineeTask ) =>
+  [data[step] as ITask]

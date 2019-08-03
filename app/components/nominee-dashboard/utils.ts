@@ -85,6 +85,6 @@ export const validateEthAddress = (value: string | undefined) => {
   if (value === undefined) {
     return false;
   } else {
-    return RegExp(/0x[\da-fA-F]{40}/).test(value);
+    return RegExp(/^0x[\da-fA-F]{40}$/).test(value);
   }
 };
