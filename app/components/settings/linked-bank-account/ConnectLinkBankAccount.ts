@@ -28,28 +28,27 @@ interface IComponentProps {
   verifyBankAccount: () => void;
 }
 
-const connectLinkBankAccountComponent =<T extends {}>(
+const connectLinkBankAccountComponent = <T extends {}>(
   WrappedComponent: React.ComponentType<IComponentProps & T>,
 ) =>
-
   compose<IComponentProps & T, T>(
-  onEnterAction({
-    actionCreator: dispatch => {
-      dispatch(actions.kyc.loadBankAccountDetails());
-    },
-  }),
-  appConnect<IStateProps, IDispatchProps, T>({
-    stateToProps: state => ({
-      bankAccount: selectBankAccount(state),
-      isBankAccountVerified: selectIsBankAccountVerified(state),
-      isUserFullyVerified: selectIsUserFullyVerified(state),
+    onEnterAction({
+      actionCreator: dispatch => {
+        dispatch(actions.kyc.loadBankAccountDetails());
+      },
     }),
-    dispatchToProps: dispatch => ({
-      verifyBankAccount: () =>
-        dispatch(actions.bankTransferFlow.startBankTransfer(EBankTransferType.VERIFY)),
+    appConnect<IStateProps, IDispatchProps, T>({
+      stateToProps: state => ({
+        bankAccount: selectBankAccount(state),
+        isBankAccountVerified: selectIsBankAccountVerified(state),
+        isUserFullyVerified: selectIsUserFullyVerified(state),
+      }),
+      dispatchToProps: dispatch => ({
+        verifyBankAccount: () =>
+          dispatch(actions.bankTransferFlow.startBankTransfer(EBankTransferType.VERIFY)),
+      }),
     }),
-  }),
-    branch<IStateProps>(({bankAccount})=> bankAccount === undefined, renderNothing)
-)(WrappedComponent);
+    branch<IStateProps>(({ bankAccount }) => bankAccount === undefined, renderNothing),
+  )(WrappedComponent);
 
 export { connectLinkBankAccountComponent };

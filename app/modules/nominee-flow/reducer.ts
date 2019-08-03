@@ -17,61 +17,61 @@ export enum ENomineeRequestError {
   NONE = "none",
   ISSUER_ID_ERROR = "issuer_id_error",
   REQUEST_EXISTS = "REQUEST_EXISTS",
-  GENERIC_ERROR = "nominee_request_generic_error"
+  GENERIC_ERROR = "nominee_request_generic_error",
 }
 
 export enum ENomineeAcceptThaStatus {
   NOT_DONE = "not_done",
   DONE = "done",
-  ERROR = "error"
+  ERROR = "error",
 }
 
 export enum ENomineeRedeemShareholderCapitalStatus {
   NOT_DONE = "not_done",
   DONE = "done",
-  ERROR = "error"
+  ERROR = "error",
 }
 
 export enum ENomineeLinkBankAccountStatus {
   NOT_DONE = "not_done",
   DONE = "done",
-  ERROR = "error"
+  ERROR = "error",
 }
 
 export enum ENomineeUploadIshaStatus {
   NOT_DONE = "not_done",
   DONE = "done",
-  ERROR = "error"
+  ERROR = "error",
 }
 
 export interface INomineeRequest {
-  state: ENomineeRequestStatus,
-  nomineeId: string,
-  etoId: string,
-  insertedAt: string,
-  updatedAt: string,
+  state: ENomineeRequestStatus;
+  nomineeId: string;
+  etoId: string;
+  insertedAt: string;
+  updatedAt: string;
 }
 
-export type TNomineeRequestStorage = {[id: string]:INomineeRequest} //can be etoId or nomineeId
+export type TNomineeRequestStorage = { [id: string]: INomineeRequest }; //can be etoId or nomineeId
 
 export interface INomineeFlowState {
   loading: boolean;
-  error: ENomineeRequestError,
-  nomineeRequests: TNomineeRequestStorage,
-  linkBankAccount: ENomineeLinkBankAccountStatus,
-  acceptTha: ENomineeAcceptThaStatus,
-  redeemShareholderCapital: ENomineeRedeemShareholderCapitalStatus,
-  uploadIsha: ENomineeUploadIshaStatus
+  error: ENomineeRequestError;
+  nomineeRequests: TNomineeRequestStorage;
+  linkBankAccount: ENomineeLinkBankAccountStatus;
+  acceptTha: ENomineeAcceptThaStatus;
+  redeemShareholderCapital: ENomineeRedeemShareholderCapitalStatus;
+  uploadIsha: ENomineeUploadIshaStatus;
 }
 
 const nomineeFlowInitialState = {
   loading: false,
-  error:ENomineeRequestError.NONE,
+  error: ENomineeRequestError.NONE,
   nomineeRequests: {},
   acceptTha: ENomineeAcceptThaStatus.NOT_DONE,
   linkBankAccount: ENomineeLinkBankAccountStatus.NOT_DONE,
   redeemShareholderCapital: ENomineeRedeemShareholderCapitalStatus.NOT_DONE,
-  uploadIsha: ENomineeUploadIshaStatus.NOT_DONE
+  uploadIsha: ENomineeUploadIshaStatus.NOT_DONE,
 };
 
 export const nomineeFlowReducer: AppReducer<INomineeFlowState> = (
@@ -88,13 +88,13 @@ export const nomineeFlowReducer: AppReducer<INomineeFlowState> = (
     case actions.nomineeFlow.storeNomineeTaskData.getType():
       return {
         ...state,
-        loading:false,
+        loading: false,
         nomineeRequests: action.payload.tasks.nomineeRequests,
       };
     case actions.nomineeFlow.storeNomineeRequests.getType():
       return {
         ...state,
-        loading:false,
+        loading: false,
         nomineeRequests: action.payload.nomineeRequests,
       };
     case actions.nomineeFlow.storeNomineeRequest.getType():
@@ -102,12 +102,12 @@ export const nomineeFlowReducer: AppReducer<INomineeFlowState> = (
         ...state,
         nomineeRequests: {
           ...state.nomineeRequests,
-          [action.payload.etoId]: action.payload.nomineeRequest
+          [action.payload.etoId]: action.payload.nomineeRequest,
         },
         error: ENomineeRequestError.NONE,
         loading: false,
       };
     default:
-      return state
+      return state;
   }
 };

@@ -12,19 +12,15 @@ const GET_NOMINEE_REQUEST_PATH = "/nominee-requests/me";
 const ETO_GET_NOMINEE_REQUEST_PATH = "/me/nominee-requests";
 const ETO_UPDATE_NOMINEE_REQUEST_PATH = "/me/nominee-requests/:nomineeId";
 
-export class EtoNomineeApiError extends Error {
-}
+export class EtoNomineeApiError extends Error {}
 
-export class IssuerIdInvalid extends EtoNomineeApiError {
-}
+export class IssuerIdInvalid extends EtoNomineeApiError {}
 
-export class NomineeRequestExists extends EtoNomineeApiError {
-}
+export class NomineeRequestExists extends EtoNomineeApiError {}
 
 @injectable()
 export class EtoNomineeApi {
-  constructor(@inject(symbols.authorizedJsonHttpClient) private httpClient: IHttpClient) {
-  }
+  constructor(@inject(symbols.authorizedJsonHttpClient) private httpClient: IHttpClient) {}
 
   //nominee side
   public async getNomineeRequests(): Promise<TNomineeRequestResponse[]> {
@@ -60,7 +56,10 @@ export class EtoNomineeApi {
     }
   }
 
-  public async etoUpdateNomineeRequest(nomineeId: string, state: ENomineeUpdateRequestStatus): Promise<void> {
+  public async etoUpdateNomineeRequest(
+    nomineeId: string,
+    state: ENomineeUpdateRequestStatus,
+  ): Promise<void> {
     const response = await this.httpClient.put<void>({
       baseUrl: BASE_PATH,
       url: withParams(ETO_UPDATE_NOMINEE_REQUEST_PATH, { nomineeId }),
@@ -68,5 +67,4 @@ export class EtoNomineeApi {
     });
     return response.body;
   }
-
 }

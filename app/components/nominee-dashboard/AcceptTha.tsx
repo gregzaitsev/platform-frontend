@@ -1,3 +1,3 @@
-import * as React from 'react';
+import * as React from "react";
 
-export const AcceptTha:React.FunctionComponent = () => <>accept tha</>
+export const AcceptTha: React.FunctionComponent = () => <>accept tha</>;

@@ -72,5 +72,5 @@ export const appReducers = {
   personProfileModal: personProfileModalReducer,
   portfolioDownloadAgreementsModal: portfolioDownloadAgreementsModalReducer,
   immutableStorage: immutableStorageReducer,
-  nomineeFlow: nomineeFlowReducer
+  nomineeFlow: nomineeFlowReducer,
 };

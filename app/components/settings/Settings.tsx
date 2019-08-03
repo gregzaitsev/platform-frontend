@@ -48,7 +48,8 @@ export const SettingsComponent: React.FunctionComponent<IStateProps> = ({
   kycRequestStatus,
 }) => {
   const isPersonalDataProcessed =
-    kycRequestStatus === EKycRequestStatus.PENDING || kycRequestStatus === EKycRequestStatus.ACCEPTED;
+    kycRequestStatus === EKycRequestStatus.PENDING ||
+    kycRequestStatus === EKycRequestStatus.ACCEPTED;
   const isUserInvestor = userType === EUserType.INVESTOR;
   const isIndividual = kycRequestType === EKycRequestType.INDIVIDUAL;
 

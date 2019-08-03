@@ -1,7 +1,7 @@
 import { delay } from "redux-saga";
 import { fork, put } from "redux-saga/effects";
 
-import {  EEtoNomineeRequestErrorNotifications} from "../../components/translatedMessages/messages";
+import { EEtoNomineeRequestErrorNotifications } from "../../components/translatedMessages/messages";
 import { createMessage } from "../../components/translatedMessages/utils";
 import { NOMINEE_REQUESTS_WATCHER_DELAY } from "../../config/constants";
 import { TGlobalDependencies } from "../../di/setupBindings";
@@ -14,21 +14,23 @@ import { neuCall, neuTakeLatest, neuTakeUntil } from "../sagasUtils";
 export function* etoGetNomineeRequests({
   apiEtoNomineeService,
   logger,
-  notificationCenter
+  notificationCenter,
 }: TGlobalDependencies): Iterator<any> {
   try {
-    const nomineeRequests:TNomineeRequestResponse[] = yield apiEtoNomineeService.etoGetNomineeRequest();
-    const nomineeRequestsConverted: TNomineeRequestStorage = etoApiDataToNomineeRequests(nomineeRequests);
+    const nomineeRequests: TNomineeRequestResponse[] = yield apiEtoNomineeService.etoGetNomineeRequest();
+    const nomineeRequestsConverted: TNomineeRequestStorage = etoApiDataToNomineeRequests(
+      nomineeRequests,
+    );
 
     yield put(actions.etoNominee.storeNomineeRequests(nomineeRequestsConverted));
   } catch (e) {
     logger.error("Failed to load Nominee requests", e);
     notificationCenter.error(createMessage(EEtoNomineeRequestErrorNotifications.GENERIC_ERROR));
-    yield put(actions.etoNominee.nomineeRequestsReady())
+    yield put(actions.etoNominee.nomineeRequestsReady());
   }
 }
 
-export function* etoNomineeRequestsWatcher({logger}: TGlobalDependencies): Iterator<any>{
+export function* etoNomineeRequestsWatcher({ logger }: TGlobalDependencies): Iterator<any> {
   while (true) {
     logger.info("Getting nominee requests");
     try {
@@ -41,30 +43,30 @@ export function* etoNomineeRequestsWatcher({logger}: TGlobalDependencies): Itera
   }
 }
 
-export function* updateNomineeRequest({
-  apiEtoNomineeService,
-  logger,
-    notificationCenter
-}: TGlobalDependencies,
-  action:  TActionFromCreator<typeof actions.etoNominee.acceptNomineeRequest> | TActionFromCreator<typeof actions.etoNominee.rejectNomineeRequest>): Iterator<any> {
+export function* updateNomineeRequest(
+  { apiEtoNomineeService, logger, notificationCenter }: TGlobalDependencies,
+  action:
+    | TActionFromCreator<typeof actions.etoNominee.acceptNomineeRequest>
+    | TActionFromCreator<typeof actions.etoNominee.rejectNomineeRequest>,
+): Iterator<any> {
   try {
-    const newStatus = action.type === actions.etoNominee.acceptNomineeRequest.getType()
-      ? ENomineeUpdateRequestStatus.APPROVED
-      : ENomineeUpdateRequestStatus.REJECTED;
+    const newStatus =
+      action.type === actions.etoNominee.acceptNomineeRequest.getType()
+        ? ENomineeUpdateRequestStatus.APPROVED
+        : ENomineeUpdateRequestStatus.REJECTED;
 
     yield apiEtoNomineeService.etoUpdateNomineeRequest(action.payload.nomineeId, newStatus);
 
-    if(newStatus === ENomineeUpdateRequestStatus.APPROVED){
+    if (newStatus === ENomineeUpdateRequestStatus.APPROVED) {
       yield put(actions.etoFlow.loadIssuerEto());
-      yield put(actions.etoNominee.nomineeRequestsReady())
+      yield put(actions.etoNominee.nomineeRequestsReady());
     } else {
       yield put(actions.etoNominee.getNomineeRequests());
     }
-
   } catch (e) {
     logger.error("Failed to update nominee request", e);
     notificationCenter.error(createMessage(EEtoNomineeRequestErrorNotifications.GENERIC_ERROR));
-    yield put(actions.etoNominee.nomineeRequestsReady())
+    yield put(actions.etoNominee.nomineeRequestsReady());
   }
 }
 
@@ -72,5 +74,10 @@ export function* etoNomineeSagas(): Iterator<any> {
   yield fork(neuTakeLatest, actions.etoNominee.getNomineeRequests, etoGetNomineeRequests);
   yield fork(neuTakeLatest, actions.etoNominee.acceptNomineeRequest, updateNomineeRequest);
   yield fork(neuTakeLatest, actions.etoNominee.rejectNomineeRequest, updateNomineeRequest);
-  yield fork(neuTakeUntil, actions.etoNominee.startNomineeRequestsWatcher, actions.etoNominee.stopNomineeRequestsWatcher,etoNomineeRequestsWatcher)
+  yield fork(
+    neuTakeUntil,
+    actions.etoNominee.startNomineeRequestsWatcher,
+    actions.etoNominee.stopNomineeRequestsWatcher,
+    etoNomineeRequestsWatcher,
+  );
 }

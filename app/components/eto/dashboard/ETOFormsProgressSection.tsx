@@ -23,7 +23,8 @@ import {
   calculateEtoTermsProgress,
   calculateEtoVotingRightsProgress,
   calculateInvestmentTermsProgress,
-  calculateLegalInformationProgress, calculateNomineeProgress,
+  calculateLegalInformationProgress,
+  calculateNomineeProgress,
   calculateProductVisionProgress,
 } from "../../../modules/eto-flow/utils";
 import { appConnect } from "../../../store";

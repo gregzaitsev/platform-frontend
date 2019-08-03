@@ -20,7 +20,9 @@ interface IKycPendingProps {
   backupCodesVerified: boolean;
 }
 
-export const NomineeKycPendingLayout: React.FunctionComponent<IKycPendingProps> = ({ kycRequestStatus }) => (
+export const NomineeKycPendingLayout: React.FunctionComponent<IKycPendingProps> = ({
+  kycRequestStatus,
+}) => (
   <>
     <DashboardTitle
       title={<FormattedHTMLMessage tagName="span" id="account-setup.thank-you-title" />}
@@ -29,7 +31,9 @@ export const NomineeKycPendingLayout: React.FunctionComponent<IKycPendingProps> 
     <Panel className={styles.dashboardContentPanel} data-test-id="nominee-kyc-status">
       <StepStatus
         contentTitleComponent={<FormattedMessage id="account-setup.pending-kyc.title" />}
-        contentTextComponent={<FormattedHTMLMessage tagName="span" id="account-setup.pending-kyc.text" />}
+        contentTextComponent={
+          <FormattedHTMLMessage tagName="span" id="account-setup.pending-kyc.text" />
+        }
         mainComponent={<AccountSetupKycPendingComponent />}
         status={getMessageTranslation(kycStatusToTranslationMessage(kycRequestStatus))}
       />
@@ -37,8 +41,8 @@ export const NomineeKycPendingLayout: React.FunctionComponent<IKycPendingProps> 
   </>
 );
 
-export const NomineeKycPending = compose<IKycPendingProps,IKycPendingProps>(
+export const NomineeKycPending = compose<IKycPendingProps, IKycPendingProps>(
   onEnterAction({
-    actionCreator:dispatch => dispatch(actions.kyc.kycStartWatching())
-  })
+    actionCreator: dispatch => dispatch(actions.kyc.kycStartWatching()),
+  }),
 )(NomineeKycPendingLayout);

@@ -1,4 +1,3 @@
-import * as React from 'react';
+import * as React from "react";
 
-export const LinkBankAccount = () => <>LinkBankAccount</>
-
+export const LinkBankAccount = () => <>LinkBankAccount</>;

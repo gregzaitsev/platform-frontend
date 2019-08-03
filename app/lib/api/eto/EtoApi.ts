@@ -66,7 +66,7 @@ export class EtoApi {
   public async loadNomineeEtos(): Promise<IHttpResponse<TGeneralEtoData[]>> {
     const response = await this.authorizedHttpClient.get<IHttpResponse<TGeneralEtoData[]>>({
       baseUrl: BASE_PATH,
-      url: NOMINEE_ETOS_PATH
+      url: NOMINEE_ETOS_PATH,
     });
     return response.body;
   }

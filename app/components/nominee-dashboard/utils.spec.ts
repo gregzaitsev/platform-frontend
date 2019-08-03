@@ -57,9 +57,8 @@ describe("prepareSetupAccountSteps", () => {
   });
 });
 
-describe.only("validateEthInput", () => {
+describe("validateEthInput", () => {
   it("validates prefix", () => {
-
-    expect(validateEthInput("`")).to.eq(EMaskedFormError.ILLEGAL_CHARACTER)
-  })
+    expect(validateEthInput("`")).to.eq(EMaskedFormError.ILLEGAL_CHARACTER);
+  });
 });

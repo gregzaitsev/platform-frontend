@@ -8,16 +8,16 @@ import { connectLinkBankAccountComponent } from "./ConnectLinkBankAccount";
 import * as styles from "./LinkedBankAccountWidget.module.scss";
 
 interface IProps {
-  isBankAccountVerified: boolean
-  bankAccount?: TBankAccount
-  verifyBankAccount:() => void;
+  isBankAccountVerified: boolean;
+  bankAccount?: TBankAccount;
+  verifyBankAccount: () => void;
 }
 
 interface INoBankAccountProps {
-  verifyBankAccount:() => void;
+  verifyBankAccount: () => void;
 }
 
-const NoBankAccount:React.FunctionComponent<INoBankAccountProps> = ({verifyBankAccount}) =>
+const NoBankAccount: React.FunctionComponent<INoBankAccountProps> = ({ verifyBankAccount }) => (
   <>
     <Button
       className={styles.linkButton}
@@ -28,20 +28,26 @@ const NoBankAccount:React.FunctionComponent<INoBankAccountProps> = ({verifyBankA
     >
       <FormattedMessage id="linked-bank-account-widget.link-different" />
     </Button>
-  </>;
+  </>
+);
 
 const NotVerifiedBankAccount = () => <>non-verified bank account. Here goes the account data</>;
 
-const NomineeLinkedBankAccountLayout: React.FunctionComponent<IProps> =
-  ({ isBankAccountVerified, bankAccount, verifyBankAccount }) => {
+const NomineeLinkedBankAccountLayout: React.FunctionComponent<IProps> = ({
+  isBankAccountVerified,
+  bankAccount,
+  verifyBankAccount,
+}) => {
   if (bankAccount && bankAccount.hasBankAccount && !isBankAccountVerified) {
-    return <NotVerifiedBankAccount/>
+    return <NotVerifiedBankAccount />;
   } else {
-    return <NoBankAccount verifyBankAccount={verifyBankAccount}/>
+    return <NoBankAccount verifyBankAccount={verifyBankAccount} />;
   }
 };
 
-const NomineeLinkedBankAccountComponent = connectLinkBankAccountComponent<{}>(NomineeLinkedBankAccountLayout);
+const NomineeLinkedBankAccountComponent = connectLinkBankAccountComponent<{}>(
+  NomineeLinkedBankAccountLayout,
+);
 
 export { NomineeLinkedBankAccountComponent, NomineeLinkedBankAccountLayout };
 

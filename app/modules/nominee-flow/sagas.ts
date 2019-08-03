@@ -11,11 +11,12 @@ import { actions, TActionFromCreator } from "../actions";
 import { neuCall, neuTakeLatest, neuTakeUntil } from "../sagasUtils";
 import {
   ENomineeAcceptThaStatus,
-  ENomineeLinkBankAccountStatus, ENomineeRedeemShareholderCapitalStatus,
+  ENomineeLinkBankAccountStatus,
+  ENomineeRedeemShareholderCapitalStatus,
   ENomineeRequestError,
   ENomineeUploadIshaStatus,
   INomineeRequest,
-  TNomineeRequestStorage
+  TNomineeRequestStorage,
 } from "./reducer";
 import { nomineeApiDataToNomineeRequests, nomineeRequestResponseToRequestStatus } from "./utils";
 
@@ -33,19 +34,24 @@ export function* loadNomineeTaskData({
       // uploadIsha:
     });
 
-    const nomineeRequestsConverted: TNomineeRequestStorage = nomineeApiDataToNomineeRequests(taskData.nomineeRequests);
+    const nomineeRequestsConverted: TNomineeRequestStorage = nomineeApiDataToNomineeRequests(
+      taskData.nomineeRequests,
+    );
+    // todo convert data
     // const linkBankAccountConverted = ...
     // const acceptThaConverted = ...
     // const redeemShareholderCapitalConverted = ...
     // const uploadIshaConverted = ...
 
-    yield put(actions.nomineeFlow.storeNomineeTaskData({
-      nomineeRequests: nomineeRequestsConverted,
-      linkBankAccount: ENomineeLinkBankAccountStatus.NOT_DONE,
-      acceptTha: ENomineeAcceptThaStatus.NOT_DONE,
-      redeemShareholderCapital: ENomineeRedeemShareholderCapitalStatus.NOT_DONE,
-      uploadIsha: ENomineeUploadIshaStatus.NOT_DONE,
-    }));
+    yield put(
+      actions.nomineeFlow.storeNomineeTaskData({
+        nomineeRequests: nomineeRequestsConverted,
+        linkBankAccount: ENomineeLinkBankAccountStatus.NOT_DONE,
+        acceptTha: ENomineeAcceptThaStatus.NOT_DONE,
+        redeemShareholderCapital: ENomineeRedeemShareholderCapitalStatus.NOT_DONE,
+        uploadIsha: ENomineeUploadIshaStatus.NOT_DONE,
+      }),
+    );
   } catch (e) {
     logger.error("Failed to load Nominee tasks", e);
 
@@ -59,8 +65,10 @@ export function* loadNomineeRequests({
 }: TGlobalDependencies): Iterator<any> {
   try {
     const nomineeRequests = yield apiEtoNomineeService.getNomineeRequests();
-    const nomineeRequestsConverted: TNomineeRequestStorage = nomineeApiDataToNomineeRequests(nomineeRequests);
-    yield put(actions.nomineeFlow.storeNomineeRequests(nomineeRequestsConverted))
+    const nomineeRequestsConverted: TNomineeRequestStorage = nomineeApiDataToNomineeRequests(
+      nomineeRequests,
+    );
+    yield put(actions.nomineeFlow.storeNomineeRequests(nomineeRequestsConverted));
   } catch (e) {
     logger.error("Failed to load nominee requests", e);
   }
@@ -79,32 +87,48 @@ export function* nomineeRequestsWatcher({ logger }: TGlobalDependencies): Iterat
   }
 }
 
-export function* createNomineeLinkRequest({
-    apiEtoNomineeService,
-    logger,
-    notificationCenter
-  }: TGlobalDependencies,
+export function* createNomineeLinkRequest(
+  { apiEtoNomineeService, logger, notificationCenter }: TGlobalDependencies,
   action: TActionFromCreator<typeof actions.nomineeFlow.createNomineeRequest>,
 ): Iterator<any> {
   try {
-    const nomineeRequest: TNomineeRequestResponse =
-      yield apiEtoNomineeService.createNomineeRequest(action.payload.issuerId);
-    const nomineeRequestConverted: INomineeRequest = nomineeRequestResponseToRequestStatus(nomineeRequest);
+    const nomineeRequest: TNomineeRequestResponse = yield apiEtoNomineeService.createNomineeRequest(
+      action.payload.issuerId,
+    );
+    const nomineeRequestConverted: INomineeRequest = nomineeRequestResponseToRequestStatus(
+      nomineeRequest,
+    );
 
-    yield put(actions.nomineeFlow.storeNomineeRequest(action.payload.issuerId, nomineeRequestConverted));
-
+    yield put(
+      actions.nomineeFlow.storeNomineeRequest(action.payload.issuerId, nomineeRequestConverted),
+    );
   } catch (e) {
     if (e instanceof IssuerIdInvalid) {
       logger.error("Failed to create nominee request, issuer id is invalid", e);
-      yield put(actions.nomineeFlow.storeNomineeRequestError(action.payload.issuerId, ENomineeRequestError.ISSUER_ID_ERROR));
+      yield put(
+        actions.nomineeFlow.storeNomineeRequestError(
+          action.payload.issuerId,
+          ENomineeRequestError.ISSUER_ID_ERROR,
+        ),
+      );
       notificationCenter.error(createMessage(ENomineeRequestErrorNotifications.ISSUER_ID_ERROR));
     } else if (e instanceof NomineeRequestExists) {
       logger.error(`Nominee request to issuerId ${action.payload.issuerId} already exists`, e);
-      yield put(actions.nomineeFlow.storeNomineeRequestError(action.payload.issuerId, ENomineeRequestError.REQUEST_EXISTS));
+      yield put(
+        actions.nomineeFlow.storeNomineeRequestError(
+          action.payload.issuerId,
+          ENomineeRequestError.REQUEST_EXISTS,
+        ),
+      );
       notificationCenter.error(createMessage(ENomineeRequestErrorNotifications.REQUEST_EXISTS));
     } else {
       logger.error("Failed to create nominee request", e);
-      yield put(actions.nomineeFlow.storeNomineeRequestError(action.payload.issuerId, ENomineeRequestError.GENERIC_ERROR));
+      yield put(
+        actions.nomineeFlow.storeNomineeRequestError(
+          action.payload.issuerId,
+          ENomineeRequestError.GENERIC_ERROR,
+        ),
+      );
       notificationCenter.error(createMessage(ENomineeRequestErrorNotifications.GENERIC_ERROR));
     }
   } finally {
@@ -115,6 +139,10 @@ export function* createNomineeLinkRequest({
 export function* nomineeFlowSagas(): Iterator<any> {
   yield fork(neuTakeLatest, actions.nomineeFlow.createNomineeRequest, createNomineeLinkRequest);
   yield fork(neuTakeLatest, actions.nomineeFlow.loadNomineeTaskData, loadNomineeTaskData);
-  yield fork(neuTakeUntil, actions.nomineeFlow.startNomineeRequestsWatcher, actions.nomineeFlow.stopNomineeRequestsWatcher, nomineeRequestsWatcher);
-  // yield fork(neuTakeLatest, actions.nomineeFlow.getNomineeEtos, loadNomineeEtos);
+  yield fork(
+    neuTakeUntil,
+    actions.nomineeFlow.startNomineeRequestsWatcher,
+    actions.nomineeFlow.stopNomineeRequestsWatcher,
+    nomineeRequestsWatcher,
+  );
 }

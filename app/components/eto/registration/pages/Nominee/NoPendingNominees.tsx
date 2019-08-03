@@ -11,36 +11,37 @@ import { FormHighlightGroup } from "../../../../shared/forms/FormHighlightGroup"
 import { Section } from "../../Shared";
 
 interface IStateProps {
-  issuerId: string | undefined
+  issuerId: string | undefined;
 }
 
 interface IProps {
-  issuerId: string
+  issuerId: string;
 }
 
-const NoPendingNomineesComponent: React.FunctionComponent<IProps> = ({ issuerId }) =>
+const NoPendingNomineesComponent: React.FunctionComponent<IProps> = ({ issuerId }) => (
   <Section>
     <p>
       <FormattedHTMLMessage
         tagName="span"
         id="eto.form.eto-nominee.select-nominee-text"
-        values={{ href: externalRoutes.neufundSupportHome }} />
+        values={{ href: externalRoutes.neufundSupportHome }}
+      />
     </p>
 
     <FormHighlightGroup>
       <AccountAddress address={issuerId} data-test-id="issuer-id" />
     </FormHighlightGroup>
-  </Section>;
-
+  </Section>
+);
 
 const NoPendingNominees = compose<IProps, {}>(
   setDisplayName(EEtoFormTypes.EtoVotingRights),
   appConnect<IStateProps>({
     stateToProps: s => ({
-      issuerId: selectUserId(s)
-    })
+      issuerId: selectUserId(s),
+    }),
   }),
   branch<IStateProps>(({ issuerId }) => issuerId === undefined, renderNothing),
 )(NoPendingNomineesComponent);
 
-export { NoPendingNominees }
+export { NoPendingNominees };

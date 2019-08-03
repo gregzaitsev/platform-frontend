@@ -467,9 +467,9 @@ export const EtoSettingDataType = YupTS.object({
 });
 
 export type TNomineeRequestResponse = {
-  state: 'pending'| 'approved'| 'rejected',
-  nomineeId: string,
-  etoId: string,
-  insertedAt: string,
-  updatedAt: string,
-}
+  state: "pending" | "approved" | "rejected";
+  nomineeId: string;
+  etoId: string;
+  insertedAt: string;
+  updatedAt: string;
+};

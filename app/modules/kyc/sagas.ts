@@ -271,7 +271,9 @@ function* cancelIndividualInstantId({
 }: TGlobalDependencies): Iterator<any> {
   try {
     yield apiKycService.cancelInstantId();
-    yield put(actions.kyc.kycUpdateIndividualRequestState(false, { status: EKycRequestStatus.DRAFT }));
+    yield put(
+      actions.kyc.kycUpdateIndividualRequestState(false, { status: EKycRequestStatus.DRAFT }),
+    );
   } catch (e) {
     logger.warn("KYC instant id failed to stop", e);
     notificationCenter.error(createMessage(KycFlowMessage.KYC_SUBMIT_FAILED)); //module.kyc.sagas.problem.submitting
@@ -290,7 +292,9 @@ function* loadLegalRepresentative(
   if (action.type !== "KYC_LOAD_LEGAL_REPRESENTATIVE") return;
   try {
     yield put(actions.kyc.kycUpdateLegalRepresentative(true));
-    const result: IHttpResponse<IKycLegalRepresentative> = yield apiKycService.getLegalRepresentative();
+    const result: IHttpResponse<
+      IKycLegalRepresentative
+    > = yield apiKycService.getLegalRepresentative();
     yield put(actions.kyc.kycUpdateLegalRepresentative(false, result.body));
   } catch {
     yield put(actions.kyc.kycUpdateLegalRepresentative(false));
@@ -304,7 +308,9 @@ function* submitLegalRepresentative(
   if (action.type !== "KYC_SUBMIT_LEGAL_REPRESENTATIVE") return;
   try {
     yield put(actions.kyc.kycUpdateLegalRepresentative(true));
-    const result: IHttpResponse<IKycLegalRepresentative> = yield apiKycService.putLegalRepresentative(action.payload.data);
+    const result: IHttpResponse<
+      IKycLegalRepresentative
+    > = yield apiKycService.putLegalRepresentative(action.payload.data);
     yield put(actions.kyc.kycUpdateLegalRepresentative(false, result.body));
   } catch {
     yield put(actions.kyc.kycUpdateLegalRepresentative(false));
@@ -320,7 +326,9 @@ function* uploadLegalRepresentativeFile(
   const { file } = action.payload;
   try {
     yield put(actions.kyc.kycUpdateLegalRepresentativeDocument(true));
-    const result: IHttpResponse<IKycFileInfo> = yield apiKycService.uploadLegalRepresentativeDocument(file);
+    const result: IHttpResponse<
+      IKycFileInfo
+    > = yield apiKycService.uploadLegalRepresentativeDocument(file);
     yield put(actions.kyc.kycUpdateLegalRepresentativeDocument(false, result.body));
   } catch {
     yield put(actions.kyc.kycUpdateLegalRepresentativeDocument(false));
@@ -335,7 +343,9 @@ function* loadLegalRepresentativeFiles(
   if (action.type !== "KYC_LOAD_LEGAL_REPRESENTATIVE_FILE_LIST") return;
   try {
     yield put(actions.kyc.kycUpdateLegalRepresentativeDocuments(true));
-    const result: IHttpResponse<IKycFileInfo[]> = yield apiKycService.getLegalRepresentativeDocuments();
+    const result: IHttpResponse<
+      IKycFileInfo[]
+    > = yield apiKycService.getLegalRepresentativeDocuments();
     yield put(actions.kyc.kycUpdateLegalRepresentativeDocuments(false, result.body));
   } catch {
     yield put(actions.kyc.kycUpdateLegalRepresentativeDocuments(false));
@@ -354,8 +364,7 @@ function* setBusinessType(
     try {
       const result: IHttpResponse<IKycBusinessData> = yield apiKycService.getBusinessData();
       institutionData = result.body;
-    } catch (_e) {
-    }
+    } catch (_e) {}
     institutionData = { ...institutionData, legalFormType: action.payload.type };
     yield apiKycService.putBusinessData(institutionData);
     yield put(actions.kyc.kycUpdateBusinessData(false, institutionData));

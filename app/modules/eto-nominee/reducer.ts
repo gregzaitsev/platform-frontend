@@ -5,12 +5,12 @@ import { TNomineeRequestStorage } from "../nominee-flow/reducer";
 
 export interface IEtoNomineeState {
   isLoading: boolean;
-  nomineeRequests: TNomineeRequestStorage
+  nomineeRequests: TNomineeRequestStorage;
 }
 
-const etoNomineeInitialState:IEtoNomineeState = {
+const etoNomineeInitialState: IEtoNomineeState = {
   isLoading: false,
-  nomineeRequests: {}
+  nomineeRequests: {},
 };
 
 export const etoNomineeReducer: AppReducer<IEtoNomineeState> = (
@@ -23,21 +23,21 @@ export const etoNomineeReducer: AppReducer<IEtoNomineeState> = (
     case actions.etoNominee.getNomineeRequests.getType():
       return {
         ...state,
-        isLoading:true
+        isLoading: true,
       };
     case actions.etoNominee.storeNomineeRequests.getType():
       return {
         ...state,
         nomineeRequests: action.payload.requests,
-        isLoading:false
+        isLoading: false,
       };
     case actions.etoNominee.nomineeRequestsReady.getType():
       //recover after network failure etc
       return {
         ...state,
-        isLoading:false
+        isLoading: false,
       };
     default:
-      return state
+      return state;
   }
 };

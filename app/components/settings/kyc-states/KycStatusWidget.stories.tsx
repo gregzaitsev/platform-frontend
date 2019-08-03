@@ -33,7 +33,9 @@ storiesOf("KYC/StatusWidget", module)
       backupCodesVerified={false}
     />
   ))
-  .add("draft", () => <KycStatusWidgetBase {...commonProps} requestStatus={EKycRequestStatus.DRAFT} />)
+  .add("draft", () => (
+    <KycStatusWidgetBase {...commonProps} requestStatus={EKycRequestStatus.DRAFT} />
+  ))
   .add("pending", () => (
     <KycStatusWidgetBase {...commonProps} requestStatus={EKycRequestStatus.PENDING} />
   ))

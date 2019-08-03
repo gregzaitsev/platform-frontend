@@ -11,15 +11,22 @@ import { onLeaveAction } from "../../../utils/OnLeaveAction";
 import { getMessageTranslation } from "../../translatedMessages/messages";
 import { StepStatus } from "../DashboardStepStatus";
 
-export const NomineeRequestPendingLayout:React.FunctionComponent = () =>
+export const NomineeRequestPendingLayout: React.FunctionComponent = () => (
   <StepStatus
     contentTitleComponent={<FormattedMessage id="nominee-flow.link-with-issuer.link-with-issuer" />}
     contentTextComponent={[
       <FormattedMessage id="nominee-flow.link-with-issuer.pending.text1" />,
-      <FormattedHTMLMessage tagName="span" id="nominee-flow.link-with-issuer.pending.text2" values={{href:externalRoutes.neufundSupportHome}}/>
+      <FormattedHTMLMessage
+        tagName="span"
+        id="nominee-flow.link-with-issuer.pending.text2"
+        values={{ href: externalRoutes.neufundSupportHome }}
+      />,
     ]}
-    status={getMessageTranslation(nomineeRequestToTranslationMessage(ENomineeRequestStatus.PENDING))}
-  />;
+    status={getMessageTranslation(
+      nomineeRequestToTranslationMessage(ENomineeRequestStatus.PENDING),
+    )}
+  />
+);
 
 export const NomineeRequestPending = compose(
   onEnterAction({

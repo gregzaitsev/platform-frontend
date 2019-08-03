@@ -9,7 +9,9 @@ import "react-toastify/dist/ReactToastify.css";
 const ToastContainer = () => <ToastifyContainer autoClose={TOAST_COMPONENT_DELAY} />;
 
 const ComponentWithTestId = (children: TTranslatedString, options?: TDataTestId) =>
-  !!(process.env.IS_CYPRESS || process.env.NODE_ENV === "development") && options && options["data-test-id"] ? (
+  !!(process.env.IS_CYPRESS || process.env.NODE_ENV === "development") &&
+  options &&
+  options["data-test-id"] ? (
     <div data-test-id={options["data-test-id"]}>{children}</div>
   ) : (
     children

@@ -20,25 +20,29 @@ export const NomineeAccountSetup = compose<INomineeAccountSetupSteps, {}>(
     stateToProps: state => {
       const kycRequestStatus = selectKycRequestStatus(state);
       if (kycRequestStatus !== undefined) {
-        return ({
+        return {
           emailVerified: selectIsUserEmailVerified(state.auth),
           backupCodesVerified: selectBackupCodesVerified(state),
           kycRequestStatus,
-        })
+        };
       } else {
-        return null
+        return null;
       }
-    }
+    },
   }),
   branch<IStateProps | null>(props => props === null, renderNothing),
   branch<IStateProps>(
     props =>
       props.emailVerified &&
       props.backupCodesVerified &&
-      [EKycRequestStatus.PENDING, EKycRequestStatus.IGNORED, EKycRequestStatus.REJECTED].includes(props.kycRequestStatus),
+      [EKycRequestStatus.PENDING, EKycRequestStatus.IGNORED, EKycRequestStatus.REJECTED].includes(
+        props.kycRequestStatus,
+      ),
     renderComponent(
-      withProps<{ kycRequestStatus: EKycRequestStatus }, IStateProps>(({ kycRequestStatus }) =>
-        ({ kycRequestStatus }))(NomineeKycPending)),
+      withProps<{ kycRequestStatus: EKycRequestStatus }, IStateProps>(({ kycRequestStatus }) => ({
+        kycRequestStatus,
+      }))(NomineeKycPending),
+    ),
   ),
   withProps<INomineeAccountSetupSteps, IStateProps>(
     ({ emailVerified, backupCodesVerified, kycRequestStatus }: IStateProps) => ({

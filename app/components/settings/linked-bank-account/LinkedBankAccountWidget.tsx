@@ -80,6 +80,8 @@ const LinkedBankAccountComponent: React.FunctionComponent<
   </Panel>
 );
 
-const LinkedBankAccountWidget = connectLinkBankAccountComponent<IExternalProps>(LinkedBankAccountComponent);
+const LinkedBankAccountWidget = connectLinkBankAccountComponent<IExternalProps>(
+  LinkedBankAccountComponent,
+);
 
 export { LinkedBankAccountWidget, LinkedBankAccountComponent };

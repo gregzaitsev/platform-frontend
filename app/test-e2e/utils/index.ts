@@ -146,7 +146,7 @@ const verifyLatestUserEmailBase = (email: string, finalCheckTid?: string) => {
       cy.get(tid(finalCheckTid)); // wait for the email verified button to show
     }
   });
-    };
+};
 
 export const verifyLatestUserEmail = (email: string) => {
   verifyLatestUserEmailBase(email, "email-verified");

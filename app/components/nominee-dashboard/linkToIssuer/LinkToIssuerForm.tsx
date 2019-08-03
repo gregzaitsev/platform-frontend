@@ -3,7 +3,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { compose } from "recompose";
 
 import { actions } from "../../../modules/actions";
-import { selectNomineeStateIsLoading, } from "../../../modules/nominee-flow/selectors";
+import { selectNomineeStateIsLoading } from "../../../modules/nominee-flow/selectors";
 import { appConnect } from "../../../store";
 import { TDataTestId } from "../../../types";
 import { EKeys } from "../../../utils/enums/keys.enum";
@@ -14,14 +14,14 @@ import { EMaskedFormError, getMessageTranslation } from "../../translatedMessage
 import { createMessage } from "../../translatedMessages/utils";
 import { validateEthAddress, validateEthInput } from "../utils";
 
-import * as styles from "./LinkToIssuer.module.scss"
+import * as styles from "./LinkToIssuer.module.scss";
 
 interface IDispatchProps {
-  createNomineeRequest: (issuerId: string) => void
+  createNomineeRequest: (issuerId: string) => void;
 }
 
 interface IStateProps {
-  isLoading: boolean,
+  isLoading: boolean;
 }
 
 interface IProps {
@@ -30,16 +30,19 @@ interface IProps {
 }
 
 interface IMaskedFormState {
-  value: string | undefined,
-  error: EMaskedFormError | undefined
-  isValid: boolean
+  value: string | undefined;
+  error: EMaskedFormError | undefined;
+  isValid: boolean;
 }
 
-export class NomineeLinkRequestFormBase extends React.Component<IIntlProps & IProps & TDataTestId, IMaskedFormState> {
+export class NomineeLinkRequestFormBase extends React.Component<
+  IIntlProps & IProps & TDataTestId,
+  IMaskedFormState
+> {
   state = {
     value: "",
     error: undefined, //this is to indicate illegal chars etc during input. A value can have no errors but be invalid because user is still typing
-    isValid: false // this is to indicate if the value is a valid Eth address that can be submitted
+    isValid: false, // this is to indicate if the value is a valid Eth address that can be submitted
   };
 
   onPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
@@ -62,12 +65,11 @@ export class NomineeLinkRequestFormBase extends React.Component<IIntlProps & IPr
 
   onFocus = () => {
     this.setState({
-      error: undefined
-    })
+      error: undefined,
+    });
   };
 
-  onSubmit = () =>
-    this.state.isValid && this.props.createNomineeRequest(this.state.value);
+  onSubmit = () => this.state.isValid && this.props.createNomineeRequest(this.state.value);
 
   onKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === EKeys.ENTER) {
@@ -83,26 +85,29 @@ export class NomineeLinkRequestFormBase extends React.Component<IIntlProps & IPr
 
     return (
       <form className={styles.form}>
-
         <input
           className={styles.input}
           value={this.state.value}
           name={name}
           data-test-id="nominee-flow.link-with-issuer-input"
-          placeholder={this.props.intl.formatIntlMessage("nominee-flow.link-with-issuer.placeholder")}
+          placeholder={this.props.intl.formatIntlMessage(
+            "nominee-flow.link-with-issuer.placeholder",
+          )}
           onKeyDown={this.onKeyDown}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.onChange(e.target.value)}
           onBlur={(e: React.ChangeEvent<HTMLInputElement>) => this.onBlur(e.target.value)}
           onFocus={this.onFocus}
           onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => this.onPaste(e)}
         />
-        {this.state.error !== undefined
-          ? <FormError
+        {this.state.error !== undefined ? (
+          <FormError
             name={name}
             message={getMessageTranslation(createMessage(this.state.error!))}
             className={styles.formError}
           />
-          : <div className={styles.formError} />}
+        ) : (
+          <div className={styles.formError} />
+        )}
         <Button
           layout={EButtonLayout.PRIMARY}
           theme={EButtonTheme.BRAND}
@@ -114,7 +119,7 @@ export class NomineeLinkRequestFormBase extends React.Component<IIntlProps & IPr
         </Button>
       </form>
     );
-  };
+  }
 }
 
 export const NomineeLinkRequestForm = compose<IIntlProps & IStateProps & IDispatchProps, {}>(
@@ -123,10 +128,10 @@ export const NomineeLinkRequestForm = compose<IIntlProps & IStateProps & IDispat
       isLoading: selectNomineeStateIsLoading(state),
     }),
     dispatchToProps: dispatch => ({
-      createNomineeRequest: (issuerId) => {
+      createNomineeRequest: issuerId => {
         dispatch(actions.nomineeFlow.createNomineeRequest(issuerId));
       },
-    })
+    }),
   }),
-  injectIntlHelpers
+  injectIntlHelpers,
 )(NomineeLinkRequestFormBase);

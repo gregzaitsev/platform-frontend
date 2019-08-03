@@ -495,7 +495,6 @@ function* loadNomineeEtos({ apiEtoService, logger, notificationCenter }: TGlobal
     )(etos);
 
     yield put(actions.eto.setEtos({ etos: etosByPreviewCode, companies }));
-
   } catch (e) {
     logger.error("nominee ETOs could not be loaded", e);
 

@@ -263,7 +263,7 @@ export enum EMaskedFormError {
   GENERIC_ERROR = "ethAddressValidationGenericError",
   ILLEGAL_CHARACTER = "illegalCharacter",
   IVALID_PREFIX = "ivalidPrefix",
-  MAX_LENGTH_EXCEEDED = "maxLengthExceeded"
+  MAX_LENGTH_EXCEEDED = "maxLengthExceeded",
 }
 
 export enum EKycRequestStatusTranslation {
@@ -284,7 +284,7 @@ export enum ENomineeRequestStatusTranslation {
 export enum ENomineeRequestErrorNotifications {
   ISSUER_ID_ERROR = "nomineeRequestIssuerIdError",
   GENERIC_ERROR = "nomineeRequestGenericError",
-  REQUEST_EXISTS = "requestExists"
+  REQUEST_EXISTS = "requestExists",
 }
 
 export enum EEtoNomineeRequestErrorNotifications {
@@ -698,7 +698,9 @@ const getMessageTranslation = ({ messageType, messageData }: TMessage): TTransla
     case ENomineeRequestErrorNotifications.ISSUER_ID_ERROR:
       return <FormattedMessage id="nominee-flow.link-with-issuer.issuer-id-error-notification" />;
     case ENomineeRequestErrorNotifications.REQUEST_EXISTS:
-      return <FormattedMessage id="nominee-flow.link-with-issuer.request-exists-error-notification" />;
+      return (
+        <FormattedMessage id="nominee-flow.link-with-issuer.request-exists-error-notification" />
+      );
 
     case EEtoNomineeRequestErrorNotifications.GENERIC_ERROR:
       return <FormattedMessage id="eto.form.eto-nominee.generic-network-error" />;

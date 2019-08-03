@@ -13,7 +13,7 @@ export interface IAccountAddressProps {
   address: string;
 }
 
-const HistoryLink: React.FunctionComponent<IAccountAddressProps> = ({ address }) =>
+const HistoryLink: React.FunctionComponent<IAccountAddressProps> = ({ address }) => (
   <div className={styles.transactionHistory}>
     <FormattedMessage
       id="shared-components.account-address.transaction-history"
@@ -26,8 +26,11 @@ const HistoryLink: React.FunctionComponent<IAccountAddressProps> = ({ address })
       }}
     />
   </div>
+);
 
-const AccountAddress: React.FunctionComponent<IAccountAddressProps & CommonHtmlProps & TDataTestId> = ({
+const AccountAddress: React.FunctionComponent<
+  IAccountAddressProps & CommonHtmlProps & TDataTestId
+> = ({
   address,
   className,
   "data-test-id": dataTestId = "account-address.your.ether-address.from-div",
@@ -39,7 +42,9 @@ const AccountAddress: React.FunctionComponent<IAccountAddressProps & CommonHtmlP
   </div>
 );
 
-const AccountAddressWithHistoryLink: React.FunctionComponent<IAccountAddressProps & CommonHtmlProps & TDataTestId> = ({
+const AccountAddressWithHistoryLink: React.FunctionComponent<
+  IAccountAddressProps & CommonHtmlProps & TDataTestId
+> = ({
   address,
   className,
   "data-test-id": dataTestId = "account-address.your.ether-address.from-div",

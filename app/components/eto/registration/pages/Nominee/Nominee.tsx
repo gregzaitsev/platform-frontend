@@ -1,13 +1,12 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
-import { branch, renderComponent } from "recompose";
-import { compose } from "recompose";
+import { branch, compose, renderComponent } from "recompose";
 
 import { etoFormIsReadonly } from "../../../../../lib/api/eto/EtoApiUtils";
 import {
   selectEtoNominee,
   selectEtoNomineeDisplayName,
-  selectIssuerEtoState
+  selectIssuerEtoState,
 } from "../../../../../modules/eto-flow/selectors";
 import { EEtoFormTypes } from "../../../../../modules/eto-flow/types";
 import { appConnect } from "../../../../../store";
@@ -25,31 +24,32 @@ interface IExternalProps {
 
 interface IStateProps {
   currentNomineeId: string | undefined;
-  currentNomineeName: string | undefined
+  currentNomineeName: string | undefined;
 }
 
 interface IComponentProps {
   currentNomineeId: string;
-  currentNomineeName: string
+  currentNomineeName: string;
 }
 
-const NomineeChosenComponent: React.FunctionComponent<IExternalProps & IComponentProps> = ({ readonly,currentNomineeName,currentNomineeId }) => (
+const NomineeChosenComponent: React.FunctionComponent<IExternalProps & IComponentProps> = ({
+  readonly,
+  currentNomineeName,
+  currentNomineeId,
+}) => (
   <>
-      <p className={styles.text}>
-        <FormattedMessage id="eto.form.eto-nominee.text"/>
-      </p>
-      <div className={styles.nomineeBlock} >
-        <span>{currentNomineeId}</span>
-        <span>{currentNomineeName}</span>
-      </div>
+    <p className={styles.text}>
+      <FormattedMessage id="eto.form.eto-nominee.text" />
+    </p>
+    <div className={styles.nomineeBlock}>
+      <span>{currentNomineeId}</span>
+      <span>{currentNomineeName}</span>
+    </div>
     {/* todo cancel button*/}
     {!readonly && (
       <Section className={styles.buttonSection}>
-        <Button
-          layout={EButtonLayout.PRIMARY}
-          data-test-id="reject-nominee"
-        >
-          <FormattedMessage id="eto.form.eto-nominee.reject"/>
+        <Button layout={EButtonLayout.PRIMARY} data-test-id="reject-nominee">
+          <FormattedMessage id="eto.form.eto-nominee.reject" />
         </Button>
       </Section>
     )}
@@ -65,7 +65,10 @@ const Nominee = compose<IExternalProps & IComponentProps, IExternalProps>(
     }),
   }),
   withContainer(FormBase),
-  branch<IStateProps>(({ currentNomineeId }) => currentNomineeId === undefined, renderComponent(ChooseNominee))
+  branch<IStateProps>(
+    ({ currentNomineeId }) => currentNomineeId === undefined,
+    renderComponent(ChooseNominee),
+  ),
 )(NomineeChosenComponent);
 
 export { NomineeChosenComponent, Nominee };

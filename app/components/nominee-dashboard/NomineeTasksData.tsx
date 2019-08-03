@@ -9,12 +9,12 @@ import { RedeemShareCapital } from "./RedeemShareCapital";
 
 export interface ITaskData {
   key: ENomineeTask;
-  taskRootComponent: React.ComponentType,
+  taskRootComponent: React.ComponentType;
 }
 
 export interface ITask {
   key: ENomineeTask;
-  taskRootComponent: React.ComponentType
+  taskRootComponent: React.ComponentType;
 }
 
 export enum ENomineeTask {
@@ -22,46 +22,45 @@ export enum ENomineeTask {
   LINK_BANK_ACCOUNT = "linkBankAccount",
   ACCEPT_THA = "acceptTha",
   REDEEM_SHARE_CAPITAL = "redeemShareCapital",
-  ACCEPT_ISHA = "acceptIsha"
+  ACCEPT_ISHA = "acceptIsha",
 }
 
-type TNomineeTasksData = { [key in ENomineeTask]: ITaskData }
+type TNomineeTasksData = { [key in ENomineeTask]: ITaskData };
 
 export const NomineeTasksData: TNomineeTasksData = {
   [ENomineeTask.LINK_TO_ISSUER]: {
     key: ENomineeTask.LINK_TO_ISSUER,
-    taskRootComponent: LinkToIssuer
+    taskRootComponent: LinkToIssuer,
   },
   [ENomineeTask.LINK_BANK_ACCOUNT]: {
     key: ENomineeTask.LINK_BANK_ACCOUNT,
-    taskRootComponent: LinkBankAccount
+    taskRootComponent: LinkBankAccount,
   },
   [ENomineeTask.ACCEPT_THA]: {
     key: ENomineeTask.ACCEPT_THA,
-    taskRootComponent: AcceptTha
+    taskRootComponent: AcceptTha,
   },
   [ENomineeTask.REDEEM_SHARE_CAPITAL]: {
     key: ENomineeTask.REDEEM_SHARE_CAPITAL,
-    taskRootComponent: RedeemShareCapital
+    taskRootComponent: RedeemShareCapital,
   },
   [ENomineeTask.ACCEPT_ISHA]: {
     key: ENomineeTask.ACCEPT_ISHA,
-    taskRootComponent: AcceptIsha
-  }
+    taskRootComponent: AcceptIsha,
+  },
 };
 
 //todo here all task choosing logic
 export const getNomineeTasks = (
   data: TNomineeTasksData,
   nomineeRequest: INomineeRequest | undefined,
-  isBankAccountVerified: boolean
-):ITask[] => {
-  if(!nomineeRequest ||nomineeRequest.state !== ENomineeRequestStatus.APPROVED){
-    return [data[ENomineeTask.LINK_TO_ISSUER] as ITask]
-  } else if(!isBankAccountVerified) {
-    return [data[ENomineeTask.LINK_BANK_ACCOUNT] as ITask]
-  }
-  else {
-    return []
+  isBankAccountVerified: boolean,
+): ITask[] => {
+  if (!nomineeRequest || nomineeRequest.state !== ENomineeRequestStatus.APPROVED) {
+    return [data[ENomineeTask.LINK_TO_ISSUER] as ITask];
+  } else if (!isBankAccountVerified) {
+    return [data[ENomineeTask.LINK_BANK_ACCOUNT] as ITask];
+  } else {
+    return [];
   }
 };

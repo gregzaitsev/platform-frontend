@@ -84,7 +84,7 @@ export const actions = {
   personProfileModal: personProfileModalActions,
   tosModal: tosModalActions,
   portfolio: portfolioActions,
-  nomineeFlow: nomineeFlowActions
+  nomineeFlow: nomineeFlowActions,
 };
 
 /**

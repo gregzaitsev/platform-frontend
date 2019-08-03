@@ -20,27 +20,31 @@ export const takeLatestNomineeRequest = (nomineeRequests: TNomineeRequestStorage
     const date = new Date(request.updatedAt === null ? request.insertedAt : request.updatedAt);
     const accDate = acc && new Date(acc.updatedAt === null ? acc.insertedAt : acc.updatedAt);
     if (!accDate || accDate < date) {
-      return request
+      return request;
     } else {
-      return acc
+      return acc;
     }
   }, undefined);
 
-
-export const nomineeApiDataToNomineeRequests = (requests: TNomineeRequestResponse[]) =>
-  requests.reduce((acc: TNomineeRequestStorage, request: TNomineeRequestResponse) => {
+export const nomineeApiDataToNomineeRequests = (
+  requests: TNomineeRequestResponse[],
+): TNomineeRequestStorage =>
+  requests.reduce<TNomineeRequestStorage>((acc, request) => {
     acc[request.etoId] = nomineeRequestResponseToRequestStatus(request);
-    return acc
+    return acc;
   }, {});
 
-
-export const etoApiDataToNomineeRequests = (requests: TNomineeRequestResponse[]) =>
-  requests.reduce((acc: TNomineeRequestStorage, request: TNomineeRequestResponse) => {
+export const etoApiDataToNomineeRequests = (
+  requests: TNomineeRequestResponse[],
+): TNomineeRequestStorage =>
+  requests.reduce<TNomineeRequestStorage>((acc, request) => {
     acc[request.nomineeId] = nomineeRequestResponseToRequestStatus(request);
-    return acc
+    return acc;
   }, {});
 
-export const nomineeRequestResponseToRequestStatus = (response: TNomineeRequestResponse): INomineeRequest => {
+export const nomineeRequestResponseToRequestStatus = (
+  response: TNomineeRequestResponse,
+): INomineeRequest => {
   switch (response.state) {
     case "pending":
       return { ...response, state: ENomineeRequestStatus.PENDING };
@@ -49,7 +53,7 @@ export const nomineeRequestResponseToRequestStatus = (response: TNomineeRequestR
     case "rejected":
       return { ...response, state: ENomineeRequestStatus.REJECTED };
     default:
-      throw new Error("invalid response")
+      throw new Error("invalid response");
   }
 };
 
@@ -57,17 +61,19 @@ const compareByDate = (a: INomineeRequest, b: INomineeRequest) => {
   const dateA = new Date(a.updatedAt === null ? a.insertedAt : a.updatedAt);
   const dateB = new Date(b.updatedAt === null ? b.insertedAt : b.updatedAt);
   if (dateA === dateB) {
-    return 0
+    return 0;
   } else {
-    return dateA > dateB ? -1 : 1
+    return dateA > dateB ? -1 : 1;
   }
 };
 
 export const nomineeRequestsToArray = (requests: TNomineeRequestStorage): INomineeRequest[] => {
   const requestsArray = Object.keys(requests).reduce((acc: INomineeRequest[], etoId: string) => {
     acc.push(requests[etoId]);
-    return acc
+    return acc;
   }, []);
 
-  return requestsArray.filter((request: INomineeRequest) => request.state === ENomineeRequestStatus.PENDING).sort(compareByDate)
+  return requestsArray
+    .filter((request: INomineeRequest) => request.state === ENomineeRequestStatus.PENDING)
+    .sort(compareByDate);
 };
