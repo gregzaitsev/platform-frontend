@@ -1,13 +1,13 @@
 import { branch, compose, renderComponent, renderNothing, withProps } from "recompose";
 
-import { INomineeAccountSetupSteps, AccountSetupLayout } from "./AccountSetupFlow";
-import { prepareSetupAccountSteps } from "./utils";
-import { appConnect } from "../../store";
-import { selectKycRequestStatus } from "../../modules/kyc/selectors";
-import { selectBackupCodesVerified, selectIsUserEmailVerified } from "../../modules/auth/selectors";
 import { EKycRequestStatus } from "../../lib/api/KycApi.interfaces";
-import { NomineeKycPending } from "./NomineeKycPending";
+import { selectBackupCodesVerified, selectIsUserEmailVerified } from "../../modules/auth/selectors";
+import { selectKycRequestStatus } from "../../modules/kyc/selectors";
+import { appConnect } from "../../store";
 import { nomineeAccountSetupSteps } from "./AccountSetupData";
+import { AccountSetupLayout, INomineeAccountSetupSteps } from "./AccountSetupFlow";
+import { NomineeKycPending } from "./NomineeKycPending";
+import { prepareSetupAccountSteps } from "./utils";
 
 interface IStateProps {
   emailVerified: boolean;

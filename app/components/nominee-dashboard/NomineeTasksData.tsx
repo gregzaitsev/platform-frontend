@@ -1,11 +1,11 @@
 import * as React from "react";
 
-import { LinkToIssuer } from "./linkToIssuer/LinkToIssuer";
-import { AcceptTha } from "./AcceptTha";
-import { RedeemShareCapital } from "./RedeemShareCapital";
-import { AcceptIsha } from "./AcceptIsha";
 import { ENomineeRequestStatus, INomineeRequest } from "../../modules/nominee-flow/reducer";
+import { AcceptIsha } from "./AcceptIsha";
+import { AcceptTha } from "./AcceptTha";
 import { LinkBankAccount } from "./LinkBankAccount";
+import { LinkToIssuer } from "./linkToIssuer/LinkToIssuer";
+import { RedeemShareCapital } from "./RedeemShareCapital";
 
 export interface ITaskData {
   key: ENomineeTask;

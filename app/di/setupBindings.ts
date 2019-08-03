@@ -10,6 +10,7 @@ import { IHttpClient } from "../lib/api/client/IHttpClient";
 import { JsonHttpClient } from "../lib/api/client/JsonHttpClient";
 import { EtoApi } from "../lib/api/eto/EtoApi";
 import { EtoFileApi } from "../lib/api/eto/EtoFileApi";
+import { EtoNomineeApi } from "../lib/api/eto/EtoNomineeApi";
 import { EtoPledgeApi } from "../lib/api/eto/EtoPledgeApi";
 import { EtoProductApi } from "../lib/api/eto/EtoProductApi";
 import { FileStorageApi } from "../lib/api/FileStorageApi";
@@ -45,7 +46,6 @@ import {
   AsyncIntervalSchedulerFactoryType,
 } from "../utils/AsyncIntervalScheduler";
 import { symbols } from "./symbols";
-import { EtoNomineeApi } from "../lib/api/eto/EtoNomineeApi";
 
 export function setupBindings(config: IConfig): Container {
   const container = new Container();

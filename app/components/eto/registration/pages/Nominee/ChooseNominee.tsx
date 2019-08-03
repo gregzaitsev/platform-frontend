@@ -1,21 +1,21 @@
-import { Section } from "../../Shared";
-import { FormFieldLabel } from "../../../../shared/forms/fields/FormFieldLabel";
-import { FormattedMessage } from "react-intl-phraseapp";
 import * as React from "react";
+import { FormattedMessage } from "react-intl-phraseapp";
 import { branch, compose, renderComponent, setDisplayName } from "recompose";
 
-import { FormHighlightGroup } from "../../../../shared/forms/FormHighlightGroup";
-import { EEtoFormTypes } from "../../../../../modules/eto-flow/types";
-import { appConnect } from "../../../../../store";
-import { NoPendingNominees } from "./NoPendingNominees";
-import { onEnterAction } from "../../../../../utils/OnEnterAction";
 import { actions } from "../../../../../modules/actions";
+import { EEtoFormTypes } from "../../../../../modules/eto-flow/types";
 import { selectEtoNomineeIsLoading, selectNomineeRequests } from "../../../../../modules/eto-nominee/selectors";
 import { INomineeRequest } from "../../../../../modules/nominee-flow/reducer";
 import { nomineeRequestsToArray } from "../../../../../modules/nominee-flow/utils";
-import { Button, EButtonLayout } from "../../../../shared/buttons/Button";
+import { appConnect } from "../../../../../store";
+import { onEnterAction } from "../../../../../utils/OnEnterAction";
 import { onLeaveAction } from "../../../../../utils/OnLeaveAction";
+import { Button, EButtonLayout } from "../../../../shared/buttons/Button";
+import { FormFieldLabel } from "../../../../shared/forms/fields/FormFieldLabel";
+import { FormHighlightGroup } from "../../../../shared/forms/FormHighlightGroup";
 import { LoadingIndicator } from "../../../../shared/loading-indicator/LoadingIndicator";
+import { Section } from "../../Shared";
+import { NoPendingNominees } from "./NoPendingNominees";
 
 interface IStateProps {
   nomineeRequests: INomineeRequest[]

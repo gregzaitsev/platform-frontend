@@ -3,9 +3,9 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
 import { InlineIcon } from "../shared/icons/InlineIcon";
-import { EAccountSetupStepState, IStepComponentProps } from "./utils";
-import { DashboardTitle } from "./NomineeDashboard";
 import { Panel } from "../shared/Panel";
+import { DashboardTitle } from "./NomineeDashboard";
+import { EAccountSetupStepState, IStepComponentProps } from "./utils";
 
 import * as checkMark from "../../assets/img/inline_icons/icon_check.svg";
 import * as styles from "./NomineeDashboard.module.scss";

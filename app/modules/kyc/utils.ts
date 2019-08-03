@@ -1,9 +1,9 @@
 import BigNumber from "bignumber.js";
 
-import { TClaims } from "./types";
-import { EKycRequestStatus } from "../../lib/api/KycApi.interfaces";
 import { EKycRequestStatusTranslation } from "../../components/translatedMessages/messages";
 import { createMessage, TMessage } from "../../components/translatedMessages/utils";
+import { EKycRequestStatus } from "../../lib/api/KycApi.interfaces";
+import { TClaims } from "./types";
 
 export function deserializeClaims(claims: string): TClaims {
   const claimsN = new BigNumber(claims, 16);

@@ -4,7 +4,7 @@ import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 import { Col, Row } from "reactstrap";
 
 import { externalRoutes } from "../../../config/externalRoutes";
-import { ERequestOutsourcedStatus, EKycRequestStatus } from "../../../lib/api/KycApi.interfaces";
+import { EKycRequestStatus, ERequestOutsourcedStatus } from "../../../lib/api/KycApi.interfaces";
 import { EUserType } from "../../../lib/api/users/interfaces";
 import { EColumnSpan } from "../../layouts/Container";
 import { Button, ButtonLink, EButtonLayout, EIconPosition } from "../../shared/buttons/index";

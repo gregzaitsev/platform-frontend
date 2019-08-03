@@ -1,17 +1,18 @@
 import * as React from "react";
 import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
-
-import { AccountSetupKycPendingComponent } from "../settings/kyc-states/AccountSetupKycComponent";
-import { DashboardTitle } from "./NomineeDashboard";
-import { EKycRequestStatus } from "../../lib/api/KycApi.interfaces";
-import { StepStatus } from "./DashboardStepStatus";
-import { getMessageTranslation } from "../translatedMessages/messages";
-import { kycStatusToTranslationMessage } from "../../modules/kyc/utils";
-import * as styles from "./NomineeDashboard.module.scss";
-import { Panel } from "../shared/Panel";
 import { compose } from "recompose";
-import { onEnterAction } from "../../utils/OnEnterAction";
+
+import { EKycRequestStatus } from "../../lib/api/KycApi.interfaces";
 import { actions } from "../../modules/actions";
+import { kycStatusToTranslationMessage } from "../../modules/kyc/utils";
+import { onEnterAction } from "../../utils/OnEnterAction";
+import { AccountSetupKycPendingComponent } from "../settings/kyc-states/AccountSetupKycComponent";
+import { Panel } from "../shared/Panel";
+import { getMessageTranslation } from "../translatedMessages/messages";
+import { StepStatus } from "./DashboardStepStatus";
+import { DashboardTitle } from "./NomineeDashboard";
+
+import * as styles from "./NomineeDashboard.module.scss";
 
 interface IKycPendingProps {
   kycRequestStatus: EKycRequestStatus;

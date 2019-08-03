@@ -7,7 +7,6 @@ import { appConnect } from "../../store";
 import { TTranslatedString } from "../../types";
 import { withContainer } from "../../utils/withContainer.unsafe";
 import { Layout } from "../layouts/Layout";
-import { Panel } from "../shared/Panel";
 import { SuccessTick } from "../shared/SuccessTick";
 import { NomineeAccountSetup } from "./NomineeAccountSetup";
 import { getNomineeTasks, ITask, NomineeTasksData } from "./NomineeTasksData";

@@ -18,7 +18,7 @@ interface IDispatchProps {
 }
 
 interface IStateProps {
-  bankAccount: DeepReadonly<TBankAccount>;
+  bankAccount?: DeepReadonly<TBankAccount>;
   isBankAccountVerified: boolean;
   isUserFullyVerified: boolean;
 }
@@ -58,7 +58,7 @@ const LinkedBankAccountComponent: React.FunctionComponent<
   >
     <div className={styles.bankAccountButtonWrapper}>
       <section className={styles.bankAccountButton}>
-        {props.isBankAccountVerified && props.bankAccount.hasBankAccount ? (
+        {props.isBankAccountVerified && props.bankAccount && props.bankAccount.hasBankAccount ? (
           <BankAccount details={props.bankAccount.details} />
         ) : (
           <LinkAccount {...props} />

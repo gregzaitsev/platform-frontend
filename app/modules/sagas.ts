@@ -7,6 +7,7 @@ import { bankTransferFlowSaga } from "./bank-transfer-flow/sagas";
 import { bookBuildingFlowSagas } from "./bookbuilding-flow/sagas";
 import { etoDocumentsSagas } from "./eto-documents/sagas";
 import { etoFlowSagas } from "./eto-flow/sagas";
+import { etoNomineeSagas } from "./eto-nominee/sagas";
 import { etoSagas } from "./eto/sagas";
 import { gasApiSagas } from "./gas/sagas";
 import { icbmWalletGetDataSagas } from "./icbm-wallet-balance-modal/sagas";
@@ -15,6 +16,7 @@ import { initSagas } from "./init/sagas";
 import { investmentFlowSagas } from "./investment-flow/sagas";
 import { investorTicketsSagas } from "./investor-portfolio/sagas";
 import { kycSagas } from "./kyc/sagas";
+import { nomineeFlowSagas } from "./nominee-flow/sagas";
 import { notificationModalSagas } from "./notificationModal/sagas";
 import { profileSagas } from "./profile/sagas";
 import { routingSagas } from "./routing/sagas";
@@ -33,8 +35,6 @@ import { lightWalletSagas } from "./wallet-selector/light-wizard/sagas";
 import { walletSelectorSagas } from "./wallet-selector/sagas";
 import { walletSagas } from "./wallet/sagas";
 import { web3Sagas } from "./web3/sagas";
-import { nomineeFlowSagas } from "./nominee-flow/sagas";
-import { etoNomineeSagas } from "./eto-nominee/sagas";
 
 /**
  * Restart all sagas on error and report error to sentry

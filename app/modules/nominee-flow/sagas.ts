@@ -1,6 +1,14 @@
-import { TGlobalDependencies } from "../../di/setupBindings";
+import { delay } from "redux-saga";
 import { all, fork, put } from "redux-saga/effects";
+
+import { ENomineeRequestErrorNotifications } from "../../components/translatedMessages/messages";
+import { createMessage } from "../../components/translatedMessages/utils";
+import { NOMINEE_REQUESTS_WATCHER_DELAY } from "../../config/constants";
+import { TGlobalDependencies } from "../../di/setupBindings";
+import { TNomineeRequestResponse } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
+import { IssuerIdInvalid, NomineeRequestExists } from "../../lib/api/eto/EtoNomineeApi";
 import { actions, TActionFromCreator } from "../actions";
+import { neuCall, neuTakeLatest, neuTakeUntil } from "../sagasUtils";
 import {
   ENomineeAcceptThaStatus,
   ENomineeLinkBankAccountStatus, ENomineeRedeemShareholderCapitalStatus,
@@ -9,14 +17,7 @@ import {
   INomineeRequest,
   TNomineeRequestStorage
 } from "./reducer";
-import { neuCall, neuTakeLatest, neuTakeUntil } from "../sagasUtils";
-import { createMessage } from "../../components/translatedMessages/utils";
-import { ENomineeRequestErrorNotifications } from "../../components/translatedMessages/messages";
-import { TNomineeRequestResponse } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
-import { IssuerIdInvalid, NomineeRequestExists } from "../../lib/api/eto/EtoNomineeApi";
 import { nomineeApiDataToNomineeRequests, nomineeRequestResponseToRequestStatus } from "./utils";
-import { delay } from "redux-saga";
-import { NOMINEE_REQUESTS_WATCHER_DELAY } from "../../config/constants";
 
 export function* loadNomineeTaskData({
   apiEtoNomineeService,

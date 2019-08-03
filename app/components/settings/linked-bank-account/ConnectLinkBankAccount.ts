@@ -1,15 +1,15 @@
-import { branch, compose, renderNothing } from "recompose";
 import * as React from "react";
+import { branch, compose, renderNothing } from "recompose";
 
-import { onEnterAction } from "../../../utils/OnEnterAction";
 import { actions } from "../../../modules/actions";
-import { appConnect } from "../../../store";
-import { selectBankAccount } from "../../../modules/kyc/selectors";
-import { selectIsBankAccountVerified } from "../../../modules/bank-transfer-flow/selectors";
 import { selectIsUserFullyVerified } from "../../../modules/auth/selectors";
 import { EBankTransferType } from "../../../modules/bank-transfer-flow/reducer";
-import { DeepReadonly } from "../../../types";
+import { selectIsBankAccountVerified } from "../../../modules/bank-transfer-flow/selectors";
+import { selectBankAccount } from "../../../modules/kyc/selectors";
 import { TBankAccount } from "../../../modules/kyc/types";
+import { appConnect } from "../../../store";
+import { DeepReadonly } from "../../../types";
+import { onEnterAction } from "../../../utils/OnEnterAction";
 
 interface IDispatchProps {
   verifyBankAccount: () => void;
@@ -22,7 +22,7 @@ interface IStateProps {
 }
 
 interface IComponentProps {
-  bankAccount: DeepReadonly<TBankAccount>;
+  bankAccount?: DeepReadonly<TBankAccount>;
   isBankAccountVerified: boolean;
   isUserFullyVerified: boolean;
   verifyBankAccount: () => void;

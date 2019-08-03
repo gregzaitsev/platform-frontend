@@ -11,11 +11,11 @@ import {
 } from "../../../../../modules/eto-flow/selectors";
 import { EEtoFormTypes } from "../../../../../modules/eto-flow/types";
 import { appConnect } from "../../../../../store";
+import { withContainer } from "../../../../../utils/withContainer.unsafe";
 import { Button, EButtonLayout } from "../../../../shared/buttons/index";
 import { Section } from "../../Shared";
-import { withContainer } from "../../../../../utils/withContainer.unsafe";
-import { FormBase } from "./FormBase";
 import { ChooseNominee } from "./ChooseNominee";
+import { FormBase } from "./FormBase";
 
 import * as styles from "./Nominee.module.scss";
 

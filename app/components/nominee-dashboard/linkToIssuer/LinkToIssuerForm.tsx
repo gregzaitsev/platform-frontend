@@ -2,17 +2,17 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { compose } from "recompose";
 
+import { actions } from "../../../modules/actions";
+import { selectNomineeStateIsLoading, } from "../../../modules/nominee-flow/selectors";
+import { appConnect } from "../../../store";
 import { TDataTestId } from "../../../types";
+import { EKeys } from "../../../utils/enums/keys.enum";
+import { IIntlProps, injectIntlHelpers } from "../../../utils/injectIntlHelpers.unsafe";
+import { Button, EButtonLayout, EButtonTheme } from "../../shared/buttons/Button";
 import { FormError } from "../../shared/forms/fields/FormFieldError";
 import { EMaskedFormError, getMessageTranslation } from "../../translatedMessages/messages";
 import { createMessage } from "../../translatedMessages/utils";
-import { EKeys } from "../../../utils/enums/keys.enum";
-import { Button, EButtonLayout, EButtonTheme } from "../../shared/buttons/Button";
-import { IIntlProps, injectIntlHelpers } from "../../../utils/injectIntlHelpers.unsafe";
 import { validateEthAddress, validateEthInput } from "../utils";
-import { appConnect } from "../../../store";
-import { selectNomineeStateIsLoading, } from "../../../modules/nominee-flow/selectors";
-import { actions } from "../../../modules/actions";
 
 import * as styles from "./LinkToIssuer.module.scss"
 

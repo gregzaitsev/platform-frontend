@@ -11,6 +11,7 @@ import { contractsActions } from "./contracts/actions";
 import { depositModalActions } from "./deposit-eth-modal/actions";
 import { etoDocumentsActions } from "./eto-documents/actions";
 import { etoFlowActions } from "./eto-flow/actions";
+import { etoNomineeActions } from "./eto-nominee/actions";
 import { etoActions } from "./eto/actions";
 import { gasActions } from "./gas/actions";
 import { genericModalActions } from "./generic-modal/actions";
@@ -20,6 +21,7 @@ import { initActions } from "./init/actions";
 import { investmentFlowActions } from "./investment-flow/actions";
 import { investorEtoTicketActions } from "./investor-portfolio/actions";
 import { kycActions } from "./kyc/actions";
+import { nomineeFlowActions } from "./nominee-flow/actions";
 import { notificationModalActions } from "./notificationModal/actions";
 import { notificationActions } from "./notifications/actions";
 import { personProfileModalActions } from "./person-profile-modal/actions";
@@ -40,8 +42,6 @@ import { videoModalActions } from "./video-modal/actions";
 import { walletSelectorActions } from "./wallet-selector/actions";
 import { walletActions } from "./wallet/actions";
 import { web3Actions } from "./web3/actions";
-import { nomineeFlowActions } from "./nominee-flow/actions";
-import { etoNomineeActions } from "./eto-nominee/actions";
 
 /** You should add new actions also here (with a namespace).*/
 export const actions = {

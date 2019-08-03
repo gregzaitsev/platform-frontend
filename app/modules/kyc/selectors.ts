@@ -1,9 +1,9 @@
 import { createSelector } from "reselect";
 
 import {
+  EKycRequestStatus,
   EKycRequestType,
   ERequestOutsourcedStatus,
-  EKycRequestStatus,
   KycBankQuintessenceBankAccount,
 } from "../../lib/api/KycApi.interfaces";
 import { IAppState } from "../../store";

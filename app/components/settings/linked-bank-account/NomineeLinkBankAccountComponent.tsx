@@ -9,11 +9,15 @@ import * as styles from "./LinkedBankAccountWidget.module.scss";
 
 interface IProps {
   isBankAccountVerified: boolean
-  bankAccount: TBankAccount
+  bankAccount?: TBankAccount
   verifyBankAccount:() => void;
 }
 
-const NoBankAccount = ({verifyBankAccount}) =>
+interface INoBankAccountProps {
+  verifyBankAccount:() => void;
+}
+
+const NoBankAccount:React.FunctionComponent<INoBankAccountProps> = ({verifyBankAccount}) =>
   <>
     <Button
       className={styles.linkButton}
@@ -30,7 +34,7 @@ const NotVerifiedBankAccount = () => <>non-verified bank account. Here goes the 
 
 const NomineeLinkedBankAccountLayout: React.FunctionComponent<IProps> =
   ({ isBankAccountVerified, bankAccount, verifyBankAccount }) => {
-  if (bankAccount.hasBankAccount && !isBankAccountVerified) {
+  if (bankAccount && bankAccount.hasBankAccount && !isBankAccountVerified) {
     return <NotVerifiedBankAccount/>
   } else {
     return <NoBankAccount verifyBankAccount={verifyBankAccount}/>

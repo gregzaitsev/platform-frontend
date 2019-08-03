@@ -1,7 +1,7 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
-import { ERequestOutsourcedStatus, EKycRequestStatus } from "../../../lib/api/KycApi.interfaces";
+import { EKycRequestStatus, ERequestOutsourcedStatus } from "../../../lib/api/KycApi.interfaces";
 import { EUserType } from "../../../lib/api/users/interfaces";
 import { Button, EButtonLayout, EButtonTheme } from "../../shared/buttons/Button";
 import { LoadingIndicator } from "../../shared/loading-indicator/LoadingIndicator";

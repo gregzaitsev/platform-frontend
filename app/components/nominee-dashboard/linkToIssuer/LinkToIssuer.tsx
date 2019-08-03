@@ -1,14 +1,14 @@
+import * as cn from 'classnames';
 import * as React from "react";
 import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 import { branch, compose, renderComponent, renderNothing, withProps } from "recompose";
-import * as cn from 'classnames';
 
-import { appConnect } from "../../../store";
-import { selectNomineeRequests, selectNomineeStateError } from "../../../modules/nominee-flow/selectors";
 import { ENomineeRequestError, ENomineeRequestStatus, INomineeRequest } from "../../../modules/nominee-flow/reducer";
-import { NomineeLinkRequestForm } from "./LinkToIssuerForm";
+import { selectNomineeRequests, selectNomineeStateError } from "../../../modules/nominee-flow/selectors";
 import { takeLatestNomineeRequest } from "../../../modules/nominee-flow/utils";
+import { appConnect } from "../../../store";
 import { TTranslatedString } from "../../../types";
+import { NomineeLinkRequestForm } from "./LinkToIssuerForm";
 import { NomineeRequestPending } from "./NomineeRequestPending";
 
 import * as styles from "./LinkToIssuer.module.scss"
@@ -54,8 +54,8 @@ const nextState = (nomineeRequest: INomineeRequest | undefined, nomineeRequestEr
   }
 };
 
-export const CreateNomineeRequestLayout: React.FunctionComponent = () => {
-  return <>
+export const CreateNomineeRequestLayout: React.FunctionComponent = () =>
+  <>
     <h1 className={styles.title}>
       <FormattedMessage id="nominee-flow.link-with-issuer.link-with-issuer" />
     </h1>
@@ -63,8 +63,7 @@ export const CreateNomineeRequestLayout: React.FunctionComponent = () => {
       <FormattedMessage id="nominee-flow.link-with-issuer.enter-wallet-address" />
     </p>
     <NomineeLinkRequestForm />
-  </>
-};
+  </>;
 
 
 
@@ -82,8 +81,8 @@ const getText = (requestStatus:INomineeRequest, nomineeRequestError:ENomineeRequ
   }
 };
 
-export const RepeatNomineeRequestLayout: React.FunctionComponent<IRepeatRequestProps> = ({nomineeRequest,nomineeRequestError}) => {
-  return <>
+export const RepeatNomineeRequestLayout: React.FunctionComponent<IRepeatRequestProps> = ({nomineeRequest,nomineeRequestError}) =>
+  <>
     <h1 className={styles.title}>
       <FormattedMessage id="nominee-flow.link-with-issuer.link-with-issuer" />
     </h1>
@@ -91,8 +90,7 @@ export const RepeatNomineeRequestLayout: React.FunctionComponent<IRepeatRequestP
       {getText(nomineeRequest,nomineeRequestError)}
     </p>
     <NomineeLinkRequestForm />
-  </>
-};
+  </>;
 
 export const LinkToIssuer = compose<IStateProps, {}>(
   appConnect<IStateProps>({

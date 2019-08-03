@@ -1,10 +1,10 @@
 import { inject, injectable } from "inversify";
 
 import { symbols } from "../../../di/symbols";
-import { IHttpClient } from "../client/IHttpClient";
-import { withParams } from "../../../utils/withParams";
-import { TNomineeRequestResponse } from "./EtoApi.interfaces.unsafe";
 import { ENomineeUpdateRequestStatus } from "../../../modules/nominee-flow/reducer";
+import { withParams } from "../../../utils/withParams";
+import { IHttpClient } from "../client/IHttpClient";
+import { TNomineeRequestResponse } from "./EtoApi.interfaces.unsafe";
 
 const BASE_PATH = "/api/eto-listing/etos";
 const CREATE_NOMINEE_REQUEST_PATH = "/:etoId/nominee-requests/me";

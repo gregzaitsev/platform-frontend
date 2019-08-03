@@ -1,7 +1,7 @@
-import { createMessage, TMessage } from "../../components/translatedMessages/utils";
-import { ENomineeRequestStatus, INomineeRequest, TNomineeRequestStorage } from "./reducer";
 import { ENomineeRequestStatusTranslation } from "../../components/translatedMessages/messages";
+import { createMessage, TMessage } from "../../components/translatedMessages/utils";
 import { TNomineeRequestResponse } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
+import { ENomineeRequestStatus, INomineeRequest, TNomineeRequestStorage } from "./reducer";
 
 export const nomineeRequestToTranslationMessage = (status: ENomineeRequestStatus): TMessage => {
   switch (status) {

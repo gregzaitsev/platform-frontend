@@ -2,13 +2,13 @@ import * as React from "react";
 import { FormattedHTMLMessage } from "react-intl-phraseapp";
 import { branch, compose, renderNothing, setDisplayName } from "recompose";
 
-import { Section } from "../../Shared";
 import { externalRoutes } from "../../../../../config/externalRoutes";
-import { FormHighlightGroup } from "../../../../shared/forms/FormHighlightGroup";
-import { AccountAddress } from "../../../../shared/AccountAddress";
+import { selectUserId } from "../../../../../modules/auth/selectors";
 import { EEtoFormTypes } from "../../../../../modules/eto-flow/types";
 import { appConnect } from "../../../../../store";
-import { selectUserId } from "../../../../../modules/auth/selectors";
+import { AccountAddress } from "../../../../shared/AccountAddress";
+import { FormHighlightGroup } from "../../../../shared/forms/FormHighlightGroup";
+import { Section } from "../../Shared";
 
 interface IStateProps {
   issuerId: string | undefined

@@ -59,7 +59,7 @@ storiesOf("ETO-Flow/Registration-forms", module)
   .add("EtoVotingRights", () => (
     <Provider store={createStore(() => ({}))}>
       <Formik initialValues={eto} onSubmit={() => {}}>
-        {props => <EtoVotingRightsComponent {...props} {...loadingState} issuerId="0x000"/>}
+        {props => <EtoVotingRightsComponent {...props} {...loadingState} />}
       </Formik>
     </Provider>
   ))

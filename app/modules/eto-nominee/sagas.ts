@@ -1,15 +1,15 @@
-import { fork, put } from "redux-saga/effects";
 import { delay } from "redux-saga";
+import { fork, put } from "redux-saga/effects";
 
+import {  EEtoNomineeRequestErrorNotifications} from "../../components/translatedMessages/messages";
+import { createMessage } from "../../components/translatedMessages/utils";
+import { NOMINEE_REQUESTS_WATCHER_DELAY } from "../../config/constants";
 import { TGlobalDependencies } from "../../di/setupBindings";
-import { actions, TActionFromCreator } from "../actions";
-import { neuCall, neuTakeLatest, neuTakeUntil } from "../sagasUtils";
 import { TNomineeRequestResponse } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
+import { actions, TActionFromCreator } from "../actions";
 import { ENomineeUpdateRequestStatus, TNomineeRequestStorage } from "../nominee-flow/reducer";
 import { etoApiDataToNomineeRequests } from "../nominee-flow/utils";
-import { NOMINEE_REQUESTS_WATCHER_DELAY } from "../../config/constants";
-import { createMessage } from "../../components/translatedMessages/utils";
-import {  EEtoNomineeRequestErrorNotifications} from "../../components/translatedMessages/messages";
+import { neuCall, neuTakeLatest, neuTakeUntil } from "../sagasUtils";
 
 export function* etoGetNomineeRequests({
   apiEtoNomineeService,

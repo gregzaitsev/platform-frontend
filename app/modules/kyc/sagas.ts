@@ -7,9 +7,9 @@ import { EJwtPermissions } from "../../config/constants";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { IHttpResponse } from "../../lib/api/client/IHttpClient";
 import {
+  EKycRequestStatus,
   EKycRequestType,
   ERequestOutsourcedStatus,
-  EKycRequestStatus,
   IKycBeneficialOwner,
   IKycBusinessData,
   IKycFileInfo,

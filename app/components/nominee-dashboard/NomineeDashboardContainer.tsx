@@ -1,17 +1,19 @@
 import * as React from "react";
-import * as styles from "./NomineeDashboard.module.scss";
 import { branch, compose, renderComponent } from "recompose";
-import { appConnect } from "../../store";
-import {
-  selectLinkedNomineeEtoId,
-} from "../../modules/nominee-flow/selectors";
-import { onEnterAction } from "../../utils/OnEnterAction";
+
 import { actions } from "../../modules/actions";
 import { selectEtoWithCompanyAndContractById } from "../../modules/eto/selectors";
 import { TEtoWithCompanyAndContract } from "../../modules/eto/types";
 import {
+  selectLinkedNomineeEtoId,
+} from "../../modules/nominee-flow/selectors";
+import { appConnect } from "../../store";
+import { onEnterAction } from "../../utils/OnEnterAction";
+import {
   NomineeEtoOverviewThumbnail
 } from "../eto/overview/EtoOverviewThumbnail/EtoOverviewThumbnail";
+
+import * as styles from "./NomineeDashboard.module.scss";
 
 // import { EtoOverviewThumbnail } from "../eto/overview/EtoOverviewThumbnail/EtoOverviewThumbnail";
 

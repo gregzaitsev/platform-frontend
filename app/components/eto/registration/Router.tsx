@@ -11,9 +11,9 @@ import { EtoVotingRights } from "./pages/EtoVotingRights";
 import { EtoInvestmentTerms } from "./pages/InvestmentTerms";
 import { EtoRegistrationKeyIndividuals } from "./pages/KeyIndividuals";
 import { EtoRegistrationLegalInformation } from "./pages/LegalInformation";
+import { Nominee } from "./pages/Nominee/Nominee";
 import { EtoRegistrationRiskAssessment } from "./pages/RiskAssessment";
 import { etoRegisterRoutes } from "./routes";
-import { Nominee } from "./pages/Nominee/Nominee";
 
 export const EtoRegisterRouter: React.FunctionComponent = () => (
   <SwitchConnected>
