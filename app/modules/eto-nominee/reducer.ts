@@ -21,6 +21,7 @@ export const etoNomineeReducer: AppReducer<IEtoNomineeState> = (
     case actions.etoNominee.acceptNomineeRequest.getType():
     case actions.etoNominee.rejectNomineeRequest.getType():
     case actions.etoNominee.getNomineeRequests.getType():
+    case actions.etoNominee.deleteNomineeRequest.getType():
       return {
         ...state,
         isLoading: true,

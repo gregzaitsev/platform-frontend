@@ -63,14 +63,6 @@ export class EtoApi {
     });
   }
 
-  public async loadNomineeEtos(): Promise<IHttpResponse<TGeneralEtoData[]>> {
-    const response = await this.authorizedHttpClient.get<IHttpResponse<TGeneralEtoData[]>>({
-      baseUrl: BASE_PATH,
-      url: NOMINEE_ETOS_PATH,
-    });
-    return response.body;
-  }
-
   public async getEtoPreview(previewCode: string): Promise<TPartialCompanyEtoData> {
     return await this.httpClient
       .get<TPartialCompanyEtoData>({
@@ -144,5 +136,13 @@ export class EtoApi {
       baseUrl: BASE_PATH,
       url: ETOS_PATH + "/me/pledges",
     });
+  }
+
+  public async loadNomineeEtos(): Promise<IHttpResponse<TGeneralEtoData[]>> {
+    const response = await this.authorizedHttpClient.get<IHttpResponse<TGeneralEtoData[]>>({
+      baseUrl: BASE_PATH,
+      url: NOMINEE_ETOS_PATH,
+    });
+    return response.body;
   }
 }

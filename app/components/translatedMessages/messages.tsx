@@ -46,7 +46,7 @@ export type TranslatedMessageType =
   | EKycRequestStatusTranslation
   | ENomineeRequestStatusTranslation
   | ENomineeRequestErrorNotifications
-  | EEtoNomineeRequestErrorNotifications;
+  | EEtoNomineeRequestNotifications;
 
 export enum GenericErrorMessage {
   GENERIC_ERROR = "genericError",
@@ -288,8 +288,10 @@ export enum ENomineeRequestErrorNotifications {
   FETCH_NOMINEE_DATA_ERROR = "fetchNomineeDataError"
 }
 
-export enum EEtoNomineeRequestErrorNotifications {
+export enum EEtoNomineeRequestNotifications {
+  DELETE_NOMINEE_REQUEST_SUCCESS = "deleteNomineeRequestSuccess",
   GENERIC_ERROR = "etoNomineeRequestGenericError",
+  COULD_NOT_DELETE_REQUEST = "couldNotDeleteRequest"
 }
 
 export enum TestMessage {
@@ -705,8 +707,12 @@ const getMessageTranslation = ({ messageType, messageData }: TMessage): TTransla
         <FormattedMessage id="nominee-flow.link-with-issuer.request-exists-error-notification" />
       );
 
-    case EEtoNomineeRequestErrorNotifications.GENERIC_ERROR:
+    case EEtoNomineeRequestNotifications.DELETE_NOMINEE_REQUEST_SUCCESS:
+      return <FormattedMessage id="eto.form.eto-nominee.delete-nominee-request-success" />;
+    case EEtoNomineeRequestNotifications.GENERIC_ERROR:
       return <FormattedMessage id="eto.form.eto-nominee.generic-network-error" />;
+    case EEtoNomineeRequestNotifications.COULD_NOT_DELETE_REQUEST:
+      return <FormattedMessage id="eto.form.eto-nominee.delete-request-error" />;
 
     // NEVER DO THIS! This is only for tests, so that we don't bloat locales.json with test strings!
     case TestMessage.TEST_MESSAGE:

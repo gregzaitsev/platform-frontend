@@ -5,7 +5,6 @@ import { branch, compose, renderComponent, setDisplayName } from "recompose";
 import { actions } from "../../../../../modules/actions";
 import { EEtoFormTypes } from "../../../../../modules/eto-flow/types";
 import {
-  selectEtoNomineeIsLoading,
   selectNomineeRequests,
 } from "../../../../../modules/eto-nominee/selectors";
 import { INomineeRequest } from "../../../../../modules/nominee-flow/reducer";
@@ -16,13 +15,11 @@ import { onLeaveAction } from "../../../../../utils/OnLeaveAction";
 import { Button, EButtonLayout } from "../../../../shared/buttons/Button";
 import { FormFieldLabel } from "../../../../shared/forms/fields/FormFieldLabel";
 import { FormHighlightGroup } from "../../../../shared/forms/FormHighlightGroup";
-import { LoadingIndicator } from "../../../../shared/loading-indicator/LoadingIndicator";
 import { Section } from "../../Shared";
 import { NoPendingNominees } from "./NoPendingNominees";
 
 interface IStateProps {
   nomineeRequests: INomineeRequest[];
-  isLoading: boolean;
 }
 
 interface IDispatchProps {
@@ -125,7 +122,6 @@ const ChooseNominee = compose<IStateProps & IDispatchProps, {}>(
   setDisplayName(EEtoFormTypes.Nominee),
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: s => ({
-      isLoading: selectEtoNomineeIsLoading(s),
       nomineeRequests: nomineeRequestsToArray(selectNomineeRequests(s)),
     }),
     dispatchToProps: dispatch => ({
@@ -141,7 +137,6 @@ const ChooseNominee = compose<IStateProps & IDispatchProps, {}>(
   onLeaveAction({
     actionCreator: d => d(actions.etoNominee.stopNomineeRequestsWatcher()),
   }),
-  branch<IStateProps>(({ isLoading }) => isLoading, renderComponent(LoadingIndicator)),
   branch<IStateProps>(
     ({ nomineeRequests }) => Object.keys(nomineeRequests).length === 0,
     renderComponent(NoPendingNominees),

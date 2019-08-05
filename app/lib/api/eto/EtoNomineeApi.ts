@@ -11,6 +11,7 @@ const CREATE_NOMINEE_REQUEST_PATH = "/:etoId/nominee-requests/me";
 const GET_NOMINEE_REQUEST_PATH = "/nominee-requests/me";
 const ETO_GET_NOMINEE_REQUEST_PATH = "/me/nominee-requests";
 const ETO_UPDATE_NOMINEE_REQUEST_PATH = "/me/nominee-requests/:nomineeId";
+const ETO_DELETE_NOMINEE_REQUEST_PATH = "/me/nominees/:nomineeId";
 
 export class EtoNomineeApiError extends Error {}
 
@@ -72,5 +73,20 @@ export class EtoNomineeApi {
       body: state,
     });
     return response.body;
+  }
+
+  public async etoDeleteNomineeRequest(
+    nomineeId: string
+  ): Promise<void> {
+    const response = await this.httpClient.delete<void>({
+      baseUrl: BASE_PATH,
+      url: withParams(ETO_DELETE_NOMINEE_REQUEST_PATH, { nomineeId }),
+    });
+    if(response.statusCode !== 200) {
+      throw new Error()
+    } else {
+
+      return response.body
+    }
   }
 }

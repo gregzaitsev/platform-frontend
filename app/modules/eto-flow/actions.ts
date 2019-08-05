@@ -7,7 +7,9 @@ import { TEtoProducts } from "../../lib/api/eto/EtoProductsApi.interfaces";
 import { createActionFactory } from "../actionsUtils";
 
 export const etoFlowActions = {
-  loadIssuerEto: createActionFactory("ETO_FLOW_LOAD_ISSUER_ETO"),
+  loadIssuerEto: createActionFactory("ETO_FLOW_LOAD_ISSUER_ETO",
+    (inBackground:boolean = false) => ({inBackground})
+    ),
   loadDataStart: createActionFactory("ETO_FLOW_LOAD_DATA_START"),
   loadDataStop: createActionFactory("ETO_FLOW_LOAD_DATA_STOP"),
   loadProducts: createActionFactory("ETO_FLOW_LOAD_PRODUCTS"),
