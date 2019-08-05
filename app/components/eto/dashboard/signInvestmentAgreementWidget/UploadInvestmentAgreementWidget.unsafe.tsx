@@ -26,6 +26,7 @@ import * as styles from "../../EtoContentWidget.module.scss";
 
 interface IDispatchProps {
   downloadAgreementTemplate: (agreementTemplate: IEtoDocument) => void;
+  goToWallet: () => void;
 }
 
 interface IStateProps {
@@ -79,7 +80,7 @@ export const EtoCompletedWidgetLayout: React.ComponentType<
       <p className={cn(styles.text, "pt-2")}>
         <FormattedMessage id="download-agreement-widget.success-text" />
       </p>
-      <ButtonArrowRight data-test-id="eto-dashboard-submit-proposal" onClick={goToWallet}>
+      <ButtonArrowRight data-test-id="eto-dashboard-success-go-to-wallet" onClick={goToWallet}>
         <FormattedMessage id="download-agreement-widget.go-to-wallet" />
       </ButtonArrowRight>
     </div>
@@ -105,6 +106,7 @@ export const UploadInvestmentAgreement = compose<React.FunctionComponent<IExtern
     dispatchToProps: dispatch => ({
       downloadAgreementTemplate: (agreementTemplate: IEtoDocument) =>
         dispatch(actions.etoDocuments.generateTemplate(agreementTemplate)),
+      goToWallet: () => dispatch(actions.routing.goToWallet()),
     }),
   }),
   branch<IStateProps | null>(props => props === null, renderNothing),

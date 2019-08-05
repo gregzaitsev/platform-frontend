@@ -259,12 +259,12 @@ export const getFieldError = (formTid: string, key: string): Cypress.Chainable<s
  * @param fixture - which fixture to load
  */
 export const uploadDocumentToFieldWithTid = (targetTid: string, fixture: string) => {
-  cy.get(tid(targetTid, tid("eto-add-document-drop-zone"))).dropFile(fixture);
+  cy.get(`${tid(targetTid)} ${tid("eto-add-document-drop-zone")}`).dropFile(fixture);
 
   cy.get(tid("documents-ipfs-modal-continue")).click();
   acceptWallet();
 
-  cy.get(tid(targetTid, tid("documents-download-document"))).should("exist");
+  cy.get(`${tid(targetTid)} ${tid("documents-download-document")}`).should("exist");
 };
 
 /**

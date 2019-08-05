@@ -21,6 +21,13 @@ export const doWithdraw = (
 
   confirmAccessModal();
 
+  cy.get(tid("modals.shared.tx-pending.modal")).should("exist");
+
+  cy.get(tid("modals.shared.tx-pending.modal.tx-data.tx-hash"))
+    .should("exist")
+    .invoke("text")
+    .as("txHash");
+
   switch (closeWhen) {
     case "pending":
       cy.get(tid("modals.shared.tx-pending.modal")).should("exist");
@@ -46,6 +53,8 @@ export const doWithdraw = (
 
       break;
   }
+
+  return cy.get("@txHash");
 };
 
 export const assertPendingWithdrawModal = (address: string, amount: string) => {

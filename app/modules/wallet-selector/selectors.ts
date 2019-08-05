@@ -29,13 +29,8 @@ export const selectRootPath = (state: RouterState): string => {
   }
 };
 
-export const selectOppositeRootPath = (state: RouterState): string => {
-  if (selectUrlUserType(state) === EUserType.INVESTOR) {
-    return selectIsLoginRoute(state) ? appRoutes.register : appRoutes.login;
-  } else {
-    return selectIsLoginRoute(state) ? appRoutes.registerIssuer : appRoutes.loginIssuer;
-  }
-};
+export const selectOppositeRootPath = (state: RouterState): string =>
+  selectIsLoginRoute(state) ? appRoutes.register : appRoutes.login;
 
 export const selectIsMessageSigning = (state: IAppState): boolean =>
   !!state.walletSelector.isMessageSigning;

@@ -9,7 +9,7 @@ import {
 import { goToEtoDashboard } from "../utils/navigation";
 import { tid } from "../utils/selectors";
 import { createAndLoginNewUser } from "../utils/userHelpers";
-import { fillAndAssert, submitProposal } from "./EtoRegistrationUtils";
+import { createAndSetNominee, fillAndAssert, submitProposal } from "./EtoRegistrationUtils";
 import {
   aboutFormRequired,
   aboutFormSubmit,
@@ -28,17 +28,20 @@ const openAndCheckValues = (
   sectionForm: TFormFixture,
   expectedValues?: TFormFixtureExpectedValues,
 ) => {
-  cy.get(tid(section, "button")).click();
+  cy.get(`${tid(section)} button`).click();
   checkForm(sectionForm, expectedValues);
   goToEtoDashboard();
 };
 
 describe("Eto Forms", () => {
   it("should fill required fields and submit eto", function(): void {
-    createAndLoginNewUser({ type: "issuer", kyc: "business" }).then(() => {
+    createAndLoginNewUser({ type: "issuer", kyc: "business" }).then(async () => {
       goToEtoDashboard();
 
       cy.get(tid("eto-progress-widget-eto-terms")).should("not.exist");
+
+      // Connect nominee with issuer
+      createAndSetNominee();
 
       // Fill marketing data first
 

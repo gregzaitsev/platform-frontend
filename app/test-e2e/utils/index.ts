@@ -79,7 +79,7 @@ export const registerWithLightWalletNominee = (
 export const typeLightwalletRecoveryPhrase = (words: string[]) => {
   for (let batch = 0; batch < words.length / 4; batch++) {
     for (let index = 0; index < 4; index++) {
-      cy.get(tid(`seed-recovery-word-${batch * 4 + index}`, "input"))
+      cy.get(`${tid(`seed-recovery-word-${batch * 4 + index}`)} input`)
         .type(words[batch * 4 + index], { force: true, timeout: 20 })
         .type("{enter}", { force: true });
     }

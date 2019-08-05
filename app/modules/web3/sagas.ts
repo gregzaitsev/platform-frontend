@@ -8,12 +8,10 @@ import {
   LIGHT_WALLET_PRIVATE_DATA_CACHE_TIME,
 } from "../../config/constants";
 import { TGlobalDependencies } from "../../di/setupBindings";
-import { EUserType } from "../../lib/api/users/interfaces";
 import { LightWallet } from "../../lib/web3/light-wallet/LightWallet";
 import { EWeb3ManagerEvents } from "../../lib/web3/Web3Manager/Web3Manager";
 import { IAppState } from "../../store";
 import { actions, TAction } from "../actions";
-import { selectUserType } from "../auth/selectors";
 import { neuCall, neuTakeEvery } from "../sagasUtils";
 import { selectWalletType } from "./selectors";
 import { EWalletType, TWalletMetadata } from "./types";
@@ -63,20 +61,10 @@ export function* cancelLocking(): Iterator<any> {
   }
 }
 
-export function* loadPreviousWallet(
-  { walletStorage }: TGlobalDependencies,
-  forcedUserType?: EUserType,
-): Iterator<any> {
-  //forcedUserType can still pass as undefined
+export function* loadPreviousWallet({ walletStorage }: TGlobalDependencies): Iterator<any> {
   let storageData = walletStorage.get();
   if (storageData) {
-    // if the type of the user in storage does not match requested user type, clear storage
-    const userType: EUserType = forcedUserType || (yield select(selectUserType));
-    if (userType && storageData.userType !== userType) {
-      walletStorage.clear();
-    } else {
-      yield put(actions.web3.loadPreviousWallet(storageData));
-    }
+    yield put(actions.web3.loadPreviousWallet(storageData));
   }
 }
 

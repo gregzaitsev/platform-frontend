@@ -124,6 +124,7 @@ export const getRequiredIncomingAmount = (token: ECurrency) => {
 export const isPastInvestment = (etoState: EETOStateOnChain) =>
   includes(etoState, [EETOStateOnChain.Payout, EETOStateOnChain.Refund, EETOStateOnChain.Claim]);
 
+// TODO: Remove dependency on userType
 export const getRefundStatus = (
   etoState: EETOStateOnChain,
   userType: EUserType | undefined,

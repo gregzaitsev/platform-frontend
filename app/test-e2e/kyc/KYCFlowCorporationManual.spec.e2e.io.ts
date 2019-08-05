@@ -21,7 +21,7 @@ describe("KYC Small Business flow with manual verification", () => {
       fillForm(kycCorporateCompanyForm);
       fillForm(kycCompanyDocsForm);
 
-      // uplaod legal rep data
+      // upload legal rep data
       fillForm(kycLegalRepForm);
       fillForm(kycLegalRepDocsForm, { submit: false });
 

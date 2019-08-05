@@ -23,7 +23,7 @@ interface IStateProps {
 }
 
 interface IDispatchProps {
-  logout: (userType: EUserType) => void;
+  logout: () => void;
 }
 
 interface IProps {
@@ -31,7 +31,7 @@ interface IProps {
   isLinkActive: (match: match<unknown>) => boolean;
   userHasKycAndVerifiedEmail: boolean;
   actionRequired: boolean;
-  logout: (userType: EUserType) => void;
+  logout: () => void;
 }
 
 interface IHandlers {
@@ -49,7 +49,7 @@ const initMobileMenuData = ({
   logout,
   userHasKycAndVerifiedEmail,
 }: IProps): TMenuEntry[] => {
-  const accountMenu = accountMenuData(actionRequired, isLinkActive, userType, logout);
+  const accountMenu = accountMenuData(actionRequired, isLinkActive, logout);
 
   const data =
     userType === EUserType.INVESTOR
@@ -95,8 +95,8 @@ export const MobileMenu = compose<IMenuData & IHandlers, {}>(
       }
     },
     dispatchToProps: dispatch => ({
-      logout: (userType: EUserType) => {
-        dispatch(actions.auth.logout({ userType }));
+      logout: () => {
+        dispatch(actions.auth.logout());
       },
     }),
   }),

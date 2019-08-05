@@ -4,7 +4,6 @@ import { calculateTimeLeft } from "../../../components/shared/utils";
 import { TMessage } from "../../../components/translatedMessages/utils";
 import { TGlobalDependencies } from "../../../di/setupBindings";
 import { ICreateJwtEndpointResponse } from "../../../lib/api/SignatureAuthApi";
-import { EUserType } from "../../../lib/api/users/interfaces";
 import { EthereumAddressWithChecksum } from "../../../types";
 import { getJwtExpiryDate, hasValidPermissions } from "../../../utils/JWTUtils";
 import { EDelayTiming, safeDelay } from "../../../utils/safeTimers";
@@ -14,7 +13,7 @@ import { neuCall } from "../../sagasUtils";
 import { selectEthereumAddressWithChecksum } from "../../web3/selectors";
 import { AUTH_JWT_TIMING_THRESHOLD, AUTH_TOKEN_REFRESH_THRESHOLD } from "../constants";
 import { JwtNotAvailable, MessageSignCancelledError } from "../errors";
-import { selectJwt, selectUserType } from "../selectors";
+import { selectJwt } from "../selectors";
 import { ELogoutReason } from "../types";
 
 /**
@@ -178,7 +177,6 @@ export function* ensurePermissionsArePresentAndRunEffect(
 export function* handleJwtTimeout({ logger }: TGlobalDependencies): Iterator<any> {
   try {
     const jwt: string | undefined = yield select(selectJwt);
-    const userType: EUserType | undefined = yield select(selectUserType);
 
     if (!jwt) {
       throw new JwtNotAvailable();
@@ -206,7 +204,7 @@ export function* handleJwtTimeout({ logger }: TGlobalDependencies): Iterator<any
         yield neuCall(refreshJWT);
         break;
       case EDelayTiming.DELAYED:
-        yield put(actions.auth.logout({ userType, logoutType: ELogoutReason.SESSION_TIMEOUT }));
+        yield put(actions.auth.logout({ logoutType: ELogoutReason.SESSION_TIMEOUT }));
         break;
     }
   } catch (e) {

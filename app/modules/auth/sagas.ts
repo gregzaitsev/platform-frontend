@@ -5,7 +5,6 @@ import { SignInUserErrorMessage } from "../../components/translatedMessages/mess
 import { createMessage } from "../../components/translatedMessages/utils";
 import { REDIRECT_CHANNEL_WATCH_DELAY } from "../../config/constants";
 import { TGlobalDependencies } from "../../di/setupBindings";
-import { EUserType } from "../../lib/api/users/interfaces";
 import { STORAGE_JWT_KEY } from "../../lib/persistence/JwtObjectStorage";
 import { USER_JWT_KEY as USER_KEY } from "../../lib/persistence/UserStorage";
 import {
@@ -25,7 +24,7 @@ function* handleLogOutUser(
   { web3Manager, jwtStorage, logger, userStorage }: TGlobalDependencies,
   action: TActionFromCreator<typeof actions.auth.logout>,
 ): Iterator<any> {
-  const { userType, logoutType = ELogoutReason.USER_REQUESTED } = action.payload;
+  const { logoutType = ELogoutReason.USER_REQUESTED } = action.payload;
 
   userStorage.clear();
   jwtStorage.clear();
@@ -41,11 +40,7 @@ function* handleLogOutUser(
       }
       break;
     case ELogoutReason.SESSION_TIMEOUT:
-      if (userType === EUserType.ISSUER) {
-        yield put(actions.routing.goToEtoLogin({ logoutReason: ELogoutReason.SESSION_TIMEOUT }));
-      } else {
-        yield put(actions.routing.goToLogin({ logoutReason: ELogoutReason.SESSION_TIMEOUT }));
-      }
+      yield put(actions.routing.goToLogin({ logoutReason: ELogoutReason.SESSION_TIMEOUT }));
       break;
     case ELogoutReason.ALREADY_LOGGED_IN:
       logger.warn(

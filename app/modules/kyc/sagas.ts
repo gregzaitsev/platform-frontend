@@ -25,8 +25,7 @@ import { actions, TAction } from "../actions";
 import { ensurePermissionsArePresentAndRunEffect } from "../auth/jwt/sagas";
 import { selectIsUserVerified, selectUser } from "../auth/selectors";
 import { displayErrorModalSaga } from "../generic-modal/sagas";
-import { EInitType } from "../init/reducer";
-import { selectIsSmartContractInitDone } from "../init/selectors";
+import { waitUntilSmartContractsAreInitialized } from "../init/sagas";
 import { neuCall, neuTakeEvery, neuTakeOnly } from "../sagasUtils";
 import {
   selectCombinedBeneficialOwnerOwnership,
@@ -656,10 +655,7 @@ function* waitForKycStatusLoad(): Iterator<any> {
 
 export function* loadKycRequestData(): any {
   // Wait for contracts to init
-  const isSmartContractsInitialized = yield select(selectIsSmartContractInitDone);
-  if (!isSmartContractsInitialized) {
-    yield neuTakeOnly(actions.init.done, { initType: EInitType.START_CONTRACTS_INIT });
-  }
+  yield waitUntilSmartContractsAreInitialized();
 
   yield put(actions.kyc.kycLoadIndividualRequest());
   yield put(actions.kyc.kycLoadBusinessRequest());

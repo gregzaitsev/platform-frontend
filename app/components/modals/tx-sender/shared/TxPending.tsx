@@ -56,7 +56,13 @@ const TxPendingLayout: React.FunctionComponent<TTxPendingLayoutProps> = props =>
   >
     <TxDetails className="mb-3" {...props} />
 
-    {props.txHash && <TxHashAndBlock txHash={props.txHash} blockId={props.blockId} />}
+    {props.txHash && (
+      <TxHashAndBlock
+        data-test-id="modals.shared.tx-pending.modal.tx-data"
+        txHash={props.txHash}
+        blockId={props.blockId}
+      />
+    )}
 
     {/* This feature is only for testing purpose should not be enabled on production environment. */}
     {/* Because of it there is no need to include button string in translations */}

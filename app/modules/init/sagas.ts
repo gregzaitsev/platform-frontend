@@ -6,13 +6,13 @@ import { IAppState } from "../../store";
 import { isJwtExpiringLateEnough } from "../../utils/JWTUtils";
 import { actions, TActionFromCreator } from "../actions";
 import { loadJwt, setJwt } from "../auth/jwt/sagas";
-import { selectUserType } from "../auth/selectors";
 import { loadUser } from "../auth/user/sagas";
 import { initializeContracts, populatePlatformTermsConstants } from "../contracts/sagas";
-import { neuCall, neuTakeEvery } from "../sagasUtils";
+import { neuCall, neuTakeEvery, neuTakeOnly } from "../sagasUtils";
 import { detectUserAgent } from "../user-agent/sagas";
 import { initWeb3ManagerEvents } from "../web3/sagas";
 import { EInitType } from "./reducer";
+import { selectIsSmartContractInitDone } from "./selectors";
 
 function* initSmartcontracts({ web3Manager, logger }: TGlobalDependencies): any {
   try {
@@ -39,7 +39,6 @@ function* initApp({ logger }: TGlobalDependencies): any {
     yield neuCall(detectUserAgent);
 
     const jwt = yield neuCall(loadJwt);
-    const userType = yield select(selectUserType);
 
     if (jwt) {
       if (isJwtExpiringLateEnough(jwt)) {
@@ -53,13 +52,13 @@ function* initApp({ logger }: TGlobalDependencies): any {
 
           yield loadUser();
         } catch (e) {
-          yield put(actions.auth.logout(userType));
+          yield put(actions.auth.logout());
           logger.error(
             "Cannot retrieve account. This could happen b/c account was deleted on backend",
           );
         }
       } else {
-        yield put(actions.auth.logout(userType));
+        yield put(actions.auth.logout());
         logger.info("JTW expiring too soon.");
       }
     }
@@ -102,6 +101,15 @@ export function* initSmartcontractsOnce(): any {
   }
 
   yield put(actions.init.start(EInitType.START_CONTRACTS_INIT));
+}
+
+export function* waitUntilSmartContractsAreInitialized(): Iterator<any> {
+  const isSmartContractsInitialized = yield select(selectIsSmartContractInitDone);
+
+  if (!isSmartContractsInitialized) {
+    yield neuTakeOnly(actions.init.done, { initType: EInitType.START_CONTRACTS_INIT });
+  }
+  return;
 }
 
 export const initSagas = function*(): Iterator<effects.Effect> {

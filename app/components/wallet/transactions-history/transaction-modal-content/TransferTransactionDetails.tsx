@@ -1,11 +1,15 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
-import { ETransactionType } from "../../../../lib/api/analytics-api/interfaces";
+import {
+  ETransactionDirection,
+  ETransactionType,
+} from "../../../../lib/api/analytics-api/interfaces";
 import {
   ETransactionSubType,
   TExtractTxHistoryFromType,
 } from "../../../../modules/tx-history/types";
+import { assertNever } from "../../../../utils/assertNever";
 import { etoPublicViewByIdLinkLegacy } from "../../../appRouteUtils";
 import { DataRow, DataRowSeparator } from "../../../modals/tx-sender/shared/DataRow";
 import { ECurrency } from "../../../shared/formatters/utils";
@@ -24,6 +28,22 @@ import { BasicTransactionDetails } from "./BasicTransactionDetails";
 interface IExternalProps {
   transaction: TExtractTxHistoryFromType<ETransactionType.TRANSFER>;
 }
+
+const TransferTransactionAmountCaption: React.FunctionComponent<IExternalProps> = ({
+  transaction,
+}) => {
+  switch (transaction.transactionDirection) {
+    case ETransactionDirection.IN:
+      return <FormattedMessage id="wallet.tx-list.modal.transfer.received-amount.caption" />;
+    case ETransactionDirection.OUT:
+      return <FormattedMessage id="wallet.tx-list.modal.transfer.transferred-amount.caption" />;
+    default:
+      return assertNever(
+        transaction.transactionDirection,
+        `Invalid transaction direction ${transaction.transactionDirection}`,
+      );
+  }
+};
 
 const TransferTransactionDetails: React.FunctionComponent<IExternalProps> = ({ transaction }) => (
   <>
@@ -53,7 +73,7 @@ const TransferTransactionDetails: React.FunctionComponent<IExternalProps> = ({ t
 
     {transaction.subType === ETransactionSubType.TRANSFER_EQUITY_TOKEN && (
       <DataRow
-        caption={<FormattedMessage id="wallet.tx-list.modal.transfer.transferred-amount.caption" />}
+        caption={<TransferTransactionAmountCaption transaction={transaction} />}
         value={
           <MoneySingleSuiteWidget
             icon={transaction.icon}
@@ -70,7 +90,7 @@ const TransferTransactionDetails: React.FunctionComponent<IExternalProps> = ({ t
 
     {transaction.subType === undefined && (
       <DataRow
-        caption={<FormattedMessage id="wallet.tx-list.modal.transfer.transferred-amount.caption" />}
+        caption={<TransferTransactionAmountCaption transaction={transaction} />}
         value={
           <MoneySuiteWidget
             icon={getIconForCurrency(transaction.currency)}
