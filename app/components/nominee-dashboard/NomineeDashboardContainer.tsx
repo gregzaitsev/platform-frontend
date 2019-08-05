@@ -25,7 +25,7 @@ interface ILinkedNomineeComponentProps {
 }
 
 export const AccountSetupContainer: React.FunctionComponent = ({ children }) => (
-  <div className={styles.accountSetupWrapper}>
+  <div data-test-id="nominee-dashboard" className={styles.accountSetupWrapper}>
     {children}
   </div>
 );
@@ -50,7 +50,7 @@ const LinkedNomineeDashboardContainerLayout: React.FunctionComponent<ILinkedNomi
 const LinkedNomineeDashboardContainer = compose<ILinkedNomineeComponentProps, {}>(
   appConnect<ILinkedNomineeStateProps, {}, {}>({
     stateToProps: state => {
-      const linkedNomineeEtoId = selectLinkedNomineeEtoId(state)
+      const linkedNomineeEtoId = selectLinkedNomineeEtoId(state);
       if (linkedNomineeEtoId) {
         return ({
           eto: selectEtoWithCompanyAndContractById(state, linkedNomineeEtoId),
@@ -68,24 +68,23 @@ const LinkedNomineeDashboardContainer = compose<ILinkedNomineeComponentProps, {}
 )(LinkedNomineeDashboardContainerLayout);
 
 const NomineeDashboardContainer: React.FunctionComponent<IExternalProps> = ({ nomineeTaskStep, children }) => {
-  console.log("NomineeDashboardContainer", nomineeTaskStep)
   switch (nomineeTaskStep) {
     case ENomineeTask.ACCOUNT_SETUP:
-      return <AccountSetupContainer children={children} />
+      return <AccountSetupContainer data-test-id={"nominee-dashboard"} children={children} />;
     case ENomineeTask.LINK_TO_ISSUER:
-      return <NotLinkedNomineeDashboardContainer children={children} />
+      return <NotLinkedNomineeDashboardContainer data-test-id={"nominee-dashboard"} children={children} />;
     case ENomineeTask.LINK_BANK_ACCOUNT:
-      return <LinkedNomineeDashboardContainer children={children} />
+      return <LinkedNomineeDashboardContainer data-test-id={"nominee-dashboard"} children={children} />;
     case ENomineeTask.ACCEPT_THA:
-      return <LinkedNomineeDashboardContainer children={children} />
+      return <LinkedNomineeDashboardContainer data-test-id={"nominee-dashboard"} children={children} />;
     case ENomineeTask.REDEEM_SHARE_CAPITAL:
-      return <LinkedNomineeDashboardContainer children={children} />
+      return <LinkedNomineeDashboardContainer data-test-id={"nominee-dashboard"} children={children} />;
     case ENomineeTask.ACCEPT_ISHA:
-      return <LinkedNomineeDashboardContainer children={children} />
+      return <LinkedNomineeDashboardContainer data-test-id={"nominee-dashboard"} children={children} />;
     case ENomineeTask.NONE:
     default:
-      return <NotLinkedNomineeDashboardContainer children={children} />
+      return <NotLinkedNomineeDashboardContainer data-test-id={"nominee-dashboard"} children={children} />
   }
-}
+};
 
 export { NomineeDashboardContainer, NotLinkedNomineeDashboardContainer };

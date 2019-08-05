@@ -67,5 +67,4 @@ export const NomineeDashboard = compose<IDashboardProps, {}>(
     })
   ),
   withContainer<IDashboardProps>(nest(Layout, NomineeDashboardContainer)),
-  // branch<IStateProps>(({ isLoading }) => isLoading, renderComponent(LoadingIndicator)),
 )(NomineeDashboardTasks);
