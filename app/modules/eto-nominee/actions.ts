@@ -17,7 +17,6 @@ export const etoNomineeActions = {
     "ETO_NOMINEE_REJECT_NOMINEE_REQUEST",
     (nomineeId: string) => ({ nomineeId }),
   ),
-  deleteNomineeRequest: createActionFactory("ETO_NOMINEE_REQUESTS_DELETE_REQUEST",
-  ),
+  deleteNomineeRequest: createActionFactory("ETO_NOMINEE_REQUESTS_DELETE_REQUEST"),
   dataReady: createActionFactory("ETO_NOMINEE_REQUESTS_READY"),
 };

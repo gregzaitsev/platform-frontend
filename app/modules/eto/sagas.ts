@@ -472,7 +472,11 @@ function* verifyEtoAccess(
   }
 }
 
-function* loadNomineeEtos({ apiEtoService, logger, notificationCenter }: TGlobalDependencies): any {
+export function* loadNomineeEtos({
+  apiEtoService,
+  logger,
+  notificationCenter,
+}: TGlobalDependencies): any {
   try {
     const etos: TEtoData[] = yield apiEtoService.loadNomineeEtos();
 

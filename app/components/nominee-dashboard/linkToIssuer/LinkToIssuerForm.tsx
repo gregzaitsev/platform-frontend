@@ -35,8 +35,10 @@ interface IMaskedFormState {
   isValid: boolean;
 }
 
-export class NomineeLinkRequestFormBase extends React.Component<IIntlProps & IProps & TDataTestId,
-  IMaskedFormState> {
+export class NomineeLinkRequestFormBase extends React.Component<
+  IIntlProps & IProps & TDataTestId,
+  IMaskedFormState
+> {
   state = {
     value: "",
     error: undefined, //this is to indicate illegal chars etc during input. A value can have no errors but be invalid because user is still typing
@@ -53,8 +55,8 @@ export class NomineeLinkRequestFormBase extends React.Component<IIntlProps & IPr
       this.setState({
         value: undefined,
         error: undefined,
-        isValid: false
-      })
+        isValid: false,
+      });
     } else {
       const error = validateEthInput(value);
       const isValid = validateEthAddress(value);
@@ -63,7 +65,7 @@ export class NomineeLinkRequestFormBase extends React.Component<IIntlProps & IPr
   };
 
   onBlur = (value: string | undefined) => {
-    const trimmedValue = value && value.trim()
+    const trimmedValue = value && value.trim();
     const isValid = validateEthAddress(trimmedValue);
     if (!isValid) {
       this.setState({ error: EMaskedFormError.GENERIC_ERROR, isValid, value: trimmedValue });
@@ -89,7 +91,6 @@ export class NomineeLinkRequestFormBase extends React.Component<IIntlProps & IPr
 
   render(): React.ReactNode {
     const name = "issuerId";
-    console.log("NomineeLinkRequestFormBase", this.state, this.props.isLoading)
     return (
       <form className={styles.form}>
         <input

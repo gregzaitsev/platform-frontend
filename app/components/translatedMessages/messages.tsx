@@ -285,13 +285,13 @@ export enum ENomineeRequestErrorNotifications {
   ISSUER_ID_ERROR = "nomineeRequestIssuerIdError",
   SUBMITTING_ERROR = "nomineeRequestGenericError",
   REQUEST_EXISTS = "requestExists",
-  FETCH_NOMINEE_DATA_ERROR = "fetchNomineeDataError"
+  FETCH_NOMINEE_DATA_ERROR = "fetchNomineeDataError",
 }
 
 export enum EEtoNomineeRequestNotifications {
   DELETE_NOMINEE_REQUEST_SUCCESS = "deleteNomineeRequestSuccess",
   GENERIC_ERROR = "etoNomineeRequestGenericError",
-  COULD_NOT_DELETE_REQUEST = "couldNotDeleteRequest"
+  COULD_NOT_DELETE_REQUEST = "couldNotDeleteRequest",
 }
 
 export enum TestMessage {
@@ -699,7 +699,9 @@ const getMessageTranslation = ({ messageType, messageData }: TMessage): TTransla
     case ENomineeRequestErrorNotifications.SUBMITTING_ERROR:
       return <FormattedMessage id="nominee-flow.link-with-issuer.submitting-error-notification" />;
     case ENomineeRequestErrorNotifications.FETCH_NOMINEE_DATA_ERROR:
-      return <FormattedMessage id="nominee-flow.link-with-issuer.fetch-nominee-data-error-notification" />;
+      return (
+        <FormattedMessage id="nominee-flow.link-with-issuer.fetch-nominee-data-error-notification" />
+      );
     case ENomineeRequestErrorNotifications.ISSUER_ID_ERROR:
       return <FormattedMessage id="nominee-flow.link-with-issuer.issuer-id-error-notification" />;
     case ENomineeRequestErrorNotifications.REQUEST_EXISTS:

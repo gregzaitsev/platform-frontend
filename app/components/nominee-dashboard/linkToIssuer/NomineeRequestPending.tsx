@@ -8,16 +8,18 @@ import { ENomineeRequestStatus } from "../../../modules/nominee-flow/reducer";
 import { nomineeRequestToTranslationMessage } from "../../../modules/nominee-flow/utils";
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { onLeaveAction } from "../../../utils/OnLeaveAction";
+import { Panel } from "../../shared/Panel";
 import { getMessageTranslation } from "../../translatedMessages/messages";
 import { StepStatus } from "../DashboardStepStatus";
-import { Panel } from "../../shared/Panel";
 
 import * as styles from "../NomineeDashboard.module.scss";
 
 export const NomineeRequestPendingLayout: React.FunctionComponent = () => (
   <Panel className={styles.dashboardContentPanel} data-test-id="nominee-kyc-status">
     <StepStatus
-      contentTitleComponent={<FormattedMessage id="nominee-flow.link-with-issuer.link-with-issuer" />}
+      contentTitleComponent={
+        <FormattedMessage id="nominee-flow.link-with-issuer.link-with-issuer" />
+      }
       contentTextComponent={[
         <FormattedMessage id="nominee-flow.link-with-issuer.pending.text1" />,
         <FormattedHTMLMessage

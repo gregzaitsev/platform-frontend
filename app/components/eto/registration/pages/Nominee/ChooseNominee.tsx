@@ -4,9 +4,7 @@ import { branch, compose, renderComponent, setDisplayName } from "recompose";
 
 import { actions } from "../../../../../modules/actions";
 import { EEtoFormTypes } from "../../../../../modules/eto-flow/types";
-import {
-  selectNomineeRequests,
-} from "../../../../../modules/eto-nominee/selectors";
+import { selectNomineeRequests } from "../../../../../modules/eto-nominee/selectors";
 import { INomineeRequest } from "../../../../../modules/nominee-flow/reducer";
 import { nomineeRequestsToArray } from "../../../../../modules/nominee-flow/utils";
 import { appConnect } from "../../../../../store";

@@ -1,5 +1,9 @@
+import {
+  ENomineeRequestError,
+  ENomineeRequestStatus,
+  INomineeRequest,
+} from "../../../modules/nominee-flow/reducer";
 import { EMaskedFormError } from "../../translatedMessages/messages";
-import { ENomineeRequestError, ENomineeRequestStatus, INomineeRequest } from "../../../modules/nominee-flow/reducer";
 
 export interface IAccountSetupStepData {
   key: string;
@@ -23,12 +27,12 @@ export enum EAccountSetupStepState {
   NOT_DONE = "notDone",
 }
 
-
 export enum ENomineeRequestComponentState {
   SUCCESS = "nomineeRequestSuccess",
   WAIT_WHILE_RQUEST_PENDING = "waitWhileNomineeRequestPending",
   REPEAT_REQUEST = "repeatNomineeRequest",
-  SEND_REQUEST = "sendNomineeRequest",
+  CREATE_REQUEST = "createNomineeRequest",
+  CREATE_NEW_REQUEST = "createNewRequest", //this is the same as CREATE_REQUEST but with an additional error message in the ui
 }
 
 const determineStepState = (isActive: boolean, completed: boolean): EAccountSetupStepState => {
@@ -72,27 +76,26 @@ export const validateEthInput = (value: string | undefined) => {
   if (value === undefined) {
     return undefined;
   } else {
-    console.log("=====validateEthInput", value)
-
     let error = undefined;
-    for(let [i,char] of value.split("").entries()) {
+    for (let [i, char] of value.split("").entries()) {
       if (i === 0 && char !== "0") {
-        error =  EMaskedFormError.IVALID_PREFIX;
+        error = EMaskedFormError.IVALID_PREFIX;
         break;
+        /*tslint:disable-next-line:no-duplicated-branches*/
       } else if (i === 1 && char !== "x") {
-        error =  EMaskedFormError.IVALID_PREFIX;
+        error = EMaskedFormError.IVALID_PREFIX;
         break;
       } else if (i >= 2 && !RegExp(/[a-fA-F\d]/).test(char)) {
-        error =  EMaskedFormError.ILLEGAL_CHARACTER;
+        error = EMaskedFormError.ILLEGAL_CHARACTER;
         break;
       } else if (i > 41) {
-        error =  EMaskedFormError.MAX_LENGTH_EXCEEDED;
+        error = EMaskedFormError.MAX_LENGTH_EXCEEDED;
         break;
       } else {
         error = undefined;
       }
     }
-    return error
+    return error;
   }
 };
 
@@ -109,17 +112,19 @@ export const getNomineeRequestComponentState = (
   nomineeRequestError: ENomineeRequestError,
 ) => {
   if (!nomineeRequest && nomineeRequestError === ENomineeRequestError.NONE) {
-    return ENomineeRequestComponentState.SEND_REQUEST;
+    return ENomineeRequestComponentState.CREATE_REQUEST;
   } else if (!nomineeRequest && nomineeRequestError === ENomineeRequestError.REQUEST_EXISTS) {
     throw new Error("invalid nominee request state");
   } else if (!nomineeRequest && nomineeRequestError !== ENomineeRequestError.NONE) {
     return ENomineeRequestComponentState.REPEAT_REQUEST;
-  } else if (nomineeRequest && nomineeRequest.state === ENomineeRequestStatus.APPROVED) {
-    return ENomineeRequestComponentState.SUCCESS;
+  } else if (nomineeRequest && nomineeRequest.state === ENomineeRequestStatus.APPROVED
+    && nomineeRequestError !== ENomineeRequestError.NONE) {
+    return ENomineeRequestComponentState.CREATE_NEW_REQUEST;
   } else if (nomineeRequest && nomineeRequest.state === ENomineeRequestStatus.PENDING) {
     return ENomineeRequestComponentState.WAIT_WHILE_RQUEST_PENDING;
-  } else if (nomineeRequest && nomineeRequest.state === ENomineeRequestStatus.REJECTED) {
-    return ENomineeRequestComponentState.REPEAT_REQUEST;
+  } else if (nomineeRequest && nomineeRequest.state === ENomineeRequestStatus.REJECTED
+    && nomineeRequestError !== ENomineeRequestError.NONE) {
+    return ENomineeRequestComponentState.CREATE_NEW_REQUEST;
   } else {
     throw new Error("invalid nominee request state");
   }

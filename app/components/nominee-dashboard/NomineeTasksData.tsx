@@ -1,13 +1,13 @@
 import * as React from "react";
 
-import { ENomineeRequestStatus, INomineeRequest } from "../../modules/nominee-flow/reducer";
+import { TEtoWithCompanyAndContract } from "../../modules/eto/types";
 import { AcceptIsha } from "./AcceptIsha";
 import { AcceptTha } from "./AcceptTha";
+import { AccountSetup } from "./accountSetup/AccountSetup";
 import { LinkBankAccount } from "./LinkBankAccount";
 import { LinkToIssuer } from "./linkToIssuer/LinkToIssuer";
-import { RedeemShareCapital } from "./RedeemShareCapital";
-import { AccountSetup } from "./accountSetup/AccountSetup";
 import { NoTasks } from "./NoTasks";
+import { RedeemShareCapital } from "./RedeemShareCapital";
 
 export interface ITaskData {
   key: ENomineeTask;
@@ -32,9 +32,9 @@ export enum ENomineeTask {
 type TNomineeTasksData = { [key in ENomineeTask]: ITaskData };
 
 export const NomineeTasksData: TNomineeTasksData = {
-  [ENomineeTask.ACCOUNT_SETUP]:{
+  [ENomineeTask.ACCOUNT_SETUP]: {
     key: ENomineeTask.ACCOUNT_SETUP,
-    taskRootComponent: AccountSetup
+    taskRootComponent: AccountSetup,
   },
   [ENomineeTask.LINK_TO_ISSUER]: {
     key: ENomineeTask.LINK_TO_ISSUER,
@@ -65,19 +65,20 @@ export const NomineeTasksData: TNomineeTasksData = {
 //todo here all task choosing logic
 export const getNomineeTaskStep = (
   verificationIsComplete: boolean,
-  nomineeRequest: INomineeRequest | undefined,
+  nomineeEto: TEtoWithCompanyAndContract | undefined,
   isBankAccountVerified: boolean,
 ): ENomineeTask => {
-  if(!verificationIsComplete){
+  if (!verificationIsComplete) {
     return ENomineeTask.ACCOUNT_SETUP;
-  } else if (!nomineeRequest || nomineeRequest.state !== ENomineeRequestStatus.APPROVED) {
+  } else if (nomineeEto === undefined) {
     return ENomineeTask.LINK_TO_ISSUER;
   } else if (!isBankAccountVerified) {
     return ENomineeTask.LINK_BANK_ACCOUNT;
   } else {
-    return ENomineeTask.NONE
+    return ENomineeTask.NONE;
   }
 };
 
-export const getNomineeTasks = (data: TNomineeTasksData,step:ENomineeTask ) =>
-  [data[step] as ITask]
+export const getNomineeTasks = (data: TNomineeTasksData, step: ENomineeTask) => [
+  data[step] as ITask,
+];

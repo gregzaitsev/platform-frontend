@@ -6,6 +6,7 @@ import { EKycRequestStatus } from "../../../lib/api/KycApi.interfaces";
 import { actions } from "../../../modules/actions";
 import { kycStatusToTranslationMessage } from "../../../modules/kyc/utils";
 import { onEnterAction } from "../../../utils/OnEnterAction";
+import { onLeaveAction } from "../../../utils/OnLeaveAction";
 import { AccountSetupKycPendingComponent } from "../../settings/kyc-states/AccountSetupKycComponent";
 import { Panel } from "../../shared/Panel";
 import { getMessageTranslation } from "../../translatedMessages/messages";
@@ -13,7 +14,6 @@ import { StepStatus } from "../DashboardStepStatus";
 import { DashboardTitle } from "../NomineeDashboard";
 
 import * as styles from "../NomineeDashboard.module.scss";
-import { onLeaveAction } from "../../../utils/OnLeaveAction";
 
 interface IKycPendingProps {
   kycRequestStatus: EKycRequestStatus;
@@ -48,5 +48,5 @@ export const AccountSetupKycPending = compose<IKycPendingProps, IKycPendingProps
   }),
   onLeaveAction({
     actionCreator: dispatch => dispatch(actions.kyc.kycStopWatching()),
-  })
+  }),
 )(AccountSetupKycPendingLayout);

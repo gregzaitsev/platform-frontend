@@ -75,18 +75,15 @@ export class EtoNomineeApi {
     return response.body;
   }
 
-  public async etoDeleteNomineeRequest(
-    nomineeId: string
-  ): Promise<void> {
+  public async etoDeleteNomineeRequest(nomineeId: string): Promise<void> {
     const response = await this.httpClient.delete<void>({
       baseUrl: BASE_PATH,
       url: withParams(ETO_DELETE_NOMINEE_REQUEST_PATH, { nomineeId }),
     });
-    if(response.statusCode !== 200) {
-      throw new Error()
+    if (response.statusCode !== 200) {
+      throw new Error();
     } else {
-
-      return response.body
+      return response.body;
     }
   }
 }

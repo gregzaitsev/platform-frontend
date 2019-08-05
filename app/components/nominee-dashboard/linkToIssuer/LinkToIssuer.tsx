@@ -5,7 +5,6 @@ import { branch, compose, renderComponent, renderNothing, withProps } from "reco
 
 import {
   ENomineeRequestError,
-  ENomineeRequestStatus,
   INomineeRequest,
 } from "../../../modules/nominee-flow/reducer";
 import {
@@ -15,9 +14,9 @@ import {
 import { takeLatestNomineeRequest } from "../../../modules/nominee-flow/utils";
 import { appConnect } from "../../../store";
 import { TTranslatedString } from "../../../types";
+import { withContainer } from "../../../utils/withContainer.unsafe";
 import { NomineeLinkRequestForm } from "./LinkToIssuerForm";
 import { NomineeRequestPending } from "./NomineeRequestPending";
-import { withContainer } from "../../../utils/withContainer.unsafe";
 import { ENomineeRequestComponentState, getNomineeRequestComponentState } from "./utils";
 
 import * as styles from "./LinkToIssuer.module.scss";
@@ -42,15 +41,11 @@ const getErrorText = (
   requestStatus: INomineeRequest,
   nomineeRequestError: ENomineeRequestError,
 ): TTranslatedString => {
-  if (
-    requestStatus.state === ENomineeRequestStatus.REJECTED &&
-    (nomineeRequestError === ENomineeRequestError.NONE ||
-      nomineeRequestError === ENomineeRequestError.REQUEST_EXISTS)
-  ) {
+  if (nomineeRequestError === ENomineeRequestError.REQUEST_EXISTS) {
     return (
       <FormattedHTMLMessage
         tagName="span"
-        id="nominee-flow.link-with-issuer.error-link-rejected-text"
+        id="nominee-flow.link-with-issuer.error-request-exists"
         values={{ etoId: requestStatus.etoId }}
       />
     );
@@ -74,7 +69,6 @@ export const RepeatNomineeRequestLayout: React.FunctionComponent<IRepeatRequestP
     <p className={cn(styles.text, styles.error)}>
       {getErrorText(nomineeRequest, nomineeRequestError)}
     </p>
-
   </>
 );
 
@@ -89,11 +83,12 @@ export const CreateNomineeRequestLayout: React.FunctionComponent = () => (
   </>
 );
 
-export const NomineeRequestContainer:React.FunctionComponent = ({children}) =>
+export const NomineeRequestContainer: React.FunctionComponent = ({ children }) => (
   <section className={styles.linkToIssuerContentPanel}>
     {children}
     <NomineeLinkRequestForm />
   </section>
+);
 
 export const LinkToIssuer = compose<IStateProps, {}>(
   appConnect<IStateProps>({
@@ -102,10 +97,15 @@ export const LinkToIssuer = compose<IStateProps, {}>(
       nomineeRequestError: selectNomineeStateError(state),
     }),
   }),
-  withProps<{ nextState: ENomineeRequestComponentState }, IStateProps>(({ nomineeRequest, nomineeRequestError }) => ({
-    nextState: getNomineeRequestComponentState(nomineeRequest, nomineeRequestError),
-  })),
-  branch<IBranchProps>(({ nextState }) => nextState === ENomineeRequestComponentState.SUCCESS, renderNothing), //this state should be caught before
+  withProps<{ nextState: ENomineeRequestComponentState }, IStateProps>(
+    ({ nomineeRequest, nomineeRequestError }) => ({
+      nextState: getNomineeRequestComponentState(nomineeRequest, nomineeRequestError),
+    }),
+  ),
+  branch<IBranchProps>(
+    ({ nextState }) => nextState === ENomineeRequestComponentState.SUCCESS,
+    renderNothing,
+  ), //this state should be caught before
   branch<IBranchProps>(
     ({ nextState }) => nextState === ENomineeRequestComponentState.WAIT_WHILE_RQUEST_PENDING,
     renderComponent(NomineeRequestPending),

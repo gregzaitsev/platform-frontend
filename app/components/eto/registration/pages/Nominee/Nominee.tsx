@@ -3,23 +3,24 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { branch, compose, renderComponent } from "recompose";
 
 import { etoFormIsReadonly } from "../../../../../lib/api/eto/EtoApiUtils";
+import { actions } from "../../../../../modules/actions";
 import {
   selectEtoNominee,
-  selectEtoNomineeDisplayName, selectIssuerEtoLoading,
+  selectEtoNomineeDisplayName,
+  selectIssuerEtoLoading,
   selectIssuerEtoState,
 } from "../../../../../modules/eto-flow/selectors";
 import { EEtoFormTypes } from "../../../../../modules/eto-flow/types";
+import { selectEtoNomineeIsLoading } from "../../../../../modules/eto-nominee/selectors";
 import { appConnect } from "../../../../../store";
 import { withContainer } from "../../../../../utils/withContainer.unsafe";
 import { Button, EButtonLayout } from "../../../../shared/buttons/index";
+import { LoadingIndicator } from "../../../../shared/loading-indicator/LoadingIndicator";
 import { Section } from "../../Shared";
 import { ChooseNominee } from "./ChooseNominee";
 import { FormBase } from "./FormBase";
 
 import * as styles from "./Nominee.module.scss";
-import { actions } from "../../../../../modules/actions";
-import { selectEtoNomineeIsLoading } from "../../../../../modules/eto-nominee/selectors";
-import { LoadingIndicator } from "../../../../shared/loading-indicator/LoadingIndicator";
 
 interface IExternalProps {
   readonly: boolean;
@@ -45,7 +46,7 @@ const NomineeChosenComponent: React.FunctionComponent<IExternalProps & IComponen
   readonly,
   currentNomineeName,
   currentNomineeId,
-  deleteNomineeRequest
+  deleteNomineeRequest,
 }) => (
   <>
     <p className={styles.text}>
@@ -79,8 +80,8 @@ const Nominee = compose<IExternalProps & IComponentProps, IExternalProps>(
       readonly: etoFormIsReadonly(EEtoFormTypes.Nominee, selectIssuerEtoState(s)),
     }),
     dispatchToProps: dispatch => ({
-      deleteNomineeRequest: () => dispatch(actions.etoNominee.deleteNomineeRequest())
-    })
+      deleteNomineeRequest: () => dispatch(actions.etoNominee.deleteNomineeRequest()),
+    }),
   }),
   withContainer(FormBase),
   branch<IStateProps>(({ isLoading }) => isLoading, renderComponent(LoadingIndicator)),

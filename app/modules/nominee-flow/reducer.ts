@@ -108,10 +108,10 @@ export const nomineeFlowReducer: AppReducer<INomineeFlowState> = (
         loading: false,
       };
     case actions.nomineeFlow.dataReady.getType():
-        return {
-          ...state,
-          loading: false,
-        };
+      return {
+        ...state,
+        loading: false,
+      };
     default:
       return state;
   }

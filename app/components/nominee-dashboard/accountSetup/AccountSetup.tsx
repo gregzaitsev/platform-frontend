@@ -1,17 +1,20 @@
 import * as React from "react";
-import { branch, compose, renderComponent, renderNothing, withProps } from "recompose";
 import { FormattedMessage } from "react-intl-phraseapp";
+import { branch, compose, renderComponent, renderNothing, withProps } from "recompose";
 
 import { EKycRequestStatus } from "../../../lib/api/KycApi.interfaces";
-import { selectBackupCodesVerified, selectIsUserEmailVerified } from "../../../modules/auth/selectors";
+import {
+  selectBackupCodesVerified,
+  selectIsUserEmailVerified,
+} from "../../../modules/auth/selectors";
 import { selectKycRequestStatus } from "../../../modules/kyc/selectors";
 import { appConnect } from "../../../store";
+import { Panel } from "../../shared/Panel";
+import { IStepComponentProps, prepareSetupAccountSteps } from "../linkToIssuer/utils";
+import { DashboardTitle } from "../NomineeDashboard";
 import { nomineeAccountSetupSteps } from "./AccountSetupData";
 import { AccountSetupStep, INomineeAccountSetupSteps } from "./AccountSetupFlow";
 import { AccountSetupKycPending } from "./AccountSetupKycPending";
-import { IStepComponentProps, prepareSetupAccountSteps } from "../linkToIssuer/utils";
-import { DashboardTitle } from "../NomineeDashboard";
-import { Panel } from "../../shared/Panel";
 
 import * as styles from "../NomineeDashboard.module.scss";
 
@@ -25,8 +28,9 @@ export interface INomineeAccountSetupSteps {
   accountSetupStepsData: IStepComponentProps[];
 }
 
-
-export const AccountSetupLayout: React.FunctionComponent<INomineeAccountSetupSteps> = ({ accountSetupStepsData }) =>
+export const AccountSetupLayout: React.FunctionComponent<INomineeAccountSetupSteps> = ({
+  accountSetupStepsData,
+}) => (
   <>
     <DashboardTitle
       title={<FormattedMessage id="account-setup.welcome-to-neufund" />}
@@ -38,6 +42,7 @@ export const AccountSetupLayout: React.FunctionComponent<INomineeAccountSetupSte
       ))}
     </Panel>
   </>
+);
 
 export const AccountSetup = compose<INomineeAccountSetupSteps, {}>(
   appConnect<IStateProps | null>({

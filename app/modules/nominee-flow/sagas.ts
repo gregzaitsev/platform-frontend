@@ -1,15 +1,14 @@
 import { delay } from "redux-saga";
 import { all, fork, put } from "redux-saga/effects";
 
-import {
-  ENomineeRequestErrorNotifications
-} from "../../components/translatedMessages/messages";
+import { ENomineeRequestErrorNotifications } from "../../components/translatedMessages/messages";
 import { createMessage } from "../../components/translatedMessages/utils";
 import { NOMINEE_REQUESTS_WATCHER_DELAY } from "../../config/constants";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { TNomineeRequestResponse } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { IssuerIdInvalid, NomineeRequestExists } from "../../lib/api/eto/EtoNomineeApi";
 import { actions, TActionFromCreator } from "../actions";
+import { loadNomineeEtos } from "../eto/sagas";
 import { neuCall, neuTakeLatest, neuTakeUntil } from "../sagasUtils";
 import {
   ENomineeAcceptThaStatus,
@@ -25,11 +24,12 @@ import { nomineeApiDataToNomineeRequests, nomineeRequestResponseToRequestStatus 
 export function* loadNomineeTaskData({
   apiEtoNomineeService,
   logger,
-  notificationCenter
+  notificationCenter,
 }: TGlobalDependencies): Iterator<any> {
   try {
     const taskData = yield all({
       nomineeRequests: yield apiEtoNomineeService.getNomineeRequests(),
+      nomineeEtos: yield neuCall(loadNomineeEtos),
       // todo query here if data not in the store yet
       // linkBankAccount:
       // acceptTha:
@@ -57,9 +57,11 @@ export function* loadNomineeTaskData({
     );
   } catch (e) {
     logger.error("Failed to load Nominee tasks", e);
-    notificationCenter.error(createMessage(ENomineeRequestErrorNotifications.FETCH_NOMINEE_DATA_ERROR));
+    notificationCenter.error(
+      createMessage(ENomineeRequestErrorNotifications.FETCH_NOMINEE_DATA_ERROR),
+    );
     //show the user what's already loaded
-    yield put(actions.nomineeFlow.dataReady())
+    yield put(actions.nomineeFlow.dataReady());
   }
 }
 
@@ -137,7 +139,7 @@ export function* createNomineeRequest(
     }
   } finally {
     yield put(actions.routing.goToDashboard());
-    yield put(actions.nomineeFlow.dataReady())
+    yield put(actions.nomineeFlow.dataReady());
   }
 }
 

@@ -7,10 +7,10 @@ import { NOMINEE_REQUESTS_WATCHER_DELAY } from "../../config/constants";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { TNomineeRequestResponse } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { actions, TActionFromCreator } from "../actions";
+import { selectEtoNominee } from "../eto-flow/selectors";
 import { ENomineeUpdateRequestStatus, TNomineeRequestStorage } from "../nominee-flow/reducer";
 import { etoApiDataToNomineeRequests } from "../nominee-flow/utils";
 import { neuCall, neuTakeLatest, neuTakeUntil } from "../sagasUtils";
-import { selectEtoNominee } from "../eto-flow/selectors";
 
 export function* etoGetNomineeRequests({
   apiEtoNomineeService,
@@ -71,16 +71,20 @@ export function* updateNomineeRequest(
   }
 }
 
-export function* etoDeleteNomineeRequest(
-  { apiEtoNomineeService, logger, notificationCenter }: TGlobalDependencies,
-) {
+export function* etoDeleteNomineeRequest({
+  apiEtoNomineeService,
+  logger,
+  notificationCenter,
+}: TGlobalDependencies): Iterator<any> {
   const nomineeId = yield select(selectEtoNominee);
 
-  try{
+  try {
     yield apiEtoNomineeService.etoDeleteNomineeRequest(nomineeId);
     yield put(actions.etoFlow.loadIssuerEto());
-    notificationCenter.info(createMessage(EEtoNomineeRequestNotifications.DELETE_NOMINEE_REQUEST_SUCCESS));
-  } catch (e){
+    notificationCenter.info(
+      createMessage(EEtoNomineeRequestNotifications.DELETE_NOMINEE_REQUEST_SUCCESS),
+    );
+  } catch (e) {
     logger.error(`Error while trying to delete nominee request with nominee id ${nomineeId}`);
   } finally {
     yield put(actions.etoNominee.dataReady());
