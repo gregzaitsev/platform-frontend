@@ -117,11 +117,15 @@ export const getNomineeRequestComponentState = (
     throw new Error("invalid nominee request state");
   } else if (!nomineeRequest && nomineeRequestError !== ENomineeRequestError.NONE) {
     return ENomineeRequestComponentState.REPEAT_REQUEST;
-  } else if (nomineeRequest && nomineeRequest.state === ENomineeRequestStatus.APPROVED
-    && nomineeRequestError !== ENomineeRequestError.NONE) {
-    return ENomineeRequestComponentState.CREATE_NEW_REQUEST;
-  } else if (nomineeRequest && nomineeRequest.state === ENomineeRequestStatus.PENDING) {
+  } else if (nomineeRequest && nomineeRequest.state === ENomineeRequestStatus.PENDING &&
+    nomineeRequestError !== ENomineeRequestError.NONE) {
+    return ENomineeRequestComponentState.REPEAT_REQUEST;
+  } else if (nomineeRequest && nomineeRequest.state === ENomineeRequestStatus.PENDING &&
+    nomineeRequestError === ENomineeRequestError.NONE  ) {
     return ENomineeRequestComponentState.WAIT_WHILE_RQUEST_PENDING;
+  } else if (nomineeRequest && nomineeRequest.state === ENomineeRequestStatus.APPROVED
+    && nomineeRequestError === ENomineeRequestError.REQUEST_EXISTS) {
+    return ENomineeRequestComponentState.CREATE_NEW_REQUEST;
   } else if (nomineeRequest && nomineeRequest.state === ENomineeRequestStatus.REJECTED
     && nomineeRequestError !== ENomineeRequestError.NONE) {
     return ENomineeRequestComponentState.CREATE_NEW_REQUEST;
