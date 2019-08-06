@@ -343,7 +343,6 @@ export const EtoEquityTokenInfoType = YupTS.object({
   equityTokenName: YupTS.string(),
   equityTokenSymbol: YupTS.string(),
   equityTokenImage: YupTS.string(),
-  nominee: YupTS.string().optional(),
 });
 
 export type TEtoEquityTokenInfoType = YupTS.TypeOf<typeof EtoEquityTokenInfoType>;

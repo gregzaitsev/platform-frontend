@@ -29,7 +29,7 @@ export const AccountSetupKycPendingLayout: React.FunctionComponent<IKycPendingPr
       title={<FormattedHTMLMessage tagName="span" id="account-setup.thank-you-title" />}
       text={<FormattedMessage id="account-setup.thank-you-text" />}
     />
-    <Panel className={styles.dashboardContentPanel} data-test-id="nominee-kyc-status">
+    <Panel className={styles.dashboardContentPanel} data-test-id="nominee-kyc-pending">
       <StepStatus
         contentTitleComponent={<FormattedMessage id="account-setup.pending-kyc.title" />}
         contentTextComponent={
