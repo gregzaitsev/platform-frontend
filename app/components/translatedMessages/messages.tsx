@@ -263,7 +263,7 @@ export enum ValidationMessage {
 export enum EMaskedFormError {
   GENERIC_ERROR = "ethAddressValidationGenericError",
   ILLEGAL_CHARACTER = "illegalCharacter",
-  IVALID_PREFIX = "ivalidPrefix",
+  INVALID_PREFIX = "ivalidPrefix",
   MAX_LENGTH_EXCEEDED = "maxLengthExceeded",
 }
 
@@ -682,7 +682,7 @@ const getMessageTranslation = ({ messageType, messageData }: TMessage): TTransla
       return <FormattedMessage id="error-message.eth-address-validation.not-a-valid-eth-address" />;
     case EMaskedFormError.ILLEGAL_CHARACTER:
       return <FormattedMessage id="error-message.eth-address-validation.illegal-character" />;
-    case EMaskedFormError.IVALID_PREFIX:
+    case EMaskedFormError.INVALID_PREFIX:
       return <FormattedMessage id="error-message.eth-address-validation.invalid-prefix" />;
     case EMaskedFormError.MAX_LENGTH_EXCEEDED:
       return <FormattedMessage id="error-message.eth-address-validation.max-length-exceeded" />;

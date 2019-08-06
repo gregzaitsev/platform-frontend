@@ -18,7 +18,6 @@ const data = {
   etoEquityTokenInfoProgress: 1,
   etoVotingRightsProgress: 1,
   etoInvestmentTermsProgress: 1,
-  nomineeProgress: 1,
 };
 
 storiesOf("ETO/ETOFormsProgressSection", module).add("default", () => (

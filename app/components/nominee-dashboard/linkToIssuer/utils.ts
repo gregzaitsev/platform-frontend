@@ -79,11 +79,11 @@ export const validateEthInput = (value: string | undefined) => {
     let error = undefined;
     for (let [i, char] of value.split("").entries()) {
       if (i === 0 && char !== "0") {
-        error = EMaskedFormError.IVALID_PREFIX;
+        error = EMaskedFormError.INVALID_PREFIX;
         break;
         /*tslint:disable-next-line:no-duplicated-branches*/
       } else if (i === 1 && char !== "x") {
-        error = EMaskedFormError.IVALID_PREFIX;
+        error = EMaskedFormError.INVALID_PREFIX;
         break;
       } else if (i >= 2 && !RegExp(/[a-fA-F\d]/).test(char)) {
         error = EMaskedFormError.ILLEGAL_CHARACTER;
