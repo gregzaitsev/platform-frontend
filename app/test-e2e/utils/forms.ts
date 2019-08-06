@@ -153,7 +153,7 @@ export const fillForm = (
     }
     // files
     else if (field.type === "single-file") {
-      uploadSingleFileToFieldWithTid(key, field.value);
+      uploadSingleFileToField(key, field.value);
     } else if (field.type === "multiple-files") {
       uploadMultipleFilesToFieldWithTid(key, field.values);
     } else if (field.type === "media") {
@@ -268,25 +268,25 @@ export const uploadDocumentToFieldWithTid = (targetTid: string, fixture: string)
 };
 
 /**
- * Upload single file to a dropzone field
- * @param targetTid - test id of the dropzone field
+ * Upload single file to a field (through drag and drop)
+ * @param name - field name
  * @param fixture - which fixture to load
  */
-export const uploadSingleFileToFieldWithTid = (targetTid: string, fixture: string) => {
-  cy.get(tid(targetTid)).within(() => {
+export const uploadSingleFileToField = (name: string, fixture: string) => {
+  cy.get(formField(name)).within(() => {
     cy.root().dropFile(fixture);
     cy.get("img").should("exist");
   });
 };
 
 /**
- * Upload multiple files to a dropzone field
- * @param targetTid - test id of the dropzone field
+ * Upload multiple files to a field (thought drag and drop)
+ * @param name - field name
  * @param fixtures - which fixtures to load
  */
-export const uploadMultipleFilesToFieldWithTid = (targetTid: string, fixtures: string[]) => {
+export const uploadMultipleFilesToFieldWithTid = (name: string, fixtures: string[]) => {
   fixtures.forEach(fixture =>
-    cy.get(tid(targetTid)).within(() => {
+    cy.get(formField(name)).within(() => {
       cy.get(tid("multi-file-upload-dropzone")).dropFile(fixture);
 
       cy.get(tid(`multi-file-upload-file-${fixture}`)).should("exist");

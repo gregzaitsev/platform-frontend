@@ -1,16 +1,22 @@
 import InlineEditor from "@ckeditor/ckeditor5-build-inline";
-import CKEditor from "@ckeditor/ckeditor5-react";
+import CKEditor, { IUploadAdapterFactory, TCkEditor } from "@ckeditor/ckeditor5-react";
 import * as cn from "classnames";
 import { difference } from "lodash";
 import * as React from "react";
+import { compose, fromRenderProps } from "recompose";
 
-import { CommonHtmlProps, Primitive } from "../../../../types";
+import { symbols } from "../../../../di/symbols";
+import { TRichTextEditorUploadAdapterFactoryType } from "../../../../lib/api/file-storage/RichTextEditorUploadAdapter";
+import { CommonHtmlProps } from "../../../../types";
+import { ContainerContext, TContainerContext } from "../../../../utils/InversifyProvider";
 import { SANITIZER_OPTIONS } from "../../SanitizedHtml";
 import { generateErrorId } from "../fields/FormFieldError";
 import { generateLabelId } from "../fields/FormFieldLabel";
 
 import * as fieldStyles from "../../Field.module.scss";
 import * as styles from "./RichTextAreaLayout.module.scss";
+
+type TRenderPropsProp = { uploadAdapterFactory: IUploadAdapterFactory };
 
 type TExternalProps = {
   invalid?: boolean;
@@ -34,32 +40,12 @@ const toolbar = [
   areTagsAllowed("a") && "link",
   areTagsAllowed("ul", "li") && "bulletedList",
   areTagsAllowed("ol", "li") && "numberedList",
+  areTagsAllowed("figure", "img", "figcaption") && "imageUpload",
 ].filter(Boolean);
 
-type TCkEditorWriter = {
-  setAttribute(attr: string, value: Primitive, element: unknown): void;
-};
-
-type TCkEditor = {
-  getData(): string;
-  editing: {
-    view: {
-      change(callback: (writer: TCkEditorWriter) => void): void;
-      document: {
-        getRoot(): unknown;
-      };
-    };
-  };
-};
-
-const RichTextAreaLayout: React.FunctionComponent<TExternalProps & CommonHtmlProps> = ({
-  name,
-  invalid,
-  disabled,
-  value,
-  onChange,
-  placeholder,
-}) => {
+const RichTextAreaLayoutComponent: React.FunctionComponent<
+  TExternalProps & TRenderPropsProp & CommonHtmlProps
+> = ({ name, invalid, disabled, value, onChange, placeholder, uploadAdapterFactory }) => {
   const editorRef = React.useRef<TCkEditor>();
 
   React.useEffect(() => {
@@ -95,12 +81,25 @@ const RichTextAreaLayout: React.FunctionComponent<TExternalProps & CommonHtmlPro
         config={{
           placeholder,
           toolbar: [...toolbar, "undo", "redo"],
+          image: {
+            // You need to configure the image toolbar, too, so it uses the new style buttons.
+            toolbar: [
+              "imageTextAlternative",
+              "|",
+              "imageStyle:alignLeft",
+              "imageStyle:full",
+              "imageStyle:alignRight",
+            ],
+            styles: ["full", "alignLeft", "alignRight"],
+          },
         }}
         editor={InlineEditor}
         disabled={disabled}
         data={value}
         onInit={(editor: TCkEditor) => {
           editorRef.current = editor;
+
+          editor.plugins.get("FileRepository").createUploadAdapter = uploadAdapterFactory;
         }}
         onChange={(_: unknown, editor: TCkEditor) => {
           onChange(editor.getData());
@@ -110,4 +109,18 @@ const RichTextAreaLayout: React.FunctionComponent<TExternalProps & CommonHtmlPro
   );
 };
 
-export { RichTextAreaLayout };
+const RichTextAreaLayout = compose<
+  TRenderPropsProp & TExternalProps & CommonHtmlProps,
+  TExternalProps & CommonHtmlProps
+>(
+  fromRenderProps<TRenderPropsProp, TExternalProps, NonNullable<TContainerContext>>(
+    ContainerContext.Consumer,
+    container => ({
+      uploadAdapterFactory: container.get<TRichTextEditorUploadAdapterFactoryType>(
+        symbols.richTextEditorUploadAdapter,
+      ),
+    }),
+  ),
+)(RichTextAreaLayoutComponent);
+
+export { RichTextAreaLayout, RichTextAreaLayoutComponent };

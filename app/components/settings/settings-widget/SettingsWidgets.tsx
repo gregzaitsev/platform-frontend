@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { EKycRequestStatus } from "../../../lib/api/KycApi.interfaces";
+import { EKycRequestStatus } from "../../../lib/api/kyc/KycApi.interfaces";
 import { EColumnSpan } from "../../layouts/Container";
 import { BackupSeedWidget } from "../backup-seed/BackupSeedWidget";
 import { KycStatusWidget } from "../kyc-states/KycStatusWidget";

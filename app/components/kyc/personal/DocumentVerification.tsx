@@ -2,7 +2,7 @@ import * as React from "react";
 import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 import { compose } from "redux";
 
-import { EKycRequestType } from "../../../lib/api/KycApi.interfaces";
+import { EKycRequestType } from "../../../lib/api/kyc/KycApi.interfaces";
 import { actions } from "../../../modules/actions";
 import { appConnect } from "../../../store";
 import { Button, EIconPosition } from "../../shared/buttons";

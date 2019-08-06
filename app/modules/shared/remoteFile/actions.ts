@@ -1,4 +1,4 @@
-import { TFileDescription } from "../../../lib/api/FileStorage.interfaces";
+import { TFileDescription } from "../../../lib/api/file-storage/FileStorage.interfaces";
 import { createAction } from "../../actionsUtils";
 
 export const remoteFileActions = {

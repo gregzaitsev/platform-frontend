@@ -1,7 +1,7 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
-import { EKycRequestStatus, EKycRequestType } from "../../lib/api/KycApi.interfaces";
+import { EKycRequestType, EKycRequestStatus } from "../../lib/api/kyc/KycApi.interfaces";
 import { Button, EButtonLayout, EIconPosition } from "../shared/buttons";
 import { KycPanel } from "./KycPanel";
 import { KycRouter } from "./Router";

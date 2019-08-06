@@ -1,10 +1,15 @@
 import { etoRegisterRoutes } from "../../components/eto/registration/routes";
 import { assertEtoDashboard } from "../utils/assertions";
-import { fillForm } from "../utils/forms";
+import { fillForm, uploadSingleFileToField } from "../utils/forms";
 import { goToEtoPreview } from "../utils/navigation";
 import { formField, tid } from "../utils/selectors";
 import { createAndLoginNewUser } from "../utils/userHelpers";
 import { aboutFormRequired, aboutFormSubmit } from "./fixtures";
+
+const goToCompanyInformation = () => {
+  cy.visit(etoRegisterRoutes.companyInformation);
+  cy.get(tid("eto.form.company-information")).should("exist");
+};
 
 describe("Eto Company Information Rich Text Editor", () => {
   before(() => {
@@ -17,8 +22,7 @@ describe("Eto Company Information Rich Text Editor", () => {
   });
 
   it("should render field as rich-text", () => {
-    cy.visit(etoRegisterRoutes.companyInformation);
-    cy.get(tid("eto.form.company-information")).should("exist");
+    goToCompanyInformation();
 
     fillForm(
       {
@@ -43,8 +47,7 @@ describe("Eto Company Information Rich Text Editor", () => {
   });
 
   it("should add aria attributes", () => {
-    cy.visit(etoRegisterRoutes.companyInformation);
-    cy.get(tid("eto.form.company-information")).should("exist");
+    goToCompanyInformation();
 
     const companyDescriptionName = "companyDescription";
 
@@ -72,6 +75,34 @@ describe("Eto Company Information Rich Text Editor", () => {
       const companyDescriptionErrorId = `${companyDescriptionName}-error-message`;
       cy.get(`#${companyDescriptionErrorId}`).should("exist");
       expect($richTextEditor).to.have.attr("aria-describedby", companyDescriptionErrorId);
+    });
+  });
+
+  it("should allow to add images", () => {
+    goToCompanyInformation();
+
+    fillForm(
+      {
+        ...aboutFormRequired,
+      },
+      { submit: false },
+    );
+
+    cy.get(formField("companyDescription")).clear();
+
+    uploadSingleFileToField("companyDescription", "example.jpg");
+
+    // TODO: check if it's possible to get editor state and block saving until image is properly uploaded
+    cy.wait(3000);
+
+    fillForm(aboutFormSubmit);
+
+    assertEtoDashboard();
+
+    goToEtoPreview();
+
+    cy.get(`${tid("eto-view-company-description")} img`).should($field => {
+      expect($field.attr("src")).to.contain("https://documents.neufund.io/");
     });
   });
 });

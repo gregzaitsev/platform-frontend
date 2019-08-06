@@ -1,4 +1,4 @@
-import * as YupTS from "../yup-ts.unsafe";
+import * as YupTS from "../../yup-ts.unsafe";
 
 export const FileDescriptionType = YupTS.object({
   type: YupTS.string(),

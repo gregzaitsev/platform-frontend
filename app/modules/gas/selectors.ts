@@ -1,4 +1,4 @@
-import { GasModelShape } from "../../lib/api/GasApi";
+import { GasModelShape } from "../../lib/api/gas/GasApi";
 import { IAppState } from "../../store";
 import { calculateGasPriceWithOverhead } from "../tx/utils";
 

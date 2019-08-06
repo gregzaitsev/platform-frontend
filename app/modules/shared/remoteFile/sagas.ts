@@ -4,7 +4,7 @@ import { RemoteFileMessage } from "../../../components/translatedMessages/messag
 import { createMessage } from "../../../components/translatedMessages/utils";
 import { TGlobalDependencies } from "../../../di/setupBindings";
 import { IHttpResponse } from "../../../lib/api/client/IHttpClient";
-import { TFileDescription } from "../../../lib/api/FileStorage.interfaces";
+import { TFileDescription } from "../../../lib/api/file-storage/FileStorage.interfaces";
 import { TAction } from "../../actions";
 import { neuTakeEvery } from "../../sagasUtils";
 

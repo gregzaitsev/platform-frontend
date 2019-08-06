@@ -1,7 +1,7 @@
 import * as React from "react";
 import { branch, compose, renderNothing } from "recompose";
 
-import { EKycRequestStatus, ERequestOutsourcedStatus } from "../../../lib/api/KycApi.interfaces";
+import { ERequestOutsourcedStatus, EKycRequestStatus } from "../../../lib/api/kyc/KycApi.interfaces";
 import { EUserType } from "../../../lib/api/users/interfaces";
 import { actions } from "../../../modules/actions";
 import {

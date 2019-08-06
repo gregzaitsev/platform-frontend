@@ -1,7 +1,7 @@
 import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
-import { EKycRequestStatus, ERequestOutsourcedStatus } from "../../../lib/api/KycApi.interfaces";
+import { ERequestOutsourcedStatus, EKycRequestStatus } from "../../../lib/api/kyc/KycApi.interfaces";
 import { EUserType } from "../../../lib/api/users/interfaces";
 import { KycStatusWidgetBase } from "./KycStatusWidget";
 
@@ -33,9 +33,7 @@ storiesOf("KYC/StatusWidget", module)
       backupCodesVerified={false}
     />
   ))
-  .add("draft", () => (
-    <KycStatusWidgetBase {...commonProps} requestStatus={EKycRequestStatus.DRAFT} />
-  ))
+  .add("draft", () => <KycStatusWidgetBase {...commonProps} requestStatus={EKycRequestStatus.DRAFT} />)
   .add("pending", () => (
     <KycStatusWidgetBase {...commonProps} requestStatus={EKycRequestStatus.PENDING} />
   ))

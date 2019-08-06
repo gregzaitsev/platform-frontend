@@ -11,7 +11,7 @@ import {
   IKycIndividualData,
   IKycLegalRepresentative,
   KycLegalRepresentativeSchemaRequired,
-} from "../../../lib/api/KycApi.interfaces";
+} from "../../../lib/api/kyc/KycApi.interfaces";
 import { actions } from "../../../modules/actions";
 import { appConnect } from "../../../store";
 import { IIntlProps, injectIntlHelpers } from "../../../utils/injectIntlHelpers.unsafe";

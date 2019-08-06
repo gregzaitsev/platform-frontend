@@ -18,7 +18,7 @@ import {
   EProductName,
   TEtoProduct,
 } from "../../lib/api/eto/EtoProductsApi.interfaces";
-import { EKycRequestStatus } from "../../lib/api/KycApi.interfaces";
+import { EKycRequestStatus } from "../../lib/api/kyc/KycApi.interfaces";
 import { IAppState } from "../../store";
 import { DeepReadonly } from "../../types";
 import { selectIsUserEmailVerified } from "../auth/selectors";

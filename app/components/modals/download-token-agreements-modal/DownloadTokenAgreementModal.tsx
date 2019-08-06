@@ -9,7 +9,7 @@ import {
   IEtoDocument,
   immutableDocumentName,
 } from "../../../lib/api/eto/EtoFileApi.interfaces";
-import { IImmutableFileId } from "../../../lib/api/ImmutableStorage.interfaces";
+import { IImmutableFileId } from "../../../lib/api/immutable-storage/ImmutableStorage.interfaces";
 import { actions } from "../../../modules/actions";
 import { selectEtoWithCompanyAndContractById } from "../../../modules/eto/selectors";
 import { TEtoWithCompanyAndContract } from "../../../modules/eto/types";

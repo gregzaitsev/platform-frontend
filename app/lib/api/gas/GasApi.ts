@@ -1,9 +1,9 @@
 import { inject, injectable } from "inversify";
 import * as Web3Utils from "web3-utils";
 
-import { symbols } from "../../di/symbols";
-import * as YupTS from "../yup-ts.unsafe";
-import { IHttpClient, IHttpResponse } from "./client/IHttpClient";
+import { symbols } from "../../../di/symbols";
+import * as YupTS from "../../yup-ts.unsafe";
+import { IHttpClient, IHttpResponse } from "../client/IHttpClient";
 
 const BASE_PATH = "/api/gas/";
 const GET_GAS_PATH = "/gas";

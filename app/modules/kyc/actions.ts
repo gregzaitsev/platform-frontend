@@ -7,7 +7,7 @@ import {
   IKycLegalRepresentative,
   IKycRequestState,
   KycBankQuintessenceBankAccount,
-} from "../../lib/api/KycApi.interfaces";
+} from "../../lib/api/kyc/KycApi.interfaces";
 import { createAction, createActionFactory, createSimpleAction } from "../actionsUtils";
 import { TBankAccount, TClaims } from "./types";
 

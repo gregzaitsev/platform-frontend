@@ -1,9 +1,13 @@
 import { inject, injectable } from "inversify";
 
-import { symbols } from "../../di/symbols";
-import {} from "../../utils/transformObjectKeys";
-import { IHttpClient, IHttpResponse } from "./client/IHttpClient";
-import { FileDescriptionValidator, TFileDescription, TFileType } from "./FileStorage.interfaces";
+import { symbols } from "../../../di/symbols";
+import {} from "../../../utils/transformObjectKeys";
+import { IHttpClient, IHttpResponse } from "../client/IHttpClient";
+import {
+  FileDescriptionValidator,
+  TFileDescription,
+  TFileType,
+} from "../file-storage/FileStorage.interfaces";
 import { IImmutableFileId } from "./ImmutableStorage.interfaces";
 
 const BASE_PATH = "/api/immutable-storage";

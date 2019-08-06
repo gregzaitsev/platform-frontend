@@ -1,7 +1,7 @@
 import * as cn from "classnames";
 import * as React from "react";
 
-import { KycBankVerifiedBankAccount } from "../../lib/api/KycApi.interfaces";
+import { KycBankVerifiedBankAccount } from "../../lib/api/kyc/KycApi.interfaces";
 
 import * as bankIcon from "../../assets/img/bank-transfer/bank-icon.svg";
 import * as styles from "./BankAccount.module.scss";

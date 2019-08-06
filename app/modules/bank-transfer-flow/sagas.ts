@@ -5,7 +5,7 @@ import { BankTransferFlowMessage } from "../../components/translatedMessages/mes
 import { createMessage } from "../../components/translatedMessages/utils";
 import { IPFS_PROTOCOL } from "../../config/constants";
 import { TGlobalDependencies } from "../../di/setupBindings";
-import { TKycBankTransferPurpose } from "../../lib/api/KycApi.interfaces";
+import { TKycBankTransferPurpose } from "../../lib/api/kyc/KycApi.interfaces";
 import { invariant } from "../../utils/invariant";
 import { actions, TActionFromCreator } from "../actions";
 import { selectIsUserFullyVerified } from "../auth/selectors";

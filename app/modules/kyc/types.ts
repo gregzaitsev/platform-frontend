@@ -1,4 +1,4 @@
-import { KycBankVerifiedBankAccount } from "../../lib/api/KycApi.interfaces";
+import { KycBankVerifiedBankAccount } from "../../lib/api/kyc/KycApi.interfaces";
 
 export type TClaims = {
   isVerified: boolean;

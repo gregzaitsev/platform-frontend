@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 
-import { EKycRequestStatus } from "../../lib/api/KycApi.interfaces";
+import { EKycRequestStatus } from "../../lib/api/kyc/KycApi.interfaces";
 import { EUserType, IUser } from "../../lib/api/users/interfaces";
 import { IAppState } from "../../store";
 import { selectIsUserVerifiedOnBlockchain, selectKycRequestStatus } from "../kyc/selectors";

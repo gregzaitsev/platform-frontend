@@ -17,7 +17,7 @@ import {
   IKycLegalRepresentative,
   IKycRequestState,
   TKycBankAccount,
-} from "../../lib/api/KycApi.interfaces";
+} from "../../lib/api/kyc/KycApi.interfaces";
 import { EUserType, IUser } from "../../lib/api/users/interfaces";
 import { IdentityRegistry } from "../../lib/contracts/IdentityRegistry";
 import { IAppState } from "../../store";
@@ -50,7 +50,7 @@ let kycWidgetWatchDelay: number = 1000;
 function* kycRefreshWidgetSaga({ logger }: TGlobalDependencies): any {
   kycWidgetWatchDelay = 1000;
   while (true) {
-    const requestType: EKycRequestType = yield select((s: IAppState) => selectKycRequestType(s));
+    const requestType: EKycRequestType = yield select(selectKycRequestType);
     const status: EKycRequestStatus | undefined = yield select((s: IAppState) =>
       selectKycRequestStatus(s),
     );

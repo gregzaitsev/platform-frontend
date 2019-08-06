@@ -2,7 +2,7 @@ import { fork, put } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { IHttpResponse } from "../../lib/api/client/IHttpClient";
-import { GasModelShape } from "../../lib/api/GasApi";
+import { GasModelShape } from "../../lib/api/gas/GasApi";
 import { actions } from "../actions";
 import { neuTakeEvery } from "../sagasUtils";
 

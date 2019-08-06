@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 
-import * as YupTS from "../yup-ts.unsafe";
+import * as YupTS from "../../yup-ts.unsafe";
 import {
   countryCode,
   isUsCitizen,
@@ -8,7 +8,7 @@ import {
   percentage,
   personBirthDate,
   restrictedCountry,
-} from "./util/schemaHelpers.unsafe";
+} from "../util/schemaHelpers.unsafe";
 
 export enum EKycRequestType {
   BUSINESS = "business",

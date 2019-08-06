@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 
-import { symbols } from "../../di/symbols";
-import { IHttpClient, IHttpResponse } from "./client/IHttpClient";
+import { symbols } from "../../../di/symbols";
+import { IHttpClient, IHttpResponse } from "../client/IHttpClient";
 import {
   IKycBeneficialOwner,
   IKycBusinessData,

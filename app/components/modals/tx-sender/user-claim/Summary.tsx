@@ -8,7 +8,7 @@ import {
   IEtoDocument,
   immutableDocumentName,
 } from "../../../../lib/api/eto/EtoFileApi.interfaces";
-import { IImmutableFileId } from "../../../../lib/api/ImmutableStorage.interfaces";
+import { IImmutableFileId } from "../../../../lib/api/immutable-storage/ImmutableStorage.interfaces";
 import { actions } from "../../../../modules/actions";
 import { selectIsPendingDownload } from "../../../../modules/immutable-file/selectors";
 import { selectMyInvestorTicketByEtoId } from "../../../../modules/investor-portfolio/selectors";

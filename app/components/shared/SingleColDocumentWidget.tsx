@@ -4,7 +4,7 @@ import { compose } from "redux";
 
 import { IEtoDocument, immutableDocumentName } from "../../lib/api/eto/EtoFileApi.interfaces";
 import { EOfferingDocumentType } from "../../lib/api/eto/EtoProductsApi.interfaces";
-import { IImmutableFileId } from "../../lib/api/ImmutableStorage.interfaces";
+import { IImmutableFileId } from "../../lib/api/immutable-storage/ImmutableStorage.interfaces";
 import { actions } from "../../modules/actions";
 import { appConnect } from "../../store";
 import { TTranslatedString } from "../../types";

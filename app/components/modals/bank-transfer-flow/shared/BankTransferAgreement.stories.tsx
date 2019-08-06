@@ -10,6 +10,6 @@ const props = {
   downloadNEurTokenAgreement: action("downloadNEurTokenAgreement"),
 };
 
-storiesOf("BankTransferVerifyAgreement", module)
+storiesOf("BankTransferAgreement", module)
   .addDecorator(withModalBody())
   .add("default", () => <BankTransferVerifyAgreementLayout {...props} />);

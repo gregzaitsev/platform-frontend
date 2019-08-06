@@ -15,7 +15,7 @@ import {
 } from "../../../test/integrationTestUtils.unsafe";
 import { createMock, tid } from "../../../test/testUtils";
 import { symbols } from "../../di/symbols";
-import { SignatureAuthApi } from "../../lib/api/SignatureAuthApi";
+import { SignatureAuthApi } from "../../lib/api/auth/SignatureAuthApi";
 import { getDummyUser } from "../../lib/api/users/fixtures";
 import { UsersApi } from "../../lib/api/users/UsersApi";
 import { IdentityRegistry } from "../../lib/contracts/IdentityRegistry";

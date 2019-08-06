@@ -3,7 +3,7 @@ import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 import { Container } from "reactstrap";
 import { compose } from "recompose";
 
-import { KycBankQuintessenceBankAccount } from "../../../../lib/api/KycApi.interfaces";
+import { KycBankQuintessenceBankAccount } from "../../../../lib/api/kyc/KycApi.interfaces";
 import { actions } from "../../../../modules/actions";
 import {
   selectBankTransferFlowReference,

@@ -112,7 +112,7 @@ Cypress.Commands.add("dropFile", { prevSubject: "element" }, (subject, file) => 
     .then(blob => configureBlob(blob, file))
     .then(blob => new File([blob], file, { type: blob.type }))
     .then(file => createCustomEvent("drop", {}, [file]))
-    .then(event => console.log(event) || subject[0].dispatchEvent(event));
+    .then(event => subject[0].dispatchEvent(event));
 });
 
 // based on https://github.com/cypress-io/cypress/issues/136#issuecomment-342391119

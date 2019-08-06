@@ -3,8 +3,7 @@ import { fork } from "redux-saga/effects";
 import { FileUploadMessage } from "../../../components/translatedMessages/messages";
 import { createMessage } from "../../../components/translatedMessages/utils";
 import { TGlobalDependencies } from "../../../di/setupBindings";
-import { IHttpResponse } from "../../../lib/api/client/IHttpClient";
-import { TFileDescription } from "../../../lib/api/FileStorage.interfaces";
+import { TFileDescription } from "../../../lib/api/file-storage/FileStorage.interfaces";
 import { TAction } from "../../actions";
 import { neuTakeEvery } from "../../sagasUtils";
 
@@ -16,12 +15,9 @@ function* singleFileUpload(
   const { file, onDone } = action.payload;
 
   try {
-    const fileData: IHttpResponse<TFileDescription> = yield fileStorageApi.uploadFile(
-      "image",
-      file,
-    );
+    const fileData: TFileDescription = yield fileStorageApi.uploadFile("image", file);
 
-    onDone(undefined, fileData.body.url);
+    onDone(undefined, fileData.url);
   } catch (e) {
     logger.error("Error while uploading single file", e);
     notificationCenter.error(createMessage(FileUploadMessage.FILE_UPLOAD_ERROR));

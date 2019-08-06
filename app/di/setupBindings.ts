@@ -3,6 +3,7 @@ import { Container } from "inversify";
 
 import { IBackendRoot, IConfig } from "../config/getConfig";
 import { AnalyticsApi } from "../lib/api/analytics-api/AnalyticsApi";
+import { SignatureAuthApi } from "../lib/api/auth/SignatureAuthApi";
 import { AuthorizedBinaryHttpClient } from "../lib/api/client/AuthBinaryHttpClient";
 import { AuthorizedJsonHttpClient } from "../lib/api/client/AuthJsonHttpClient";
 import { BinaryHttpClient } from "../lib/api/client/BinaryHttpClient";
@@ -13,11 +14,14 @@ import { EtoFileApi } from "../lib/api/eto/EtoFileApi";
 import { EtoNomineeApi } from "../lib/api/eto/EtoNomineeApi";
 import { EtoPledgeApi } from "../lib/api/eto/EtoPledgeApi";
 import { EtoProductApi } from "../lib/api/eto/EtoProductApi";
-import { FileStorageApi } from "../lib/api/FileStorageApi";
-import { GasApi } from "../lib/api/GasApi";
-import { ImmutableStorageApi } from "../lib/api/ImmutableStorageApi";
-import { KycApi } from "../lib/api/KycApi";
-import { SignatureAuthApi } from "../lib/api/SignatureAuthApi";
+import { FileStorageApi } from "../lib/api/file-storage/FileStorageApi";
+import {
+  richTextEditorUploadAdapterFactory,
+  TRichTextEditorUploadAdapterFactoryType,
+} from "../lib/api/file-storage/RichTextEditorUploadAdapter";
+import { GasApi } from "../lib/api/gas/GasApi";
+import { ImmutableStorageApi } from "../lib/api/immutable-storage/ImmutableStorageApi";
+import { KycApi } from "../lib/api/kyc/KycApi";
 import { UsersApi } from "../lib/api/users/UsersApi";
 import { VaultApi } from "../lib/api/vault/VaultApi";
 import { detectBrowser, TDetectBrowser } from "../lib/dependencies/detectBrowser";
@@ -184,6 +188,10 @@ export function setupBindings(config: IConfig): Container {
   container
     .bind<AsyncIntervalSchedulerFactoryType>(symbols.asyncIntervalSchedulerFactory)
     .toFactory(AsyncIntervalSchedulerFactory);
+
+  container
+    .bind<TRichTextEditorUploadAdapterFactoryType>(symbols.richTextEditorUploadAdapter)
+    .toFactory(richTextEditorUploadAdapterFactory);
 
   container.bind<Web3FactoryType>(symbols.web3Factory).toFactory(web3Factory);
 

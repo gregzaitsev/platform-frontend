@@ -53,6 +53,9 @@ export const symbols = makeDebugSymbols({
 
   // external modules
   cryptoRandomString: Symbol(),
+
+  // others
+  richTextEditorUploadAdapter: Symbol(),
 });
 
 /**

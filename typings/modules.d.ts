@@ -13,10 +13,6 @@ declare module "@ledgerhq/web3-subprovider";
 declare module "@ledgerhq/hw-transport-u2f";
 declare module "@ledgerhq/hw-app-eth";
 
-// No typings as for now, see https://github.com/ckeditor/ckeditor5/issues/504
-declare module "@ckeditor/ckeditor5-build-inline";
-declare module "@ckeditor/ckeditor5-react";
-
 declare module "eth-sig-util";
 declare module "tweetnacl";
 

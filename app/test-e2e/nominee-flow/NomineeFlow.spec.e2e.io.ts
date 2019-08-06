@@ -33,6 +33,6 @@ describe("Nominee flow", () => {
     cy.get(tid("start-kyc-button")).awaitedClick();
     goThroughKycCorporateProcess();
     cy.get(tid("generic-modal-dismiss-button")).awaitedClick();
-    cy.get(tid("nominee-kyc-status"));
+    cy.get(tid("nominee-kyc-pending"));
   });
 });

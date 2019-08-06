@@ -1,13 +1,17 @@
 import { fillForm } from "../utils/forms";
 import {
   acceptWallet,
+  assertDashboard,
   assertEmailChangeAbort,
   assertEmailChangeFlow,
   assertEmailPendingChange,
   createAndLoginNewUser,
   DEFAULT_PASSWORD,
   generateRandomEmailAddress,
+  getLatestVerifyUserEmailLink,
   goToProfile,
+  loginWithLightWallet,
+  logoutViaAccountMenu,
   registerWithLightWallet,
   tid,
   verifyLatestUserEmail,
@@ -98,6 +102,33 @@ describe("Change Email", function(): void {
       cy.get(tid("verify-email-widget.abort-change-email.button")).click();
 
       assertEmailChangeAbort(email);
+    });
+
+    it("should update metadata in wallet storage", () => {
+      goToProfile();
+      assertEmailChangeFlow();
+
+      const newEmail = generateRandomEmailAddress();
+      fillForm({
+        email: newEmail,
+        "verify-email-widget-form-submit": { type: "submit" },
+      });
+
+      acceptWallet();
+
+      // assert if new email is pending for verification
+
+      assertEmailPendingChange(email, newEmail);
+
+      getLatestVerifyUserEmailLink(newEmail).then(activationLink => {
+        cy.visit(activationLink);
+      });
+
+      logoutViaAccountMenu();
+
+      loginWithLightWallet(newEmail, DEFAULT_PASSWORD);
+
+      assertDashboard();
     });
   });
 

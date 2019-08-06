@@ -1,4 +1,4 @@
-import { GasModelShape } from "../../lib/api/GasApi";
+import { GasModelShape } from "../../lib/api/gas/GasApi";
 import { createActionFactory } from "../actionsUtils";
 
 export const gasActions = {

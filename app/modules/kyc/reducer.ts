@@ -8,7 +8,7 @@ import {
   IKycLegalRepresentative,
   IKycRequestState,
   KycBankQuintessenceBankAccount,
-} from "../../lib/api/KycApi.interfaces";
+} from "../../lib/api/kyc/KycApi.interfaces";
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
 import { actions } from "../actions";

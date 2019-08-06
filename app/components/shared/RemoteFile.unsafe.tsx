@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { TFileDescription } from "../../lib/api/FileStorage.interfaces";
+import { TFileDescription } from "../../lib/api/file-storage/FileStorage.interfaces";
 import { actions } from "../../modules/actions";
 import { appConnect } from "../../store";
 

@@ -1,4 +1,4 @@
-import { GasModelShape } from "../../lib/api/GasApi";
+import { GasModelShape } from "../../lib/api/gas/GasApi";
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
 import { actions } from "../actions";

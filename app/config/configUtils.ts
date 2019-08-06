@@ -18,7 +18,7 @@ export function getRequiredNumber(env: NodeJS.ProcessEnv, name: string): number 
 }
 
 export function getOptionalEnv(env: NodeJS.ProcessEnv, name: string): string | undefined {
-  return env[name] as any;
+  return env[name];
 }
 
 /**

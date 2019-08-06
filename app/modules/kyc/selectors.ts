@@ -5,7 +5,7 @@ import {
   EKycRequestType,
   ERequestOutsourcedStatus,
   KycBankQuintessenceBankAccount,
-} from "../../lib/api/KycApi.interfaces";
+} from "../../lib/api/kyc/KycApi.interfaces";
 import { IAppState } from "../../store";
 import { DeepReadonly } from "../../types";
 import { IKycState } from "./reducer";

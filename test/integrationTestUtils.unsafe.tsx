@@ -16,7 +16,7 @@ import {
   TGlobalDependencies,
 } from "../app/di/setupBindings";
 import { symbols } from "../app/di/symbols";
-import { SignatureAuthApi } from "../app/lib/api/SignatureAuthApi";
+import { SignatureAuthApi } from "../app/lib/api/auth/SignatureAuthApi";
 import { UsersApi } from "../app/lib/api/users/UsersApi";
 import { noopLogger } from "../app/lib/dependencies/logger";
 import { IntlWrapper } from "../app/lib/intl/IntlWrapper";

@@ -5,7 +5,7 @@ import {
   EKycBusinessType,
   EKycRequestType,
   IKycIndividualData,
-} from "../../lib/api/KycApi.interfaces";
+} from "../../lib/api/kyc/KycApi.interfaces";
 import { dummyIntl } from "../../utils/injectIntlHelpers.fixtures";
 import { KYCBeneficialOwnerComponent } from "./business/BeneficialOwner.unsafe";
 import { KYCBeneficialOwnersComponent } from "./business/BeneficialOwners";

@@ -3,7 +3,7 @@ import * as React from "react";
 import Dropzone from "react-dropzone";
 import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 
-import { EKycRequestType, IKycFileInfo } from "../../lib/api/KycApi.interfaces";
+import { EKycRequestType, IKycFileInfo } from "../../lib/api/kyc/KycApi.interfaces";
 import { ArrayWithAtLeastOneMember } from "../../types";
 import { TAcceptedFileType } from "./forms/fields/utils.unsafe";
 import { InlineIcon } from "./icons";

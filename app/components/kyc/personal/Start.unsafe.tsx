@@ -7,7 +7,7 @@ import { compose } from "redux";
 import {
   IKycIndividualData,
   KycIndividualDataSchemaRequired,
-} from "../../../lib/api/KycApi.interfaces";
+} from "../../../lib/api/kyc/KycApi.interfaces";
 import { actions } from "../../../modules/actions";
 import { appConnect } from "../../../store";
 import { injectIntlHelpers } from "../../../utils/injectIntlHelpers.unsafe";

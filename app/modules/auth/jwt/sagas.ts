@@ -3,7 +3,7 @@ import { call, Effect, put, select, StringableActionCreator } from "redux-saga/e
 import { calculateTimeLeft } from "../../../components/shared/utils";
 import { TMessage } from "../../../components/translatedMessages/utils";
 import { TGlobalDependencies } from "../../../di/setupBindings";
-import { ICreateJwtEndpointResponse } from "../../../lib/api/SignatureAuthApi";
+import { ICreateJwtEndpointResponse } from "../../../lib/api/auth/SignatureAuthApi";
 import { EthereumAddressWithChecksum } from "../../../types";
 import { getJwtExpiryDate, hasValidPermissions } from "../../../utils/JWTUtils";
 import { EDelayTiming, safeDelay } from "../../../utils/safeTimers";
