@@ -23,42 +23,51 @@ const loadingState = {
   readonly: false,
   stateValues: eto,
   company,
-  saveData: () => {},
+  saveData: () => {
+  },
 };
 
 storiesOf("ETO-Flow/Registration-forms", module)
   .addDecorator(story => <Panel>{story()}</Panel>)
   .add("EtoEquityTokenInfo", () => (
     <Provider store={createStore(() => ({}))}>
-      <Formik initialValues={eto} onSubmit={() => {}}>
+      <Formik initialValues={eto} onSubmit={() => {
+      }}>
         {props => <EtoEquityTokenInfoComponent {...props} {...loadingState} />}
       </Formik>
     </Provider>
   ))
   .add("EtoRegistrationCompanyInformation", () => (
     <Provider store={createStore(() => ({}))}>
-      <Formik initialValues={eto} onSubmit={() => {}}>
+      <Formik initialValues={eto} onSubmit={() => {
+      }}>
         {props => <EtoRegistrationCompanyInformationComponent {...props} {...loadingState} />}
       </Formik>
     </Provider>
   ))
   .add("EtoRegistrationMedia", () => (
     <Provider store={createStore(() => ({}))}>
-      <Formik initialValues={eto} onSubmit={() => {}}>
+      <Formik initialValues={eto} onSubmit={() => {
+      }}>
         {props => <EtoRegistrationMediaComponent {...props} {...loadingState} />}
       </Formik>
     </Provider>
   ))
   .add("EtoRegistrationPitch", () => (
     <Provider store={createStore(() => ({}))}>
-      <Formik initialValues={eto} onSubmit={() => {}}>
+      <Formik initialValues={eto} onSubmit={() => {
+      }}>
         {props => <EtoRegistrationPitchComponent {...props} {...loadingState} />}
       </Formik>
     </Provider>
   ))
   .add("EtoVotingRights", () => (
-    <Provider store={createStore(() => ({}))}>
-      <Formik initialValues={eto} onSubmit={() => {}}>
+    <Provider store={createStore(() => ({
+      etoNominee: { isLoading: false },
+      etoFlow: { loading: false }
+    }))}>
+      <Formik initialValues={eto} onSubmit={() => {
+      }}>
         {props => (
           <EtoVotingRightsComponent
             {...props}
@@ -74,7 +83,8 @@ storiesOf("ETO-Flow/Registration-forms", module)
     <Provider store={createStore(() => ({}))}>
       <Formik
         initialValues={eto}
-        onSubmit={() => {}}
+        onSubmit={() => {
+        }}
         validationSchema={() => EtoKeyIndividualsType.toYup()}
       >
         {props => <EtoRegistrationKeyIndividualsComponent {...props} {...loadingState} />}
@@ -83,14 +93,16 @@ storiesOf("ETO-Flow/Registration-forms", module)
   ))
   .add("EtoRegistrationLegalInformation", () => (
     <Provider store={createStore(() => ({}))}>
-      <Formik initialValues={eto} onSubmit={() => {}}>
+      <Formik initialValues={eto} onSubmit={() => {
+      }}>
         {props => <EtoRegistrationLegalInformationComponent {...props} {...loadingState} />}
       </Formik>
     </Provider>
   ))
   .add("EtoRegistrationRiskAssessment", () => (
     <Provider store={createStore(() => ({}))}>
-      <Formik initialValues={eto} onSubmit={() => {}}>
+      <Formik initialValues={eto} onSubmit={() => {
+      }}>
         {props => <EtoRegistrationRiskAssessmentComponent {...props} {...loadingState} />}
       </Formik>
     </Provider>
