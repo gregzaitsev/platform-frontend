@@ -221,7 +221,7 @@ export class LightWalletConnector {
       );
       engine.start();
       engine.on("block", (block: any) => {
-        this.logger.info("bla", block);
+        this.logger.info(block);
       });
       return new Web3(engine);
     } catch (e) {

@@ -4,7 +4,7 @@ import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 import { branch, compose, renderComponent, renderNothing, withProps } from "recompose";
 
 import {
-  ENomineeRequestError,
+  ENomineeRequestError, ENomineeRequestStatus,
   INomineeRequest,
 } from "../../../modules/nominee-flow/reducer";
 import {
@@ -41,7 +41,17 @@ const getErrorText = (
   requestStatus: INomineeRequest,
   nomineeRequestError: ENomineeRequestError,
 ): TTranslatedString => {
-  if (nomineeRequestError === ENomineeRequestError.REQUEST_EXISTS) {
+  if(requestStatus.state === ENomineeRequestStatus.REJECTED &&
+    (nomineeRequestError === ENomineeRequestError.NONE ||
+      nomineeRequestError === ENomineeRequestError.REQUEST_EXISTS)) {
+    return (
+      <FormattedHTMLMessage
+        tagName="span"
+        id="nominee-flow.link-with-issuer.error-request-rejected"
+        values={{ etoId: requestStatus.etoId }}
+      />
+    );
+  } else if (nomineeRequestError === ENomineeRequestError.REQUEST_EXISTS) {
     return (
       <FormattedHTMLMessage
         tagName="span"
@@ -83,6 +93,21 @@ export const CreateNomineeRequestLayout: React.FunctionComponent = () => (
   </>
 );
 
+export const RepeatCreateNomineeRequestLayout: React.FunctionComponent<IRepeatRequestProps> = ({nomineeRequest}) => (
+  <>
+    <h1 className={styles.title}>
+      <FormattedMessage id="nominee-flow.link-with-issuer.link-with-issuer" />
+    </h1>
+    <p className={cn(styles.text, styles.error)}>
+      <FormattedHTMLMessage
+        tagName="span"
+        id="nominee-flow.link-with-issuer.error-request-exists"
+        values={{ etoId: nomineeRequest.etoId }}
+      />
+    </p>
+  </>
+);
+
 export const NomineeRequestContainer: React.FunctionComponent = ({ children }) => (
   <section className={styles.linkToIssuerContentPanel}>
     {children}
@@ -113,6 +138,10 @@ export const LinkToIssuer = compose<IStateProps, {}>(
   withContainer(NomineeRequestContainer),
   branch<IBranchProps>(
     ({ nextState }) => nextState === ENomineeRequestComponentState.REPEAT_REQUEST,
+    renderComponent(RepeatNomineeRequestLayout),
+  ),
+  branch<IBranchProps>(
+    ({ nextState }) => nextState === ENomineeRequestComponentState.CREATE_NEW_REQUEST,
     renderComponent(RepeatNomineeRequestLayout),
   ),
 )(CreateNomineeRequestLayout);

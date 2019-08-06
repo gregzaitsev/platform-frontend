@@ -290,8 +290,10 @@ export enum ENomineeRequestErrorNotifications {
 }
 
 export enum EEtoNomineeRequestNotifications {
+  REJECT_NOMINEE_ERROR = "deleteNomineeRequestError",
+  ACCEPT_NOMINEE_ERROR = "acceptNomineeRequestError",
   DELETE_NOMINEE_REQUEST_SUCCESS = "deleteNomineeRequestSuccess",
-  GENERIC_ERROR = "etoNomineeRequestGenericError",
+  GENERIC_NETWORK_ERROR = "etoNomineeRequestGenericError",
   COULD_NOT_DELETE_REQUEST = "couldNotDeleteRequest",
 }
 
@@ -717,10 +719,14 @@ const getMessageTranslation = ({ messageType, messageData }: TMessage): TTransla
 
     case EEtoNomineeRequestNotifications.DELETE_NOMINEE_REQUEST_SUCCESS:
       return <FormattedMessage id="eto.form.eto-nominee.delete-nominee-request-success" />;
-    case EEtoNomineeRequestNotifications.GENERIC_ERROR:
+    case EEtoNomineeRequestNotifications.GENERIC_NETWORK_ERROR:
       return <FormattedMessage id="eto.form.eto-nominee.generic-network-error" />;
     case EEtoNomineeRequestNotifications.COULD_NOT_DELETE_REQUEST:
       return <FormattedMessage id="eto.form.eto-nominee.delete-request-error" />;
+    case EEtoNomineeRequestNotifications.REJECT_NOMINEE_ERROR:
+      return <FormattedMessage id="eto.form.eto-nominee.reject-nominee-request-error" />;
+    case EEtoNomineeRequestNotifications.ACCEPT_NOMINEE_ERROR:
+      return <FormattedMessage id="eto.form.eto-nominee.accept-nominee-request-error" />;
 
     case EEtoNomineeRequestMessages.ISSUER_DELETE_NOMINEE_REQUEST:
       return <FormattedMessage id="eto-nominee.permissions.delete-nominee-request-title" />;

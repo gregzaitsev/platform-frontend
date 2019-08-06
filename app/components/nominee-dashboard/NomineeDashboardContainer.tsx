@@ -32,9 +32,7 @@ export const AccountSetupContainer: React.FunctionComponent = ({ children }) => 
 
 const NotLinkedNomineeDashboardContainer: React.FunctionComponent = ({ children }) => (
   <div data-test-id="nominee-dashboard" className={styles.nomineeDashboardContainer}>
-    {/*<section className={styles.dashboardContentPanel}>*/}
     {children}
-    {/*</section>*/}
   </div>
 );
 

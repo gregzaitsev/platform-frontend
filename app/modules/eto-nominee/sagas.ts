@@ -30,7 +30,7 @@ export function* etoGetNomineeRequests({
     yield put(actions.etoNominee.storeNomineeRequests(nomineeRequestsConverted));
   } catch (e) {
     logger.error("Failed to load Nominee requests", e);
-    notificationCenter.error(createMessage(EEtoNomineeRequestNotifications.GENERIC_ERROR));
+    notificationCenter.error(createMessage(EEtoNomineeRequestNotifications.GENERIC_NETWORK_ERROR));
     yield put(actions.etoNominee.dataReady());
   }
 }
@@ -48,8 +48,28 @@ export function* etoNomineeRequestsWatcher({ logger }: TGlobalDependencies): Ite
   }
 }
 
-export function* updateNomineeRequest(
-  { apiEtoNomineeService, logger, notificationCenter }: TGlobalDependencies,
+export function* etoUpdateNomineeRequest({
+    notificationCenter
+  }: TGlobalDependencies,
+  action:
+    | TActionFromCreator<typeof actions.etoNominee.acceptNomineeRequest>
+    | TActionFromCreator<typeof actions.etoNominee.rejectNomineeRequest>,
+): Iterator<any> {
+  try {
+    yield neuCall(ensurePermissionsArePresentAndRunEffect,
+      neuCall(etoUpdateNomineeRequestEffect, action),
+      [EJwtPermissions.ISSUER_UPDATE_NOMINEE_REQUEST],
+      createMessage(EEtoNomineeRequestMessages.ISSUER_DELETE_NOMINEE_REQUEST),
+      createMessage(EEtoNomineeRequestMessages.ISSUER_DELETE_NOMINEE_REQUEST_TEXT),
+    );
+
+  } catch (e) {
+    notificationCenter.error(createMessage(EEtoNomineeRequestNotifications.GENERIC_NETWORK_ERROR));
+  }
+}
+
+export function* etoUpdateNomineeRequestEffect(
+  { apiEtoNomineeService, logger }: TGlobalDependencies,
   action:
     | TActionFromCreator<typeof actions.etoNominee.acceptNomineeRequest>
     | TActionFromCreator<typeof actions.etoNominee.rejectNomineeRequest>,
@@ -70,13 +90,13 @@ export function* updateNomineeRequest(
     }
   } catch (e) {
     logger.error("Failed to update nominee request", e);
-    notificationCenter.error(createMessage(EEtoNomineeRequestNotifications.GENERIC_ERROR));
+    // notificationCenter.error(createMessage(EEtoNomineeRequestNotifications.REJECT_NOMINEE_ERROR)); //todo add notifications for success and failure
     yield put(actions.etoNominee.dataReady());
   }
 }
 
-export function* etoDeleteNomineeRequest({notificationCenter}:TGlobalDependencies):Iterator<any> {
-  try{
+export function* etoRejectNomineeRequest({ notificationCenter }: TGlobalDependencies): Iterator<any> {
+  try {
     yield neuCall(ensurePermissionsArePresentAndRunEffect,
       neuCall(etoDeleteNomineeRequestEffect),
       [EJwtPermissions.ISSUER_REMOVE_NOMINEE],
@@ -84,8 +104,8 @@ export function* etoDeleteNomineeRequest({notificationCenter}:TGlobalDependencie
       createMessage(EEtoNomineeRequestMessages.ISSUER_DELETE_NOMINEE_REQUEST_TEXT),
     );
 
-  }catch (e) {
-    notificationCenter.error(createMessage(EEtoNomineeRequestNotifications.GENERIC_ERROR));
+  } catch (e) {
+    notificationCenter.error(createMessage(EEtoNomineeRequestNotifications.GENERIC_NETWORK_ERROR));
   }
 }
 
@@ -109,15 +129,35 @@ export function* etoDeleteNomineeRequestEffect({
   }
 }
 
+export function* etoAcceptNomineeRequestEffect({
+  apiEtoNomineeService,
+  logger,
+  notificationCenter,
+}: TGlobalDependencies): Iterator<any> {
+  const nomineeId = yield select(selectEtoNominee);
+
+  try {
+    yield apiEtoNomineeService.etoDeleteNomineeRequest(nomineeId);
+    yield put(actions.etoFlow.loadIssuerEto());
+    notificationCenter.info(
+      createMessage(EEtoNomineeRequestNotifications.DELETE_NOMINEE_REQUEST_SUCCESS),
+    );
+  } catch (e) {
+    logger.error(`Error while trying to delete nominee request with nominee id ${nomineeId}`);
+  } finally {
+    yield put(actions.etoNominee.dataReady());
+  }
+}
+
 export function* etoNomineeSagas(): Iterator<any> {
   yield fork(neuTakeLatest, actions.etoNominee.getNomineeRequests, etoGetNomineeRequests);
-  yield fork(neuTakeLatest, actions.etoNominee.acceptNomineeRequest, updateNomineeRequest);
-  yield fork(neuTakeLatest, actions.etoNominee.rejectNomineeRequest, updateNomineeRequest);
+  yield fork(neuTakeLatest, actions.etoNominee.acceptNomineeRequest, etoUpdateNomineeRequest);
+  yield fork(neuTakeLatest, actions.etoNominee.rejectNomineeRequest, etoUpdateNomineeRequest);
   yield fork(
     neuTakeUntil,
     actions.etoNominee.startNomineeRequestsWatcher,
     actions.etoNominee.stopNomineeRequestsWatcher,
     etoNomineeRequestsWatcher,
   );
-  yield fork(neuTakeLatest, actions.etoNominee.deleteNomineeRequest, etoDeleteNomineeRequest);
+  yield fork(neuTakeLatest, actions.etoNominee.deleteNomineeRequest, etoRejectNomineeRequest);
 }
