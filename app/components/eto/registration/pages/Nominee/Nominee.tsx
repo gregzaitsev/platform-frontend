@@ -2,33 +2,26 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { branch, compose, renderComponent } from "recompose";
 
-import { etoFormIsReadonly } from "../../../../../lib/api/eto/EtoApiUtils";
 import { actions } from "../../../../../modules/actions";
 import {
-  selectEtoNominee,
-  selectEtoNomineeDisplayName,
+
   selectIssuerEtoLoading,
-  selectIssuerEtoState,
 } from "../../../../../modules/eto-flow/selectors";
-import { EEtoFormTypes } from "../../../../../modules/eto-flow/types";
 import { selectEtoNomineeIsLoading } from "../../../../../modules/eto-nominee/selectors";
 import { appConnect } from "../../../../../store";
-import { withContainer } from "../../../../../utils/withContainer.unsafe";
 import { Button, EButtonLayout } from "../../../../shared/buttons/index";
 import { LoadingIndicator } from "../../../../shared/loading-indicator/LoadingIndicator";
-import { Section } from "../../Shared";
 import { ChooseNominee } from "./ChooseNominee";
-import { FormBase } from "./FormBase";
 
 import * as styles from "./Nominee.module.scss";
 
 interface IExternalProps {
   readonly: boolean;
+  currentNomineeId: string | undefined;
+  currentNomineeName: string | undefined;
 }
 
 interface IStateProps {
-  currentNomineeId: string | undefined;
-  currentNomineeName: string | undefined;
   isLoading: boolean;
 }
 
@@ -48,7 +41,7 @@ const NomineeChosenComponent: React.FunctionComponent<IExternalProps & IComponen
   currentNomineeId,
   deleteNomineeRequest,
 }) => (
-  <>
+  <div className={styles.nomineeChosenSection}>
     <p className={styles.text}>
       <FormattedMessage id="eto.form.eto-nominee.text" />
     </p>
@@ -56,36 +49,31 @@ const NomineeChosenComponent: React.FunctionComponent<IExternalProps & IComponen
       <span>{currentNomineeId}</span>
       <span>{currentNomineeName}</span>
     </div>
-    {/* todo cancel button*/}
     {!readonly && (
-      <Section className={styles.buttonSection}>
-        <Button
+        <Button className={styles.button}
           layout={EButtonLayout.PRIMARY}
           data-test-id="delete-nominee-request"
           onClick={deleteNomineeRequest}
         >
           <FormattedMessage id="eto.form.eto-nominee.cancel-request" />
         </Button>
-      </Section>
     )}
-  </>
+
+  </div>
 );
 
 const Nominee = compose<IExternalProps & IComponentProps, IExternalProps>(
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: s => ({
       isLoading: selectEtoNomineeIsLoading(s) || selectIssuerEtoLoading(s),
-      currentNomineeId: selectEtoNominee(s),
-      currentNomineeName: selectEtoNomineeDisplayName(s),
-      readonly: etoFormIsReadonly(EEtoFormTypes.Nominee, selectIssuerEtoState(s)),
     }),
     dispatchToProps: dispatch => ({
       deleteNomineeRequest: () => dispatch(actions.etoNominee.deleteNomineeRequest()),
     }),
   }),
-  withContainer(FormBase),
+  // withContainer(FormBase),
   branch<IStateProps>(({ isLoading }) => isLoading, renderComponent(LoadingIndicator)),
-  branch<IStateProps>(
+  branch<IStateProps & IExternalProps>(
     ({ currentNomineeId }) => currentNomineeId === undefined,
     renderComponent(ChooseNominee),
   ),

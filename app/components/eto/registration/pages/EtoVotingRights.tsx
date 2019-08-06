@@ -10,7 +10,12 @@ import {
 } from "../../../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { etoFormIsReadonly } from "../../../../lib/api/eto/EtoApiUtils";
 import { actions } from "../../../../modules/actions";
-import { selectIssuerEto, selectIssuerEtoState } from "../../../../modules/eto-flow/selectors";
+import {
+  selectEtoNominee,
+  selectEtoNomineeDisplayName,
+  selectIssuerEto,
+  selectIssuerEtoState
+} from "../../../../modules/eto-flow/selectors";
 import { EEtoFormTypes } from "../../../../modules/eto-flow/types";
 import { appConnect } from "../../../../store";
 import { Button, EButtonLayout } from "../../../shared/buttons";
@@ -22,6 +27,7 @@ import { EtoFormBase } from "../EtoFormBase.unsafe";
 import { Section } from "../Shared";
 
 import * as styles from "../Shared.module.scss";
+import { Nominee } from "./Nominee/Nominee";
 
 const LIQUIDATION_PREFERENCE_VALUES = [0, 1, 1.5, 2];
 
@@ -38,6 +44,8 @@ interface IStateProps {
   loadingData: boolean;
   savingData: boolean;
   stateValues: TPartialEtoSpecData;
+  currentNomineeId: string | undefined;
+  currentNomineeName: string | undefined;
 }
 
 interface IDispatchProps {
@@ -46,12 +54,20 @@ interface IDispatchProps {
 
 type IProps = IExternalProps & IStateProps & IDispatchProps;
 
-const EtoVotingRightsComponent: React.FunctionComponent<IProps> = ({ readonly, savingData }) => (
+const EtoVotingRightsComponent: React.FunctionComponent<IProps> = ({ readonly, savingData,currentNomineeName,currentNomineeId }) => (
   <EtoFormBase
     title={<FormattedMessage id="eto.form.eto-voting-rights.title" />}
     validator={EtoVotingRightsType.toYup()}
   >
     <Section>
+      <Nominee
+        currentNomineeName={currentNomineeName}
+        currentNomineeId={currentNomineeId}
+        readonly={readonly}
+      />
+    </Section>
+
+    {currentNomineeId && <Section>
       <FormSelectField
         customOptions={LIQUIDATION_PREFERENCE_VALUES.map(n => (
           <option key={n} value={n}>
@@ -78,9 +94,9 @@ const EtoVotingRightsComponent: React.FunctionComponent<IProps> = ({ readonly, s
           disabled={readonly}
         />
       </div>
-    </Section>
+    </Section>}
 
-    {!readonly && (
+    {!readonly && currentNomineeId && (
       <Section className={styles.buttonSection}>
         <Button
           layout={EButtonLayout.PRIMARY}
@@ -103,6 +119,8 @@ const EtoVotingRights = compose<React.FunctionComponent<IExternalProps>>(
       savingData: s.etoFlow.saving,
       stateValues: selectIssuerEto(s) as TPartialEtoSpecData,
       readonly: etoFormIsReadonly(EEtoFormTypes.EtoVotingRights, selectIssuerEtoState(s)),
+      currentNomineeId: selectEtoNominee(s),
+      currentNomineeName: selectEtoNomineeDisplayName(s),
     }),
     dispatchToProps: dispatch => ({
       saveData: (data: TPartialEtoSpecData) => {
