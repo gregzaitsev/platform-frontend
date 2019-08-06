@@ -1,9 +1,12 @@
 import { delay } from "redux-saga";
 import { fork, put, select } from "redux-saga/effects";
 
-import { EEtoNomineeRequestNotifications } from "../../components/translatedMessages/messages";
+import {
+  EEtoNomineeRequestMessages,
+  EEtoNomineeRequestNotifications
+} from "../../components/translatedMessages/messages";
 import { createMessage } from "../../components/translatedMessages/utils";
-import { NOMINEE_REQUESTS_WATCHER_DELAY } from "../../config/constants";
+import { EJwtPermissions, NOMINEE_REQUESTS_WATCHER_DELAY } from "../../config/constants";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { TNomineeRequestResponse } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { actions, TActionFromCreator } from "../actions";
@@ -11,6 +14,7 @@ import { selectEtoNominee } from "../eto-flow/selectors";
 import { ENomineeUpdateRequestStatus, TNomineeRequestStorage } from "../nominee-flow/reducer";
 import { etoApiDataToNomineeRequests } from "../nominee-flow/utils";
 import { neuCall, neuTakeLatest, neuTakeUntil } from "../sagasUtils";
+import { ensurePermissionsArePresentAndRunEffect } from "../auth/jwt/sagas";
 
 export function* etoGetNomineeRequests({
   apiEtoNomineeService,
@@ -71,7 +75,21 @@ export function* updateNomineeRequest(
   }
 }
 
-export function* etoDeleteNomineeRequest({
+export function* etoDeleteNomineeRequest({notificationCenter}:TGlobalDependencies):Iterator<any> {
+  try{
+    yield neuCall(ensurePermissionsArePresentAndRunEffect,
+      neuCall(etoDeleteNomineeRequestEffect),
+      [EJwtPermissions.ISSUER_REMOVE_NOMINEE],
+      createMessage(EEtoNomineeRequestMessages.ISSUER_DELETE_NOMINEE_REQUEST),
+      createMessage(EEtoNomineeRequestMessages.ISSUER_DELETE_NOMINEE_REQUEST_TEXT),
+    );
+
+  }catch (e) {
+    notificationCenter.error(createMessage(EEtoNomineeRequestNotifications.GENERIC_ERROR));
+  }
+}
+
+export function* etoDeleteNomineeRequestEffect({
   apiEtoNomineeService,
   logger,
   notificationCenter,

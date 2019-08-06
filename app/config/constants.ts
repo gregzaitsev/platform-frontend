@@ -30,6 +30,7 @@ export enum EJwtPermissions {
   UPLOAD_IMMUTABLE_DOCUMENT = "upload-issuer-immutable-document",
   DO_BOOK_BUILDING = "do-bookbuilding",
   SIGN_TOS = "sign-tos",
+  ISSUER_REMOVE_NOMINEE = "issuer-remove-nominee"
 }
 
 /**
