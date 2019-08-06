@@ -2,7 +2,7 @@ import * as React from "react";
 import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 import { compose } from "recompose";
 
-import { EKycRequestStatus } from "../../../lib/api/KycApi.interfaces";
+import { EKycRequestStatus } from "../../../lib/api/kyc/KycApi.interfaces";
 import { actions } from "../../../modules/actions";
 import { kycStatusToTranslationMessage } from "../../../modules/kyc/utils";
 import { onEnterAction } from "../../../utils/OnEnterAction";

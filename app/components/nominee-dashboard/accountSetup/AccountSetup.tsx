@@ -2,7 +2,7 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { branch, compose, renderComponent, renderNothing, withProps } from "recompose";
 
-import { EKycRequestStatus } from "../../../lib/api/KycApi.interfaces";
+import { EKycRequestStatus } from "../../../lib/api/kyc/KycApi.interfaces";
 import {
   selectBackupCodesVerified,
   selectIsUserEmailVerified,

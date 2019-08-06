@@ -2,7 +2,7 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { compose } from "redux";
 
-import { EKycRequestType, EKycRequestStatus } from "../../lib/api/kyc/KycApi.interfaces";
+import { EKycRequestStatus, EKycRequestType } from "../../lib/api/kyc/KycApi.interfaces";
 import { EUserType } from "../../lib/api/users/interfaces";
 import { actions } from "../../modules/actions";
 import { selectUserType } from "../../modules/auth/selectors";

@@ -2,7 +2,7 @@ import * as React from "react";
 import { Redirect } from "react-router";
 import { branch, compose, renderComponent } from "recompose";
 
-import { EKycRequestType, EKycRequestStatus } from "../../lib/api/kyc/KycApi.interfaces";
+import { EKycRequestStatus, EKycRequestType } from "../../lib/api/kyc/KycApi.interfaces";
 import { actions } from "../../modules/actions";
 import { selectIsUserEmailVerified } from "../../modules/auth/selectors";
 import {
