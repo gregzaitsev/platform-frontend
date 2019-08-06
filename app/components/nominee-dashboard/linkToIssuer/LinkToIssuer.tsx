@@ -4,7 +4,8 @@ import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 import { branch, compose, renderComponent, renderNothing, withProps } from "recompose";
 
 import {
-  ENomineeRequestError, ENomineeRequestStatus,
+  ENomineeRequestError,
+  ENomineeRequestStatus,
   INomineeRequest,
 } from "../../../modules/nominee-flow/reducer";
 import {
@@ -41,9 +42,11 @@ const getErrorText = (
   requestStatus: INomineeRequest,
   nomineeRequestError: ENomineeRequestError,
 ): TTranslatedString => {
-  if(requestStatus.state === ENomineeRequestStatus.REJECTED &&
+  if (
+    requestStatus.state === ENomineeRequestStatus.REJECTED &&
     (nomineeRequestError === ENomineeRequestError.NONE ||
-      nomineeRequestError === ENomineeRequestError.REQUEST_EXISTS)) {
+      nomineeRequestError === ENomineeRequestError.REQUEST_EXISTS)
+  ) {
     return (
       <FormattedHTMLMessage
         tagName="span"
@@ -93,7 +96,9 @@ export const CreateNomineeRequestLayout: React.FunctionComponent = () => (
   </>
 );
 
-export const RepeatCreateNomineeRequestLayout: React.FunctionComponent<IRepeatRequestProps> = ({nomineeRequest}) => (
+export const RepeatCreateNomineeRequestLayout: React.FunctionComponent<IRepeatRequestProps> = ({
+  nomineeRequest,
+}) => (
   <>
     <h1 className={styles.title}>
       <FormattedMessage id="nominee-flow.link-with-issuer.link-with-issuer" />
@@ -130,7 +135,7 @@ export const LinkToIssuer = compose<IStateProps, {}>(
   branch<IBranchProps>(
     ({ nextState }) => nextState === ENomineeRequestComponentState.SUCCESS,
     renderNothing,
-  ), //this state should be caught before
+  ), //this state should have been caught way before, here it's just for completeness sake
   branch<IBranchProps>(
     ({ nextState }) => nextState === ENomineeRequestComponentState.WAIT_WHILE_RQUEST_PENDING,
     renderComponent(NomineeRequestPending),

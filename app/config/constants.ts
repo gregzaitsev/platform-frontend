@@ -31,7 +31,7 @@ export enum EJwtPermissions {
   DO_BOOK_BUILDING = "do-bookbuilding",
   SIGN_TOS = "sign-tos",
   ISSUER_UPDATE_NOMINEE_REQUEST = "update-nominee-request",
-  ISSUER_REMOVE_NOMINEE = "issuer-remove-nominee"
+  ISSUER_REMOVE_NOMINEE = "issuer-remove-nominee",
 }
 
 /**

@@ -44,12 +44,25 @@ export enum ENomineeUploadIshaStatus {
   ERROR = "error",
 }
 
+export interface INomineeRequestMetadata {
+  city: string;
+  country: string;
+  jurisdiction: string;
+  legalForm: string;
+  legalFormType: string;
+  name: string;
+  registrationNumber: string;
+  street: string;
+  zipCode: string;
+}
+
 export interface INomineeRequest {
   state: ENomineeRequestStatus;
   nomineeId: string;
   etoId: string;
   insertedAt: string;
   updatedAt: string;
+  metadata: INomineeRequestMetadata;
 }
 
 export type TNomineeRequestStorage = { [id: string]: INomineeRequest }; //can be etoId or nomineeId

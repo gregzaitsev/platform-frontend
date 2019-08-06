@@ -71,38 +71,16 @@ const NomineeDashboardContainer: React.FunctionComponent<IExternalProps> = ({
 }) => {
   switch (nomineeTaskStep) {
     case ENomineeTask.ACCOUNT_SETUP:
-      return <AccountSetupContainer data-test-id={"nominee-dashboard"} children={children} />;
-    case ENomineeTask.LINK_TO_ISSUER:
-      return (
-        <NotLinkedNomineeDashboardContainer
-          data-test-id={"nominee-dashboard"}
-          children={children}
-        />
-      );
+      return <AccountSetupContainer children={children} />;
     case ENomineeTask.LINK_BANK_ACCOUNT:
-      return (
-        <LinkedNomineeDashboardContainer data-test-id={"nominee-dashboard"} children={children} />
-      );
     case ENomineeTask.ACCEPT_THA:
-      return (
-        <LinkedNomineeDashboardContainer data-test-id={"nominee-dashboard"} children={children} />
-      );
     case ENomineeTask.REDEEM_SHARE_CAPITAL:
-      return (
-        <LinkedNomineeDashboardContainer data-test-id={"nominee-dashboard"} children={children} />
-      );
     case ENomineeTask.ACCEPT_ISHA:
-      return (
-        <LinkedNomineeDashboardContainer data-test-id={"nominee-dashboard"} children={children} />
-      );
+      return <LinkedNomineeDashboardContainer children={children} />;
+    case ENomineeTask.LINK_TO_ISSUER:
     case ENomineeTask.NONE:
     default:
-      return (
-        <NotLinkedNomineeDashboardContainer
-          data-test-id={"nominee-dashboard"}
-          children={children}
-        />
-      );
+      return <NotLinkedNomineeDashboardContainer children={children} />;
   }
 };
 

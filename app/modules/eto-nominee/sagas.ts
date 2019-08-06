@@ -3,18 +3,18 @@ import { fork, put, select } from "redux-saga/effects";
 
 import {
   EEtoNomineeRequestMessages,
-  EEtoNomineeRequestNotifications
+  EEtoNomineeRequestNotifications,
 } from "../../components/translatedMessages/messages";
 import { createMessage } from "../../components/translatedMessages/utils";
 import { EJwtPermissions, NOMINEE_REQUESTS_WATCHER_DELAY } from "../../config/constants";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { TNomineeRequestResponse } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { actions, TActionFromCreator } from "../actions";
+import { ensurePermissionsArePresentAndRunEffect } from "../auth/jwt/sagas";
 import { selectEtoNominee } from "../eto-flow/selectors";
 import { ENomineeUpdateRequestStatus, TNomineeRequestStorage } from "../nominee-flow/reducer";
 import { etoApiDataToNomineeRequests } from "../nominee-flow/utils";
 import { neuCall, neuTakeLatest, neuTakeUntil } from "../sagasUtils";
-import { ensurePermissionsArePresentAndRunEffect } from "../auth/jwt/sagas";
 
 export function* etoGetNomineeRequests({
   apiEtoNomineeService,
@@ -48,21 +48,20 @@ export function* etoNomineeRequestsWatcher({ logger }: TGlobalDependencies): Ite
   }
 }
 
-export function* etoUpdateNomineeRequest({
-    notificationCenter
-  }: TGlobalDependencies,
+export function* etoUpdateNomineeRequest(
+  { notificationCenter }: TGlobalDependencies,
   action:
     | TActionFromCreator<typeof actions.etoNominee.acceptNomineeRequest>
     | TActionFromCreator<typeof actions.etoNominee.rejectNomineeRequest>,
 ): Iterator<any> {
   try {
-    yield neuCall(ensurePermissionsArePresentAndRunEffect,
+    yield neuCall(
+      ensurePermissionsArePresentAndRunEffect,
       neuCall(etoUpdateNomineeRequestEffect, action),
       [EJwtPermissions.ISSUER_UPDATE_NOMINEE_REQUEST],
       createMessage(EEtoNomineeRequestMessages.ISSUER_DELETE_NOMINEE_REQUEST),
       createMessage(EEtoNomineeRequestMessages.ISSUER_DELETE_NOMINEE_REQUEST_TEXT),
     );
-
   } catch (e) {
     notificationCenter.error(createMessage(EEtoNomineeRequestNotifications.GENERIC_NETWORK_ERROR));
   }
@@ -90,20 +89,22 @@ export function* etoUpdateNomineeRequestEffect(
     }
   } catch (e) {
     logger.error("Failed to update nominee request", e);
-    // notificationCenter.error(createMessage(EEtoNomineeRequestNotifications.REJECT_NOMINEE_ERROR)); //todo add notifications for success and failure
+    //todo add notifications for success and failure// notificationCenter.error(createMessage(EEtoNomineeRequestNotifications.REJECT_NOMINEE_ERROR));
     yield put(actions.etoNominee.dataReady());
   }
 }
 
-export function* etoRejectNomineeRequest({ notificationCenter }: TGlobalDependencies): Iterator<any> {
+export function* etoRejectNomineeRequest({
+  notificationCenter,
+}: TGlobalDependencies): Iterator<any> {
   try {
-    yield neuCall(ensurePermissionsArePresentAndRunEffect,
+    yield neuCall(
+      ensurePermissionsArePresentAndRunEffect,
       neuCall(etoDeleteNomineeRequestEffect),
       [EJwtPermissions.ISSUER_REMOVE_NOMINEE],
       createMessage(EEtoNomineeRequestMessages.ISSUER_DELETE_NOMINEE_REQUEST),
       createMessage(EEtoNomineeRequestMessages.ISSUER_DELETE_NOMINEE_REQUEST_TEXT),
     );
-
   } catch (e) {
     notificationCenter.error(createMessage(EEtoNomineeRequestNotifications.GENERIC_NETWORK_ERROR));
   }

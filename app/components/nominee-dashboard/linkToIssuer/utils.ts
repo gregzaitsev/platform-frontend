@@ -111,23 +111,28 @@ export const getNomineeRequestComponentState = (
   nomineeRequest: INomineeRequest | undefined,
   nomineeRequestError: ENomineeRequestError,
 ) => {
-  console.log("getNomineeRequestComponentState",nomineeRequest, nomineeRequestError)
   if (!nomineeRequest && nomineeRequestError === ENomineeRequestError.REQUEST_EXISTS) {
     throw new Error("invalid nominee request state");
   } else if (!nomineeRequest && nomineeRequestError === ENomineeRequestError.NONE) {
     return ENomineeRequestComponentState.CREATE_REQUEST;
   } else if (!nomineeRequest && nomineeRequestError !== ENomineeRequestError.NONE) {
     return ENomineeRequestComponentState.REPEAT_REQUEST;
-  } else if (nomineeRequest && nomineeRequest.state === ENomineeRequestStatus.PENDING ) {
+  } else if (nomineeRequest && nomineeRequest.state === ENomineeRequestStatus.PENDING) {
     return ENomineeRequestComponentState.WAIT_WHILE_RQUEST_PENDING;
   } else if (nomineeRequest && nomineeRequest.state === ENomineeRequestStatus.APPROVED) {
     return ENomineeRequestComponentState.SUCCESS;
-  } else if (nomineeRequest && nomineeRequest.state === ENomineeRequestStatus.REJECTED
-    && nomineeRequestError === ENomineeRequestError.NONE) {
+  } else if (
+    nomineeRequest &&
+    nomineeRequest.state === ENomineeRequestStatus.REJECTED &&
+    nomineeRequestError === ENomineeRequestError.NONE
+  ) {
     return ENomineeRequestComponentState.CREATE_NEW_REQUEST;
-  } else if (nomineeRequest && nomineeRequest.state === ENomineeRequestStatus.REJECTED
-      && nomineeRequestError !== ENomineeRequestError.NONE) {
-      return ENomineeRequestComponentState.REPEAT_REQUEST;
+  } else if (
+    nomineeRequest &&
+    nomineeRequest.state === ENomineeRequestStatus.REJECTED &&
+    nomineeRequestError !== ENomineeRequestError.NONE
+  ) {
+    return ENomineeRequestComponentState.REPEAT_REQUEST;
   } else {
     throw new Error("invalid nominee request state");
   }

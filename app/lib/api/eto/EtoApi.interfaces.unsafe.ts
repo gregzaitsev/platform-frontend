@@ -472,4 +472,15 @@ export type TNomineeRequestResponse = {
   etoId: string;
   insertedAt: string;
   updatedAt: string;
+  metadata: {
+    city: string;
+    country: string;
+    jurisdiction: string;
+    legalForm: string;
+    legalFormType: string;
+    name: string;
+    registrationNumber: string;
+    street: string;
+    zipCode: string;
+  };
 };
