@@ -11,7 +11,6 @@ export const etoRegisterRoutes = {
   etoInvestmentTerms: parentRoute + "/eto-investment-terms",
   etoMedia: parentRoute + "/eto-media",
   etoVotingRights: parentRoute + "/eto-voting-rights",
-  nominee: parentRoute + "/eto-nominee",
   etoEquityTokenInfo: parentRoute + "/eto-equity-token-info",
   etoRiskAssessment: parentRoute + "/eto-risk",
 };

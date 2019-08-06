@@ -10,7 +10,6 @@ import {
   EtoLegalInformationType,
   EtoMarketingDataType,
   EtoMediaType,
-  EtoNomineeType,
   EtoPitchType,
   EtoRiskAssessmentType,
   EtoSettingDataType,
@@ -115,7 +114,6 @@ export const calculateEtoRiskAssessmentProgress = getFormFractionDoneCalculator(
 export const calculateEtoVotingRightsProgress = getFormFractionDoneCalculator(
   EtoVotingRightsType.toYup(),
 );
-export const calculateNomineeProgress = getFormFractionDoneCalculator(EtoNomineeType.toYup());
 export const calculateEtoEquityTokenInfoProgress = getFormFractionDoneCalculator(
   EtoEquityTokenInfoType.toYup(),
 );

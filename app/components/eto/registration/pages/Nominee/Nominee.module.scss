@@ -24,7 +24,7 @@ $border-color: #cfd7dd;
   height: 100%;
 }
 
-.nominee-chosen-section{
+.nominee-chosen-section {
   display: grid;
   grid-template: auto auto / auto auto;
   grid-template-areas: "text text" "nominee button-block";
@@ -32,6 +32,9 @@ $border-color: #cfd7dd;
 
   align-items: center;
   margin-bottom: 2rem;
+
+  width: 100%;
+  max-width: 730px;
 }
 
 .nominee-block {
@@ -58,7 +61,7 @@ $border-color: #cfd7dd;
 }
 
 .button {
-grid-area: button-block;
+  grid-area: button-block;
 }
 
 

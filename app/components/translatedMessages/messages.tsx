@@ -293,6 +293,7 @@ export enum EEtoNomineeRequestNotifications {
   REJECT_NOMINEE_ERROR = "deleteNomineeRequestError",
   ACCEPT_NOMINEE_ERROR = "acceptNomineeRequestError",
   DELETE_NOMINEE_REQUEST_SUCCESS = "deleteNomineeRequestSuccess",
+  UPDATE_NOMINEE_REQUEST_ERROR = "updateNomineeRequestError",
   GENERIC_NETWORK_ERROR = "etoNomineeRequestGenericError",
   COULD_NOT_DELETE_REQUEST = "couldNotDeleteRequest",
 }
@@ -300,6 +301,8 @@ export enum EEtoNomineeRequestNotifications {
 export enum EEtoNomineeRequestMessages {
   ISSUER_DELETE_NOMINEE_REQUEST = "issuerDeleteNomineeRequest",
   ISSUER_DELETE_NOMINEE_REQUEST_TEXT = "issuerDeleteNomineeRequestText",
+  ISSUER_UPDATE_NOMINEE_REQUEST = "issuerUpdateNomineeRequest",
+  ISSUER_UPDATE_NOMINEE_REQUEST_TEXT = "issuerUpdateNomineeRequestText",
 }
 
 export enum TestMessage {
@@ -727,11 +730,17 @@ const getMessageTranslation = ({ messageType, messageData }: TMessage): TTransla
       return <FormattedMessage id="eto.form.eto-nominee.reject-nominee-request-error" />;
     case EEtoNomineeRequestNotifications.ACCEPT_NOMINEE_ERROR:
       return <FormattedMessage id="eto.form.eto-nominee.accept-nominee-request-error" />;
+    case EEtoNomineeRequestNotifications.UPDATE_NOMINEE_REQUEST_ERROR:
+      return <FormattedMessage id="eto.form.eto-nominee.accept-nominee-request-error" />;
 
     case EEtoNomineeRequestMessages.ISSUER_DELETE_NOMINEE_REQUEST:
       return <FormattedMessage id="eto-nominee.permissions.delete-nominee-request-title" />;
     case EEtoNomineeRequestMessages.ISSUER_DELETE_NOMINEE_REQUEST_TEXT:
       return <FormattedMessage id="eto-nominee.permissions.delete-nominee-request-text" />;
+    case EEtoNomineeRequestMessages.ISSUER_UPDATE_NOMINEE_REQUEST:
+      return <FormattedMessage id="eto-nominee.permissions.update-nominee-request-text" />;
+    case EEtoNomineeRequestMessages.ISSUER_UPDATE_NOMINEE_REQUEST_TEXT:
+      return <FormattedMessage id="eto-nominee.permissions.update-nominee-request-text" />;
 
     // NEVER DO THIS! This is only for tests, so that we don't bloat locales.json with test strings!
     case TestMessage.TEST_MESSAGE:

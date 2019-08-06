@@ -62,13 +62,15 @@ export function* etoUpdateNomineeRequest(
       createMessage(EEtoNomineeRequestMessages.ISSUER_DELETE_NOMINEE_REQUEST),
       createMessage(EEtoNomineeRequestMessages.ISSUER_DELETE_NOMINEE_REQUEST_TEXT),
     );
+    yield put(actions.etoNominee.dataReady());
   } catch (e) {
     notificationCenter.error(createMessage(EEtoNomineeRequestNotifications.GENERIC_NETWORK_ERROR));
+    yield put(actions.etoNominee.dataReady());
   }
 }
 
 export function* etoUpdateNomineeRequestEffect(
-  { apiEtoNomineeService, logger }: TGlobalDependencies,
+  { apiEtoNomineeService, notificationCenter, logger }: TGlobalDependencies,
   action:
     | TActionFromCreator<typeof actions.etoNominee.acceptNomineeRequest>
     | TActionFromCreator<typeof actions.etoNominee.rejectNomineeRequest>,
@@ -83,14 +85,12 @@ export function* etoUpdateNomineeRequestEffect(
 
     if (newStatus === ENomineeUpdateRequestStatus.APPROVED) {
       yield put(actions.etoFlow.loadIssuerEto());
-      yield put(actions.etoNominee.dataReady());
-    } else {
-      yield put(actions.etoNominee.getNomineeRequests());
     }
   } catch (e) {
     logger.error("Failed to update nominee request", e);
-    //todo add notifications for success and failure// notificationCenter.error(createMessage(EEtoNomineeRequestNotifications.REJECT_NOMINEE_ERROR));
-    yield put(actions.etoNominee.dataReady());
+    notificationCenter.error(
+      createMessage(EEtoNomineeRequestNotifications.UPDATE_NOMINEE_REQUEST_ERROR),
+    );
   }
 }
 
@@ -105,6 +105,7 @@ export function* etoRejectNomineeRequest({
       createMessage(EEtoNomineeRequestMessages.ISSUER_DELETE_NOMINEE_REQUEST),
       createMessage(EEtoNomineeRequestMessages.ISSUER_DELETE_NOMINEE_REQUEST_TEXT),
     );
+    yield put(actions.etoNominee.dataReady());
   } catch (e) {
     notificationCenter.error(createMessage(EEtoNomineeRequestNotifications.GENERIC_NETWORK_ERROR));
   }
@@ -125,28 +126,6 @@ export function* etoDeleteNomineeRequestEffect({
     );
   } catch (e) {
     logger.error(`Error while trying to delete nominee request with nominee id ${nomineeId}`);
-  } finally {
-    yield put(actions.etoNominee.dataReady());
-  }
-}
-
-export function* etoAcceptNomineeRequestEffect({
-  apiEtoNomineeService,
-  logger,
-  notificationCenter,
-}: TGlobalDependencies): Iterator<any> {
-  const nomineeId = yield select(selectEtoNominee);
-
-  try {
-    yield apiEtoNomineeService.etoDeleteNomineeRequest(nomineeId);
-    yield put(actions.etoFlow.loadIssuerEto());
-    notificationCenter.info(
-      createMessage(EEtoNomineeRequestNotifications.DELETE_NOMINEE_REQUEST_SUCCESS),
-    );
-  } catch (e) {
-    logger.error(`Error while trying to delete nominee request with nominee id ${nomineeId}`);
-  } finally {
-    yield put(actions.etoNominee.dataReady());
   }
 }
 

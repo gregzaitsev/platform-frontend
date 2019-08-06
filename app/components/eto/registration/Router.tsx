@@ -11,7 +11,6 @@ import { EtoVotingRights } from "./pages/EtoVotingRights";
 import { EtoInvestmentTerms } from "./pages/InvestmentTerms";
 import { EtoRegistrationKeyIndividuals } from "./pages/KeyIndividuals";
 import { EtoRegistrationLegalInformation } from "./pages/LegalInformation";
-import { Nominee } from "./pages/Nominee/Nominee";
 import { EtoRegistrationRiskAssessment } from "./pages/RiskAssessment";
 import { etoRegisterRoutes } from "./routes";
 
@@ -41,7 +40,6 @@ export const EtoRegisterRouter: React.FunctionComponent = () => (
     <Route path={etoRegisterRoutes.etoTerms} component={EtoRegistrationTerms} exact />
     <Route path={etoRegisterRoutes.etoEquityTokenInfo} component={EtoEquityTokenInfo} exact />
     <Route path={etoRegisterRoutes.etoVotingRights} component={EtoVotingRights} exact />
-    <Route path={etoRegisterRoutes.nominee} component={Nominee} exact />
     <Route path={etoRegisterRoutes.etoInvestmentTerms} component={EtoInvestmentTerms} exact />
     <Route path={etoRegisterRoutes.etoMedia} component={EtoRegistrationMedia} exact />
     <Redirect to={etoRegisterRoutes.companyInformation} />

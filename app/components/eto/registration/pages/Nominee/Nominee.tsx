@@ -3,10 +3,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { branch, compose, renderComponent } from "recompose";
 
 import { actions } from "../../../../../modules/actions";
-import {
-
-  selectIssuerEtoLoading,
-} from "../../../../../modules/eto-flow/selectors";
+import { selectIssuerEtoLoading } from "../../../../../modules/eto-flow/selectors";
 import { selectEtoNomineeIsLoading } from "../../../../../modules/eto-nominee/selectors";
 import { appConnect } from "../../../../../store";
 import { Button, EButtonLayout } from "../../../../shared/buttons/index";
@@ -50,15 +47,15 @@ const NomineeChosenComponent: React.FunctionComponent<IExternalProps & IComponen
       <span>{currentNomineeName}</span>
     </div>
     {!readonly && (
-        <Button className={styles.button}
-          layout={EButtonLayout.PRIMARY}
-          data-test-id="delete-nominee-request"
-          onClick={deleteNomineeRequest}
-        >
-          <FormattedMessage id="eto.form.eto-nominee.cancel-request" />
-        </Button>
+      <Button
+        className={styles.button}
+        layout={EButtonLayout.PRIMARY}
+        data-test-id="delete-nominee-request"
+        onClick={deleteNomineeRequest}
+      >
+        <FormattedMessage id="eto.form.eto-nominee.cancel-request" />
+      </Button>
     )}
-
   </div>
 );
 
@@ -71,7 +68,6 @@ const Nominee = compose<IExternalProps & IComponentProps, IExternalProps>(
       deleteNomineeRequest: () => dispatch(actions.etoNominee.deleteNomineeRequest()),
     }),
   }),
-  // withContainer(FormBase),
   branch<IStateProps>(({ isLoading }) => isLoading, renderComponent(LoadingIndicator)),
   branch<IStateProps & IExternalProps>(
     ({ currentNomineeId }) => currentNomineeId === undefined,

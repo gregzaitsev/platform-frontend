@@ -82,11 +82,11 @@ export function* loadNomineeRequests({
 
 export function* nomineeRequestsWatcher({ logger }: TGlobalDependencies): Iterator<any> {
   while (true) {
-    logger.info("Getting nominee requests");
+    logger.info("Getting nominee task data");
     try {
-      yield neuCall(loadNomineeRequests);
+      yield neuCall(loadNomineeTaskData);
     } catch (e) {
-      logger.error("Error getting nominee requests", e);
+      logger.error("Error getting nominee task data", e);
     }
 
     yield delay(NOMINEE_REQUESTS_WATCHER_DELAY);

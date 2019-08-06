@@ -1,9 +1,8 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
-import { branch, compose, renderComponent, setDisplayName } from "recompose";
+import { branch, compose, renderComponent } from "recompose";
 
 import { actions } from "../../../../../modules/actions";
-import { EEtoFormTypes } from "../../../../../modules/eto-flow/types";
 import { selectNomineeRequests } from "../../../../../modules/eto-nominee/selectors";
 import { INomineeRequest } from "../../../../../modules/nominee-flow/reducer";
 import { nomineeRequestsToArray } from "../../../../../modules/nominee-flow/utils";
@@ -11,10 +10,9 @@ import { appConnect } from "../../../../../store";
 import { onEnterAction } from "../../../../../utils/OnEnterAction";
 import { onLeaveAction } from "../../../../../utils/OnLeaveAction";
 import { Button, EButtonLayout, EButtonTheme } from "../../../../shared/buttons/Button";
-import { FormFieldLabel } from "../../../../shared/forms/fields/FormFieldLabel";
 import { FormHighlightGroup } from "../../../../shared/forms/FormHighlightGroup";
 import { Section } from "../../Shared";
-import { NoPendingNominees } from "./NoPendingNominees";
+import { CopyEtoIdComponent } from "./CopyEtoIdComponent";
 
 import * as styles from "./Nominee.module.scss";
 
@@ -124,7 +122,7 @@ const PendingNomineeRequest: React.FunctionComponent<IPendingNomineeRequest> = (
 
       <section>
         <h5>
-          <FormattedMessage id="eto.form.section.eto-nominee.nominee-request.neufund-account" />
+          <FormattedMessage id="eto.form.section.eto-nominee.nominee-request.nominee-address" />
         </h5>
         <p>{request.nomineeId}</p>
       </section>
@@ -148,11 +146,11 @@ const PendingNomineesComponent: React.FunctionComponent<IPendingNomineesProps> =
   rejectNominee,
 }) => (
   <>
-    <NoPendingNominees />
+    <CopyEtoIdComponent />
     <Section>
-      <FormFieldLabel name="nominee">
+      <div>
         <FormattedMessage id="eto.form.section.eto-nominee.nominee" />
-      </FormFieldLabel>
+      </div>
       {nomineeRequests.map(request => (
         <PendingNomineeRequest
           key={request.nomineeId}
@@ -167,7 +165,6 @@ const PendingNomineesComponent: React.FunctionComponent<IPendingNomineesProps> =
 );
 
 const ChooseNominee = compose<IStateProps & IDispatchProps, {}>(
-  setDisplayName(EEtoFormTypes.Nominee),
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: s => ({
       nomineeRequests: nomineeRequestsToArray(selectNomineeRequests(s)),
@@ -187,7 +184,7 @@ const ChooseNominee = compose<IStateProps & IDispatchProps, {}>(
   }),
   branch<IStateProps>(
     ({ nomineeRequests }) => Object.keys(nomineeRequests).length === 0,
-    renderComponent(NoPendingNominees),
+    renderComponent(CopyEtoIdComponent),
   ),
 )(PendingNomineesComponent);
 

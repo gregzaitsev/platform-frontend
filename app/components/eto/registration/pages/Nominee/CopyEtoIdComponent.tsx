@@ -34,7 +34,7 @@ const NoPendingNomineesComponent: React.FunctionComponent<IProps> = ({ issuerId 
   </Section>
 );
 
-const NoPendingNominees = compose<IProps, {}>(
+const CopyEtoIdComponent = compose<IProps, {}>(
   setDisplayName(EEtoFormTypes.EtoVotingRights),
   appConnect<IStateProps>({
     stateToProps: s => ({
@@ -44,4 +44,4 @@ const NoPendingNominees = compose<IProps, {}>(
   branch<IStateProps>(({ issuerId }) => issuerId === undefined, renderNothing),
 )(NoPendingNomineesComponent);
 
-export { NoPendingNominees };
+export { CopyEtoIdComponent };

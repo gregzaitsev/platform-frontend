@@ -6,7 +6,6 @@ export const etoFormIsReadonly = (formName: EEtoFormTypes, etoState?: EEtoState)
     EEtoFormTypes.EtoEquityTokenInfo,
     EEtoFormTypes.EtoTerms,
     EEtoFormTypes.EtoVotingRights,
-    EEtoFormTypes.Nominee,
     EEtoFormTypes.EtoInvestmentTerms,
   ];
   return etoState !== EEtoState.PREVIEW && readOnlyForms.includes(formName);
