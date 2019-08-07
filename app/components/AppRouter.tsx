@@ -24,6 +24,8 @@ import { BackupSeed } from "./settings/backup-seed/BackupSeed";
 import { EmailVerify } from "./settings/EmailVerify";
 import { profileRoutes } from "./settings/routes";
 import { Settings } from "./settings/Settings";
+import { Unsubscription } from "./settings/unsubscription/Unsubscription";
+import { UnsubscriptionSuccess } from "./settings/unsubscription/UnsubscriptionSuccess";
 import { OnlyAuthorizedRoute } from "./shared/routing/OnlyAuthorizedRoute";
 import { OnlyPublicRoute } from "./shared/routing/OnlyPublicRoute";
 import { EtoSecretProtectedWalletSelector } from "./shared/routing/SecretProtected";
@@ -72,6 +74,14 @@ export const AppRouter: React.FunctionComponent = () => (
     <Route
       path={appRoutes.etoWidgetView}
       render={({ match }) => <EtoWidgetView previewCode={match.params.previewCode} />}
+      exact
+    />
+
+    <Route path={appRoutes.unsubscriptionSuccess} render={() => <UnsubscriptionSuccess />} exact />
+
+    <Route
+      path={appRoutes.unsubscription}
+      render={({ match }) => <Unsubscription email={match.params.email} />}
       exact
     />
 

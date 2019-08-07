@@ -26,7 +26,7 @@ import { getCurrencyFromTokenSymbol, getDecimalsFormat, getTxUniqueId } from "./
 export function* mapAnalyticsApiTransactionResponse(
   { logger }: TGlobalDependencies,
   transaction: TAnalyticsTransaction,
-): Iterator<any> {
+): IterableIterator<any> {
   const common: TTxHistoryCommon = {
     amount: transaction.extraData.amount.toString(),
     amountFormat: getDecimalsFormat(transaction.extraData.tokenMetadata),
@@ -152,18 +152,17 @@ export function* mapAnalyticsApiTransactionResponse(
     }
     case ETransactionType.NEUR_REDEEM: {
       if (transaction.extraData.settledAmount) {
+        const settledAmount = transaction.extraData.settledAmount.toString();
+
         tx = {
           ...common,
+          settledAmount,
           subType: ETransactionStatus.COMPLETED,
           type: transaction.type,
           currency: ECurrency.EUR_TOKEN,
           reference: transaction.extraData.reference!,
           fromAddress: transaction.extraData.fromAddress!,
-          settledAmount: transaction.extraData.settledAmount.toString(),
-          feeAmount: subtractBigNumbers([
-            transaction.extraData.amount,
-            transaction.extraData.settledAmount,
-          ]),
+          feeAmount: subtractBigNumbers([common.amount, settledAmount]),
         };
       } else {
         tx = {

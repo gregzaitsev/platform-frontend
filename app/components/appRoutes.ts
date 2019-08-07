@@ -35,6 +35,9 @@ export const appRoutes = {
 
   portfolio: "/portfolio",
 
+  unsubscription: "/unsubscription/:email",
+  unsubscriptionSuccess: "/unsubscription/success",
+
   /*
    * the following routes shouldn't be used in the code,
    * they are only there to catch accidental user input

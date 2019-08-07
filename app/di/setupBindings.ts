@@ -22,6 +22,7 @@ import {
 import { GasApi } from "../lib/api/gas/GasApi";
 import { ImmutableStorageApi } from "../lib/api/immutable-storage/ImmutableStorageApi";
 import { KycApi } from "../lib/api/kyc/KycApi";
+import { MarketingEmailsApi } from "../lib/api/users/MarketingEmailsApi";
 import { UsersApi } from "../lib/api/users/UsersApi";
 import { VaultApi } from "../lib/api/vault/VaultApi";
 import { detectBrowser, TDetectBrowser } from "../lib/dependencies/detectBrowser";
@@ -116,6 +117,11 @@ export function setupBindings(config: IConfig): Container {
   container
     .bind<NotificationCenter>(symbols.notificationCenter)
     .to(NotificationCenter)
+    .inSingletonScope();
+
+  container
+    .bind<MarketingEmailsApi>(symbols.marketingEmailsApi)
+    .to(MarketingEmailsApi)
     .inSingletonScope();
 
   // web3 & blockchain
@@ -274,6 +280,7 @@ export const createGlobalDependencies = (container: Container) => ({
   fileStorageApi: container.get<FileStorageApi>(symbols.fileStorageService),
   gasApi: container.get<GasApi>(symbols.gasApi),
   apiImmutableStorage: container.get<ImmutableStorageApi>(symbols.apiImmutableStorage),
+  marketingEmailsApi: container.get<MarketingEmailsApi>(symbols.apiImmutableStorage),
 
   intlWrapper: container.get<IntlWrapper>(symbols.intlWrapper),
 });

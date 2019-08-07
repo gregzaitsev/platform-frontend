@@ -21,6 +21,7 @@ import { initActions } from "./init/actions";
 import { investmentFlowActions } from "./investment-flow/actions";
 import { investorEtoTicketActions } from "./investor-portfolio/actions";
 import { kycActions } from "./kyc/actions";
+import { marketingEmailsActions } from "./marketing-emails/actions";
 import { nomineeFlowActions } from "./nominee-flow/actions";
 import { notificationModalActions } from "./notificationModal/actions";
 import { notificationActions } from "./notifications/actions";
@@ -84,6 +85,7 @@ export const actions = {
   personProfileModal: personProfileModalActions,
   tosModal: tosModalActions,
   portfolio: portfolioActions,
+  marketingEmails: marketingEmailsActions,
   nomineeFlow: nomineeFlowActions,
 };
 

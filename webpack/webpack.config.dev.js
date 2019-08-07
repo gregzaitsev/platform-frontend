@@ -32,7 +32,9 @@ module.exports = merge.smart(configCommon, {
     https: true,
     hot: true,
     overlay: true,
-    historyApiFallback: true,
+    historyApiFallback: {
+      disableDotRule: true,
+    },
     headers: {
       "Content-Security-Policy":
         "default-src 'self'; script-src 'self' 'unsafe-eval' www.google-analytics.com/analytics.js " +

@@ -56,6 +56,9 @@ export const routingActions = {
   //seed backup
   goToSeedBackup: () => push(profileRoutes.seedBackup),
 
+  // Marketing emails
+  goToUnsubscriptionSuccess: () => push(appRoutes.unsubscriptionSuccess),
+
   // other...
   // TODO: Replace with a dedicated 404 page
   goTo404: () => push(appRoutes.root),

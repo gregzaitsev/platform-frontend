@@ -42,6 +42,7 @@ export type TranslatedMessageType =
   | ValidationMessage
   | TestMessage
   | ETxHistoryMessage
+  | MarketingEmailsMessage;
   | EMaskedFormError
   | EKycRequestStatusTranslation
   | ENomineeRequestStatusTranslation
@@ -258,6 +259,10 @@ export enum ValidationMessage {
   VALIDATION_RESTRICTED_COUNTRY = "validationRestrictedCountry",
   VALIDATION_PECENTAGE_MAX = "validationPecentageMax",
   VALIDATION_PERCENTAGE_MIN = "validationPercentageMin",
+}
+
+export enum MarketingEmailsMessage {
+  UNSUBSCRIBE_ERROR = "unsubscribeError",
 }
 
 export enum EMaskedFormError {
@@ -677,6 +682,9 @@ const getMessageTranslation = ({ messageType, messageData }: TMessage): TTransla
       return <FormattedMessage id="form.field.error.percentage.max" values={{ ...messageData }} />;
     case ValidationMessage.VALIDATION_PERCENTAGE_MIN:
       return <FormattedMessage id="form.field.error.percentage.min" values={{ ...messageData }} />;
+
+    case MarketingEmailsMessage.UNSUBSCRIBE_ERROR:
+      return <FormattedMessage id="settings.unsubscription.error" />;
 
     case EMaskedFormError.GENERIC_ERROR:
       return <FormattedMessage id="error-message.eth-address-validation.not-a-valid-eth-address" />;
