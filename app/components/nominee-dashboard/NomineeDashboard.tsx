@@ -1,9 +1,10 @@
 import * as React from "react";
-import { compose, nest, withProps } from "recompose";
+import { branch, compose, nest, renderNothing, withProps } from "recompose";
 
 import { actions } from "../../modules/actions";
+import { selectUserId } from "../../modules/auth/selectors";
 import { selectIsBankAccountVerified } from "../../modules/bank-transfer-flow/selectors";
-import { selectFirstEto } from "../../modules/eto/selectors";
+import { selectEtoOfNominee } from "../../modules/eto/selectors";
 import { TEtoWithCompanyAndContract } from "../../modules/eto/types";
 import { selectNomineeStateIsLoading } from "../../modules/nominee-flow/selectors";
 import { SelectIsVerificationFullyDone } from "../../modules/selectors";
@@ -42,14 +43,22 @@ export const DashboardTitle: React.FunctionComponent<IDashboardTitleProps> = ({ 
 );
 
 export const NomineeDashboard = compose<IDashboardProps, {}>(
-  appConnect<IStateProps>({
-    stateToProps: state => ({
-      isLoading: selectNomineeStateIsLoading(state),
-      nomineeEto: selectFirstEto(state),
-      isBankAccountVerified: selectIsBankAccountVerified(state),
-      verificationIsComplete: SelectIsVerificationFullyDone(state),
-    }),
+  appConnect<IStateProps | null>({
+    stateToProps: state => {
+      const nomineeId = selectUserId(state);
+      if (nomineeId !== undefined) {
+        return {
+          isLoading: selectNomineeStateIsLoading(state),
+          nomineeEto: selectEtoOfNominee(state, nomineeId),
+          isBankAccountVerified: selectIsBankAccountVerified(state),
+          verificationIsComplete: SelectIsVerificationFullyDone(state),
+        };
+      } else {
+        return null;
+      }
+    },
   }),
+  branch<IStateProps | null>(props => props === null, renderNothing),
   onEnterAction<IStateProps>({
     actionCreator: (dispatch, { verificationIsComplete }) => {
       if (verificationIsComplete) {

@@ -181,13 +181,6 @@ export const selectFilteredEtosByRestrictedJurisdictions = (
       })
     : etos;
 
-// take the first eto. This is a workaround until the nominee api and ui changes
-export const selectFirstEto = (state: IAppState): TEtoWithCompanyAndContract | undefined => {
-  const etoState = selectEtoState(state);
-  const previewCode: string | undefined = etoState.etos && Object.keys(etoState.etos)[0];
-  return previewCode ? selectEtoWithCompanyAndContract(state, previewCode) : undefined;
-};
-
 export const selectEtoOfNominee = (
   state: IAppState,
   nomineeId: string,
