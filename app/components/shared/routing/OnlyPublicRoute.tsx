@@ -1,7 +1,7 @@
+import { RouterState } from "connected-react-router";
 import * as React from "react";
 import { Redirect, RouteProps } from "react-router-dom";
 import { branch, compose, renderComponent, renderNothing } from "recompose";
-import { RouterState } from "connected-react-router";
 
 import { selectIsAuthorized } from "../../../modules/auth/selectors";
 import { appConnect } from "../../../store";
@@ -30,5 +30,8 @@ export const OnlyPublicRoute = compose<IComponentProps, RouteProps>(
     }),
   }),
   branch<IStateProps & RouteProps>(state => state.component === undefined, renderNothing),
-  branch<IStateProps & RouteProps>(props => props.isAuthorized, renderComponent(()=><Redirect to={appRoutes.dashboard} />)),
+  branch<IStateProps & RouteProps>(
+    props => props.isAuthorized,
+    renderComponent(() => <Redirect to={appRoutes.dashboard} />),
+  ),
 )(OnlyPublicRouteComponent);

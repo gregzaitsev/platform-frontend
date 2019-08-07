@@ -42,7 +42,7 @@ export type TranslatedMessageType =
   | ValidationMessage
   | TestMessage
   | ETxHistoryMessage
-  | MarketingEmailsMessage;
+  | MarketingEmailsMessage
   | EMaskedFormError
   | EKycRequestStatusTranslation
   | ENomineeRequestStatusTranslation
