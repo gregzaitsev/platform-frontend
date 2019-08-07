@@ -35,4 +35,5 @@ export const OnlyPublicRoute = compose<IComponentProps, RouteProps>(
     },
   }),
   branch<IStateProps & RouteProps>(state => state.component === undefined, renderNothing),
+  branch<IStateProps & RouteProps>(props => props.isAuthorized, renderNothing),
 )(OnlyPublicRouteComponent);
