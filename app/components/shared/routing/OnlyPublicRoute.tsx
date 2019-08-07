@@ -1,19 +1,20 @@
 import * as React from "react";
-import { RouteProps } from "react-router-dom";
-import { branch, compose, renderNothing } from "recompose";
+import { Redirect, RouteProps } from "react-router-dom";
+import { branch, compose, renderComponent, renderNothing } from "recompose";
+import { RouterState } from "connected-react-router";
 
-import { actions } from "../../../modules/actions";
 import { selectIsAuthorized } from "../../../modules/auth/selectors";
-import { appConnect, AppDispatch } from "../../../store";
-import { onEnterAction } from "../../../utils/OnEnterAction";
+import { appConnect } from "../../../store";
+import { appRoutes } from "../../appRoutes";
 
 interface IStateProps {
   isAuthorized: boolean;
+  routerState: RouterState;
 }
 
 interface IComponentProps {
   isAuthorized: boolean;
-  component: React.ReactType;
+  component: React.ComponentType;
 }
 
 const OnlyPublicRouteComponent: React.FunctionComponent<IComponentProps> = ({
@@ -25,15 +26,9 @@ export const OnlyPublicRoute = compose<IComponentProps, RouteProps>(
   appConnect<IStateProps, {}, RouteProps>({
     stateToProps: s => ({
       isAuthorized: selectIsAuthorized(s.auth),
+      routerState: s.router,
     }),
   }),
-  onEnterAction({
-    actionCreator: (dispatch: AppDispatch, props: IStateProps) => {
-      if (props.isAuthorized) {
-        dispatch(actions.routing.goToDashboard());
-      }
-    },
-  }),
   branch<IStateProps & RouteProps>(state => state.component === undefined, renderNothing),
-  branch<IStateProps & RouteProps>(props => props.isAuthorized, renderNothing),
+  branch<IStateProps & RouteProps>(props => props.isAuthorized, renderComponent(()=><Redirect to={appRoutes.dashboard} />)),
 )(OnlyPublicRouteComponent);
