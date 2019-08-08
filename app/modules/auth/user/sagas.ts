@@ -15,12 +15,13 @@ import { IAppState } from "../../../store";
 import { actions, TActionFromCreator } from "../../actions";
 import { loadKycRequestData } from "../../kyc/sagas";
 import { selectRedirectURLFromQueryString } from "../../routing/selectors";
-import { neuCall } from "../../sagasUtils";
+import { neuCall, neuFork } from "../../sagasUtils";
 import { selectUrlUserType } from "../../wallet-selector/selectors";
 import { loadPreviousWallet } from "../../web3/sagas";
 import { EWalletSubType, EWalletType } from "../../web3/types";
 import { createJwt } from "../jwt/sagas";
 import { selectUserType } from "../selectors";
+import { nomineeFlowSaga } from "../../nominee-flow/sagas";
 
 export function* signInUser({
   walletStorage,
@@ -67,6 +68,21 @@ export function* loadUser(): Iterator<any> {
   yield neuCall(loadPreviousWallet);
   yield put(actions.auth.setUser(user));
   yield neuCall(loadKycRequestData);
+  yield neuCall(startUserFlow, user.type)
+}
+
+export function* startUserFlow({ logger }: TGlobalDependencies, userType: EUserType) {
+  console.log("-----> startUserFlow ", userType)
+  switch (userType) {
+    case EUserType.INVESTOR:
+    case EUserType.ISSUER:
+      return; //todo add user flows for these user types
+    case EUserType.NOMINEE:
+      yield neuFork(nomineeFlowSaga);
+      break;
+    default:
+      logger.error("invalid user type")
+  }
 }
 
 export async function loadUserPromise({ apiUserService }: TGlobalDependencies): Promise<IUser> {
@@ -79,12 +95,13 @@ export async function createUserPromise(
 ): Promise<IUser> {
   return apiUserService.createAccount(user);
 }
-
+//todo this one is only called during light wallet recovery
 export function* createUser(newUser: IUserInput): Iterator<any> {
   const user: IUser = yield neuCall(createUserPromise, newUser);
   yield put(actions.auth.setUser(user));
 
   yield neuCall(loadKycRequestData);
+  yield neuCall(startUserFlow, user.type)
 }
 
 export async function updateUserPromise(
@@ -93,6 +110,7 @@ export async function updateUserPromise(
 ): Promise<IUser> {
   return apiUserService.updateUser(user);
 }
+
 // TODO: Remove updateUserPromise
 
 export function* loadOrCreateUser(userType: EUserType): Iterator<any> {
@@ -100,6 +118,7 @@ export function* loadOrCreateUser(userType: EUserType): Iterator<any> {
   yield put(actions.auth.setUser(user));
 
   yield neuCall(loadKycRequestData);
+  yield neuCall(startUserFlow, user.type)
 }
 
 export function* updateUser(updatedUser: IUserInput): Iterator<any> {

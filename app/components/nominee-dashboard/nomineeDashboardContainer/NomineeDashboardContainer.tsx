@@ -1,12 +1,12 @@
 import * as React from "react";
 
-import { ENomineeTask } from "../NomineeTasksData";
 import { AccountSetupContainer } from "./AccountSetupContainer";
 import { LinkedNomineeDashboardContainer } from "./LinkedNomineeDashboardContainer";
 import { NotLinkedNomineeDashboardContainer } from "./NotLinkedNomineeDashboardContainer";
+import { ENomineeFlowStep } from "../../../modules/nominee-flow/reducer";
 
 interface IExternalProps {
-  nomineeTaskStep: ENomineeTask;
+  nomineeTaskStep: ENomineeFlowStep;
 }
 
 const NomineeDashboardContainer: React.FunctionComponent<IExternalProps> = ({
@@ -14,15 +14,15 @@ const NomineeDashboardContainer: React.FunctionComponent<IExternalProps> = ({
   children,
 }) => {
   switch (nomineeTaskStep) {
-    case ENomineeTask.ACCOUNT_SETUP:
+    case ENomineeFlowStep.ACCOUNT_SETUP:
       return <AccountSetupContainer children={children} />;
-    case ENomineeTask.LINK_BANK_ACCOUNT:
-    case ENomineeTask.ACCEPT_THA:
-    case ENomineeTask.REDEEM_SHARE_CAPITAL:
-    case ENomineeTask.ACCEPT_ISHA:
+    case ENomineeFlowStep.LINK_BANK_ACCOUNT:
+    case ENomineeFlowStep.ACCEPT_THA:
+    case ENomineeFlowStep.REDEEM_SHARE_CAPITAL:
+    case ENomineeFlowStep.ACCEPT_ISHA:
       return <LinkedNomineeDashboardContainer children={children} />;
-    case ENomineeTask.LINK_TO_ISSUER:
-    case ENomineeTask.NONE:
+    case ENomineeFlowStep.LINK_TO_ISSUER:
+    case ENomineeFlowStep.NONE:
     default:
       return <NotLinkedNomineeDashboardContainer children={children} />;
   }

@@ -1,33 +1,24 @@
 import * as React from "react";
-import { branch, compose, nest, renderNothing, withProps } from "recompose";
+import {  compose, nest } from "recompose";
 
-import { actions } from "../../modules/actions";
-import { selectUserId } from "../../modules/auth/selectors";
-import { selectIsBankAccountVerified } from "../../modules/bank-transfer-flow/selectors";
-import { selectEtoOfNominee } from "../../modules/eto/selectors";
-import { TEtoWithCompanyAndContract } from "../../modules/eto/types";
-import { selectNomineeStateIsLoading } from "../../modules/nominee-flow/selectors";
-import { SelectIsVerificationFullyDone } from "../../modules/selectors";
+import { selectNomineeFlowStep, selectNomineeStateIsLoading } from "../../modules/nominee-flow/selectors";
 import { appConnect } from "../../store";
 import { TTranslatedString } from "../../types";
-import { onEnterAction } from "../../utils/OnEnterAction";
 import { withContainer } from "../../utils/withContainer.unsafe";
 import { Layout } from "../layouts/Layout";
 import { NomineeDashboardContainer } from "./nomineeDashboardContainer/NomineeDashboardContainer";
 import { NomineeDashboardTasks } from "./NomineeDashboardTasks";
-import { ENomineeTask, getNomineeTaskStep } from "./NomineeTasksData";
 
 import * as styles from "./NomineeDashboard.module.scss";
+import { ENomineeFlowStep } from "../../modules/nominee-flow/reducer";
 
 interface IStateProps {
-  verificationIsComplete: boolean;
   isLoading: boolean;
-  isBankAccountVerified: boolean;
-  nomineeEto: TEtoWithCompanyAndContract | undefined;
+  nomineeFlowStep: ENomineeFlowStep
 }
 
 interface IDashboardProps {
-  nomineeTaskStep: ENomineeTask;
+  nomineeFlowStep: ENomineeFlowStep;
 }
 
 interface IDashboardTitleProps {
@@ -43,37 +34,11 @@ export const DashboardTitle: React.FunctionComponent<IDashboardTitleProps> = ({ 
 );
 
 export const NomineeDashboard = compose<IDashboardProps, {}>(
-  appConnect<IStateProps | null>({
-    stateToProps: state => {
-      const nomineeId = selectUserId(state);
-      if (nomineeId !== undefined) {
-        return {
-          isLoading: selectNomineeStateIsLoading(state),
-          nomineeEto: selectEtoOfNominee(state, nomineeId),
-          isBankAccountVerified: selectIsBankAccountVerified(state),
-          verificationIsComplete: SelectIsVerificationFullyDone(state),
-        };
-      } else {
-        return null;
-      }
-    },
+  appConnect<IStateProps>({
+    stateToProps: state => ({
+      isLoading: selectNomineeStateIsLoading(state),
+      nomineeFlowStep: selectNomineeFlowStep(state),
+    })
   }),
-  branch<IStateProps | null>(props => props === null, renderNothing),
-  onEnterAction<IStateProps>({
-    actionCreator: (dispatch, { verificationIsComplete }) => {
-      if (verificationIsComplete) {
-        dispatch(actions.nomineeFlow.loadNomineeTaskData());
-      }
-    },
-  }),
-  withProps<IDashboardProps, IStateProps>(
-    ({ verificationIsComplete, nomineeEto, isBankAccountVerified }) => ({
-      nomineeTaskStep: getNomineeTaskStep(
-        verificationIsComplete,
-        nomineeEto,
-        isBankAccountVerified,
-      ),
-    }),
-  ),
   withContainer<IDashboardProps>(nest(Layout, NomineeDashboardContainer)),
 )(NomineeDashboardTasks);

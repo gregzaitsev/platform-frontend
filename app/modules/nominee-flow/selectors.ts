@@ -1,5 +1,5 @@
 import { IAppState } from "../../store";
-import { ENomineeRequestStatus, TNomineeRequestStorage } from "./reducer";
+import { ENomineeRequestStatus, ENomineeFlowStep, TNomineeRequestStorage } from "./reducer";
 
 export const selectNomineeStateIsLoading = (state: IAppState) => state.nomineeFlow.loading;
 
@@ -14,3 +14,5 @@ export const selectLinkedNomineeEtoId = (state: IAppState): string | undefined =
     requestId =>
       state.nomineeFlow.nomineeRequests[requestId].state === ENomineeRequestStatus.APPROVED,
   );
+
+export const selectNomineeFlowStep = (state: IAppState):ENomineeFlowStep => state.nomineeFlow.nomineeFlowStep;

@@ -8,56 +8,47 @@ import { LinkBankAccount } from "./LinkBankAccount";
 import { LinkToIssuer } from "./linkToIssuer/LinkToIssuer";
 import { NoTasks } from "./NoTasks";
 import { RedeemShareCapital } from "./RedeemShareCapital";
+import { ENomineeFlowStep } from "../../modules/nominee-flow/reducer";
 
 export interface ITaskData {
-  key: ENomineeTask;
+  key: ENomineeFlowStep;
   taskRootComponent: React.ComponentType;
 }
 
 export interface ITask {
-  key: ENomineeTask;
+  key: ENomineeFlowStep;
   taskRootComponent: React.ComponentType;
 }
 
-export enum ENomineeTask {
-  NONE = "noTasks",
-  ACCOUNT_SETUP = "accountSetup",
-  LINK_TO_ISSUER = "linkToIssuer",
-  LINK_BANK_ACCOUNT = "linkBankAccount",
-  ACCEPT_THA = "acceptTha",
-  REDEEM_SHARE_CAPITAL = "redeemShareCapital",
-  ACCEPT_ISHA = "acceptIsha",
-}
+type TNomineeTasksData = { [key in ENomineeFlowStep]: ITaskData };
 
-type TNomineeTasksData = { [key in ENomineeTask]: ITaskData };
-
-export const NomineeTasksData: TNomineeTasksData = {
-  [ENomineeTask.ACCOUNT_SETUP]: {
-    key: ENomineeTask.ACCOUNT_SETUP,
+export const NomineeFlowData: TNomineeTasksData = {
+  [ENomineeFlowStep.ACCOUNT_SETUP]: {
+    key: ENomineeFlowStep.ACCOUNT_SETUP,
     taskRootComponent: AccountSetup,
   },
-  [ENomineeTask.LINK_TO_ISSUER]: {
-    key: ENomineeTask.LINK_TO_ISSUER,
+  [ENomineeFlowStep.LINK_TO_ISSUER]: {
+    key: ENomineeFlowStep.LINK_TO_ISSUER,
     taskRootComponent: LinkToIssuer,
   },
-  [ENomineeTask.LINK_BANK_ACCOUNT]: {
-    key: ENomineeTask.LINK_BANK_ACCOUNT,
+  [ENomineeFlowStep.LINK_BANK_ACCOUNT]: {
+    key: ENomineeFlowStep.LINK_BANK_ACCOUNT,
     taskRootComponent: LinkBankAccount,
   },
-  [ENomineeTask.ACCEPT_THA]: {
-    key: ENomineeTask.ACCEPT_THA,
+  [ENomineeFlowStep.ACCEPT_THA]: {
+    key: ENomineeFlowStep.ACCEPT_THA,
     taskRootComponent: AcceptTha,
   },
-  [ENomineeTask.REDEEM_SHARE_CAPITAL]: {
-    key: ENomineeTask.REDEEM_SHARE_CAPITAL,
+  [ENomineeFlowStep.REDEEM_SHARE_CAPITAL]: {
+    key: ENomineeFlowStep.REDEEM_SHARE_CAPITAL,
     taskRootComponent: RedeemShareCapital,
   },
-  [ENomineeTask.ACCEPT_ISHA]: {
-    key: ENomineeTask.ACCEPT_ISHA,
+  [ENomineeFlowStep.ACCEPT_ISHA]: {
+    key: ENomineeFlowStep.ACCEPT_ISHA,
     taskRootComponent: AcceptIsha,
   },
-  [ENomineeTask.NONE]: {
-    key: ENomineeTask.NONE,
+  [ENomineeFlowStep.NONE]: {
+    key: ENomineeFlowStep.NONE,
     taskRootComponent: NoTasks,
   },
 };
@@ -67,16 +58,19 @@ export const getNomineeTaskStep = (
   verificationIsComplete: boolean,
   nomineeEto: TEtoWithCompanyAndContract | undefined,
   isBankAccountVerified: boolean,
-): ENomineeTask => {
+): ENomineeFlowStep => {
   if (!verificationIsComplete) {
-    return ENomineeTask.ACCOUNT_SETUP;
+    return ENomineeFlowStep.ACCOUNT_SETUP;
   } else if (nomineeEto === undefined) {
-    return ENomineeTask.LINK_TO_ISSUER;
+    return ENomineeFlowStep.LINK_TO_ISSUER;
   } else if (!isBankAccountVerified) {
-    return ENomineeTask.LINK_BANK_ACCOUNT;
+    return ENomineeFlowStep.LINK_BANK_ACCOUNT;
   } else {
-    return ENomineeTask.NONE;
+    return ENomineeFlowStep.NONE;
   }
 };
 
-export const getNomineeTasks = (data: TNomineeTasksData, step: ENomineeTask) => [data[step]];
+export const getNomineeTasks = (data: TNomineeTasksData, step: ENomineeFlowStep) => {
+  console.log("getNomineeTasks",step);
+  return [data[step]];
+}

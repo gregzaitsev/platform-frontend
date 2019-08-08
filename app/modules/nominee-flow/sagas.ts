@@ -1,5 +1,7 @@
 import { delay } from "redux-saga";
-import { all, fork, put } from "redux-saga/effects";
+import { all, fork, put,
+  select
+} from "redux-saga/effects";
 
 import { ENomineeRequestErrorNotifications } from "../../components/translatedMessages/messages";
 import { createMessage } from "../../components/translatedMessages/utils";
@@ -8,18 +10,76 @@ import { TGlobalDependencies } from "../../di/setupBindings";
 import { TNomineeRequestResponse } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { IssuerIdInvalid, NomineeRequestExists } from "../../lib/api/eto/EtoNomineeApi";
 import { actions, TActionFromCreator } from "../actions";
+import { selectUserId } from "../auth/selectors";
+import { selectIsBankAccountVerified } from "../bank-transfer-flow/selectors";
 import { loadNomineeEtos } from "../eto/sagas";
+import { selectEtoOfNominee } from "../eto/selectors";
 import { neuCall, neuTakeLatest, neuTakeUntil } from "../sagasUtils";
+import { SelectIsVerificationFullyDone } from "../selectors";
 import {
   ENomineeAcceptThaStatus,
   ENomineeLinkBankAccountStatus,
   ENomineeRedeemShareholderCapitalStatus,
-  ENomineeRequestError,
+  ENomineeRequestError, ENomineeFlowStep,
   ENomineeUploadIshaStatus,
   INomineeRequest,
   TNomineeRequestStorage,
 } from "./reducer";
 import { nomineeApiDataToNomineeRequests, nomineeRequestResponseToRequestStatus } from "./utils";
+
+export function* nomineeFlowSaga(){
+
+  const verificationIsComplete = yield select(SelectIsVerificationFullyDone);
+  if(!verificationIsComplete){
+    yield put(actions.nomineeFlow.setNomineeFlowStep(ENomineeFlowStep.ACCOUNT_SETUP));
+    return
+  }
+
+  const nomineeId = yield select(selectUserId);
+  const nomineeEto = yield select(selectEtoOfNominee, nomineeId);
+  if(!nomineeEto){
+    yield put(actions.nomineeFlow.setNomineeFlowStep(ENomineeFlowStep.LINK_TO_ISSUER));
+    return
+  }
+
+  const isBankAccountVerified = yield select(selectIsBankAccountVerified);
+  if(!isBankAccountVerified){
+    yield put(actions.nomineeFlow.setNomineeFlowStep(ENomineeFlowStep.LINK_BANK_ACCOUNT));
+    return
+  }
+  yield put(actions.nomineeFlow.setNomineeFlowStep(ENomineeFlowStep.NONE))
+}
+
+// export function* nomineeAccountSetupSaga() {
+//   const verificationIsComplete = yield select(SelectIsVerificationFullyDone);
+//   console.log("--->verificationIsComplete",verificationIsComplete);
+//   if(!verificationIsComplete){
+//     yield put(actions.nomineeFlow.setNomineeFlowStep(ENomineeFlowStep.ACCOUNT_SETUP))
+//   } else {
+//     return
+//   }
+// }
+
+// export function* nomineeLinkToIssuerSaga() {
+//   const nomineeId = yield select(selectUserId);
+//   const nomineeEto = yield select(selectEtoOfNominee, nomineeId);
+//   console.log("--->nomineeEto", nomineeEto);
+//   if(!nomineeEto){
+//     yield put(actions.nomineeFlow.setNomineeFlowStep(ENomineeFlowStep.LINK_TO_ISSUER))
+//   } else {
+//     return
+//   }
+// }
+
+export function* nomineeLinkBankAccountSaga() {
+  const isBankAccountVerified = yield select(selectIsBankAccountVerified);
+  console.log("--->isBankAccountVerified",isBankAccountVerified);
+  if(!isBankAccountVerified){
+    yield put(actions.nomineeFlow.setNomineeFlowStep(ENomineeFlowStep.LINK_BANK_ACCOUNT))
+  } else {
+    return
+  }
+}
 
 export function* loadNomineeTaskData({
   apiEtoNomineeService,

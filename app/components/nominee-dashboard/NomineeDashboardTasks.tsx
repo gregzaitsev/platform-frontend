@@ -1,14 +1,15 @@
 import * as React from "react";
 import { compose, withProps } from "recompose";
 
-import { ENomineeTask, getNomineeTasks, ITask, NomineeTasksData } from "./NomineeTasksData";
+import { getNomineeTasks, ITask, NomineeFlowData } from "./NomineeFlowData";
+import { ENomineeFlowStep } from "../../modules/nominee-flow/reducer";
 
 interface IDashboardProps {
   nomineeTasks: ITask[];
 }
 
 interface IExternalProps {
-  nomineeTaskStep: ENomineeTask;
+  nomineeFlowStep: ENomineeFlowStep;
 }
 
 const NomineeDashboardTasksLayout: React.FunctionComponent<IDashboardProps> = ({
@@ -22,7 +23,7 @@ const NomineeDashboardTasksLayout: React.FunctionComponent<IDashboardProps> = ({
 );
 
 export const NomineeDashboardTasks = compose<IDashboardProps, IExternalProps>(
-  withProps<IDashboardProps, IExternalProps>(({ nomineeTaskStep }) => ({
-    nomineeTasks: getNomineeTasks(NomineeTasksData, nomineeTaskStep),
+  withProps<IDashboardProps, IExternalProps>(({ nomineeFlowStep }) => ({
+    nomineeTasks: getNomineeTasks(NomineeFlowData, nomineeFlowStep),
   })),
 )(NomineeDashboardTasksLayout);

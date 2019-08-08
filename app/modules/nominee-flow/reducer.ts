@@ -2,6 +2,16 @@ import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
 import { actions } from "../actions";
 
+export enum ENomineeFlowStep {
+  NONE = "noTasks",
+  ACCOUNT_SETUP = "accountSetup",
+  LINK_TO_ISSUER = "linkToIssuer",
+  LINK_BANK_ACCOUNT = "linkBankAccount",
+  ACCEPT_THA = "acceptTha",
+  REDEEM_SHARE_CAPITAL = "redeemShareCapital",
+  ACCEPT_ISHA = "acceptIsha",
+}
+
 export enum ENomineeRequestStatus {
   PENDING = "pending",
   APPROVED = "approved",
@@ -75,10 +85,12 @@ export interface INomineeFlowState {
   acceptTha: ENomineeAcceptThaStatus;
   redeemShareholderCapital: ENomineeRedeemShareholderCapitalStatus;
   uploadIsha: ENomineeUploadIshaStatus;
+  nomineeFlowStep: ENomineeFlowStep
 }
 
 const nomineeFlowInitialState = {
   loading: false,
+  nomineeFlowStep: ENomineeFlowStep.ACCEPT_ISHA,
   error: ENomineeRequestError.NONE,
   nomineeRequests: {},
   acceptTha: ENomineeAcceptThaStatus.NOT_DONE,
@@ -124,6 +136,11 @@ export const nomineeFlowReducer: AppReducer<INomineeFlowState> = (
       return {
         ...state,
         loading: false,
+      };
+    case actions.nomineeFlow.setNomineeFlowStep.getType():
+      return {
+        ...state,
+        nomineeFlowStep: action.payload.step
       };
     default:
       return state;

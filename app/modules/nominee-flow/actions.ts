@@ -1,7 +1,11 @@
 import { createActionFactory } from "../actionsUtils";
-import { ENomineeRequestError, INomineeRequest, TNomineeRequestStorage } from "./reducer";
+import { ENomineeRequestError, ENomineeFlowStep, INomineeRequest, TNomineeRequestStorage } from "./reducer";
 
 export const nomineeFlowActions = {
+  setNomineeFlowStep: createActionFactory(
+    "NOMINEE_FLOW_SET_STEP",
+    (step: ENomineeFlowStep) => ({ step })
+  ),
   loadNomineeTaskData: createActionFactory("NOMINEE_FLOW_LOAD_NOMINEE_TASK_DATA"),
   storeNomineeTaskData: createActionFactory("NOMINEE_FLOW_SET_NOMINEE_TASKS_STATUS", tasks => ({
     tasks,
