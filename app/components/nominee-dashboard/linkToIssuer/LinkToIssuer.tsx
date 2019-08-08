@@ -111,7 +111,7 @@ export const RepeatCreateNomineeRequestLayout: React.FunctionComponent<IRepeatRe
     <p className={cn(styles.text, styles.error)}>
       <FormattedHTMLMessage
         tagName="span"
-        id="nominee-flow.link-with-issuer.error-request-exists"
+        id="nominee-flow.link-with-issuer.error-request-rejected"
         values={{ etoId: nomineeRequest.etoId }}
       />
     </p>
