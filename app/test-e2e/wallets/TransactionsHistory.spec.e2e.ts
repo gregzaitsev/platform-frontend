@@ -13,9 +13,7 @@ describe("TransactionHistory", () => {
       .its("length")
       .as("previousLength");
 
-    cy.get(tid("transactions-history-load-more"))
-      .click()
-      .should("not.be.disabled");
+    cy.get(tid("transactions-history-load-more")).click();
 
     cy.get<number>("@previousLength").then(previousLength => {
       cy.get(tid("transactions-history-row")).should("to.have.length.gt", previousLength);

@@ -3,6 +3,9 @@ import * as React from "react";
 import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 import { branch, compose, renderComponent, renderNothing, withProps } from "recompose";
 
+import { selectUserId } from "../../../modules/auth/selectors";
+import { selectEtoOfNominee } from "../../../modules/eto/selectors";
+import { TEtoWithCompanyAndContract } from "../../../modules/eto/types";
 import {
   ENomineeRequestError,
   ENomineeRequestStatus,
@@ -20,9 +23,6 @@ import { NomineeLinkRequestForm } from "./LinkToIssuerForm";
 import { NomineeRequestPending } from "./NomineeRequestPending";
 import { ENomineeRequestComponentState } from "./types";
 import { getNomineeRequestComponentState } from "./utils";
-import { selectEtoOfNominee } from "../../../modules/eto/selectors";
-import { selectUserId } from "../../../modules/auth/selectors";
-import { TEtoWithCompanyAndContract } from "../../../modules/eto/types";
 
 import * as styles from "./LinkToIssuer.module.scss";
 
@@ -129,16 +129,16 @@ export const LinkToIssuer = compose<IStateProps, {}>(
   appConnect<IStateProps>({
     stateToProps: state => {
       const nomineeId = selectUserId(state);
-      if(nomineeId){
-        return ({
+      if (nomineeId) {
+        return {
           nomineeEto: selectEtoOfNominee(state, nomineeId),
           nomineeRequest: takeLatestNomineeRequest(selectNomineeRequests(state)), //only take the latest one for now
           nomineeRequestError: selectNomineeStateError(state),
-        })
+        };
       } else {
-        throw new Error("user id is not valid")
+        throw new Error("user id is not valid");
       }
-    }
+    },
   }),
   withProps<{ nextState: ENomineeRequestComponentState }, IStateProps>(
     ({ nomineeRequest, nomineeRequestError, nomineeEto }) => ({
