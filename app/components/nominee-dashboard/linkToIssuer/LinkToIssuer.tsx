@@ -20,12 +20,16 @@ import { NomineeLinkRequestForm } from "./LinkToIssuerForm";
 import { NomineeRequestPending } from "./NomineeRequestPending";
 import { ENomineeRequestComponentState } from "./types";
 import { getNomineeRequestComponentState } from "./utils";
+import { selectEtoOfNominee } from "../../../modules/eto/selectors";
+import { selectUserId } from "../../../modules/auth/selectors";
+import { TEtoWithCompanyAndContract } from "../../../modules/eto/types";
 
 import * as styles from "./LinkToIssuer.module.scss";
 
 interface IStateProps {
   nomineeRequest: INomineeRequest | undefined;
   nomineeRequestError: ENomineeRequestError;
+  nomineeEto: TEtoWithCompanyAndContract | undefined;
 }
 
 interface IRepeatRequestProps {
@@ -123,14 +127,22 @@ export const NomineeRequestContainer: React.FunctionComponent = ({ children }) =
 
 export const LinkToIssuer = compose<IStateProps, {}>(
   appConnect<IStateProps>({
-    stateToProps: state => ({
-      nomineeRequest: takeLatestNomineeRequest(selectNomineeRequests(state)), //only take the latest one for now
-      nomineeRequestError: selectNomineeStateError(state),
-    }),
+    stateToProps: state => {
+      const nomineeId = selectUserId(state);
+      if(nomineeId){
+        return ({
+          nomineeEto: selectEtoOfNominee(state, nomineeId),
+          nomineeRequest: takeLatestNomineeRequest(selectNomineeRequests(state)), //only take the latest one for now
+          nomineeRequestError: selectNomineeStateError(state),
+        })
+      } else {
+        throw new Error("user id is not valid")
+      }
+    }
   }),
   withProps<{ nextState: ENomineeRequestComponentState }, IStateProps>(
-    ({ nomineeRequest, nomineeRequestError }) => ({
-      nextState: getNomineeRequestComponentState(nomineeRequest, nomineeRequestError),
+    ({ nomineeRequest, nomineeRequestError, nomineeEto }) => ({
+      nextState: getNomineeRequestComponentState(nomineeRequest, nomineeRequestError, nomineeEto),
     }),
   ),
   branch<IBranchProps>(
@@ -148,6 +160,6 @@ export const LinkToIssuer = compose<IStateProps, {}>(
   ),
   branch<IBranchProps>(
     ({ nextState }) => nextState === ENomineeRequestComponentState.CREATE_NEW_REQUEST,
-    renderComponent(RepeatNomineeRequestLayout),
+    renderComponent(RepeatCreateNomineeRequestLayout),
   ),
 )(CreateNomineeRequestLayout);

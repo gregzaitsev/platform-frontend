@@ -6,6 +6,7 @@ import {
 import { validateAddress } from "../../../modules/web3/utils";
 import { EMaskedFormError } from "../../translatedMessages/messages";
 import { ENomineeRequestComponentState } from "./types";
+import { TEtoWithCompanyAndContract } from "../../../modules/eto/types";
 
 export const validateEthInput = (value: string | undefined) => {
   if (value === undefined) {
@@ -45,6 +46,7 @@ export const validateEthAddress = (value: string | undefined) => {
 export const getNomineeRequestComponentState = (
   nomineeRequest: INomineeRequest | undefined,
   nomineeRequestError: ENomineeRequestError,
+  nomineeEto: TEtoWithCompanyAndContract | undefined
 ) => {
   if (!nomineeRequest && nomineeRequestError === ENomineeRequestError.REQUEST_EXISTS) {
     throw new Error("invalid nominee request state");
@@ -54,8 +56,15 @@ export const getNomineeRequestComponentState = (
     return ENomineeRequestComponentState.REPEAT_REQUEST;
   } else if (nomineeRequest && nomineeRequest.state === ENomineeRequestStatus.PENDING) {
     return ENomineeRequestComponentState.WAIT_WHILE_RQUEST_PENDING;
-  } else if (nomineeRequest && nomineeRequest.state === ENomineeRequestStatus.APPROVED) {
+  } else if (nomineeRequest && nomineeRequest.state === ENomineeRequestStatus.APPROVED &&
+    nomineeEto && nomineeEto.etoId === nomineeRequest.etoId) {
     return ENomineeRequestComponentState.SUCCESS;
+  } else if (nomineeRequest && nomineeRequest.state === ENomineeRequestStatus.APPROVED &&
+    !nomineeEto) {
+    return ENomineeRequestComponentState.CREATE_NEW_REQUEST;
+  } else if (nomineeRequest && nomineeRequest.state === ENomineeRequestStatus.APPROVED &&
+    nomineeEto && nomineeEto.etoId !== nomineeRequest.etoId) {
+    return ENomineeRequestComponentState.CREATE_NEW_REQUEST;
   } else if (
     nomineeRequest &&
     nomineeRequest.state === ENomineeRequestStatus.REJECTED &&
