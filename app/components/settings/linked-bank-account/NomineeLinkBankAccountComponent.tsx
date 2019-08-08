@@ -50,18 +50,3 @@ const NomineeLinkedBankAccountComponent = connectLinkBankAccountComponent<{}>(
 );
 
 export { NomineeLinkedBankAccountComponent, NomineeLinkedBankAccountLayout };
-
-/*
-<>
-  <Button
-    className={styles.linkButton}
-    onClick={props.verifyBankAccount}
-    disabled={!props.isUserFullyVerified}
-    data-test-id="linked-bank-account-widget.link-different-account"
-    layout={EButtonLayout.INLINE}
-    size={ButtonSize.SMALL}
-  >
-    <FormattedMessage id="linked-bank-account-widget.link-different" />
-  </Button>
-</>;
- */

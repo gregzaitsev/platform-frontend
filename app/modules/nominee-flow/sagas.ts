@@ -61,7 +61,7 @@ export function* loadNomineeTaskData({
       createMessage(ENomineeRequestErrorNotifications.FETCH_NOMINEE_DATA_ERROR),
     );
     //show the user what's already loaded
-    yield put(actions.nomineeFlow.dataReady());
+    yield put(actions.nomineeFlow.loadingDone());
   }
 }
 
@@ -139,7 +139,7 @@ export function* createNomineeRequest(
     }
   } finally {
     yield put(actions.routing.goToDashboard());
-    yield put(actions.nomineeFlow.dataReady());
+    yield put(actions.nomineeFlow.loadingDone());
   }
 }
 

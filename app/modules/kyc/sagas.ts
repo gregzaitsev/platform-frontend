@@ -199,6 +199,9 @@ function* loadIndividualRequest(
   action: TAction,
 ): Iterator<any> {
   if (action.type !== "KYC_LOAD_INDIVIDUAL_REQUEST_STATE") return;
+
+  yield put(actions.kyc.kycLoadClaims());
+
   try {
     if (!action.payload.inBackground) {
       yield put(actions.kyc.kycUpdateIndividualRequestState(true));

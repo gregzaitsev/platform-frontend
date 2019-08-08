@@ -30,6 +30,7 @@ export class EtoNomineeApi {
     const response = await this.httpClient.get<TNomineeRequestResponse[]>({
       baseUrl: BASE_PATH,
       url: GET_NOMINEE_REQUEST_PATH,
+      allowedStatusCodes: [400],
     });
     if (response.statusCode === 400) {
       throw new LoadNomineeRequestsError();
@@ -81,7 +82,7 @@ export class EtoNomineeApi {
       url: withParams(ETO_DELETE_NOMINEE_REQUEST_PATH, { nomineeId }),
     });
     if (response.statusCode !== 200) {
-      throw new Error();
+      throw new Error(`Request failed: ${response}`);
     } else {
       return response.body;
     }

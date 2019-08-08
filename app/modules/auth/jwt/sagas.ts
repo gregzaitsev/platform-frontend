@@ -1,4 +1,4 @@
-import { call, Effect, put, select, StringableActionCreator } from "redux-saga/effects";
+import { call, Effect, put, select } from "redux-saga/effects";
 
 import { calculateTimeLeft } from "../../../components/shared/utils";
 import { TMessage } from "../../../components/translatedMessages/utils";
@@ -8,7 +8,7 @@ import { EthereumAddressWithChecksum } from "../../../types";
 import { getJwtExpiryDate, hasValidPermissions } from "../../../utils/JWTUtils";
 import { EDelayTiming, safeDelay } from "../../../utils/safeTimers";
 import { accessWalletAndRunEffect } from "../../access-wallet/sagas";
-import { actions, TAction } from "../../actions";
+import { actions } from "../../actions";
 import { neuCall } from "../../sagasUtils";
 import { selectEthereumAddressWithChecksum } from "../../web3/selectors";
 import { AUTH_JWT_TIMING_THRESHOLD, AUTH_TOKEN_REFRESH_THRESHOLD } from "../constants";
@@ -146,7 +146,6 @@ export function* ensurePermissionsArePresentAndRunEffect(
   title: TMessage,
   message: TMessage,
   inputLabel?: TMessage,
-  recoverAction?: StringableActionCreator<TAction>,
 ): Iterator<any> {
   const jwt: string = yield select(selectJwt);
 
@@ -167,10 +166,6 @@ export function* ensurePermissionsArePresentAndRunEffect(
       logger.info("Signing Cancelled");
     } else {
       throw error;
-    }
-
-    if (recoverAction) {
-      yield put(recoverAction());
     }
   }
 }

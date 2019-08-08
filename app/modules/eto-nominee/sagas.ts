@@ -31,7 +31,7 @@ export function* etoGetNomineeRequests({
   } catch (e) {
     logger.error("Failed to load Nominee requests", e);
     notificationCenter.error(createMessage(EEtoNomineeRequestNotifications.GENERIC_NETWORK_ERROR));
-    yield put(actions.etoNominee.dataReady());
+    yield put(actions.etoNominee.loadingDone());
   }
 }
 
@@ -62,10 +62,10 @@ export function* etoUpdateNomineeRequest(
       createMessage(EEtoNomineeRequestMessages.ISSUER_DELETE_NOMINEE_REQUEST),
       createMessage(EEtoNomineeRequestMessages.ISSUER_DELETE_NOMINEE_REQUEST_TEXT),
     );
-    yield put(actions.etoNominee.dataReady());
   } catch (e) {
     notificationCenter.error(createMessage(EEtoNomineeRequestNotifications.GENERIC_NETWORK_ERROR));
-    yield put(actions.etoNominee.dataReady());
+  } finally {
+    yield put(actions.etoNominee.loadingDone());
   }
 }
 
@@ -105,7 +105,7 @@ export function* etoRejectNomineeRequest({
       createMessage(EEtoNomineeRequestMessages.ISSUER_DELETE_NOMINEE_REQUEST),
       createMessage(EEtoNomineeRequestMessages.ISSUER_DELETE_NOMINEE_REQUEST_TEXT),
     );
-    yield put(actions.etoNominee.dataReady());
+    yield put(actions.etoNominee.loadingDone());
   } catch (e) {
     notificationCenter.error(createMessage(EEtoNomineeRequestNotifications.GENERIC_NETWORK_ERROR));
   }

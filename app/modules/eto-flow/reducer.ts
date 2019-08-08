@@ -23,7 +23,7 @@ export const etoFlowReducer: AppReducer<IEtoFlowState> = (
     case actions.etoFlow.loadIssuerEto.getType():
       return {
         ...state,
-        loading: !action.payload.inBackground ? true : state.loading,
+        loading: true,
       };
     case actions.etoFlow.setEto.getType():
       return {
