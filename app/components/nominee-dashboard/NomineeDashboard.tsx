@@ -13,7 +13,7 @@ import { TTranslatedString } from "../../types";
 import { onEnterAction } from "../../utils/OnEnterAction";
 import { withContainer } from "../../utils/withContainer.unsafe";
 import { Layout } from "../layouts/Layout";
-import { NomineeDashboardContainer } from "./NomineeDashboardContainer";
+import { NomineeDashboardContainer } from "./nomineeDashboardContainer/NomineeDashboardContainer";
 import { NomineeDashboardTasks } from "./NomineeDashboardTasks";
 import { ENomineeTask, getNomineeTaskStep } from "./NomineeTasksData";
 

@@ -27,12 +27,13 @@ interface IDispatchProps {
 }
 
 interface IComponentProps {
+  readonly: boolean;
   currentNomineeId: string;
   currentNomineeName: string;
   deleteNomineeRequest: () => void;
 }
 
-const NomineeChosenComponent: React.FunctionComponent<IExternalProps & IComponentProps> = ({
+const NomineeChosenComponent: React.FunctionComponent<IComponentProps> = ({
   readonly,
   currentNomineeName,
   currentNomineeId,

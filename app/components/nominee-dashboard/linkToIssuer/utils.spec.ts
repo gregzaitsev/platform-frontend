@@ -1,64 +1,40 @@
 import { expect } from "chai";
 
 import { EMaskedFormError } from "../../translatedMessages/messages";
-import { EAccountSetupStepState, prepareSetupAccountSteps, validateEthInput } from "./utils";
-
-describe("prepareSetupAccountSteps", () => {
-  it("iterates over data and sets the first not done element open", () => {
-    const data = [
-      {
-        key: "a",
-        conditionCompleted: true,
-        title: "title 1",
-        component: "component 1",
-      },
-      {
-        key: "b",
-        conditionCompleted: false,
-        title: "title 2",
-        component: "component 2",
-      },
-      {
-        key: "c",
-        conditionCompleted: false,
-        title: "title 3",
-        component: "component 3",
-      },
-    ];
-
-    const expectedData = [
-      {
-        key: "a",
-        number: 1,
-        title: "title 1",
-        stepState: EAccountSetupStepState.DONE,
-        component: "component 1",
-        isLast: false,
-      },
-      {
-        key: "b",
-        number: 2,
-        title: "title 2",
-        stepState: EAccountSetupStepState.ACTIVE,
-        component: "component 2",
-        isLast: false,
-      },
-      {
-        key: "c",
-        number: 3,
-        title: "title 3",
-        stepState: EAccountSetupStepState.NOT_DONE,
-        component: "component 3",
-        isLast: true,
-      },
-    ];
-
-    expect(prepareSetupAccountSteps(data)).to.deep.eq(expectedData);
-  });
-});
+import { validateEthInput } from "./utils";
 
 describe("validateEthInput", () => {
+  it("return no error if value is undefined", () => {
+    expect(validateEthInput(undefined)).to.eq(undefined);
+  });
+  it("throws on invalid input", () => {
+    expect(() => validateEthInput(null as any)).to.throw;
+    expect(() => validateEthInput(123 as any)).to.throw;
+    expect(() => validateEthInput({} as any)).to.throw;
+  });
   it("validates prefix", () => {
+    expect(validateEthInput("0x")).to.eq(undefined);
+
     expect(validateEthInput("`")).to.eq(EMaskedFormError.INVALID_PREFIX);
+    expect(validateEthInput("0z")).to.eq(EMaskedFormError.INVALID_PREFIX);
+  });
+  it("validates chars after prefix", () => {
+    expect(validateEthInput("0xABCDEF1234abcdef")).to.eq(undefined);
+    expect(validateEthInput("0xg")).to.eq(EMaskedFormError.ILLEGAL_CHARACTER);
+    expect(validateEthInput("0xABCD1234p")).to.eq(EMaskedFormError.ILLEGAL_CHARACTER);
+  });
+  it("returns an error if length after prefix is more than 40", () => {
+    expect(validateEthInput("0x0510fba1dcf0c6debf53edf66a7b314950c1da6a")).to.eq(undefined);
+    expect(validateEthInput("0x0510fba1dcf0c6debf53edf66a7b314950c1da6a5")).to.eq(
+      EMaskedFormError.MAX_LENGTH_EXCEEDED,
+    );
+  });
+  it("on multiple errors the priority is prefix -> illegal character -> length exceeded", () => {
+    expect(validateEthInput("3x0510fba1dcf0c6debf`53edf66a7b314950c1da6a")).to.eq(
+      EMaskedFormError.INVALID_PREFIX,
+    );
+    expect(validateEthInput("0x0510fba1dcf0c6debf`53edf66a7b314950c1da6a")).to.eq(
+      EMaskedFormError.ILLEGAL_CHARACTER,
+    );
   });
 });

@@ -10,11 +10,12 @@ import {
 import { selectKycRequestStatus } from "../../../modules/kyc/selectors";
 import { appConnect } from "../../../store";
 import { Panel } from "../../shared/Panel";
-import { IStepComponentProps, prepareSetupAccountSteps } from "../linkToIssuer/utils";
 import { DashboardTitle } from "../NomineeDashboard";
 import { nomineeAccountSetupSteps } from "./AccountSetupData";
-import { AccountSetupStep, INomineeAccountSetupSteps } from "./AccountSetupFlow";
+import { AccountSetupStep } from "./AccountSetupFlow";
 import { AccountSetupKycPending } from "./AccountSetupKycPending";
+import { IStepComponentProps } from "./types";
+import { prepareSetupAccountSteps } from "./utils";
 
 import * as styles from "../NomineeDashboard.module.scss";
 
@@ -61,6 +62,7 @@ export const AccountSetup = compose<INomineeAccountSetupSteps, {}>(
   }),
   branch<IStateProps | null>(props => props === null, renderNothing),
   branch<IStateProps>(
+    // todo this is a workaround, need to sort out what to do in case of ignored/rejected states
     props =>
       props.emailVerified &&
       props.backupCodesVerified &&

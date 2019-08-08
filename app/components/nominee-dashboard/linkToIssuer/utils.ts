@@ -3,74 +3,9 @@ import {
   ENomineeRequestStatus,
   INomineeRequest,
 } from "../../../modules/nominee-flow/reducer";
+import { validateAddress } from "../../../modules/web3/utils";
 import { EMaskedFormError } from "../../translatedMessages/messages";
-
-export interface IAccountSetupStepData {
-  key: string;
-  conditionCompleted: boolean;
-  title: JSX.Element | string;
-  component: JSX.Element | string;
-}
-
-export interface IStepComponentProps {
-  key: string;
-  stepState: EAccountSetupStepState;
-  title: JSX.Element | string;
-  component: JSX.Element | string;
-  number: number;
-  isLast: boolean;
-}
-
-export enum EAccountSetupStepState {
-  DONE = "done",
-  ACTIVE = "active",
-  NOT_DONE = "notDone",
-}
-
-export enum ENomineeRequestComponentState {
-  SUCCESS = "nomineeRequestSuccess",
-  WAIT_WHILE_RQUEST_PENDING = "waitWhileNomineeRequestPending",
-  REPEAT_REQUEST = "repeatNomineeRequest",
-  CREATE_REQUEST = "createNomineeRequest",
-  CREATE_NEW_REQUEST = "createNewRequest", //this is the same as CREATE_REQUEST but with an additional error message in the ui
-}
-
-const determineStepState = (isActive: boolean, completed: boolean): EAccountSetupStepState => {
-  if (isActive) {
-    return EAccountSetupStepState.ACTIVE;
-  } else if (completed) {
-    return EAccountSetupStepState.DONE;
-  } else {
-    return EAccountSetupStepState.NOT_DONE;
-  }
-};
-
-export const prepareSetupAccountSteps = (data: IAccountSetupStepData[]): IStepComponentProps[] => {
-  const newData = data.reduce(
-    (
-      acc: { activeElement: string | undefined; data: IStepComponentProps[] },
-      stepData: IAccountSetupStepData,
-      index: number,
-    ) => {
-      const isActive = !stepData.conditionCompleted && acc.activeElement === undefined;
-
-      const stepComponentProps = {
-        stepState: determineStepState(isActive, stepData.conditionCompleted),
-        number: index + 1,
-        key: stepData.key,
-        title: stepData.title,
-        component: stepData.component,
-        isLast: index + 1 === data.length,
-      };
-      acc.data.push(stepComponentProps);
-      acc.activeElement = isActive ? stepData.key : acc.activeElement;
-      return acc;
-    },
-    { activeElement: undefined, data: [] },
-  );
-
-  return newData.data;
-};
+import { ENomineeRequestComponentState } from "./types";
 
 export const validateEthInput = (value: string | undefined) => {
   if (value === undefined) {
@@ -103,7 +38,7 @@ export const validateEthAddress = (value: string | undefined) => {
   if (value === undefined) {
     return false;
   } else {
-    return RegExp(/^0x[\da-fA-F]{40}$/).test(value);
+    return validateAddress(value);
   }
 };
 

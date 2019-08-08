@@ -1,6 +1,7 @@
 import { expect } from "chai";
 
-import { EAccountSetupStepState, prepareSetupAccountSteps } from "./utils";
+import { EAccountSetupStepState } from "./types";
+import { prepareSetupAccountSteps } from "./utils";
 
 describe("prepareSetupAccountSteps", () => {
   it("iterates over data and sets the first not done element open", () => {

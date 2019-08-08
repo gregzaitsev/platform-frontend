@@ -13,6 +13,7 @@ import { Button, EButtonLayout, EButtonTheme } from "../../../../shared/buttons/
 import { FormHighlightGroup } from "../../../../shared/forms/FormHighlightGroup";
 import { Section } from "../../Shared";
 import { CopyEtoIdComponent } from "./CopyEtoIdComponent";
+import { nomineeRequestsAreEmpty } from "./utils";
 
 import * as styles from "./Nominee.module.scss";
 
@@ -25,22 +26,12 @@ interface IDispatchProps {
   rejectNominee: (nomineeId: string) => void;
 }
 
-interface IPendingNomineesProps {
-  nomineeRequests: INomineeRequest[];
-  acceptNominee: (nomineeId: string) => void;
-  rejectNominee: (nomineeId: string) => void;
-}
-
 interface IPendingNomineeRequest {
   request: INomineeRequest;
   nomineeRequestsLength: number;
-  acceptNominee: (nomineeId: string) => void;
-  rejectNominee: (nomineeId: string) => void;
 }
 
 interface IFullButtonBlockProps {
-  acceptNominee: (nomineeId: string) => void;
-  rejectNominee: (nomineeId: string) => void;
   nomineeId: string;
 }
 
@@ -49,7 +40,7 @@ interface IOneButtonBlockProps {
   nomineeId: string;
 }
 
-const FullButtonBlock: React.FunctionComponent<IFullButtonBlockProps> = ({
+const FullButtonBlock: React.FunctionComponent<IFullButtonBlockProps & IDispatchProps> = ({
   acceptNominee,
   rejectNominee,
   nomineeId,
@@ -89,7 +80,7 @@ const OneButtonBlock: React.FunctionComponent<IOneButtonBlockProps> = ({
   </div>
 );
 
-const PendingNomineeRequest: React.FunctionComponent<IPendingNomineeRequest> = ({
+const PendingNomineeRequest: React.FunctionComponent<IPendingNomineeRequest & IDispatchProps> = ({
   request,
   nomineeRequestsLength,
   acceptNominee,
@@ -140,7 +131,7 @@ const PendingNomineeRequest: React.FunctionComponent<IPendingNomineeRequest> = (
   </FormHighlightGroup>
 );
 
-const PendingNomineesComponent: React.FunctionComponent<IPendingNomineesProps> = ({
+const PendingNomineesComponent: React.FunctionComponent<IStateProps & IDispatchProps> = ({
   nomineeRequests,
   acceptNominee,
   rejectNominee,
@@ -183,7 +174,7 @@ const ChooseNominee = compose<IStateProps & IDispatchProps, {}>(
     actionCreator: d => d(actions.etoNominee.stopNomineeRequestsWatcher()),
   }),
   branch<IStateProps>(
-    ({ nomineeRequests }) => Object.keys(nomineeRequests).length === 0,
+    ({ nomineeRequests }) => nomineeRequestsAreEmpty(nomineeRequests),
     renderComponent(CopyEtoIdComponent),
   ),
 )(PendingNomineesComponent);

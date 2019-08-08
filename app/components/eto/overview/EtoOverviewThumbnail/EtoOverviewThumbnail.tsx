@@ -135,10 +135,9 @@ const EtoOverviewLayoutBase: React.FunctionComponent<TEtoProps> = ({ eto }) => (
   </>
 );
 
-const EtoOverviewLayout: React.FunctionComponent<TEtoProps & CommonHtmlProps & IDispatchProps> = ({
-  eto,
-  open,
-}) => (
+const EtoOverviewGridLayout: React.FunctionComponent<
+  TEtoProps & CommonHtmlProps & IDispatchProps
+> = ({ eto, open }) => (
   <EtoCardPanelButton
     data-test-id={`eto-overview-${eto.etoId}`}
     onClick={() => open(etoPublicViewLink(eto.previewCode, eto.product.jurisdiction))}
@@ -176,7 +175,7 @@ const connectEtoOverviewThumbnail = <T extends {}>(
     branch<TExternalProps>(props => !!props.mockedEto, renderComponent(MockEtoOverviewLayout)),
   )(WrappedComponent);
 
-const EtoOverviewThumbnail = connectEtoOverviewThumbnail(EtoOverviewLayout);
+const EtoOverviewThumbnail = connectEtoOverviewThumbnail(EtoOverviewGridLayout);
 const NomineeEtoOverviewThumbnail = connectEtoOverviewThumbnail(EtoOverviewComponent);
 
-export { EtoOverviewLayout, EtoOverviewThumbnail, NomineeEtoOverviewThumbnail };
+export { EtoOverviewGridLayout, EtoOverviewThumbnail, NomineeEtoOverviewThumbnail };

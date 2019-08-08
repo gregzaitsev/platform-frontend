@@ -1,24 +1,4 @@
-export interface IAccountSetupStepData {
-  key: string;
-  conditionCompleted: boolean;
-  title: JSX.Element | string;
-  component: JSX.Element | string;
-}
-
-export interface IStepComponentProps {
-  key: string;
-  stepState: EAccountSetupStepState;
-  title: JSX.Element | string;
-  component: JSX.Element | string;
-  number: number;
-  isLast: boolean;
-}
-
-export enum EAccountSetupStepState {
-  DONE = "done",
-  ACTIVE = "active",
-  NOT_DONE = "notDone",
-}
+import { EAccountSetupStepState, IAccountSetupStepData, IStepComponentProps } from "./types";
 
 const determineStepState = (isActive: boolean, completed: boolean): EAccountSetupStepState => {
   if (isActive) {

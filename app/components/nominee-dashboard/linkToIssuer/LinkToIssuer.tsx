@@ -18,7 +18,8 @@ import { TTranslatedString } from "../../../types";
 import { withContainer } from "../../../utils/withContainer.unsafe";
 import { NomineeLinkRequestForm } from "./LinkToIssuerForm";
 import { NomineeRequestPending } from "./NomineeRequestPending";
-import { ENomineeRequestComponentState, getNomineeRequestComponentState } from "./utils";
+import { ENomineeRequestComponentState } from "./types";
+import { getNomineeRequestComponentState } from "./utils";
 
 import * as styles from "./LinkToIssuer.module.scss";
 

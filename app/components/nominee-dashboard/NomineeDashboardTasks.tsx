@@ -15,8 +15,8 @@ const NomineeDashboardTasksLayout: React.FunctionComponent<IDashboardProps> = ({
   nomineeTasks,
 }) => (
   <>
-    {nomineeTasks.map((task: ITask) => (
-      <task.taskRootComponent key={task.key} />
+    {nomineeTasks.map(({ taskRootComponent: TaskRootComponent, key }: ITask) => (
+      <TaskRootComponent key={key} />
     ))}
   </>
 );
