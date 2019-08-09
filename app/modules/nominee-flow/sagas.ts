@@ -10,7 +10,7 @@ import { TGlobalDependencies } from "../../di/setupBindings";
 import { TNomineeRequestResponse } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { IssuerIdInvalid, NomineeRequestExists } from "../../lib/api/eto/EtoNomineeApi";
 import { actions, TActionFromCreator } from "../actions";
-import { selectUserId } from "../auth/selectors";
+import { selectIsUserEmailVerified, selectUserId } from "../auth/selectors";
 import { selectIsBankAccountVerified } from "../bank-transfer-flow/selectors";
 import { loadNomineeEtos } from "../eto/sagas";
 import { selectEtoOfNominee } from "../eto/selectors";
@@ -26,12 +26,14 @@ import {
   TNomineeRequestStorage,
 } from "./reducer";
 import { nomineeApiDataToNomineeRequests, nomineeRequestResponseToRequestStatus } from "./utils";
+import { IAppState } from "../../store";
 
 export function* nomineeFlowSaga(){
 
   const verificationIsComplete = yield select(SelectIsVerificationFullyDone);
   if(!verificationIsComplete){
     yield put(actions.nomineeFlow.setNomineeFlowStep(ENomineeFlowStep.ACCOUNT_SETUP));
+    yield neuCall(nomineeAccountSetupSaga)
     return
   }
 
@@ -50,15 +52,13 @@ export function* nomineeFlowSaga(){
   yield put(actions.nomineeFlow.setNomineeFlowStep(ENomineeFlowStep.NONE))
 }
 
-// export function* nomineeAccountSetupSaga() {
-//   const verificationIsComplete = yield select(SelectIsVerificationFullyDone);
-//   console.log("--->verificationIsComplete",verificationIsComplete);
-//   if(!verificationIsComplete){
-//     yield put(actions.nomineeFlow.setNomineeFlowStep(ENomineeFlowStep.ACCOUNT_SETUP))
-//   } else {
-//     return
-//   }
-// }
+export function* nomineeAccountSetupSaga() {
+  const emailVerified = yield select((s:IAppState)=>selectIsUserEmailVerified(s.auth))
+  if(!emailVerified){
+    yield put()
+  }
+
+}
 
 // export function* nomineeLinkToIssuerSaga() {
 //   const nomineeId = yield select(selectUserId);
@@ -71,15 +71,15 @@ export function* nomineeFlowSaga(){
 //   }
 // }
 
-export function* nomineeLinkBankAccountSaga() {
-  const isBankAccountVerified = yield select(selectIsBankAccountVerified);
-  console.log("--->isBankAccountVerified",isBankAccountVerified);
-  if(!isBankAccountVerified){
-    yield put(actions.nomineeFlow.setNomineeFlowStep(ENomineeFlowStep.LINK_BANK_ACCOUNT))
-  } else {
-    return
-  }
-}
+// export function* nomineeLinkBankAccountSaga() {
+//   const isBankAccountVerified = yield select(selectIsBankAccountVerified);
+//   console.log("--->isBankAccountVerified",isBankAccountVerified);
+//   if(!isBankAccountVerified){
+//     yield put(actions.nomineeFlow.setNomineeFlowStep(ENomineeFlowStep.LINK_BANK_ACCOUNT))
+//   } else {
+//     return
+//   }
+// }
 
 export function* loadNomineeTaskData({
   apiEtoNomineeService,

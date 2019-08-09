@@ -46,7 +46,7 @@ export const AccountSetupLayout: React.FunctionComponent<INomineeAccountSetupSte
 );
 
 export const AccountSetup = compose<INomineeAccountSetupSteps, {}>(
-  appConnect<IStateProps | null>({
+  appConnect<IStateProps>({
     stateToProps: state => {
       const kycRequestStatus = selectKycRequestStatus(state);
       if (kycRequestStatus !== undefined) {
@@ -56,11 +56,10 @@ export const AccountSetup = compose<INomineeAccountSetupSteps, {}>(
           kycRequestStatus,
         };
       } else {
-        return null;
+        throw new Error('invalid kyc request status')
       }
     },
   }),
-  branch<IStateProps | null>(props => props === null, renderNothing),
   branch<IStateProps>(
     // todo this is a workaround, need to sort out what to do in case of ignored/rejected states
     props =>

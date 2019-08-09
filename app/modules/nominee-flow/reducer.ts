@@ -54,6 +54,14 @@ export enum ENomineeUploadIshaStatus {
   ERROR = "error",
 }
 
+export enum EAccountSetupStep {
+  NOT_DONE = "accountSetupNotDone",
+  VERIFY_EMAIL = "accountSetupVerifyEmail",
+  BACKUP_CODES = "accountSetupBackupCodes",
+  KYC = "accountSetupKyc",
+  DONE = "accountSetupDone"
+}
+
 export interface INomineeRequestMetadata {
   city: string;
   country: string;
@@ -85,12 +93,14 @@ export interface INomineeFlowState {
   acceptTha: ENomineeAcceptThaStatus;
   redeemShareholderCapital: ENomineeRedeemShareholderCapitalStatus;
   uploadIsha: ENomineeUploadIshaStatus;
-  nomineeFlowStep: ENomineeFlowStep
+  nomineeFlowStep: ENomineeFlowStep;
+  accountSetup: EAccountSetupStep;
 }
 
 const nomineeFlowInitialState = {
   loading: false,
-  nomineeFlowStep: ENomineeFlowStep.ACCEPT_ISHA,
+  nomineeFlowStep: ENomineeFlowStep.NONE,
+  accountSetup: EAccountSetupStep.NOT_DONE,
   error: ENomineeRequestError.NONE,
   nomineeRequests: {},
   acceptTha: ENomineeAcceptThaStatus.NOT_DONE,
