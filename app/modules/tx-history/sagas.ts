@@ -258,6 +258,20 @@ export function* mapAnalyticsApiTransactionResponse(
       };
       break;
     }
+    // Add temporary new transaction types to prevent logging warnings
+    case ETransactionType.ETO_RELEASE_FUNDS:
+    case ETransactionType.ETO_RELEASE_CAPITAL_INCREASE:
+    case ETransactionType.ETO_COMPANY_SIGNED_AGREEMENT:
+    case ETransactionType.ETO_TERMS_SET:
+    case ETransactionType.ETO_START_DATE_SET:
+    case ETransactionType.NOMINEE_CONFIRMED_AGREEMENT:
+    case ETransactionType.GAS_EXCHANGE:
+    case ETransactionType.ICBM_FUNDS_MIGRATED:
+    case ETransactionType.ICBM_FUNDS_UNLOCKED:
+    case ETransactionType.ICBM_UNLOCK_PENALTY: {
+      tx = undefined;
+      break;
+    }
     default:
       logger.warn(new Error(`Transaction with unknown type received ${transaction.type}`));
   }

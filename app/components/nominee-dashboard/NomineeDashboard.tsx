@@ -4,6 +4,7 @@ import {  compose, nest } from "recompose";
 import { selectNomineeFlowStep, selectNomineeStateIsLoading } from "../../modules/nominee-flow/selectors";
 import { appConnect } from "../../store";
 import { TTranslatedString } from "../../types";
+import { onEnterAction } from "../../utils/OnEnterAction";
 import { withContainer } from "../../utils/withContainer.unsafe";
 import { Layout } from "../layouts/Layout";
 import { NomineeDashboardContainer } from "./nomineeDashboardContainer/NomineeDashboardContainer";
@@ -33,12 +34,12 @@ export const DashboardTitle: React.FunctionComponent<IDashboardTitleProps> = ({ 
   </div>
 );
 
+
 export const NomineeDashboard = compose<IDashboardProps, {}>(
   appConnect<IStateProps>({
     stateToProps: state => ({
       isLoading: selectNomineeStateIsLoading(state),
       nomineeFlowStep: selectNomineeFlowStep(state),
     })
-  }),
   withContainer<IDashboardProps>(nest(Layout, NomineeDashboardContainer)),
 )(NomineeDashboardTasks);

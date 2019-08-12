@@ -17,6 +17,18 @@ export enum ETransactionType {
   PAYOUT = "payout",
   REDISTRIBUTE_PAYOUT = "redistribute_payout",
   NEUR_DESTROY = "neur_destroy",
+
+  // new one, not yet implemented on the frontend
+  ETO_RELEASE_FUNDS = "eto_release_funds",
+  ETO_RELEASE_CAPITAL_INCREASE = "eto_release_capital_increase",
+  ETO_COMPANY_SIGNED_AGREEMENT = "eto_company_signed_agreement",
+  ETO_TERMS_SET = "eto_terms_set",
+  ETO_START_DATE_SET = "eto_start_date_set",
+  NOMINEE_CONFIRMED_AGREEMENT = "nominee_confirmed_agreement",
+  GAS_EXCHANGE = "gas_exchange",
+  ICBM_FUNDS_MIGRATED = "icbm_funds_migrated",
+  ICBM_FUNDS_UNLOCKED = "icbm_funds_unlocked",
+  ICBM_UNLOCK_PENALTY = "icbm_unlock_penalty",
 }
 
 export const AnalyticsTransactionTokenMetadataSchema = YupTS.object({

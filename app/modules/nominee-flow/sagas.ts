@@ -1,7 +1,5 @@
 import { delay } from "redux-saga";
-import { all, fork, put,
-  select
-} from "redux-saga/effects";
+import { all, fork, put, select } from "redux-saga/effects";
 
 import { ENomineeRequestErrorNotifications } from "../../components/translatedMessages/messages";
 import { createMessage } from "../../components/translatedMessages/utils";
