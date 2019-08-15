@@ -24,9 +24,11 @@ export enum EEtoDocumentType {
   PROSPECTUS_TEMPLATE = "prospectus_template",
   TERMSHEET_TEMPLATE = "termsheet_template",
   INVESTMENT_MEMORANDUM_TEMPLATE = "investment_memorandum_template",
+  INVESTMENT_SUMMARY_TEMPLATE = "investment_summary_template",
   // in documents collection
   SIGNED_TERMSHEET = "signed_termsheet",
   APPROVED_INVESTOR_OFFERING_DOCUMENT = "approved_investor_offering_document",
+  INVESTMENT_AND_SHAREHOLDER_AGREEMENT_PREVIEW = "investment_and_shareholder_agreement_preview",
   INVESTMENT_AND_SHAREHOLDER_AGREEMENT = "investment_and_shareholder_agreement",
   SIGNED_INVESTMENT_AND_SHAREHOLDER_AGREEMENT = "signed_investment_and_shareholder_agreement",
 }
@@ -71,9 +73,11 @@ export const immutableDocumentName: { [key in EEtoDocumentType]: string } = {
   prospectus_template: "Prospectus Template",
   termsheet_template: "Termsheet Template",
   investment_memorandum_template: "Investment Memorandum Template",
+  investment_summary_template: "ETO Investment Offer Summary",
   // in document collection
   investment_and_shareholder_agreement: "Investment and Shareholder Agreement",
   approved_investor_offering_document: "Approved Offering Document",
   signed_termsheet: "Signed Termsheet",
   signed_investment_and_shareholder_agreement: "Signed Investment and Shareholder Agreement",
+  investment_and_shareholder_agreement_preview: "Preview of Investment and Shareholder Agreement",
 };

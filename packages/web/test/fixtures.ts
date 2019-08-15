@@ -825,8 +825,8 @@ export const testEto: TEtoWithCompanyAndContract = {
       mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       name: "company_token_holder_agreement",
     },
-    investmentAndShareholderAgreementTemplate: {
-      documentType: "investment_and_shareholder_agreement_template" as EEtoDocumentType,
+    investmentSummaryTemplate: {
+      documentType: "investment_summary_template" as EEtoDocumentType,
       form: "template",
       ipfsHash: "QmUktiTT9ap8UuMUMZNmgrz7fabHMkrosycuTPUtX3rydQ",
       language: EEtoDocumentLanguage.EN,
@@ -876,8 +876,8 @@ export const etoFilesData: IEtoFilesInfo = {
       mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       name: "company_token_holder_agreement",
     },
-    investmentAndShareholderAgreementTemplate: {
-      documentType: EEtoDocumentType.INVESTMENT_AND_SHAREHOLDER_AGREEMENT_TEMPLATE,
+    investmentSummaryTemplate: {
+      documentType: EEtoDocumentType.INVESTMENT_SUMMARY_TEMPLATE,
       form: "template" as TEtoFormType,
       ipfsHash: "QmYEGp8hoYnBptD2UUAuDrsx2jMRkf8Evgc3d5J5ZK9xQY",
       language: EEtoDocumentLanguage.EN,
@@ -950,8 +950,8 @@ export const etoTemplates: TEtoDocumentTemplates = {
     mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     name: "company_token_holder_agreement",
   },
-  investmentAndShareholderAgreementTemplate: {
-    documentType: EEtoDocumentType.INVESTMENT_AND_SHAREHOLDER_AGREEMENT_TEMPLATE,
+  investmentSummaryTemplate: {
+    documentType: EEtoDocumentType.INVESTMENT_SUMMARY_TEMPLATE,
     form: "template" as TEtoFormType,
     ipfsHash: "QmRTdEqegYu3eh4qbzQsS16idRaNsdiSn4uGbbjERWWNKV",
     language: EEtoDocumentLanguage.EN,

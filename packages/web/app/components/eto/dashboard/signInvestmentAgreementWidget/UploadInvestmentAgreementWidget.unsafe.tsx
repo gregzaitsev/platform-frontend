@@ -96,7 +96,7 @@ export const UploadInvestmentAgreement = compose<React.FunctionComponent<IExtern
       if (etoId) {
         return {
           stateOnChain: selectEtoOnChainStateById(state, etoId)!,
-          agreementTemplate: etoTemplates.investmentAndShareholderAgreementTemplate,
+          agreementTemplate: etoTemplates.investmentSummaryTemplate,
           uploadedAgreement: selectUploadedInvestmentAgreement(state),
         };
       } else {

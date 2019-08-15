@@ -17,6 +17,7 @@ const documentsOrder = [
   "termsheetTemplate",
   "reservationAndAcquisitionAgreement",
   "companyTokenHolderAgreement",
+  "investmentSummaryTemplate",
   "investmentAndShareholderAgreementTemplate",
   "investmentMemorandumTemplate",
 ];
@@ -53,6 +54,10 @@ export const getDocumentTitles = (documentType: EOfferingDocumentType) => ({
       <FormattedMessage id="eto.documents.approved-investment-memorandum-document" />
     ),
   signed_termsheet: <FormattedMessage id="eto.documents.signed-termsheet" />,
+  investment_summary_template: <FormattedMessage id="eto.documents.investment-summary-template" />,
+  investment_and_shareholder_agreement_preview: (
+    <FormattedMessage id="eto.documents.investment-and-shareholder-agreement-preview" />
+  ),
 });
 
 export const getDocumentTemplateTitles = (documentType: EOfferingDocumentType) => ({
@@ -72,7 +77,7 @@ export const getDocumentTemplateTitles = (documentType: EOfferingDocumentType) =
   ),
   // in document collection
   investment_and_shareholder_agreement: (
-    <FormattedMessage id="eto.documents.signed-investment-and-shareholder-agreement-template" />
+    <FormattedMessage id="eto.documents.signed-investment-and-shareholder-agreement" />
   ),
   approved_investor_offering_document:
     documentType === EOfferingDocumentType.PROSPECTUS ? (
@@ -82,6 +87,8 @@ export const getDocumentTemplateTitles = (documentType: EOfferingDocumentType) =
     ),
   signed_termsheet: null,
   signed_investment_and_shareholder_agreement: null,
+  investment_summary_template: <FormattedMessage id="eto.documents.investment-summary-template" />,
+  investment_and_shareholder_agreement_preview: null,
 });
 
 //if onChainState === < Payout | Claim >
