@@ -50,8 +50,8 @@ const templates: TEtoDocumentTemplates = {
     mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     name: "company_token_holder_agreement",
   },
-  investmentAndShareholderAgreementTemplate: {
-    documentType: EEtoDocumentType.INVESTMENT_AND_SHAREHOLDER_AGREEMENT_TEMPLATE,
+  investmentSummaryTemplate: {
+    documentType: EEtoDocumentType.INVESTMENT_SUMMARY_TEMPLATE,
     form: "template",
     ipfsHash: "QmdMTU4Z58cvaDAKWChLCH5DaYFvNWG9Qo1cvkzzzLMZ16",
     mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",

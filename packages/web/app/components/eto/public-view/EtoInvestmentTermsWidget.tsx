@@ -64,40 +64,39 @@ const DownloadIshaOrTermsheetLink: React.FunctionComponent<IDownloadIsha> = ({
   etoData,
   downloadDocument,
 }) => {
-  const ishaKeyInDocuments = Object.keys(etoData.documents).find(
-    (key: string) =>
-      etoData.documents[key].documentType ===
-      EEtoDocumentType.SIGNED_INVESTMENT_AND_SHAREHOLDER_AGREEMENT,
-  );
+  const getKeyByType = (documentType: EEtoDocumentType) =>
+    Object.keys(etoData.documents).find(
+      (key: string) => etoData.documents[key].documentType === documentType,
+    );
 
-  if (ishaKeyInDocuments) {
+  let docKey = getKeyByType(EEtoDocumentType.SIGNED_INVESTMENT_AND_SHAREHOLDER_AGREEMENT);
+  if (docKey) {
     return (
       <DocumentTemplateButton
-        title={<FormattedMessage id="eto.documents.investment-and-shareholder-agreement" />}
-        onClick={() => downloadDocument(etoData.documents[ishaKeyInDocuments])}
+        title={<FormattedMessage id="eto.documents.signed-investment-and-shareholder-agreement" />}
+        onClick={() => downloadDocument(etoData.documents[docKey!])}
       />
     );
-  } else if (etoData.templates.investmentAndShareholderAgreementTemplate) {
+  }
+  docKey = getKeyByType(EEtoDocumentType.INVESTMENT_AND_SHAREHOLDER_AGREEMENT_PREVIEW);
+  if (docKey) {
     return (
       <DocumentTemplateButton
-        title={
-          <FormattedMessage id="eto.documents.investment-and-shareholder-agreement-template" />
-        }
-        onClick={() =>
-          downloadDocument(etoData.templates.investmentAndShareholderAgreementTemplate)
-        }
+        title={<FormattedMessage id="eto.documents.investment-and-shareholder-agreement-preview" />}
+        onClick={() => downloadDocument(etoData.documents[docKey!])}
       />
     );
-  } else if (etoData.templates.termsheetTemplate) {
+  }
+  docKey = getKeyByType(EEtoDocumentType.INVESTMENT_AND_SHAREHOLDER_AGREEMENT_PREVIEW);
+  if (docKey) {
     return (
       <DocumentTemplateButton
         title={<FormattedMessage id="eto.documents.signed-termsheet" />}
-        onClick={() => downloadDocument(etoData.templates.termsheetTemplate)}
+        onClick={() => downloadDocument(etoData.documents[docKey!])}
       />
     );
-  } else {
-    return null;
   }
+  return null;
 };
 
 const EtoInvestmentTermsWidgetLayout: React.FunctionComponent<TExternalProps & TDispatchProps> = ({
