@@ -38,7 +38,11 @@ export function* generateDocumentFromTemplate(
 
     yield put(actions.immutableStorage.downloadDocumentStarted(document.ipfsHash));
 
-    if (etoState !== EEtoState.ON_CHAIN) {
+    // resolve all documents if not on-chain, otherwise resolve only ISHA summary
+    if (
+      etoState !== EEtoState.ON_CHAIN ||
+      document.documentType === EEtoDocumentType.INVESTMENT_SUMMARY_TEMPLATE
+    ) {
       resolvedTemplate = yield apiEtoFileService.getEtoTemplate(
         {
           documentType: document.documentType,
@@ -47,7 +51,10 @@ export function* generateDocumentFromTemplate(
           ipfsHash: document.ipfsHash,
           mimeType: document.mimeType,
         },
-        {},
+        // token_holder_ethereum_address is a required input for an on-chain resolver
+        etoState === EEtoState.ON_CHAIN
+          ? { token_holder_ethereum_address: "0x0000000000000000000000000000000000000000" }
+          : {},
       );
     }
 
