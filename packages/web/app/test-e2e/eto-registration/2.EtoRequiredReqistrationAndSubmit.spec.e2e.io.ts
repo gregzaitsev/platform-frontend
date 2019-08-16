@@ -40,9 +40,6 @@ describe("Eto Forms", () => {
 
       cy.get(tid("eto-progress-widget-eto-terms")).should("not.exist");
 
-      // Connect nominee with issuer
-      createAndSetNominee();
-
       // Fill marketing data first
 
       fillAndAssert("eto-progress-widget-about", {
@@ -55,6 +52,9 @@ describe("Eto Forms", () => {
       fillAndAssert("eto-progress-widget-equity-token-info", equityTokenInfoForm);
 
       fillAndAssert("eto-progress-widget-media", mediaRequiredForm);
+
+      // Connect nominee with issuer
+      createAndSetNominee();
 
       // Now eto settings should be available
       cy.get(tid("eto-progress-widget-eto-terms")).should("exist");
