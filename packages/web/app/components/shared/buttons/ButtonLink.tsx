@@ -1,16 +1,15 @@
-import { LocationDescriptor } from "history";
 import * as React from "react";
 import { matchPath } from "react-router";
 import { compose, mapProps, setDisplayName } from "recompose";
 
-import { routingActions } from "../../../modules/routing/actions";
 import { appConnect } from "../../../store";
 import { OmitKeys } from "../../../types";
-import { isExternalUrl } from "../../../utils/StringUtils";
 import { Button, IButtonProps } from "./Button";
+import { ERoute } from "../../../modules/ui/reducer";
+import { actions } from "../../../modules/actions";
 
 type TButtonLinkToProps = {
-  to: LocationDescriptor;
+  to: ERoute;
   target?: string;
   isActive?: boolean;
 };
@@ -28,7 +27,7 @@ type TButtonStateProps = {
 };
 
 type TButtonDispatchProps = {
-  navigate: () => void;
+  navigate: (to:ERoute) => void;
 };
 
 type TButtonWithoutOnClick = OmitKeys<IButtonProps, "onClick">;
@@ -53,37 +52,37 @@ const ButtonLink = compose<
 >(
   setDisplayName("ButtonLink"),
   appConnect<TButtonStateProps, TButtonDispatchProps, TButtonLinkToProps>({
-    stateToProps: state => ({
-      currentPath: state.router.location && state.router.location.pathname,
-    }),
+    // stateToProps: state => ({
+    //   currentPath: state.router.location && state.router.location.pathname,
+    // }),
     dispatchToProps: (dispatch, { target, to }) => ({
       navigate: () => {
-        if (typeof to === "string" && (target === "_blank" || isExternalUrl(to))) {
-          return dispatch(routingActions.openInNewWindow(to));
-        }
+        // if (typeof to === "string" && (target === "_blank" || isExternalUrl(to))) {
+        //   return dispatch(routingActions.openInNewWindow(to));
+        // }
 
-        return dispatch(routingActions.push(to));
+        dispatch(actions.ui.goTo(to))
       },
     }),
   }),
-  mapProps<TButtonWithProps, TButtonStateProps & TButtonLinkToProps>(
-    ({ currentPath, to, isActive, ...rest }) => {
-      const path = typeof to === "string" ? to : to.pathname!;
-
-      return {
-        isActive:
-          // allow to overwrite active state with custom logic
-          isActive === undefined
-            ? !!currentPath &&
-              !!matchPath(path, {
-                path: currentPath,
-                exact: true,
-              })
-            : isActive,
-        ...rest,
-      };
-    },
-  ),
+  // mapProps<TButtonWithProps, TButtonStateProps & TButtonLinkToProps>(
+  //   ({ currentPath, to, isActive, ...rest }) => {
+  //     const path = typeof to === "string" ? to : to.pathname!;
+  //
+  //     return {
+  //       isActive:
+  //         // allow to overwrite active state with custom logic
+  //         isActive === undefined
+  //           ? !!currentPath &&
+  //             !!matchPath(path, {
+  //               path: currentPath,
+  //               exact: true,
+  //             })
+  //           : isActive,
+  //       ...rest,
+  //     };
+  //   },
+  // ),
 )(ButtonLinkLayout);
 
 export { ButtonLink, ButtonLinkLayout };

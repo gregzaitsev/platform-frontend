@@ -86,7 +86,8 @@ function* handleRootError(error: Error): Iterator<Effect> {
   logger.error(error);
 }
 
-export function* rootSaga(): Iterator<Effect> {
+export function* rootSaga(dispatch): Iterator<Effect> {
+  console.log("rootSaga", dispatch)
   while (true) {
     try {
       yield call(allSagas);

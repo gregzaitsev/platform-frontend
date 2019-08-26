@@ -73,7 +73,9 @@ function* initApp({ logger }: TGlobalDependencies): any {
 export function* initStartSaga(
   _: TGlobalDependencies,
   action: TActionFromCreator<typeof actions.init.start>,
+  dispatch
 ): Iterator<any> {
+  console.log(dispatch)
   const { initType } = action.payload;
 
   switch (initType) {

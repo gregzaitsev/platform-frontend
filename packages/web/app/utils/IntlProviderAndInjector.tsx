@@ -26,7 +26,7 @@ const IntlContainerInjector = injectIntlHelpers<{}>(
 );
 
 /**
- * Provides intl to children and injects it to inversify container that should be available via context.
+ * Provides intl to children and injects it into inversify container that should be available via context.
  */
 export const IntlProviderAndInjector: React.FunctionComponent = ({ children }) => (
   // change locale to gb to have european date format everywhere

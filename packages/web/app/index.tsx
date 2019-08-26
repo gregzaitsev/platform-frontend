@@ -9,7 +9,7 @@ import "./styles/bootstrap.scss";
 import "./styles/overrides.scss";
 
 // tslint:disable-next-line:ordered-imports
-import { ConnectedRouter, routerMiddleware } from "connected-react-router";
+import { routerMiddleware } from "connected-react-router";
 import { createBrowserHistory, History } from "history";
 import { Container } from "inversify";
 import { compact } from "lodash";
@@ -29,14 +29,11 @@ import { ILogger } from "./lib/dependencies/logger";
 import { reduxLogger } from "./middlewares/redux-logger";
 import { rootSaga } from "./modules/sagas";
 import { generateRootReducer, IAppState } from "./store";
-import * as ga from "./utils/googleAnalitycs.js";
 import { IntlProviderAndInjector } from "./utils/IntlProviderAndInjector";
 import { InversifyProvider } from "./utils/InversifyProvider";
-import * as serviceWorker from "./utils/serviceWorker.unsafe";
 
 function renderApp(
   store: Store<IAppState>,
-  history: History,
   container: Container,
   Component: React.ComponentType,
 ): void {
@@ -46,9 +43,7 @@ function renderApp(
     <ReduxProvider store={store}>
       <InversifyProvider container={container}>
         <IntlProviderAndInjector>
-          <ConnectedRouter history={history}>
             <Component />
-          </ConnectedRouter>
         </IntlProviderAndInjector>
       </InversifyProvider>
     </ReduxProvider>,
@@ -86,7 +81,7 @@ function startupApp(history: History): { store: Store<IAppState>; container: Con
   // we have to create the dependencies here, because getState and dispatch get
   // injected in the middleware step above, maybe change this later
   context.deps = createGlobalDependencies(container);
-  sagaMiddleware.run(rootSaga);
+  sagaMiddleware.run(rootSaga, store.dispatch);
 
   return { store, container };
 }
@@ -101,10 +96,6 @@ if (process.env.NF_ENABLE_TRANSLATE_OVERLAY) {
   initializePhraseAppEditor(config);
 }
 
-ga.installGA();
-/* tslint:disable-next-line:no-floating-promises */
-serviceWorker.unregister();
-
 const history = createBrowserHistory();
 const { store, container } = startupApp(history);
-renderApp(store, history, container, App);
+renderApp(store, container, App);

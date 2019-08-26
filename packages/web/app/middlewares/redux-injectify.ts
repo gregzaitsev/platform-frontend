@@ -3,6 +3,9 @@ import { Middleware, MiddlewareAPI } from "redux";
 
 import { FunctionWithDeps } from "../types";
 
+/*
+* @obsolete
+* */
 export function createInjectMiddleware(
   container: Container,
   customizer?: (container: Container, middlewareApi: MiddlewareAPI<any>) => void,

@@ -34,6 +34,7 @@ import { lightWalletWizardReducer } from "./wallet-selector/light-wizard/reducer
 import { walletSelectorReducer } from "./wallet-selector/reducer";
 import { walletReducer } from "./wallet/reducer";
 import { web3Reducer } from "./web3/reducer";
+import { uiReducer } from "./ui/reducer";
 
 // add new app reducers here. They must be AppReducer<T> type
 export const appReducers = {
@@ -73,4 +74,5 @@ export const appReducers = {
   portfolioDownloadAgreementsModal: portfolioDownloadAgreementsModalReducer,
   immutableStorage: immutableStorageReducer,
   nomineeFlow: nomineeFlowReducer,
+  ui: uiReducer
 };

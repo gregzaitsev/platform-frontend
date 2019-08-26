@@ -7,11 +7,6 @@ import { symbols } from "../di/symbols";
 import { ILogger } from "../lib/dependencies/logger";
 import { actions } from "../modules/actions";
 import { EInitType } from "../modules/init/reducer";
-import {
-  selectInitError,
-  selectIsInitDone,
-  selectIsInitInProgress,
-} from "../modules/init/selectors";
 import { appConnect } from "../store";
 import { ContainerContext } from "../utils/InversifyProvider";
 import { onEnterAction } from "../utils/OnEnterAction";
@@ -24,15 +19,15 @@ import { VideoModal } from "./modals/VideoModal";
 import { AccessWalletModal } from "./modals/wallet-access/AccessWalletModal";
 import { LoadingIndicator } from "./shared/loading-indicator";
 import { ToastContainer } from "./shared/Toast";
+import { selectAppUiState, selectRoute } from "../modules/ui/selectors";
+import { EAppUiState } from "../modules/ui/reducer";
 
 interface IState {
   renderingError: Error | null;
 }
 
 interface IStateProps {
-  inProgress: boolean;
-  done: boolean;
-  error?: string;
+  appState:EAppUiState
 }
 
 class AppComponent extends React.Component<IStateProps, IState> {
@@ -55,15 +50,17 @@ class AppComponent extends React.Component<IStateProps, IState> {
   }
 
   render(): React.ReactNode {
-    if (this.props.error) {
-      return <CriticalError message={this.props.error} />;
-    }
-
     if (this.state.renderingError) {
       return <CriticalError message={this.state.renderingError.message} />;
     }
 
-    if (this.props.inProgress) {
+    if (this.props.appState === EAppUiState.INIT_ERROR) {
+      return <CriticalError message={"bla"} />;
+    }
+
+
+
+    if (this.props.appState === EAppUiState.IN_PROGRESS) {
       return <LoadingIndicator />;
     }
 
@@ -88,11 +85,13 @@ const App = compose<React.ComponentClass>(
   }),
   appConnect<IStateProps>({
     stateToProps: s => ({
-      inProgress: selectIsInitInProgress(s.init),
-      done: selectIsInitDone(s.init),
-      error: selectInitError(s.init),
+      appState: selectAppUiState(s),
+      // inProgress: selectIsInitInProgress(s.init),
+      // done: selectIsInitDone(s.init),
+      // error: selectInitError(s.init),
+
     }),
-    options: { pure: false }, // we need this because of:https://github.com/ReactTraining/react-router/blob/master/packages/react-router/docs/guides/blocked-updates.md
+    // options: { pure: false }, // we need this because of:https://github.com/ReactTraining/react-router/blob/master/packages/react-router/docs/guides/blocked-updates.md
   }),
 )(AppComponent);
 
