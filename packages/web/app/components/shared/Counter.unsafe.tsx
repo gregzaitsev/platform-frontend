@@ -43,7 +43,7 @@ export class Counter extends React.Component<IProps & CommonHtmlProps, IState> {
   timer: any = null;
 
   componentDidMount(): void {
-    if (!process.env.STORYBOOK_RUN) {
+    if (process.env.STORYBOOK_RUN !== "1") {
       this.timer = setInterval(() => {
         const { timeLeft } = this.state;
 
