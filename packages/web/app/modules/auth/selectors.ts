@@ -7,7 +7,7 @@ import { selectIsUserVerifiedOnBlockchain, selectKycRequestStatus } from "../kyc
 import { selectIsLightWallet } from "../web3/selectors";
 import { IAuthState } from "./reducer";
 
-export const selectIsAuthorized = (state: IAuthState): boolean => !!(state.jwt && state.user);
+export const selectIsAuthorized = (state: IAppState): boolean => !!(state.auth.jwt && state.auth.user);
 
 export const selectJwt = (state: IAppState): string | undefined => state.auth.jwt;
 

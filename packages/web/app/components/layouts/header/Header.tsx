@@ -101,6 +101,14 @@ export const HeaderAuthorized: React.FunctionComponent<{}> = () => (
   </div>
 );
 
+export const HeaderTransitional: React.FunctionComponent<
+  IHeaderUnauthProps & IHeaderUnauthExternalProps
+  > = () => (
+  <div className={styles.headerUnauth}>
+    <LogoUnauth />
+  </div>
+);
+
 export const HeaderUnauthorized = compose<
   IHeaderUnauthProps & IHeaderUnauthExternalProps,
   IHeaderUnauthExternalProps

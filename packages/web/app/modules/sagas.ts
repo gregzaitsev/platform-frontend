@@ -36,6 +36,7 @@ import { lightWalletSagas } from "./wallet-selector/light-wizard/sagas";
 import { walletSelectorSagas } from "./wallet-selector/sagas";
 import { walletSagas } from "./wallet/sagas";
 import { web3Sagas } from "./web3/sagas";
+import { uiSagas } from "./ui/sagas";
 
 /**
  * Restart all sagas on error and report error to sentry
@@ -44,6 +45,7 @@ function* allSagas(): Iterator<Effect> {
   yield all([
     // Sagas that should keep running even after logout
     fork(initSagas),
+    fork(uiSagas),
     fork(authSagas),
     fork(walletSelectorSagas),
     fork(lightWalletSagas),
@@ -86,8 +88,7 @@ function* handleRootError(error: Error): Iterator<Effect> {
   logger.error(error);
 }
 
-export function* rootSaga(dispatch): Iterator<Effect> {
-  console.log("rootSaga", dispatch)
+export function* rootSaga(): Iterator<Effect> {
   while (true) {
     try {
       yield call(allSagas);

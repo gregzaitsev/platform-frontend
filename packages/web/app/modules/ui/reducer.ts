@@ -1,6 +1,7 @@
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
 import { actions } from "../actions";
+import { EAppUi } from "./sagas";
 
 export enum ERoute {
   VERIFY = "/email-verify",
@@ -82,25 +83,13 @@ export enum EAppUiState {
 
 export type TUi = {
   route: ERoute,
-  app: EAppUiState,
-  walletSelector: TWalletSelectorData
-  accessWalletModal: null
-  toastContainer: null
-  genericModal: null
-  videoModal: null
 }
 
 export type TWalletSelectorData = null | {}
 
 const uiInitialState = {
   route: ERoute.ROOT,
-  app: EAppUiState.NOT_STARTED,
-  walletSelector: null,
-  accessWalletModal: null,
-  toastContainer: null,
-  genericModal: null,
-  videoModal: null,
-}
+};
 
 export const uiReducer: AppReducer<TUi> = (
   state = uiInitialState,
@@ -111,23 +100,28 @@ export const uiReducer: AppReducer<TUi> = (
       return {
         ...state,
         route: action.payload.to
-      }
+      };
     case actions.ui.goToDashboard.getType():
       return {
         ...state,
         route: ERoute.DASHBOARD
-      }
+      };
     case actions.ui.goToProfile.getType():
       return {
         ...state,
         route: ERoute.PROFILE
-      }
+      };
     case actions.ui.goToWallet.getType():
       return {
         ...state,
         route: ERoute.WALLET
-      }
+      };
+    case actions.ui.setUiData.getType():
+      return {
+        ...state,
+        [action.payload.key]:action.payload.data
+      };
     default:
       return state
   }
-}
+};

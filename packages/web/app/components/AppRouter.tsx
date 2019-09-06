@@ -1,10 +1,11 @@
-import * as React from "react";
-
 import { appConnect } from "../store";
-import { selectRoute } from "../modules/ui/selectors";
-import { ERoute } from "../modules/ui/reducer";
+import { selectUiData } from "../modules/ui/selectors";
 import { Landing } from "./landing/Landing";
 import { WalletSelector } from "./wallet-selector/WalletSelector";
+import { branch, compose, renderComponent } from "recompose";
+import { EUiType } from "../modules/ui/sagas";
+import { NeverComponent } from "../utils/NeverComponent";
+import { renderComponentWithProps } from "../utils/renderComponentWithProps";
 
 // export const AppRouter: React.FunctionComponent = () => (
 //   <SwitchConnected>
@@ -183,22 +184,10 @@ import { WalletSelector } from "./wallet-selector/WalletSelector";
 //   </SwitchConnected>
 // );
 
-type TAppRouterProps = {
-  route: ERoute
-}
-
-export const AppRouterBase: React.FunctionComponent<TAppRouterProps> = ({route}) => {
-  switch(route){
-    case ERoute.LOGIN:
-      return <WalletSelector />
-    default:
-      return <Landing />
-
-  }
-}
-
-export const AppRouter = appConnect<any, any, any>({
-  stateToProps: state => ({
-    route: selectRoute(state)
-  })
-})(AppRouterBase)
+export const AppRouter = compose(
+  appConnect<any, any, any>({
+    stateToProps: (state, { dataKey }) => {console.log("AppRouter",dataKey);return selectUiData(state, dataKey)},
+  }),
+  branch<any>(({state}) => state === EUiType.WALLET_SELECTOR, renderComponentWithProps({dataKey:EUiType.WALLET_SELECTOR},WalletSelector)),
+  branch<any>(({state}) => state === EUiType.LANDING, renderComponentWithProps({dataKey: EUiType.LANDING},Landing)),
+)(NeverComponent("router"));

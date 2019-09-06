@@ -129,7 +129,7 @@ const EtoStatusManagerLayout: React.FunctionComponent<IStateProps & IExternalPro
 export const EtoStatusManager = compose<IStateProps & IExternalProps, IExternalProps>(
   appConnect<IStateProps, {}, IExternalProps>({
     stateToProps: (state, props) => ({
-      isAuthorized: selectIsAuthorized(state.auth),
+      isAuthorized: selectIsAuthorized(state),
       isEligibleToPreEto: selectIsEligibleToPreEto(state, props.eto.etoId),
       isPreEto: selectEtoOnChainStateById(state, props.eto.etoId) === EETOStateOnChain.Whitelist,
       maxCapExceeded: selectInitialMaxCapExceeded(state, props.eto.etoId),

@@ -81,7 +81,7 @@ function startupApp(history: History): { store: Store<IAppState>; container: Con
   // we have to create the dependencies here, because getState and dispatch get
   // injected in the middleware step above, maybe change this later
   context.deps = createGlobalDependencies(container);
-  sagaMiddleware.run(rootSaga, store.dispatch);
+  sagaMiddleware.run(rootSaga);
 
   return { store, container };
 }

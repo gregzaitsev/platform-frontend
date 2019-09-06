@@ -108,7 +108,7 @@ const InvestNowButtonLayout: React.FunctionComponent<IInvestNowButtonProps> = ({
 const InvestNowButton = compose<TInvestWidgetProps, IInvestmentWidgetProps>(
   appConnect<IInvestmentWidgetStateProps, IInvestmentWidgetDispatchProps, IInvestmentWidgetProps>({
     stateToProps: (state, props) => ({
-      isAuthorized: selectIsAuthorized(state.auth),
+      isAuthorized: selectIsAuthorized(state),
       isAllowedToInvest: selectIsUserVerifiedOnBlockchain(state),
       isInvestor: selectIsInvestor(state),
       nextStateDate: selectEtoOnChainNextStateStartDate(state, props.eto.previewCode),

@@ -30,7 +30,7 @@ export function* signInUser({
 }: TGlobalDependencies): Iterator<any> {
   try {
     // we will try to create with user type from URL but it could happen that account already exists and has different user type
-    const probableUserType: EUserType = yield select((s: IAppState) => selectUrlUserType(s.router));
+    const probableUserType: EUserType = yield select((s: IAppState) => selectUrlUserType(s));
     yield put(actions.walletSelector.messageSigning());
 
     yield neuCall(createJwt, [EJwtPermissions.SIGN_TOS]); // by default we have the sign-tos permission, as this is the first thing a user will have to do after signup

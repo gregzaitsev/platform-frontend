@@ -12,3 +12,9 @@ export const selectInitError = (initState: IInitState): string | undefined =>
 
 export const selectIsSmartContractInitDone = (state: IAppState): boolean =>
   state.init.smartcontractsInit.done;
+
+export const selectIsAppInitDone = (state: IAppState): boolean =>
+  state.init.appInit.done || !!state.init.appInit.error;
+
+export const selectIsContractsInitDone = (state: IAppState): boolean =>
+  state.init.smartcontractsInit.done || !!state.init.smartcontractsInit.error;

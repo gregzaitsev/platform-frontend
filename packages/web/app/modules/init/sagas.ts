@@ -1,18 +1,18 @@
 import { effects } from "redux-saga";
-import { fork, put, select } from "redux-saga/effects";
+import { call, fork, put, select, take } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { IAppState } from "../../store";
 import { isJwtExpiringLateEnough } from "../../utils/JWTUtils";
-import { actions, TActionFromCreator } from "../actions";
+import { actions } from "../actions";
 import { loadJwt, setJwt } from "../auth/jwt/sagas";
 import { loadUser } from "../auth/user/sagas";
 import { initializeContracts, populatePlatformTermsConstants } from "../contracts/sagas";
-import { neuCall, neuTakeEvery, neuTakeOnly } from "../sagasUtils";
+import { neuCall, neuTakeEvery } from "../sagasUtils";
 import { detectUserAgent } from "../user-agent/sagas";
 import { initWeb3ManagerEvents } from "../web3/sagas";
 import { EInitType } from "./reducer";
-import { selectIsSmartContractInitDone } from "./selectors";
+import { selectIsAppInitDone, selectIsContractsInitDone, selectIsSmartContractInitDone } from "./selectors";
 
 function* initSmartcontracts({ web3Manager, logger }: TGlobalDependencies): any {
   try {
@@ -22,11 +22,10 @@ function* initSmartcontracts({ web3Manager, logger }: TGlobalDependencies): any 
     yield neuCall(initializeContracts);
     yield neuCall(populatePlatformTermsConstants);
 
-    yield put(actions.init.done(EInitType.START_CONTRACTS_INIT));
+    yield put(actions.init.contractsDone());
   } catch (e) {
     yield put(
-      actions.init.error(
-        EInitType.START_CONTRACTS_INIT,
+      actions.init.contractsError(
         "Error while connecting with Ethereum blockchain",
       ),
     );
@@ -70,24 +69,6 @@ function* initApp({ logger }: TGlobalDependencies): any {
   }
 }
 
-export function* initStartSaga(
-  _: TGlobalDependencies,
-  action: TActionFromCreator<typeof actions.init.start>,
-  dispatch
-): Iterator<any> {
-  console.log(dispatch)
-  const { initType } = action.payload;
-
-  switch (initType) {
-    case EInitType.APP_INIT:
-      return yield neuCall(initApp);
-    case EInitType.START_CONTRACTS_INIT:
-      return yield neuCall(initSmartcontracts);
-    default:
-      throw new Error("Unrecognized init type!");
-  }
-}
-
 export function* checkIfSmartcontractsInitNeeded(): any {
   const isDoneOrInProgress: boolean = yield select(
     (s: IAppState) => s.init.smartcontractsInit.done || s.init.smartcontractsInit.inProgress,
@@ -102,20 +83,46 @@ export function* initSmartcontractsOnce(): any {
     return;
   }
 
-  yield put(actions.init.start(EInitType.START_CONTRACTS_INIT));
+  yield put(actions.init.contractsStart());
 }
 
 export function* waitUntilSmartContractsAreInitialized(): Iterator<any> {
   const isSmartContractsInitialized = yield select(selectIsSmartContractInitDone);
 
   if (!isSmartContractsInitialized) {
-    yield neuTakeOnly(actions.init.done, { initType: EInitType.START_CONTRACTS_INIT });
+    yield take(actions.init.contractsDone);
+  }
+  return;
+}
+
+export function* waitForContractsInit(): Iterator<any> {
+  const isSmartContractsInitialized = yield select(selectIsContractsInitDone);
+
+  if (!isSmartContractsInitialized) {
+    yield take([
+      actions.init.contractsDone,
+      actions.init.contractsError
+    ]);
+  }
+  return;
+}
+
+export function* waitForAppInit(): Iterator<any> {
+  const isSmartContractsInitialized = yield select(selectIsAppInitDone);
+
+  if (!isSmartContractsInitialized) {
+    yield take([
+      actions.init.done,
+      actions.init.error
+    ]);
   }
   return;
 }
 
 export const initSagas = function*(): Iterator<effects.Effect> {
-  yield fork(neuTakeEvery, "INIT_START", initStartSaga);
+  yield call(neuCall, initApp);
+  // yield fork(neuTakeEvery, actions.init.appStart, initApp);
+  yield fork(neuTakeEvery, actions.init.contractsStart, initSmartcontracts);
   // Smart Contracts are only initialized once during the whole life cycle of the app
   yield fork(initSmartcontractsOnce);
 };

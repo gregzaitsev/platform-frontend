@@ -2,7 +2,7 @@ import * as cn from "classnames";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { StaticContext } from "react-router";
-import { Link, RouteComponentProps } from "react-router-dom";
+import {  RouteComponentProps } from "react-router-dom";
 import { Col, Row } from "reactstrap";
 import {
   branch,
@@ -10,7 +10,6 @@ import {
   renderComponent,
   StateHandler,
   withProps,
-  withStateHandlers,
 } from "recompose";
 
 import { externalRoutes } from "../../config/externalRoutes";
@@ -26,7 +25,6 @@ import {
   selectUrlUserType,
 } from "../../modules/wallet-selector/selectors";
 import { appConnect } from "../../store";
-import { onEnterAction } from "../../utils/OnEnterAction";
 import { withContainer } from "../../utils/withContainer.unsafe";
 import { appRoutes } from "../appRoutes";
 import { Layout } from "../layouts/Layout";
@@ -37,10 +35,12 @@ import { ExternalLink } from "../shared/links";
 import { Notification } from "../shared/notification-widget/Notification";
 import { ICBMWalletHelpTextModal } from "./ICBMWalletHelpTextModal";
 import { WalletMessageSigner } from "./WalletMessageSigner";
-import { WalletRouter } from "./WalletRouter";
 import { WalletSelectorContainer } from "./WalletSelectorContainer";
 
 import * as styles from "./WalletSelector.module.scss";
+import { Link } from "../router/Link";
+import { selectUiData } from "../../modules/ui/selectors";
+import { EUiType } from "../../modules/ui/sagas";
 
 type TRouteLoginProps = RouteComponentProps<unknown, StaticContext, TLoginRouterState>;
 
@@ -186,7 +186,7 @@ export const WalletSelectorLayout: React.FunctionComponent<
       </Row>
 
       <section className="mt-4">
-        <WalletRouter rootPath={rootPath} locationState={location.state} />
+        {/*<WalletRouter rootPath={rootPath}  />*/}
       </section>
 
       <Row className="mt-5">
@@ -239,26 +239,13 @@ export const WalletSelector = compose<
   {}
 >(
   createErrorBoundary(ErrorBoundaryLayout),
-  onEnterAction({
-    actionCreator: dispatch => dispatch(actions.walletSelector.reset()),
-  }),
-  appConnect<IStateProps, IDispatchProps>({
-    stateToProps: s => ({
-      isMessageSigning: s.walletSelector.isMessageSigning,
-      rootPath: selectRootPath(s.router),
-      isLoginRoute: selectIsLoginRoute(s.router),
-      userType: selectUrlUserType(s.router),
-      oppositeRoute: selectOppositeRootPath(s.router),
-    }),
+  appConnect<IStateProps, IDispatchProps,{dataKey: EUiType}>({
+    stateToProps: (s,{dataKey}) => selectUiData(s, dataKey),
     dispatchToProps: dispatch => ({
       openICBMModal: () => dispatch(actions.genericModal.showModal(ICBMWalletHelpTextModal)),
     }),
   }),
-  withContainer(
-    withProps<{ hideHeaderCtaButtons?: boolean }, ILayoutProps>(() => ({
-      hideHeaderCtaButtons: true,
-    }))(Layout),
-  ),
+
   branch<IStateProps & IDispatchProps>(
     props => props.isMessageSigning,
     renderComponent(

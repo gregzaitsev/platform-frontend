@@ -24,7 +24,7 @@ const OnlyPublicRouteComponent: React.FunctionComponent<IComponentProps> = ({
 export const OnlyPublicRoute = compose<IComponentProps, RouteProps>(
   appConnect<IStateProps, {}, RouteProps>({
     stateToProps: s => ({
-      isAuthorized: selectIsAuthorized(s.auth),
+      isAuthorized: selectIsAuthorized(s),
     }),
   }),
   onEnterAction({

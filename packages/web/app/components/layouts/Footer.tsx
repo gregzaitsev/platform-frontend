@@ -42,7 +42,7 @@ export const FooterLayout: React.FunctionComponent<IDispatchProps & IStateProps>
 
 export const Footer = appConnect<IStateProps, IDispatchProps>({
   stateToProps: state => ({
-    isAuthorized: selectIsAuthorized(state.auth),
+    isAuthorized: selectIsAuthorized(state),
   }),
   dispatchToProps: dispatch => ({
     onDownloadTos: () => dispatch(actions.tosModal.downloadCurrentAgreement()),

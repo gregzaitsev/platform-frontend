@@ -35,7 +35,7 @@ export const initReducer: AppReducer<IInitState> = (
   action,
 ): DeepReadonly<IInitState> => {
   switch (action.type) {
-    case actions.init.start.getType():
+    case actions.init.appStart.getType():
       return {
         ...state,
         [action.payload.initType]: {

@@ -1,7 +1,6 @@
 import * as React from "react";
-import { compose } from "recompose";
+import { branch, compose, renderComponent } from "recompose";
 
-import { selectIsAuthorized } from "../../modules/auth/selectors";
 import { appConnect } from "../../store";
 import { TDataTestId } from "../../types";
 import { AcceptTosModal } from "../modals/accept-tos-modal/AcceptTosModal";
@@ -13,9 +12,12 @@ import { TxSenderModal } from "../modals/tx-sender/TxSender";
 import { NotificationWidget } from "../shared/notification-widget/NotificationWidget";
 import { Content } from "./Content";
 import { Footer } from "./Footer";
-import { HeaderAuthorized, HeaderUnauthorized } from "./header/Header";
+import { HeaderAuthorized, HeaderTransitional, HeaderUnauthorized } from "./header/Header";
 
 import * as styles from "./Layout.module.scss";
+import { selectUiData } from "../../modules/ui/selectors";
+import { ELayoutUi, EUiType } from "../../modules/ui/sagas";
+import { renderComponentWithProps } from "../../utils/renderComponentWithProps";
 
 interface IStateProps {
   userIsAuthorized: boolean;
@@ -27,63 +29,65 @@ interface ILayoutUnauthProps {
 
 type TContentExternalProps = React.ComponentProps<typeof Content>;
 
-export const LayoutUnauthorized: React.FunctionComponent<
-  ILayoutUnauthProps & TContentExternalProps
-> = ({ children, hideHeaderCtaButtons = false, ...contentProps }) => (
-  <>
-    <HeaderUnauthorized hideHeaderCtaButtons={hideHeaderCtaButtons} />
-    <Content {...contentProps}>{children}</Content>
-    <Footer />
-  </>
+export const LayoutBase: React.FunctionComponent<TDataTestId> = ({
+  children,
+  "data-test-id": dataTestId,
+}) => (
+  <div className={styles.layout} data-test-id={dataTestId}>
+    {children}
+  </div>
 );
 
-export const LayoutAuthorized: React.FunctionComponent<TContentExternalProps> = ({
+export const LayoutUnauthorized: React.FunctionComponent<TDataTestId> =
+  ({ children,"data-test-id": dataTestId }) => (
+  <LayoutBase data-test-id={dataTestId} >
+    <HeaderUnauthorized dataKey="header" />
+    <Content  dataKey="content">
+      {children}
+    </Content>
+    <Footer dataKey="footer"/>
+  </LayoutBase>
+);
+
+export const LayoutTransitional: React.FunctionComponent<TDataTestId> =
+  ({ children,"data-test-id": dataTestId }) => (
+  <LayoutBase data-test-id={dataTestId}>
+    <HeaderTransitional dataKey="header"/>
+    <Content  dataKey="content">
+      {children}
+    </Content>
+    <Footer dataKey="footer"/>
+  </LayoutBase>
+);
+
+export const LayoutAuthorized: React.FunctionComponent<TDataTestId> = ({
   children,
-  ...contentProps
+  "data-test-id": dataTestId
 }) => (
-  <>
-    <HeaderAuthorized />
-    <Content {...contentProps}>
+  <LayoutBase data-test-id={dataTestId}>
+    <HeaderAuthorized  dataKey="header"/>
+    <Content dataKey="content">
       <NotificationWidget className={styles.notification} />
       {children}
     </Content>
-    <Footer />
-    <AcceptTosModal />
-    <DepositEthModal />
-    <TxSenderModal />
-    <IcbmWalletBalanceModal />
-    <BankTransferFlowModal />
-    <DownloadTokenAgreementModal />
-  </>
-);
-
-export const LayoutComponent: React.FunctionComponent<
-  IStateProps & TDataTestId & TContentExternalProps & ILayoutUnauthProps
-> = ({
-  children,
-  userIsAuthorized,
-  hideHeaderCtaButtons = false,
-  "data-test-id": dataTestId,
-  ...contentProps
-}) => (
-  <div className={styles.layout} data-test-id={dataTestId}>
-    {userIsAuthorized ? (
-      <LayoutAuthorized {...contentProps}>{children}</LayoutAuthorized>
-    ) : (
-      <LayoutUnauthorized {...contentProps} hideHeaderCtaButtons={hideHeaderCtaButtons}>
-        {children}
-      </LayoutUnauthorized>
-    )}
-  </div>
+    <Footer dataKey="footer"/>
+    <AcceptTosModal dataKey="acceptTosModal"/>
+    <DepositEthModal dataKey="depositEthModal"/>
+    <TxSenderModal dataKey="txSenderModal"/>
+    <IcbmWalletBalanceModal dataKey="icbmWalletBalanceModal"/>
+    <BankTransferFlowModal dataKey="bankTransferFlowModal"/>
+    <DownloadTokenAgreementModal dataKey="downloadTokenAgreementModal"/>
+  </LayoutBase>
 );
 
 export const Layout = compose<
   IStateProps,
   TDataTestId & TContentExternalProps & ILayoutUnauthProps
 >(
-  appConnect<IStateProps, {}, {}>({
-    stateToProps: state => ({
-      userIsAuthorized: selectIsAuthorized(state.auth),
-    }),
+  appConnect<IStateProps, {}, {dataKey: EUiType}>({
+    stateToProps: (state,{dataKey}) => selectUiData(state, dataKey),
   }),
-)(LayoutComponent);
+  branch<any>((props) => {console.log("Layout",props);return props.state === ELayoutUi.LAYOUT_TRANSITIONAL}, renderComponentWithProps({dataKey: 'layoutTransitional'},LayoutTransitional)),
+  branch<any>(({state}) => state === ELayoutUi.LAYOUT_UNAUTHORIZED, renderComponentWithProps({dataKey: 'layoutUnauthorized'},LayoutUnauthorized)),
+  branch<any>(({state}) => state === ELayoutUi.LAYOUT_AUTHORIZED, renderComponentWithProps({dataKey: 'layoutAuthorized'},LayoutAuthorized)),
+)(props=>{throw("Layout : blia!", props)});

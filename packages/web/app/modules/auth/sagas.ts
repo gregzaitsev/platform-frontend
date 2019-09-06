@@ -54,7 +54,7 @@ function* handleLogOutUser(
       assertNever(logoutType);
   }
 
-  yield put(actions.init.start(EInitType.APP_INIT));
+  yield put(actions.init.appStart());
 
   logger.setUser(null);
 }
@@ -124,7 +124,7 @@ export function* watchRedirectChannel(): any {
         yield put(actions.auth.logout());
         break;
       case EUserAuthType.LOGIN:
-        yield put(actions.init.start(EInitType.APP_INIT));
+        yield put(actions.init.appStart());
         break;
     }
     yield delay(REDIRECT_CHANNEL_WATCH_DELAY);
