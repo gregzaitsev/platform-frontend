@@ -4,18 +4,9 @@ dist
 node_modules
 yarn-error.log
 .nyc_output
-coverage
 .env
 .awcache
 .package-lock.json
-app/lib/contracts
-intl/messages
-cypress/videos
-cypress/screenshots
-__screenshots__
-e2e/platform-backend
-.reg
-storybook-static
 
 # IDE's ignores
 .vscode
