@@ -1,14 +1,14 @@
 import BigNumber from "bignumber.js";
 import { put, select, take } from "redux-saga/effects";
 
+import { convertFromUlps } from "../../../../components/shared/formatters/utils";
 import { MONEY_DECIMALS } from "../../../../config/constants";
 import { TGlobalDependencies } from "../../../../di/setupBindings";
 import { ITxData } from "../../../../lib/web3/types";
 import { DeepReadonly } from "../../../../types";
-import { compareBigNumbers } from "../../../../utils/BigNumberUtils";
-import { convertToBigInt } from "../../../../utils/Number.utils";
+import { getPossibleMaxUlps } from "../../../../utils/Number.utils";
 import { actions } from "../../../actions";
-import { selectBankFeeUlps } from "../../../bank-transfer-flow/selectors";
+import { selectRedeemFeeUlps } from "../../../bank-transfer-flow/selectors";
 import { selectStandardGasPriceWithOverHead } from "../../../gas/selectors";
 import { selectBankAccount } from "../../../kyc/selectors";
 import { TBankAccount } from "../../../kyc/types";
@@ -45,16 +45,9 @@ export function* startNEuroRedeemGenerator(_: TGlobalDependencies): any {
 
   const nEURBalanceUlps = yield select(selectLiquidEuroTokenBalance);
 
-  const nEURBalance = new BigNumber(nEURBalanceUlps)
-    .div(new BigNumber(10).pow(MONEY_DECIMALS))
-    .toFixed(2, BigNumber.ROUND_DOWN);
-
   // Whole precision number should be passed when there is whole balance redeemed
   // also when user provided value has been used, then it have to be converted to Q18 via convertToBigInt
-  const redeemAmountUlps =
-    compareBigNumbers(selectedAmount, nEURBalance) === 0
-      ? nEURBalanceUlps
-      : convertToBigInt(selectedAmount);
+  const redeemAmountUlps = getPossibleMaxUlps(nEURBalanceUlps, selectedAmount, 2);
 
   const generatedTxDetails: ITxData = yield neuCall(
     generateNeuWithdrawTransaction,
@@ -68,11 +61,11 @@ export function* startNEuroRedeemGenerator(_: TGlobalDependencies): any {
     throw new Error("During redeem process user should have bank account");
   }
 
-  const bankFee: string = yield select(selectBankFeeUlps);
+  const bankFee: string = yield select(selectRedeemFeeUlps);
 
   const additionalDetails = {
     bankFee,
-    amount: txDataFromUser.value,
+    amount: convertFromUlps(new BigNumber(redeemAmountUlps), MONEY_DECIMALS).toString(),
     bankAccount: {
       bankName: bankAccount.details.bankName,
       accountNumberLast4: bankAccount.details.bankAccountNumberLast4,

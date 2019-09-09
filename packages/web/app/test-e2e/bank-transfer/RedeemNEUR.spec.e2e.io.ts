@@ -113,4 +113,34 @@ describe("Redeem NEUR", function(): void {
       cy.get(tid("value")).should("not.contain", "0");
     });
   });
+
+  it("should show the same fee and total after continue", () => {
+    fillForm(
+      {
+        amount: "2137.69",
+      },
+      { submit: false },
+    );
+
+    cy.get(`${tid("bank-transfer.redeem.total")} ${tid(`value`)}`)
+      .then(v => v.text())
+      .as("total");
+    cy.get(`${tid("bank-transfer.redeem.fee")} ${tid(`value`)}`)
+      .then(v => v.text())
+      .as("fee");
+
+    cy.get(tid("bank-transfer.reedem-init.continue")).click();
+
+    cy.get(`${tid("bank-transfer.redeem.total")} ${tid(`value`)}`).then(newTotal => {
+      cy.get<string>("@total").then(total => {
+        expect(newTotal.text()).eq(total);
+      });
+    });
+
+    cy.get(`${tid("bank-transfer.redeem.fee")} ${tid(`value`)}`).then(newFee => {
+      cy.get<string>("@fee").then(fee => {
+        expect(newFee.text()).eq(fee);
+      });
+    });
+  });
 });

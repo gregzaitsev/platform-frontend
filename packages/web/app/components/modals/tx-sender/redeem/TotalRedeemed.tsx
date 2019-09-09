@@ -1,28 +1,30 @@
+import BigNumber from "bignumber.js";
 import * as React from "react";
 
-import { Q18 } from "../../../../config/constants";
-import { multiplyBigNumbers, subtractBigNumbers } from "../../../../utils/BigNumberUtils";
+import { MONEY_DECIMALS } from "../../../../config/constants";
+import { subtractBankFee } from "../../../../utils/Number.utils";
 import { MoneyNew } from "../../../shared/formatters/Money";
 import {
+  convertFromUlps,
   ECurrency,
   ENumberInputFormat,
   ENumberOutputFormat,
-  isEmptyValue,
-  isValidNumber,
 } from "../../../shared/formatters/utils";
+import { getValidAmount } from "./utils";
 
-const TotalRedeemed: React.FunctionComponent<{ amount: string; bankFee: string }> = ({
-  amount,
-  bankFee,
-}) => {
-  const providedAmount = isValidNumber(amount) || (isEmptyValue(amount) && 0) ? amount : 0;
-  const calculatedFee = multiplyBigNumbers([providedAmount, bankFee]);
-  const totalRedeemed = subtractBigNumbers([Q18.mul(providedAmount), calculatedFee]);
+const TotalRedeemed: React.FunctionComponent<{
+  amount: string;
+  bankFee: string;
+  maxAmount?: string;
+}> = ({ amount, bankFee, maxAmount }) => {
+  const providedAmountUlps = maxAmount ? getValidAmount(amount, maxAmount) : amount;
+  const bankFeeDec = convertFromUlps(new BigNumber(bankFee), MONEY_DECIMALS);
 
   return (
     <MoneyNew
-      value={totalRedeemed}
-      inputFormat={ENumberInputFormat.ULPS}
+      data-test-id="bank-transfer.redeem.total"
+      value={subtractBankFee(providedAmountUlps, bankFeeDec)}
+      inputFormat={ENumberInputFormat.FLOAT}
       valueType={ECurrency.EUR}
       outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
     />

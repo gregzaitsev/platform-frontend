@@ -185,7 +185,7 @@ const BankTransferRedeemLayout: React.FunctionComponent<IProps> = ({
                     id="bank-transfer.redeem.init.redeem-fee.tooltip"
                     values={{
                       //  value is stored as decimal fraction Ulps formatted number
-                      // to get percentage value we have to multiply ba 100
+                      // to get percentage value we have to multiply by 100
                       // ex value, convertToBigNumber(0.005) * 100 = 0.5%
                       fee: (
                         <FormatNumber
@@ -205,7 +205,10 @@ const BankTransferRedeemLayout: React.FunctionComponent<IProps> = ({
                 </Heading>
               </Tooltip>
               <span className="text-warning">
-                {"-"} {isValid && <CalculatedFee bankFee={bankFee} amount={values.amount} />}
+                {"-"}{" "}
+                {isValid && (
+                  <CalculatedFee bankFee={bankFee} amount={values.amount} maxAmount={neuroAmount} />
+                )}
               </span>
             </section>
             <section className={styles.section}>
@@ -213,7 +216,11 @@ const BankTransferRedeemLayout: React.FunctionComponent<IProps> = ({
                 <FormattedMessage id="bank-transfer.redeem.init.total-redeemed" />
               </Heading>
               <span className="text-success">
-                {isValid ? <TotalRedeemed bankFee={bankFee} amount={values.amount} /> : "-"}
+                {isValid ? (
+                  <TotalRedeemed bankFee={bankFee} amount={values.amount} maxAmount={neuroAmount} />
+                ) : (
+                  "-"
+                )}
               </span>
             </section>
             <VerifiedBankAccount withBorder={true} onVerify={verifyBankAccount} />

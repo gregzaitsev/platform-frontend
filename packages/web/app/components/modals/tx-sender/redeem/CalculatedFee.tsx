@@ -1,36 +1,30 @@
+import BigNumber from "bignumber.js";
 import * as React from "react";
 
-import { multiplyBigNumbers } from "../../../../utils/BigNumberUtils";
+import { MONEY_DECIMALS } from "../../../../config/constants";
+import { calculateFee } from "../../../../utils/Number.utils";
 import { MoneyNew } from "../../../shared/formatters/Money";
 import {
+  convertFromUlps,
   ECurrency,
   ENumberInputFormat,
   ENumberOutputFormat,
-  ERoundingMode,
 } from "../../../shared/formatters/utils";
-import { getFormattedMoney } from "../../../shared/Money.unsafe";
+import { getValidAmount } from "./utils";
 
-const CalculatedFee: React.FunctionComponent<{ amount: string; bankFee: string }> = ({
-  amount,
-  bankFee,
-}) => {
-  const providedAmount =
-    !isNaN(Number(amount)) && Number(amount) > 0
-      ? getFormattedMoney(
-          amount,
-          ECurrency.EUR,
-          ENumberInputFormat.FLOAT,
-          false,
-          ERoundingMode.HALF_UP,
-        )
-      : 0;
-  const calculatedFee = multiplyBigNumbers([providedAmount, bankFee]);
+const CalculatedFee: React.FunctionComponent<{
+  amount: string;
+  bankFee: string;
+  maxAmount?: string;
+}> = ({ amount, bankFee, maxAmount }) => {
+  const providedAmountUlps = maxAmount ? getValidAmount(amount, maxAmount) : amount;
+  const bankFeeDec = convertFromUlps(new BigNumber(bankFee), MONEY_DECIMALS);
 
   return (
     <MoneyNew
-      data-test-id="bank-transfer.redeem.init.fee"
-      value={calculatedFee}
-      inputFormat={ENumberInputFormat.ULPS}
+      data-test-id="bank-transfer.redeem.fee"
+      value={calculateFee(providedAmountUlps, bankFeeDec)}
+      inputFormat={ENumberInputFormat.FLOAT}
       valueType={ECurrency.EUR}
       outputFormat={ENumberOutputFormat.FULL}
     />

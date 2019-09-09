@@ -92,3 +92,9 @@ export const MAX_VOTING_FINALIZATION_DURATION = 14;
 export const MIN_VOTING_MAJORITY_FRACTION = 0.5;
 export const MAX_VOTING_MAJORITY_FRACTION = 0.99;
 export const ADVISORY_BOARD_TEXT_MIN_LENGTH = 1;
+
+/* ISO 20022 CAMT/PAIN messages scale */
+export const ISO2022_AMOUNT_SCALE = 5;
+
+/* banking scale of display amounts */
+export const DISPLAY_AMOUNT_SCALE = 2;
