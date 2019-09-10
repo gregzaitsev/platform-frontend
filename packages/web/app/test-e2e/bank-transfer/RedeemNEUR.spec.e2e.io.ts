@@ -109,7 +109,7 @@ describe("Redeem NEUR", function(): void {
       { submit: false },
     );
 
-    cy.get(tid("bank-transfer.redeem.init.fee")).within(() => {
+    cy.get(tid("bank-transfer.redeem.fee")).within(() => {
       cy.get(tid("value")).should("not.contain", "0");
     });
   });
