@@ -1,5 +1,6 @@
 import { expect } from "chai";
 
+import { TShareholder } from "./public-view/LegalInformationWidget";
 import {
   applyDefaults,
   convert,
@@ -8,6 +9,7 @@ import {
   convertNumberToString,
   convertPercentageToFraction,
   convertToPrecision,
+  generateShareholders,
   parseStringToFloat,
   removeEmptyField,
   removeEmptyKeyValueField,
@@ -247,5 +249,41 @@ describe("convertInArray", () => {
     };
 
     expect(convert(data, conversionSpec)).to.be.deep.equal(expectedOutput);
+  });
+});
+
+describe("generate shareholders", () => {
+  it("returns an empty array if input is undefined", () => {
+    const companyShares = 500;
+    const expectedOutput: TShareholder[] = [];
+    expect(generateShareholders(undefined, companyShares)).to.deep.eq(expectedOutput);
+  });
+  it("converts shareholder shares to percentage from company shares", () => {
+    const companyShares = 500;
+    const data = [
+      {
+        fullName: "shareholder1",
+        shares: 123,
+      },
+      {
+        fullName: "shareholder2",
+        shares: 200,
+      },
+    ];
+    const expectedOutput: TShareholder[] = [
+      {
+        fullName: "shareholder1",
+        percentageOfShares: 25,
+      },
+      {
+        fullName: "shareholder2",
+        percentageOfShares: 40,
+      },
+      {
+        fullName: "Others",
+        percentageOfShares: 35,
+      },
+    ];
+    expect(generateShareholders(data, companyShares)).to.deep.eq(expectedOutput);
   });
 });

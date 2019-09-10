@@ -1,7 +1,12 @@
 import { cloneDeep, flow, get, set } from "lodash";
 
+import {
+  TCompanyEtoData,
+  TEtoLegalShareholderType,
+} from "../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { invariant } from "../../utils/invariant";
 import { formatFlexiPrecision } from "../../utils/Number.utils";
+import { TShareholder } from "./public-view/LegalInformationWidget";
 
 export interface ICompoundField {
   [x: string]: string | number | undefined;
@@ -155,3 +160,42 @@ export const removeKeys = () => (data: { key: string }[]) =>
     delete arrayElement.key;
     return arrayElement;
   });
+
+export const generateShareholders = (
+  shareholders: TCompanyEtoData["shareholders"],
+  companyShares: number,
+): ReadonlyArray<TShareholder> => {
+  if (shareholders === undefined) {
+    return [];
+  } else {
+    // Filter out any possible empty elements for type safety
+    // This is temporary fix
+    // TODO: rewrite types to get rid of optional
+    // https://github.com/Neufund/platform-frontend/issues/3054
+    const shareholdersData = shareholders
+      .filter(
+        (shareholder): shareholder is TEtoLegalShareholderType =>
+          !!shareholder || !!shareholder!.fullName || !!shareholder!.shares,
+      )
+      .map((shareholder: TEtoLegalShareholderType) => ({
+        fullName: shareholder.fullName!,
+        percentageOfShares: Math.round((shareholder.shares! * 100) / companyShares),
+      }));
+
+    const assignedShares = shareholdersData.reduce(
+      (acc, shareholder) => (acc += shareholder.percentageOfShares),
+      0,
+    );
+
+    if (assignedShares < 100) {
+      return [
+        ...shareholdersData,
+        {
+          fullName: "Others",
+          percentageOfShares: 100 - assignedShares,
+        },
+      ];
+    }
+    return shareholdersData;
+  }
+};

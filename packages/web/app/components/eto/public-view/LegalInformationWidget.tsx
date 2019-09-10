@@ -1,10 +1,7 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
-import {
-  TCompanyEtoData,
-  TEtoLegalShareholderType,
-} from "../../../lib/api/eto/EtoApi.interfaces.unsafe";
+import { TCompanyEtoData } from "../../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { Container, EColumnSpan } from "../../layouts/Container";
 import { ChartDoughnutLazy } from "../../shared/charts/ChartDoughnutLazy";
 import { generateColor } from "../../shared/charts/utils";
@@ -15,6 +12,7 @@ import { Panel } from "../../shared/Panel";
 import { FUNDING_ROUNDS } from "../constants";
 import { DashboardHeading } from "../shared/DashboardHeading";
 import { CHART_COLORS } from "../shared/EtoView";
+import { generateShareholders } from "../utils";
 
 import * as styles from "./LegalInformationWidget.module.scss";
 
@@ -23,35 +21,9 @@ interface IProps {
   columnSpan?: EColumnSpan;
 }
 
-const generateShareholders = (
-  shareholders: TCompanyEtoData["shareholders"],
-  companyShares: number,
-): ReadonlyArray<TEtoLegalShareholderType> => {
-  if (shareholders === undefined) {
-    return [];
-  } else {
-    const assignedShares = shareholders.reduce(
-      (acc, shareholder) => (shareholder && shareholder.shares ? (acc += shareholder.shares) : acc),
-      0,
-    );
-
-    // Filter out any possible empty elements for type safety
-    // This is temporary fix
-    // TODO: rewrite types to get rid of optional
-    // https://github.com/Neufund/platform-frontend/issues/3054
-    const shrholders = shareholders.filter((v): v is TEtoLegalShareholderType => !!v);
-
-    if (assignedShares < companyShares) {
-      return [
-        ...shrholders,
-        {
-          fullName: "Others",
-          shares: companyShares - assignedShares,
-        },
-      ];
-    }
-    return shrholders;
-  }
+export type TShareholder = {
+  fullName: string;
+  percentageOfShares: number;
 };
 
 export const LegalInformationWidget: React.FunctionComponent<IProps> = ({
@@ -166,9 +138,9 @@ export const LegalInformationWidget: React.FunctionComponent<IProps> = ({
             data={{
               datasets: [
                 {
-                  data: shareholdersData.map(d => d && d.shares),
+                  data: shareholdersData.map(d => d && d.percentageOfShares),
                   backgroundColor: shareholdersData.map(
-                    (shareholder: TEtoLegalShareholderType, i: number) =>
+                    (shareholder: TShareholder, i: number) =>
                       // Use predefined colors first, then use generated colors
                       CHART_COLORS[i] || generateColor(`${i}${shareholder.fullName}`),
                   ),

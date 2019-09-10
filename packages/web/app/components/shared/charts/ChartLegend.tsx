@@ -16,10 +16,6 @@ interface IProps {
   data: IData;
 }
 
-function formatPercent(value: number, numbers: number[]): string {
-  return `${Math.round((value / numbers.reduce((a, b) => a + b)) * 100)}%`;
-}
-
 export const ChartLegend: React.FunctionComponent<IProps> = ({ data }) => (
   <div>
     {data.datasets.map(dataset =>
@@ -29,7 +25,7 @@ export const ChartLegend: React.FunctionComponent<IProps> = ({ data }) => (
             className={styles.indicator}
             style={{ backgroundColor: dataset.backgroundColor[index] }}
           />
-          <div>{`${data.labels[index]} ${formatPercent(value, dataset.data)}`}</div>
+          <div>{`${data.labels[index]} ${value}%`}</div>
         </div>
       )),
     )}
