@@ -20,6 +20,7 @@ import { PlatformTerms } from "../contracts/PlatformTerms";
 import { Universe } from "../contracts/Universe";
 import { ILogger } from "../dependencies/logger";
 import { Web3Manager } from "./Web3Manager/Web3Manager";
+import { IERC223Token } from "../contracts/IERC223Token";
 
 @injectable()
 export class ContractsService {
@@ -138,6 +139,11 @@ export class ContractsService {
     const contract = await create(IEquityToken, this.web3, equityTokenAddress);
     this.equityTokensCache[equityTokenAddress] = contract;
     return contract;
+  }
+
+  async getERC223(equityTokenAddress: string): Promise<IERC223Token> {
+    const contract = await this.getEquityToken(equityTokenAddress);
+    return contract as IERC223Token;
   }
 
   async getControllerGovernance(controllerAddress: string): Promise<IControllerGovernance> {

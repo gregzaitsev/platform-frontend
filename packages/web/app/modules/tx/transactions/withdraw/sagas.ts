@@ -70,15 +70,9 @@ export function* generateEthWithdrawTransaction(
 
     const estimatedGasWithOverhead = yield web3Manager.estimateGasWithOverhead(txDetails);
 
-    // There is Smart Contract Attack Vector that extreme high gas amounts
-    const gas =
-      estimatedGasWithOverhead > DEFAULT_UPPER_GAS_LIMIT
-        ? DEFAULT_UPPER_GAS_LIMIT
-        : estimatedGasWithOverhead;
-
     return {
       ...txDetails,
-      gas,
+      estimatedGasWithOverhead,
     };
   } else {
     // transaction can be fully covered by etherTokens
