@@ -48,13 +48,13 @@ const EtoStatusComponentChooser: React.FunctionComponent<IStateProps & IExternal
 
   switch (timedState) {
     case EETOStateOnChain.Setup: {
-      if (isAuthorized) {
+      if (isAuthorized && eto.investmentCalculatedValues) {
         const nextState = isEligibleToPreEto ? EETOStateOnChain.Whitelist : EETOStateOnChain.Public;
         const nextStateStartDate = eto.contract ? eto.contract.startOfStates[nextState] : undefined;
 
         return (
           <CampaigningActivatedWidget
-            maxPledge={eto.maxTicketEur}
+            maxPledge={eto.investmentCalculatedValues.effectiveMaxTicket}
             minPledge={eto.minTicketEur}
             etoId={eto.etoId}
             investorsLimit={eto.maxPledges}

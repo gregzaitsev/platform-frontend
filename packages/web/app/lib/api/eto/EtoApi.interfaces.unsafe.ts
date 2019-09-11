@@ -238,6 +238,7 @@ export enum EtoStateToCamelcase {
   "prospectus_approved" = "prospectusApproved",
   "on_chain" = "onChain",
 }
+
 // Since only keys are transformed from snake case to camel case we have to manually map states
 // see@ swagger /api/eto-listing/ui/#!/ETO/api_eto_get_me
 // see@ swagger api/eto-listing/ui/#!/Documents/api_document_documents_state_info
@@ -410,6 +411,20 @@ export const EtoInvestmentTermsType = YupTS.object({
 
 export type TEtoInvestmentTermsType = YupTS.TypeOf<typeof EtoInvestmentTermsType>;
 
+export interface IInvestmentCalculatedValues {
+  canBeListed: boolean;
+  canGoOnChain: boolean;
+  discountedSharePrice: number;
+  effectiveMaxTicket: number;
+  etoTerms: number;
+  fixedSlotsMinSharePrice: number;
+  maxInvestmentAmount: number;
+  maxInvestmentAmountWithAllDiscounts: number;
+  minInvestmentAmount: number;
+  publicSharePrice: number;
+  sharePrice: number;
+}
+
 interface IAdditionalEtoType {
   etoId: EthereumAddressWithChecksum;
   companyId: string;
@@ -425,6 +440,7 @@ interface IAdditionalEtoType {
   product: TEtoProduct;
   nomineeDisplayName?: string;
   hasDividendRights?: boolean;
+  investmentCalculatedValues?: IInvestmentCalculatedValues;
 }
 
 export type TBookbuildingStatsType = {
