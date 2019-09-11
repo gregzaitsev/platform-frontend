@@ -40,6 +40,12 @@ export enum ENomineeUploadIshaStatus {
   ERROR = "error",
 }
 
+export enum ERedeemShareCapitalStatus {
+  NOT_DONE = "not_done",
+  DONE = "done",
+  ERROR = "error",
+}
+
 export interface INomineeRequestMetadata {
   city: string;
   country: string;

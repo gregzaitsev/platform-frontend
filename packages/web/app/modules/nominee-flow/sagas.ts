@@ -32,7 +32,7 @@ import {
   IAgreementContractAndHash,
 } from "../tx/transactions/nominee/sign-agreement/types";
 import {
-  selectActiveEtoPreviewCodeFromQueryString,
+  selectActiveEtoPreviewCodeFromQueryString, selectLinkedNomineeEtoId,
   selectNomineeActiveEtoPreviewCode,
   selectNomineeEtos,
   selectNomineeEtoWithCompanyAndContract,
@@ -43,11 +43,27 @@ import {
   ENomineeRedeemShareholderCapitalStatus,
   ENomineeRequestError,
   ENomineeTask,
-  ENomineeUploadIshaStatus,
+  ENomineeUploadIshaStatus, ERedeemShareCapitalStatus,
   INomineeRequest,
   TNomineeRequestStorage,
 } from "./types";
 import { nomineeApiDataToNomineeRequests, nomineeRequestResponseToRequestStatus } from "./utils";
+import { ETOCommitment } from "../../lib/contracts/ETOCommitment";
+
+export function* getRedeemCapitalStatus({
+  contractsService
+}: TGlobalDependencies,
+  ): Iterator<any> {
+  const nomineeEtoId = yield select(selectLinkedNomineeEtoId);
+  const etoCommitmentContract: ETOCommitment = yield contractsService.getETOCommitmentContract(
+    nomineeEtoId,
+  );
+  const contributionSummary = yield etoCommitmentContract.contributionSummary();
+  const capitalIncrease = contributionSummary[1];
+
+  console.log("capitalIncrease",capitalIncrease);
+  return ERedeemShareCapitalStatus.NOT_DONE
+}
 
 export function* loadNomineeTaskData({
   apiEtoNomineeService,
@@ -62,9 +78,8 @@ export function* loadNomineeTaskData({
       nomineeRequests: yield apiEtoNomineeService.getNomineeRequests(),
       nomineeTHAStatus: yield neuCall(loadAgreementStatus, ENomineeTask.ACCEPT_THA),
       nomineeRAAStatus: yield neuCall(loadAgreementStatus, ENomineeTask.ACCEPT_RAAA),
+      redeemCapitalStatus: yield neuCall(getRedeemCapitalStatus)
       // todo query here if data not in the store yet
-      // linkBankAccount:
-      // acceptTha:
       // redeemShareholderCapital:
       // uploadIsha:
     });
@@ -233,6 +248,7 @@ export function* loadNomineeEtos({
     )(etos);
 
     yield put(actions.nomineeFlow.setNomineeEtos({ etos: etosByPreviewCode, companies }));
+    yield neuCall(guardActiveEto)
   } catch (e) {
     logger.error("Nominee ETOs could not be loaded", e);
 
@@ -288,7 +304,7 @@ export function* nomineeFlowSagas(): Iterator<any> {
   yield fork(neuTakeLatest, actions.nomineeFlow.loadNomineeEtos, loadNomineeEtos);
   yield fork(neuTakeLatest, actions.nomineeFlow.createNomineeRequest, createNomineeRequest);
   yield fork(neuTakeLatest, actions.nomineeFlow.loadNomineeTaskData, loadNomineeTaskData);
-  yield fork(neuTakeLatest, actions.nomineeFlow.setNomineeEtos, guardActiveEto);
+  // yield call(neuTakeLatest, actions.nomineeFlow.setNomineeEtos, guardActiveEto);
   yield fork(
     neuTakeUntil,
     actions.nomineeFlow.startNomineeRequestsWatcher,

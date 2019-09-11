@@ -74,6 +74,7 @@ export const nomineeFlowReducer: AppReducer<INomineeFlowState> = (
         loading: false,
       };
     case actions.nomineeFlow.setActiveNomineeEto.getType():
+      console.log("setting active eto",action.payload.previewCode)
       return {
         ...state,
         activeNomineeEtoPreviewCode: action.payload.previewCode,

@@ -13,7 +13,6 @@ import { selectRouter } from "../routing/selectors";
 import { selectIsVerificationFullyDone } from "../selectors";
 import {
   ENomineeAcceptAgreementStatus,
-  ENomineeRequestStatus,
   TNomineeRequestStorage,
 } from "./types";
 import { getActiveEtoPreviewCodeFromQueryString, getNomineeTaskStep } from "./utils";
@@ -27,12 +26,10 @@ export const selectNomineeStateError = (state: IAppState) => state.nomineeFlow.e
 export const selectNomineeRequests = (state: IAppState): TNomineeRequestStorage =>
   state.nomineeFlow.nomineeRequests;
 
-export const selectLinkedNomineeEtoId = (state: IAppState): string | undefined =>
-  state.nomineeFlow.nomineeRequests &&
-  Object.keys(state.nomineeFlow.nomineeRequests).find(
-    requestId =>
-      state.nomineeFlow.nomineeRequests[requestId].state === ENomineeRequestStatus.APPROVED,
-  );
+export const selectLinkedNomineeEtoId = (state: IAppState): string | undefined => {
+  const activeNomineeEto = selectActiveNomineeEto(state);
+  return activeNomineeEto && activeNomineeEto.etoId
+};
 
 export const selectNomineeTHAState = (state: IAppState): ENomineeAcceptAgreementStatus =>
   state.nomineeFlow.acceptTha;
