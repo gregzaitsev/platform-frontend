@@ -36,8 +36,9 @@ export function* getWalletMetadataByURL(
   password: string,
 ): Iterator<any | ILightWalletRetrieveMetadata | undefined> {
   const queryStringWalletInfo: { email: string; salt: string } | undefined = yield select(
-    (s: IAppState) => selectLightWalletFromQueryString(s.router),
+    selectLightWalletFromQueryString,
   );
+
   if (queryStringWalletInfo) {
     return yield neuCall(
       retrieveMetadataFromVaultAPI,

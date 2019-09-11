@@ -4,7 +4,7 @@ import { compose } from "recompose";
 
 import { externalRoutes } from "../../../config/externalRoutes";
 import { actions } from "../../../modules/actions";
-import { ENomineeRequestStatus } from "../../../modules/nominee-flow/reducer";
+import { ENomineeRequestStatus } from "../../../modules/nominee-flow/types";
 import { nomineeRequestToTranslationMessage } from "../../../modules/nominee-flow/utils";
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { onLeaveAction } from "../../../utils/OnLeaveAction";

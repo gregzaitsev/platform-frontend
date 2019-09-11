@@ -1,11 +1,9 @@
 import * as React from "react";
 import { compose } from "recompose";
 
-import { actions } from "../../../modules/actions";
-import { selectNomineeEto } from "../../../modules/eto/selectors";
 import { TEtoWithCompanyAndContract } from "../../../modules/eto/types";
+import { selectNomineeEtoWithCompanyAndContract } from "../../../modules/nominee-flow/selectors";
 import { appConnect } from "../../../store";
-import { onEnterAction } from "../../../utils/OnEnterAction";
 import { NomineeEtoOverviewThumbnail } from "../../eto/overview/EtoOverviewThumbnail/EtoOverviewThumbnail";
 
 import * as styles from "../NomineeDashboard.module.scss";
@@ -30,12 +28,7 @@ const LinkedNomineeDashboardContainerLayout: React.FunctionComponent<
 export const LinkedNomineeDashboardContainer = compose<ILinkedNomineeComponentProps, {}>(
   appConnect<ILinkedNomineeStateProps, {}, {}>({
     stateToProps: state => ({
-      eto: selectNomineeEto(state),
+      eto: selectNomineeEtoWithCompanyAndContract(state),
     }),
-  }),
-  onEnterAction<{}>({
-    actionCreator: dispatch => {
-      dispatch(actions.eto.getNomineeEtos());
-    },
   }),
 )(LinkedNomineeDashboardContainerLayout);

@@ -201,6 +201,8 @@
   "eto-dashboard.verification": "Verification",
   "eto-dashboard.waiting-for-smart-contracts": "Your ETO smart contracts are being deployed",
   "eto-dashboard.waiting-for-smart-contracts.description": "Everything is set. We are currently deploying your ETO smart contracts. Once they are deployed we will notify you and you will be able proceed with the ETO setup.",
+  "eto-nominee.active-eto.set-error": "There was an error while loading ETO details",
+  "eto-nominee.active-eto.set-success": "Active ETO changes successfully",
   "eto-nominee.permissions.accept-nominee-request-text": "Please use your wallet to confirm that you accept the nominee request.",
   "eto-nominee.permissions.accept-nominee-request-title": "Confirm nominee acceptance",
   "eto-nominee.permissions.delete-nominee-request-text": "Please use your wallet to confirm nominee rejection.",

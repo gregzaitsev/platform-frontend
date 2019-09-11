@@ -3,7 +3,7 @@ import {
   ENomineeRequestError,
   ENomineeRequestStatus,
   INomineeRequest,
-} from "../../../modules/nominee-flow/reducer";
+} from "../../../modules/nominee-flow/types";
 import { isAddressValid } from "../../../modules/web3/utils";
 import { EMaskedFormError } from "../../translatedMessages/messages";
 import { ENomineeRequestComponentState } from "./types";

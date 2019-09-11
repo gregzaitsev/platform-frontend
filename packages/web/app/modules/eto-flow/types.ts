@@ -2,8 +2,15 @@ import {
   TBookbuildingStatsType,
   TCompanyEtoData,
   TEtoSpecsData,
+  TPartialCompanyEtoData,
+  TPartialEtoSpecData,
 } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { TEtoProducts } from "../../lib/api/eto/EtoProductsApi.interfaces";
+
+export type TGeneralEtoData = {
+  etoData: TPartialEtoSpecData;
+  companyData: TPartialCompanyEtoData;
+};
 
 export interface IEtoFlowState {
   eto: TEtoSpecsData | undefined;

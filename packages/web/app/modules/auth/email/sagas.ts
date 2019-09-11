@@ -26,8 +26,8 @@ export function* verifyUserEmail({
   notificationCenter,
   walletStorage,
 }: TGlobalDependencies): Iterator<any> {
-  const userCode = yield select((s: IAppState) => selectActivationCodeFromQueryString(s.router));
-  const urlEmail = yield select((s: IAppState) => selectEmailFromQueryString(s.router));
+  const userCode = yield select(selectActivationCodeFromQueryString);
+  const urlEmail = yield select(selectEmailFromQueryString);
   const userEmail = yield select((s: IAppState) => selectUserEmail(s.auth));
 
   if (userEmail && userEmail !== urlEmail) {

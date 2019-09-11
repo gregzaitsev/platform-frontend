@@ -5,7 +5,7 @@ import { IAppState } from "../../store";
 import { DeepReadonly } from "../../types";
 import { selectUserType } from "../auth/selectors";
 import { selectIssuerEtoState } from "../eto-flow/selectors";
-import { selectNomineeEtoState } from "../eto/selectors";
+import { selectNomineeEtoState } from "../nominee-flow/selectors";
 import { IEtoDocumentState } from "./reducer";
 
 export const selectIsIpfsModalOpen = (state: DeepReadonly<IEtoDocumentState>): boolean =>

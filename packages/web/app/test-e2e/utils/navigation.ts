@@ -62,8 +62,9 @@ export const goToEtoPreview = () => {
   assertIssuerEtoView();
 };
 
-export const goToNomineeDashboard = () => {
-  cy.visit("/dashboard");
+export const goToNomineeDashboard = (forcedActiveEtoPreviewCode?: string) => {
+  cy.visit(`/dashboard${forcedActiveEtoPreviewCode ? `?eto=${forcedActiveEtoPreviewCode}` : ""}`);
+
   assertNomineeDashboard();
 };
 

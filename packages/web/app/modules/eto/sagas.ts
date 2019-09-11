@@ -11,7 +11,7 @@ import { TGlobalDependencies } from "../../di/setupBindings";
 import {
   EEtoState,
   TCompanyEtoData,
-  TEtoData,
+  TEtoDataWithCompany,
   TEtoSpecsData,
 } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { IEtoDocument, immutableDocumentName } from "../../lib/api/eto/EtoFileApi.interfaces";
@@ -122,8 +122,8 @@ function* loadEto(
 
 export function* loadEtoContract(
   { contractsService, logger }: TGlobalDependencies,
-  eto: TEtoData,
-): any {
+  eto: TEtoDataWithCompany,
+): Iterator<any> {
   if (eto.state !== EEtoState.ON_CHAIN) {
     logger.error("Invalid eto state", new InvalidETOStateError(eto.state, EEtoState.ON_CHAIN), {
       etoId: eto.etoId,
@@ -272,7 +272,7 @@ function* watchEto(_: TGlobalDependencies, previewCode: string): any {
 function* loadEtos({ apiEtoService, logger, notificationCenter }: TGlobalDependencies): any {
   try {
     yield waitForKycStatus();
-    const etos: TEtoData[] = yield apiEtoService.getEtos();
+    const etos: TEtoDataWithCompany[] = yield apiEtoService.getEtos();
 
     const jurisdiction: string | undefined = yield select(selectClientJurisdiction);
 
@@ -282,15 +282,15 @@ function* loadEtos({ apiEtoService, logger, notificationCenter }: TGlobalDepende
         .map(eto => neuCall(loadEtoContract, eto)),
     );
 
-    const filteredEtosByJurisdictionRestrictions: TEtoData[] = yield select((state: IAppState) =>
-      selectFilteredEtosByRestrictedJurisdictions(state, etos, jurisdiction),
+    const filteredEtosByJurisdictionRestrictions: TEtoDataWithCompany[] = yield select(
+      (state: IAppState) => selectFilteredEtosByRestrictedJurisdictions(state, etos, jurisdiction),
     );
 
     const order = filteredEtosByJurisdictionRestrictions.map(eto => eto.previewCode);
 
     const companies = compose(
       keyBy((eto: TCompanyEtoData) => eto.companyId),
-      map((eto: TEtoData) => eto.company),
+      map((eto: TEtoDataWithCompany) => eto.company),
     )(filteredEtosByJurisdictionRestrictions);
 
     const etosByPreviewCode = compose(
@@ -472,46 +472,11 @@ function* verifyEtoAccess(
   }
 }
 
-export function* loadNomineeEtos({
-  apiEtoService,
-  logger,
-  notificationCenter,
-}: TGlobalDependencies): any {
-  try {
-    const etos: TEtoData[] = yield apiEtoService.loadNomineeEtos();
-
-    yield all(
-      etos
-        .filter(eto => eto.state === EEtoState.ON_CHAIN)
-        .map(eto => neuCall(loadEtoContract, eto)),
-    );
-
-    const companies = compose(
-      keyBy((eto: TCompanyEtoData) => eto.companyId),
-      map((eto: TEtoData) => eto.company),
-    )(etos);
-
-    const etosByPreviewCode = compose(
-      keyBy((eto: TEtoSpecsData) => eto.previewCode),
-      // remove company prop from eto
-      // it's saved separately for consistency with other endpoints
-      map(omit("company")),
-    )(etos);
-
-    yield put(actions.eto.setEtos({ etos: etosByPreviewCode, companies }));
-  } catch (e) {
-    logger.error("nominee ETOs could not be loaded", e);
-
-    notificationCenter.error(createMessage(EtoMessage.COULD_NOT_LOAD_ETOS));
-  }
-}
-
 export function* etoSagas(): Iterator<any> {
   yield fork(neuTakeEvery, actions.eto.loadEtoPreview, loadEtoPreview);
   yield fork(neuTakeEvery, actions.eto.loadEto, loadEto);
   yield fork(neuTakeEvery, actions.eto.loadEtos, loadEtos);
   yield fork(neuTakeEvery, actions.eto.loadTokensData, loadTokensData);
-  yield fork(neuTakeLatest, actions.eto.getNomineeEtos, loadNomineeEtos);
 
   yield fork(neuTakeEvery, actions.eto.downloadEtoDocument, downloadDocument);
   yield fork(neuTakeEvery, actions.eto.downloadEtoTemplateByType, downloadTemplateByType);

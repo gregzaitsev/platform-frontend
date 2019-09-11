@@ -7,8 +7,8 @@ import { IEtoDocument } from "../../../../../lib/api/eto/EtoFileApi.interfaces";
 import { IImmutableFileId } from "../../../../../lib/api/immutable-storage/ImmutableStorage.interfaces";
 import * as YupTS from "../../../../../lib/yup-ts.unsafe";
 import { actions } from "../../../../../modules/actions";
-import { selectNomineeEto } from "../../../../../modules/eto/selectors";
 import { TEtoWithCompanyAndContract } from "../../../../../modules/eto/types";
+import { selectNomineeEtoWithCompanyAndContract } from "../../../../../modules/nominee-flow/selectors";
 import { selectTxType } from "../../../../../modules/tx/sender/selectors";
 import { ETxSenderType } from "../../../../../modules/tx/types";
 import { appConnect } from "../../../../../store";
@@ -135,7 +135,7 @@ const SignNomineeAgreementSummaryLayout: React.FunctionComponent<TComponentProps
 const SignNomineeAgreementSummary = compose<TComponentProps, {}>(
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: state => ({
-      nomineeEto: selectNomineeEto(state),
+      nomineeEto: selectNomineeEtoWithCompanyAndContract(state),
       txType: selectTxType(state),
     }),
     dispatchToProps: dispatch => ({

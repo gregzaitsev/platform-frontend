@@ -2,8 +2,8 @@ import * as React from "react";
 import { compose } from "recompose";
 
 import { selectIsBankAccountVerified } from "../../../modules/bank-transfer-flow/selectors";
-import { selectNomineeEto } from "../../../modules/eto/selectors";
 import { TEtoWithCompanyAndContract } from "../../../modules/eto/types";
+import { selectNomineeEtoWithCompanyAndContract } from "../../../modules/nominee-flow/selectors";
 import { selectIsVerificationFullyDone } from "../../../modules/selectors";
 import { appConnect } from "../../../store";
 import { AccountSetupContainer } from "./AccountSetupContainer";
@@ -36,7 +36,7 @@ const NomineeDashboardContainerBase: React.FunctionComponent<IStateProps> = ({
 const NomineeDashboardContainer = compose<IStateProps, {}>(
   appConnect<IStateProps>({
     stateToProps: state => ({
-      nomineeEto: selectNomineeEto(state),
+      nomineeEto: selectNomineeEtoWithCompanyAndContract(state),
       isBankAccountVerified: selectIsBankAccountVerified(state),
       verificationIsComplete: selectIsVerificationFullyDone(state),
     }),

@@ -6,9 +6,10 @@ import { ETOCommitment } from "../../../../../lib/contracts/ETOCommitment";
 import { ITxData } from "../../../../../lib/web3/types";
 import { EthereumAddressWithChecksum } from "../../../../../types";
 import { actions } from "../../../../actions";
-import { selectNomineeEto } from "../../../../eto/selectors";
 import { TEtoWithCompanyAndContract } from "../../../../eto/types";
+import { isOnChain } from "../../../../eto/utils";
 import { selectStandardGasPriceWithOverHead } from "../../../../gas/selectors";
+import { selectNomineeEtoWithCompanyAndContract } from "../../../../nominee-flow/selectors";
 import { neuCall } from "../../../../sagasUtils";
 import { selectEthereumAddressWithChecksum } from "../../../../web3/selectors";
 import { selectTxType } from "../../../sender/selectors";
@@ -20,8 +21,10 @@ export function* selectAgreementContractAndHash(
   agreementType: EAgreementType,
   nomineeEto: TEtoWithCompanyAndContract,
 ): Iterator<any> {
-  if (!nomineeEto || !nomineeEto.contract) {
-    throw new Error("Missing nominee ETO");
+  if (!isOnChain(nomineeEto)) {
+    throw new Error(
+      `ETO should be on_chain to get agreement details but the status is ${nomineeEto.state}`,
+    );
   }
 
   if (agreementType === EAgreementType.RAAA) {
@@ -54,7 +57,9 @@ export function* generateNomineeSignAgreementTx(
 ): Iterator<any> {
   const agreementType =
     transactionType === ETxSenderType.NOMINEE_RAAA_SIGN ? EAgreementType.RAAA : EAgreementType.THA;
-  const nomineeEto: TEtoWithCompanyAndContract = yield select(selectNomineeEto);
+  const nomineeEto: TEtoWithCompanyAndContract = yield select(
+    selectNomineeEtoWithCompanyAndContract,
+  );
 
   const { contract, currentAgreementHash }: IAgreementContractAndHash = yield neuCall(
     selectAgreementContractAndHash,

@@ -4,10 +4,13 @@ import { branch, compose, renderComponent, setDisplayName } from "recompose";
 
 import { IEtoDocument } from "../../../lib/api/eto/EtoFileApi.interfaces";
 import { actions } from "../../../modules/actions";
-import { selectNomineeEto, selectNomineeEtoTemplatesArray } from "../../../modules/eto/selectors";
 import { TEtoWithCompanyAndContract } from "../../../modules/eto/types";
 import { selectPendingDownloads } from "../../../modules/immutable-file/selectors";
-import { selectNomineeStateIsLoading } from "../../../modules/nominee-flow/selectors";
+import {
+  selectNomineeEtoTemplatesArray,
+  selectNomineeEtoWithCompanyAndContract,
+  selectNomineeStateIsLoading,
+} from "../../../modules/nominee-flow/selectors";
 import { selectIsVerificationFullyDone } from "../../../modules/selectors";
 import { appConnect } from "../../../store";
 import { onEnterAction } from "../../../utils/OnEnterAction";
@@ -48,7 +51,7 @@ const NomineeDocuments = compose<TComponentProps, {}>(
   appConnect<TGuardProps>({
     stateToProps: state => ({
       isLoading: selectNomineeStateIsLoading(state),
-      nomineeEto: selectNomineeEto(state),
+      nomineeEto: selectNomineeEtoWithCompanyAndContract(state),
       verificationIsComplete: selectIsVerificationFullyDone(state),
     }),
   }),

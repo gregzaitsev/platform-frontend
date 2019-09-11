@@ -49,7 +49,8 @@ export type TranslatedMessageType =
   | ENomineeRequestErrorNotifications
   | EEtoNomineeRequestNotifications
   | EEtoNomineeRequestMessages
-  | ETxValidationMessages;
+  | ETxValidationMessages
+  | EEtoNomineeActiveEtoNotifications;
 
 export enum GenericErrorMessage {
   GENERIC_ERROR = "genericError",
@@ -315,6 +316,11 @@ export enum EEtoNomineeRequestMessages {
   ISSUER_DELETE_NOMINEE_REQUEST_TEXT = "issuerDeleteNomineeRequestText",
   ISSUER_UPDATE_NOMINEE_REQUEST = "issuerUpdateNomineeRequest",
   ISSUER_UPDATE_NOMINEE_REQUEST_TEXT = "issuerUpdateNomineeRequestText",
+}
+
+export enum EEtoNomineeActiveEtoNotifications {
+  ACTIVE_ETO_SET_SUCCESS = "activeEtoSetSuccess",
+  ACTIVE_ETO_SET_ERROR = "activeEtoSetError",
 }
 
 export enum TestMessage {
@@ -763,6 +769,11 @@ const getMessageTranslation = ({ messageType, messageData }: TMessage): TTransla
       return <FormattedMessage id="eto-nominee.permissions.update-nominee-request-text" />;
     case EEtoNomineeRequestMessages.ISSUER_UPDATE_NOMINEE_REQUEST_TEXT:
       return <FormattedMessage id="eto-nominee.permissions.update-nominee-request-text" />;
+
+    case EEtoNomineeActiveEtoNotifications.ACTIVE_ETO_SET_SUCCESS:
+      return <FormattedMessage id="eto-nominee.active-eto.set-success" />;
+    case EEtoNomineeActiveEtoNotifications.ACTIVE_ETO_SET_ERROR:
+      return <FormattedMessage id="eto-nominee.active-eto.set-error" />;
 
     // NEVER DO THIS! This is only for tests, so that we don't bloat locales.json with test strings!
     case TestMessage.TEST_MESSAGE:

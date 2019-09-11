@@ -6,7 +6,7 @@ import {
   createCsvDataUri,
   getFormFractionDoneCalculator,
   getInitialDataForFractionCalculation,
-} from "../utils";
+} from "./utils";
 
 describe("eto-flow > selectors", () => {
   describe("selectFormFractionDone", () => {

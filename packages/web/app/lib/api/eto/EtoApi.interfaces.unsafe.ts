@@ -448,13 +448,8 @@ export type TEtoSpecsData = TEtoTermsType &
 export type TPartialEtoSpecData = DeepPartial<TEtoSpecsData>;
 export type TPartialCompanyEtoData = DeepPartial<TCompanyEtoData>;
 
-export type TGeneralEtoData = {
-  etoData: TPartialEtoSpecData;
-  companyData: TPartialCompanyEtoData;
-};
-
 // this is coming from the /etos endpoint for investors dashboard
-export type TEtoData = TEtoSpecsData & { company: TCompanyEtoData };
+export type TEtoDataWithCompany = TEtoSpecsData & { company: TCompanyEtoData };
 
 export const EtoMarketingDataType = YupTS.object({
   ...EtoEquityTokenInfoType.shape,

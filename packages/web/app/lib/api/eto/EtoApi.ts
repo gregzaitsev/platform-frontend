@@ -5,7 +5,7 @@ import { amendEtoToCompatibleFormat } from "../../../modules/eto/utils";
 import { withParams } from "../../../utils/withParams";
 import { IHttpClient, IHttpResponse } from "../client/IHttpClient";
 import {
-  TGeneralEtoData,
+  TEtoDataWithCompany,
   TPartialCompanyEtoData,
   TPartialEtoSpecData,
 } from "./EtoApi.interfaces.unsafe";
@@ -100,15 +100,15 @@ export class EtoApi {
     });
   }
 
-  public async submitCompanyAndEto(): Promise<IHttpResponse<TGeneralEtoData>> {
-    return await this.authorizedHttpClient.post<TGeneralEtoData>({
+  public async submitCompanyAndEto(): Promise<IHttpResponse<TEtoDataWithCompany>> {
+    return await this.authorizedHttpClient.post<TEtoDataWithCompany>({
       baseUrl: BASE_PATH,
       url: ETO_SUBMISSION_PATH,
     });
   }
 
-  public async publishCompanyAndEto(): Promise<IHttpResponse<TGeneralEtoData>> {
-    return await this.authorizedHttpClient.post<TGeneralEtoData>({
+  public async publishCompanyAndEto(): Promise<IHttpResponse<TEtoDataWithCompany>> {
+    return await this.authorizedHttpClient.post<TEtoDataWithCompany>({
       baseUrl: BASE_PATH,
       url: ETO_PREVIEW_SUBMISSION_PATH,
     });
@@ -116,8 +116,8 @@ export class EtoApi {
 
   public async changeBookBuildingState(
     isBookBuilding: boolean,
-  ): Promise<IHttpResponse<TGeneralEtoData>> {
-    return await this.authorizedHttpClient.put<TGeneralEtoData>({
+  ): Promise<IHttpResponse<TEtoDataWithCompany>> {
+    return await this.authorizedHttpClient.put<TEtoDataWithCompany>({
       baseUrl: BASE_PATH,
       url: ETO_BOOK_BUILDING_PATH,
       body: { is_bookbuilding: isBookBuilding },
@@ -138,11 +138,12 @@ export class EtoApi {
     });
   }
 
-  public async loadNomineeEtos(): Promise<IHttpResponse<TGeneralEtoData[]>> {
-    const response = await this.authorizedHttpClient.get<IHttpResponse<TGeneralEtoData[]>>({
+  public async loadNomineeEtos(): Promise<TEtoDataWithCompany[]> {
+    const response = await this.authorizedHttpClient.get<TEtoDataWithCompany[]>({
       baseUrl: BASE_PATH,
       url: NOMINEE_ETOS_PATH,
     });
+
     return response.body;
   }
 }

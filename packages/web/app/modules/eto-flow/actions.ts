@@ -1,11 +1,8 @@
 import { createActionFactory } from "@neufund/shared";
 
-import {
-  TCompanyEtoData,
-  TEtoSpecsData,
-  TGeneralEtoData,
-} from "../../lib/api/eto/EtoApi.interfaces.unsafe";
+import { TCompanyEtoData, TEtoSpecsData } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { TEtoProducts } from "../../lib/api/eto/EtoProductsApi.interfaces";
+import { TGeneralEtoData } from "./types";
 
 export const etoFlowActions = {
   loadIssuerEto: createActionFactory("ETO_FLOW_LOAD_ISSUER_ETO"),
