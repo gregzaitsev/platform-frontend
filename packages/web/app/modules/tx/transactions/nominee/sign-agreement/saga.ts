@@ -30,9 +30,7 @@ export function* getAgreementContractAndHash(
 
   switch (agreementType) {
     case EAgreementType.RAAA: {
-      const contract = yield contractsService.getETOCommitmentContract(
-        eto.contract.etoCommitmentAddress,
-      );
+      const contract = yield contractsService.getETOCommitmentContract(eto.etoId);
       return {
         contract,
         currentAgreementHash: eto.templates.reservationAndAcquisitionAgreement.ipfsHash,
@@ -40,7 +38,7 @@ export function* getAgreementContractAndHash(
     }
     case EAgreementType.THA: {
       const etoCommitmentContract: ETOCommitment = yield contractsService.getETOCommitmentContract(
-        eto.contract.etoCommitmentAddress,
+        eto.etoId,
       );
       const equityTokenAddress: string = yield etoCommitmentContract.equityToken;
 

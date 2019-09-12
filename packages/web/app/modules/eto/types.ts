@@ -28,7 +28,6 @@ export interface IEtoContractData {
   startOfStates: TEtoStartOfStates;
   equityTokenAddress: string;
   etoTermsAddress: string;
-  etoCommitmentAddress: string;
 }
 
 export type TEtoWithCompanyAndContract = DeepReadonly<
