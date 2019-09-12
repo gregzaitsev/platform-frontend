@@ -1,9 +1,7 @@
-import BigNumber from "bignumber.js";
 import { compose, isEmpty, keyBy, map, omit } from "lodash/fp";
 import { delay } from "redux-saga";
 import { all, fork, put, select } from "redux-saga/effects";
 
-import { hashFromIpfsLink } from "../../components/documents/utils";
 import {
   EEtoNomineeActiveEtoNotifications,
   ENomineeRequestErrorNotifications,
@@ -22,28 +20,19 @@ import {
 import { IssuerIdInvalid, NomineeRequestExists } from "../../lib/api/eto/EtoNomineeApi";
 import { nonNullable } from "../../utils/nonNullable";
 import { actions, TActionFromCreator } from "../actions";
-import { loadEtoContract } from "../eto/sagas";
-import { TEtoWithCompanyAndContract } from "../eto/types";
-import { isOnChain } from "../eto/utils";
+import { loadAgreementStatus, loadEtoContract } from "../eto/sagas";
 import { loadBankAccountDetails } from "../kyc/sagas";
 import { neuCall, neuTakeLatest, neuTakeUntil } from "../sagasUtils";
-import { getAgreementContractAndHash } from "../tx/transactions/nominee/sign-agreement/saga";
-import {
-  EAgreementType,
-  IAgreementContractAndHash,
-} from "../tx/transactions/nominee/sign-agreement/types";
+import { EAgreementType } from "../tx/transactions/nominee/sign-agreement/types";
 import {
   selectActiveEtoPreviewCodeFromQueryString,
   selectNomineeActiveEtoPreviewCode,
   selectNomineeEtos,
-  selectNomineeEtoWithCompanyAndContract,
 } from "./selectors";
 import {
-  ENomineeAcceptAgreementStatus,
   ENomineeLinkBankAccountStatus,
   ENomineeRedeemShareholderCapitalStatus,
   ENomineeRequestError,
-  ENomineeTask,
   ENomineeUploadIshaStatus,
   INomineeRequest,
   TNomineeRequestStorage,
@@ -61,8 +50,8 @@ export function* loadNomineeTaskData({
 
     const taskData = yield all({
       nomineeRequests: yield apiEtoNomineeService.getNomineeRequests(),
-      nomineeTHAStatus: yield neuCall(loadAgreementStatus, ENomineeTask.ACCEPT_THA),
-      nomineeRAAStatus: yield neuCall(loadAgreementStatus, ENomineeTask.ACCEPT_RAAA),
+      nomineeTHAStatus: yield neuCall(loadAgreementStatus, EAgreementType.THA),
+      nomineeRAAStatus: yield neuCall(loadAgreementStatus, EAgreementType.RAAA),
       // todo query here if data not in the store yet
       // linkBankAccount:
       // acceptTha:
@@ -159,51 +148,6 @@ export function* createNomineeRequest(
   } finally {
     yield put(actions.routing.goToDashboard());
     yield put(actions.nomineeFlow.loadingDone());
-  }
-}
-
-function* loadAgreementStatus(
-  { logger }: TGlobalDependencies,
-  agreementStep: ENomineeTask.ACCEPT_RAAA | ENomineeTask.ACCEPT_THA,
-): Iterator<any> {
-  try {
-    const agreementType =
-      agreementStep === ENomineeTask.ACCEPT_RAAA ? EAgreementType.RAAA : EAgreementType.THA;
-    const nomineeEto: TEtoWithCompanyAndContract = yield select(
-      selectNomineeEtoWithCompanyAndContract,
-    );
-
-    if (!nomineeEto || !isOnChain(nomineeEto)) {
-      return ENomineeAcceptAgreementStatus.NOT_DONE;
-    }
-
-    const { contract, currentAgreementHash }: IAgreementContractAndHash = yield neuCall(
-      getAgreementContractAndHash,
-      agreementType,
-      nomineeEto,
-    );
-
-    const amendmentsCount: BigNumber | undefined = yield contract.amendmentsCount;
-
-    // if amendments counts equals 0 or undefined we can skip hash check
-    if (amendmentsCount === undefined || amendmentsCount.isZero()) {
-      return ENomineeAcceptAgreementStatus.NOT_DONE;
-    }
-
-    // agreement indexing starts from 0 so we have to subtract 1 from amendments count
-    const currentAgreementIndex = amendmentsCount.sub(1);
-
-    const pastAgreement = yield contract.pastAgreement(currentAgreementIndex);
-    const pastAgreementHash = hashFromIpfsLink(pastAgreement[2]);
-
-    if (pastAgreementHash === currentAgreementHash) {
-      return ENomineeAcceptAgreementStatus.DONE;
-    }
-
-    return ENomineeAcceptAgreementStatus.NOT_DONE;
-  } catch (e) {
-    logger.error("Could not fetch signed THA hash", e);
-    return ENomineeAcceptAgreementStatus.ERROR;
   }
 }
 

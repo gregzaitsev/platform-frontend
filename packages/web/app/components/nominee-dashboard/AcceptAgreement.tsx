@@ -3,18 +3,19 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { compose, withProps } from "recompose";
 
 import { actions } from "../../modules/actions";
+import { EEtoAgreementStatus } from "../../modules/eto/types";
 import {
   selectNomineeRAAAState,
   selectNomineeTHAState,
 } from "../../modules/nominee-flow/selectors";
-import { ENomineeAcceptAgreementStatus, ENomineeTask } from "../../modules/nominee-flow/types";
+import { ENomineeTask } from "../../modules/nominee-flow/types";
 import { appConnect } from "../../store";
 import { onEnterAction } from "../../utils/OnEnterAction";
 import { Button, EButtonLayout, EButtonTheme } from "../shared/buttons/Button";
 
 interface IStateProps {
-  nomineeTHAStatus: ENomineeAcceptAgreementStatus;
-  nomineeRAAAStatus: ENomineeAcceptAgreementStatus;
+  nomineeTHAStatus: EEtoAgreementStatus;
+  nomineeRAAAStatus: EEtoAgreementStatus;
 }
 
 interface IExternalProps {
@@ -75,8 +76,8 @@ const acceptAgreement = compose<IComponentProps, {}>(
   onEnterAction<IStateProps>({
     actionCreator: (dispatch, props) => {
       if (
-        props.nomineeTHAStatus === ENomineeAcceptAgreementStatus.ERROR ||
-        props.nomineeRAAAStatus === ENomineeAcceptAgreementStatus.ERROR
+        props.nomineeTHAStatus === EEtoAgreementStatus.ERROR ||
+        props.nomineeRAAAStatus === EEtoAgreementStatus.ERROR
       )
         dispatch(actions.nomineeFlow.loadNomineeTaskData());
     },

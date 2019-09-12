@@ -55,3 +55,9 @@ export enum EEtoSubState {
   COUNTDOWN_TO_PRESALE = "countdown_to_presale",
   COUNTDOWN_TO_PUBLIC_SALE = "countdown_to_public_sale",
 }
+
+export enum EEtoAgreementStatus {
+  NOT_DONE = "not_done",
+  DONE = "done",
+  ERROR = "error",
+}

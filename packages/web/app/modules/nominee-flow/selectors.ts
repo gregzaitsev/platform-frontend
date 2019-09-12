@@ -8,14 +8,10 @@ import { nonNullable } from "../../utils/nonNullable";
 import { objectToFilteredArray } from "../../utils/objectToFilteredArray";
 import { selectIsBankAccountVerified } from "../bank-transfer-flow/selectors";
 import { selectEtoContract, selectEtoSubState } from "../eto/selectors";
-import { TEtoWithCompanyAndContract } from "../eto/types";
+import { EEtoAgreementStatus, TEtoWithCompanyAndContract } from "../eto/types";
 import { selectRouter } from "../routing/selectors";
 import { selectIsVerificationFullyDone } from "../selectors";
-import {
-  ENomineeAcceptAgreementStatus,
-  ENomineeRequestStatus,
-  TNomineeRequestStorage,
-} from "./types";
+import { ENomineeRequestStatus, TNomineeRequestStorage } from "./types";
 import { getActiveEtoPreviewCodeFromQueryString, getNomineeTaskStep } from "./utils";
 
 export const selectNomineeFlow = (state: IAppState) => state.nomineeFlow;
@@ -34,10 +30,10 @@ export const selectLinkedNomineeEtoId = (state: IAppState): string | undefined =
       state.nomineeFlow.nomineeRequests[requestId].state === ENomineeRequestStatus.APPROVED,
   );
 
-export const selectNomineeTHAState = (state: IAppState): ENomineeAcceptAgreementStatus =>
+export const selectNomineeTHAState = (state: IAppState): EEtoAgreementStatus =>
   state.nomineeFlow.acceptTha;
 
-export const selectNomineeRAAAState = (state: IAppState): ENomineeAcceptAgreementStatus =>
+export const selectNomineeRAAAState = (state: IAppState): EEtoAgreementStatus =>
   state.nomineeFlow.acceptRaaa;
 
 export const selectNomineeEtos = (

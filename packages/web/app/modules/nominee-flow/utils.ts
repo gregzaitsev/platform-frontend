@@ -4,10 +4,9 @@ import * as queryString from "query-string";
 import { ENomineeRequestStatusTranslation } from "../../components/translatedMessages/messages";
 import { createMessage, TMessage } from "../../components/translatedMessages/utils";
 import { TNomineeRequestResponse } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
-import { EETOStateOnChain, TEtoWithCompanyAndContract } from "../eto/types";
+import { EEtoAgreementStatus, EETOStateOnChain, TEtoWithCompanyAndContract } from "../eto/types";
 import { isOnChain } from "../eto/utils";
 import {
-  ENomineeAcceptAgreementStatus,
   ENomineeRequestStatus,
   ENomineeTask,
   INomineeRequest,
@@ -99,8 +98,8 @@ export const getNomineeTaskStep = (
   verificationIsComplete: boolean,
   nomineeEto: TEtoWithCompanyAndContract | undefined,
   isBankAccountVerified: boolean,
-  THAStatus: ENomineeAcceptAgreementStatus | undefined,
-  RAAAStatus: ENomineeAcceptAgreementStatus | undefined,
+  THAStatus: EEtoAgreementStatus | undefined,
+  RAAAStatus: EEtoAgreementStatus | undefined,
 ): ENomineeTask => {
   if (!verificationIsComplete) {
     return ENomineeTask.ACCOUNT_SETUP;
@@ -109,13 +108,13 @@ export const getNomineeTaskStep = (
   } else if (!isBankAccountVerified) {
     return ENomineeTask.LINK_BANK_ACCOUNT;
   } else if (
-    THAStatus !== ENomineeAcceptAgreementStatus.DONE &&
+    THAStatus !== EEtoAgreementStatus.DONE &&
     nomineeIsEligibleToSignAgreement(nomineeEto)
   ) {
     return ENomineeTask.ACCEPT_THA;
   } else if (
-    THAStatus === ENomineeAcceptAgreementStatus.DONE &&
-    RAAAStatus !== ENomineeAcceptAgreementStatus.DONE &&
+    THAStatus === EEtoAgreementStatus.DONE &&
+    RAAAStatus !== EEtoAgreementStatus.DONE &&
     nomineeIsEligibleToSignAgreement(nomineeEto)
   ) {
     return ENomineeTask.ACCEPT_RAAA;

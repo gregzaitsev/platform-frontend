@@ -2,8 +2,8 @@ import { TCompanyEtoData, TEtoSpecsData } from "../../lib/api/eto/EtoApi.interfa
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
 import { actions } from "../actions";
+import { EEtoAgreementStatus } from "../eto/types";
 import {
-  ENomineeAcceptAgreementStatus,
   ENomineeLinkBankAccountStatus,
   ENomineeRedeemShareholderCapitalStatus,
   ENomineeRequestError,
@@ -19,8 +19,8 @@ export interface INomineeFlowState {
   nomineeEtos: { [previewCode: string]: TEtoSpecsData | undefined };
   nomineeEtosCompanies: { [companyId: string]: TCompanyEtoData | undefined };
   linkBankAccount: ENomineeLinkBankAccountStatus;
-  acceptTha: ENomineeAcceptAgreementStatus;
-  acceptRaaa: ENomineeAcceptAgreementStatus;
+  acceptTha: EEtoAgreementStatus;
+  acceptRaaa: EEtoAgreementStatus;
   redeemShareholderCapital: ENomineeRedeemShareholderCapitalStatus;
   uploadIsha: ENomineeUploadIshaStatus;
 }
@@ -32,8 +32,8 @@ const nomineeFlowInitialState: INomineeFlowState = {
   nomineeRequests: {},
   nomineeEtos: {},
   nomineeEtosCompanies: {},
-  acceptTha: ENomineeAcceptAgreementStatus.NOT_DONE,
-  acceptRaaa: ENomineeAcceptAgreementStatus.NOT_DONE,
+  acceptTha: EEtoAgreementStatus.NOT_DONE,
+  acceptRaaa: EEtoAgreementStatus.NOT_DONE,
   linkBankAccount: ENomineeLinkBankAccountStatus.NOT_DONE,
   redeemShareholderCapital: ENomineeRedeemShareholderCapitalStatus.NOT_DONE,
   uploadIsha: ENomineeUploadIshaStatus.NOT_DONE,

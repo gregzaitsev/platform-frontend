@@ -16,12 +16,6 @@ export enum ENomineeRequestError {
   GENERIC_ERROR = "nominee_request_generic_error",
 }
 
-export enum ENomineeAcceptAgreementStatus {
-  NOT_DONE = "not_done",
-  DONE = "done",
-  ERROR = "error",
-}
-
 export enum ENomineeRedeemShareholderCapitalStatus {
   NOT_DONE = "not_done",
   DONE = "done",
