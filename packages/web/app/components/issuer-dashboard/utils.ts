@@ -3,7 +3,6 @@ import {
   EEtoState,
 } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
 
-// TODO: Replace state numbers by state names (like `LINK_NOMINEE`)
 export enum EEtoStep {
   VERIFICATION = "verification",
   FILL_INFORMATION_ABOUT_COMPANY = "fill_information_about_company",
@@ -15,7 +14,8 @@ export enum EEtoStep {
   UPLOAD_OFFERING_DOCUMENT = "upload_offering_document",
   UPLOAD_ISHA = "upload_isha",
   WAIT_FOR_SMART_CONTRACT = "wait_for_smart_contract",
-  REQUEST_THA_SIGN = "nine",
+  WAIT_FOR_NOMINEE_DOCUMENTS = "wait_for_nominee_documents",
+  SETUP_START_DATE = "setup_start_date",
   LINK_NOMINEE = "link_nominee",
 }
 
@@ -98,7 +98,11 @@ export const selectEtoStep = (
   }
 
   if (etoState === EEtoState.ON_CHAIN) {
-    return EEtoStep.REQUEST_THA_SIGN;
+    if (true) {
+      return EEtoStep.WAIT_FOR_NOMINEE_DOCUMENTS;
+    }
+
+    return EEtoStep.SETUP_START_DATE;
   }
 
   throw new Error("Eto step is not defined");

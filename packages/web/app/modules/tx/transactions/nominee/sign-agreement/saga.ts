@@ -5,6 +5,7 @@ import { TGlobalDependencies } from "../../../../../di/setupBindings";
 import { ETOCommitment } from "../../../../../lib/contracts/ETOCommitment";
 import { ITxData } from "../../../../../lib/web3/types";
 import { EthereumAddressWithChecksum } from "../../../../../types";
+import { assertNever } from "../../../../../utils/assertNever";
 import { actions } from "../../../../actions";
 import { TEtoWithCompanyAndContract } from "../../../../eto/types";
 import { isOnChain } from "../../../../eto/utils";
@@ -16,38 +17,41 @@ import { selectTxType } from "../../../sender/selectors";
 import { ETxSenderType } from "../../../types";
 import { EAgreementType, IAgreementContractAndHash } from "./types";
 
-export function* selectAgreementContractAndHash(
+export function* getAgreementContractAndHash(
   { contractsService }: TGlobalDependencies,
   agreementType: EAgreementType,
-  nomineeEto: TEtoWithCompanyAndContract,
+  eto: TEtoWithCompanyAndContract,
 ): Iterator<any> {
-  if (!isOnChain(nomineeEto)) {
+  if (!isOnChain(eto)) {
     throw new Error(
-      `ETO should be on_chain to get agreement details but the status is ${nomineeEto.state}`,
+      `ETO should be on_chain to get agreement details but the status is ${eto.state}`,
     );
   }
 
-  if (agreementType === EAgreementType.RAAA) {
-    const contract = yield contractsService.getETOCommitmentContract(
-      nomineeEto.contract.etoCommitmentAddress,
-    );
-    return {
-      contract,
-      currentAgreementHash: nomineeEto.templates.reservationAndAcquisitionAgreement.ipfsHash,
-    };
-  } else if (agreementType === EAgreementType.THA) {
-    const etoCommitmentContract: ETOCommitment = yield contractsService.getETOCommitmentContract(
-      nomineeEto.contract.etoCommitmentAddress,
-    );
-    const equityTokenAddress: string = yield etoCommitmentContract.equityToken;
+  switch (agreementType) {
+    case EAgreementType.RAAA: {
+      const contract = yield contractsService.getETOCommitmentContract(
+        eto.contract.etoCommitmentAddress,
+      );
+      return {
+        contract,
+        currentAgreementHash: eto.templates.reservationAndAcquisitionAgreement.ipfsHash,
+      };
+    }
+    case EAgreementType.THA: {
+      const etoCommitmentContract: ETOCommitment = yield contractsService.getETOCommitmentContract(
+        eto.contract.etoCommitmentAddress,
+      );
+      const equityTokenAddress: string = yield etoCommitmentContract.equityToken;
 
-    const contract = yield contractsService.getEquityToken(equityTokenAddress);
-    return {
-      contract,
-      currentAgreementHash: nomineeEto.templates.companyTokenHolderAgreement.ipfsHash,
-    };
-  } else {
-    throw new Error("Unexpected agreement type");
+      const contract = yield contractsService.getEquityToken(equityTokenAddress);
+      return {
+        contract,
+        currentAgreementHash: eto.templates.companyTokenHolderAgreement.ipfsHash,
+      };
+    }
+    default:
+      return assertNever(agreementType, `Unexpected agreement type (${agreementType})`);
   }
 }
 
@@ -62,7 +66,7 @@ export function* generateNomineeSignAgreementTx(
   );
 
   const { contract, currentAgreementHash }: IAgreementContractAndHash = yield neuCall(
-    selectAgreementContractAndHash,
+    getAgreementContractAndHash,
     agreementType,
     nomineeEto,
   );

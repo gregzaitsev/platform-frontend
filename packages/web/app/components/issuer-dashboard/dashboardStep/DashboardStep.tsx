@@ -112,7 +112,17 @@ const selectStepComponent = (props: IEtoStep) => {
           <FormattedMessage id="eto-dashboard.waiting-for-smart-contracts.description" />
         </>
       );
-    case EEtoStep.REQUEST_THA_SIGN:
+    case EEtoStep.WAIT_FOR_NOMINEE_DOCUMENTS:
+      return (
+        <>
+          <DashboardHeading
+            title={<FormattedMessage id="eto-dashboard.waiting-for-nominee-documents" />}
+            data-test-id="eto-dashboard-waiting-for-nominee-documents"
+          />
+          <FormattedMessage id="eto-dashboard.waiting-for-nominee-documents.description" />
+        </>
+      );
+    case EEtoStep.SETUP_START_DATE:
       return <DashboardHeading title={<FormattedMessage id="eto-dashboard.start-fundraising" />} />;
     default:
       return assertNever(props.etoStep);

@@ -7,11 +7,11 @@ import { compose } from "redux";
 import { IEtoDocument } from "../../../lib/api/eto/EtoFileApi.interfaces";
 import { actions } from "../../../modules/actions";
 import {
-  selectIssuerEtoId,
+  selectIssuerEtoPreviewCode,
   selectIssuerEtoTemplates,
   selectUploadedInvestmentAgreement,
 } from "../../../modules/eto-flow/selectors";
-import { selectEtoOnChainStateById } from "../../../modules/eto/selectors";
+import { selectEtoOnChainState } from "../../../modules/eto/selectors";
 import { EETOStateOnChain } from "../../../modules/eto/types";
 import { appConnect } from "../../../store";
 import { EColumnSpan } from "../../layouts/Container";
@@ -91,11 +91,11 @@ export const UploadInvestmentAgreement = compose<React.FunctionComponent<IExtern
   createErrorBoundary(ErrorBoundaryPanel),
   appConnect<IStateProps | null, IDispatchProps>({
     stateToProps: state => {
-      const etoId = selectIssuerEtoId(state);
+      const previewCode = selectIssuerEtoPreviewCode(state);
       const etoTemplates = selectIssuerEtoTemplates(state)!;
-      if (etoId) {
+      if (previewCode) {
         return {
-          stateOnChain: selectEtoOnChainStateById(state, etoId)!,
+          stateOnChain: selectEtoOnChainState(state, previewCode)!,
           agreementTemplate: etoTemplates.investmentSummaryTemplate,
           uploadedAgreement: selectUploadedInvestmentAgreement(state),
         };

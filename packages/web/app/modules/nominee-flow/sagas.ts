@@ -3,13 +3,14 @@ import { compose, isEmpty, keyBy, map, omit } from "lodash/fp";
 import { delay } from "redux-saga";
 import { all, fork, put, select } from "redux-saga/effects";
 
+import { hashFromIpfsLink } from "../../components/documents/utils";
 import {
   EEtoNomineeActiveEtoNotifications,
   ENomineeRequestErrorNotifications,
   EtoMessage,
 } from "../../components/translatedMessages/messages";
 import { createMessage } from "../../components/translatedMessages/utils";
-import { IPFS_PROTOCOL, NOMINEE_REQUESTS_WATCHER_DELAY } from "../../config/constants";
+import { NOMINEE_REQUESTS_WATCHER_DELAY } from "../../config/constants";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import {
   EEtoState,
@@ -26,7 +27,7 @@ import { TEtoWithCompanyAndContract } from "../eto/types";
 import { isOnChain } from "../eto/utils";
 import { loadBankAccountDetails } from "../kyc/sagas";
 import { neuCall, neuTakeLatest, neuTakeUntil } from "../sagasUtils";
-import { selectAgreementContractAndHash } from "../tx/transactions/nominee/sign-agreement/saga";
+import { getAgreementContractAndHash } from "../tx/transactions/nominee/sign-agreement/saga";
 import {
   EAgreementType,
   IAgreementContractAndHash,
@@ -177,7 +178,7 @@ function* loadAgreementStatus(
     }
 
     const { contract, currentAgreementHash }: IAgreementContractAndHash = yield neuCall(
-      selectAgreementContractAndHash,
+      getAgreementContractAndHash,
       agreementType,
       nomineeEto,
     );
@@ -193,7 +194,7 @@ function* loadAgreementStatus(
     const currentAgreementIndex = amendmentsCount.sub(1);
 
     const pastAgreement = yield contract.pastAgreement(currentAgreementIndex);
-    const pastAgreementHash = pastAgreement[2].replace(`${IPFS_PROTOCOL}:`, "");
+    const pastAgreementHash = hashFromIpfsLink(pastAgreement[2]);
 
     if (pastAgreementHash === currentAgreementHash) {
       return ENomineeAcceptAgreementStatus.DONE;

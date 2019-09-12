@@ -113,7 +113,7 @@ const waitingForContractsStep = {
 
 const requestTHAStep = {
   ...waitingForContractsStep,
-  etoStep: EEtoStep.REQUEST_THA_SIGN,
+  etoStep: EEtoStep.SETUP_START_DATE,
   eto: { ...uploadOfferingDocumentProspectusStep.eto, state: EEtoState.ON_CHAIN },
 };
 

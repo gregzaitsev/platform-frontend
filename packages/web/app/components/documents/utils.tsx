@@ -167,17 +167,13 @@ export const uploadAllowed = (
   canUploadInOnChainStates(etoState, documentKey, onChainState);
 
 export const ipfsLinkFromHash = (ipfsHash: string): string => {
-  invariant(
-    typeof ipfsHash === "string" && ipfsHash.trim() !== "",
-    "invalid string supplied to ipfsLinkFromHash()",
-  );
+  invariant(ipfsHash.trim() !== "", "invalid string supplied to ipfsLinkFromHash()");
   return `${IPFS_PROTOCOL}:${ipfsHash}`;
 };
+
 export const hashFromIpfsLink = (ipfsLink: string): string => {
   invariant(
-    typeof ipfsLink === "string" &&
-      ipfsLink.trim() !== "" &&
-      ipfsLink.startsWith(`${IPFS_PROTOCOL}:`),
+    ipfsLink.trim() !== "" && ipfsLink.startsWith(`${IPFS_PROTOCOL}:`),
     "invalid ipfs link supplied to hashFromIpfsLink()",
   );
   return ipfsLink.replace(`${IPFS_PROTOCOL}:`, "");

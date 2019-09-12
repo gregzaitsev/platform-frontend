@@ -317,6 +317,6 @@ describe("selectEtoStep", () => {
         true,
         true,
       ),
-    ).to.eq(EEtoStep.REQUEST_THA_SIGN);
+    ).to.eq(EEtoStep.SETUP_START_DATE);
   });
 });
