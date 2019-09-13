@@ -108,10 +108,15 @@ type SelectPropertyNames<T, R> = { [K in keyof T]: T[K] extends R ? K : never }[
 type PickProperties<T, R> = Pick<T, SelectPropertyNames<T, R>>;
 
 /**
- * In T, mark as required properties from K
+ * Make all properties in T required and non nullable
+ */
+export type Required<T> = { [P in keyof T]-?: NonNullable<T[P]> };
+
+/**
+ * In T, mark as required and non nullable properties from K
  * Useful for types narrowing after recompose `branch` method
  * @example
- * RequiredByKeys<{ foo?: boolean, bar?: string }, "foo"> // { foo: boolean, bar?: string }
+ * RequiredByKeys<{ foo?: boolean | null, bar?: string }, "foo"> // { foo: boolean, bar?: string }
  */
 export type RequiredByKeys<T, K extends keyof T> = Required<Pick<T, K>> & OmitKeys<T, K>;
 

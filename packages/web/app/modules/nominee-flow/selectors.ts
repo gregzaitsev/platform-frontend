@@ -7,8 +7,8 @@ import { IAppState } from "../../store";
 import { nonNullable } from "../../utils/nonNullable";
 import { objectToFilteredArray } from "../../utils/objectToFilteredArray";
 import { selectIsBankAccountVerified } from "../bank-transfer-flow/selectors";
-import { selectEtoContract, selectEtoSubState } from "../eto/selectors";
-import { EEtoAgreementStatus, TEtoWithCompanyAndContract } from "../eto/types";
+import { selectDocumentsStatus, selectEtoContract, selectEtoSubState } from "../eto/selectors";
+import { TEtoWithCompanyAndContract, TOfferingDocuments } from "../eto/types";
 import { selectRouter } from "../routing/selectors";
 import { selectIsVerificationFullyDone } from "../selectors";
 import { ENomineeRequestStatus, TNomineeRequestStorage } from "./types";
@@ -29,12 +29,6 @@ export const selectLinkedNomineeEtoId = (state: IAppState): string | undefined =
     requestId =>
       state.nomineeFlow.nomineeRequests[requestId].state === ENomineeRequestStatus.APPROVED,
   );
-
-export const selectNomineeTHAState = (state: IAppState): EEtoAgreementStatus =>
-  state.nomineeFlow.acceptTha;
-
-export const selectNomineeRAAAState = (state: IAppState): EEtoAgreementStatus =>
-  state.nomineeFlow.acceptRaaa;
 
 export const selectNomineeEtos = (
   state: IAppState,
@@ -101,26 +95,35 @@ export const selectNomineeEtoTemplatesArray = (state: IAppState): IEtoDocument[]
   return eto !== undefined ? objectToFilteredArray(filterFunction, eto.templates) : [];
 };
 
+export const selectNomineeEtoDocumentsStatus = (
+  state: IAppState,
+): TOfferingDocuments | undefined => {
+  const eto = selectNomineeEtoWithCompanyAndContract(state);
+
+  if (eto !== undefined) {
+    return selectDocumentsStatus(state, eto.previewCode);
+  }
+
+  return undefined;
+};
+
 export const selectNomineeTaskStep = createSelector(
   selectIsVerificationFullyDone,
   selectNomineeEtoWithCompanyAndContract,
   selectIsBankAccountVerified,
-  selectNomineeTHAState,
-  selectNomineeRAAAState,
-  (
-    verificationIsComplete,
-    nomineeEto,
-    isBankAccountVerified,
-    nomineeTHAStatus,
-    nomineeRAAAStatus,
-  ) =>
-    getNomineeTaskStep(
-      verificationIsComplete,
-      nomineeEto,
-      isBankAccountVerified,
-      nomineeTHAStatus,
-      nomineeRAAAStatus,
-    ),
+  selectNomineeEtoDocumentsStatus,
+  (verificationIsComplete, nomineeEto, isBankAccountVerified, documentsStatus) => {
+    if (documentsStatus !== undefined) {
+      return getNomineeTaskStep(
+        verificationIsComplete,
+        nomineeEto,
+        isBankAccountVerified,
+        documentsStatus,
+      );
+    }
+
+    return undefined;
+  },
 );
 
 export const selectActiveEtoPreviewCodeFromQueryString = createSelector(

@@ -3,7 +3,12 @@ import { createActionFactory } from "@neufund/shared";
 import { TCompanyEtoData, TEtoSpecsData } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { EEtoDocumentType, IEtoDocument } from "../../lib/api/eto/EtoFileApi.interfaces";
 import { Dictionary } from "../../types";
-import { IEtoContractData, IEtoTokenData } from "./types";
+import {
+  IEtoContractData,
+  IEtoTokenData,
+  TEtoWithCompanyAndContract,
+  TOfferingDocuments,
+} from "./types";
 
 export const etoActions = {
   // public actions
@@ -26,14 +31,25 @@ export const etoActions = {
     "ETO_DOWNLOAD_TEMPLATE_BY_TYPE",
     (etoId: string, documentType: EEtoDocumentType) => ({ etoId, documentType }),
   ),
-  loadTokensData: createActionFactory("PORTFOLIO_LOAD_TOKENS_DATA"),
-  setTokenData: createActionFactory(
-    "PORTFOLIO_SET_TOKEN_DATA",
-    (previewCode: string, tokenData: IEtoTokenData) => ({
-      previewCode,
-      tokenData,
+  loadTokensData: createActionFactory("ETO_LOAD_TOKENS_DATA"),
+  loadEtoAgreementsStatus: createActionFactory(
+    "ETO_LOAD_AGREEMENTS_STATUS",
+    (eto: TEtoWithCompanyAndContract) => ({
+      eto,
     }),
   ),
+  ensureEtoJurisdiction: createActionFactory(
+    "ETO_VERIFY_ETO_JURISDICTION",
+    (previewCode: string, jurisdiction: string) => ({
+      previewCode,
+      jurisdiction,
+    }),
+  ),
+  confirmJurisdictionDisclaimer: createActionFactory("ETO_CONFIRM_JURISDICTION_DISCLAIMER"),
+  verifyEtoAccess: createActionFactory("ETO_VERIFY_ETO_ACCESS", (previewCode: string) => ({
+    previewCode,
+  })),
+
   // state mutations
   setEtos: createActionFactory(
     "ETO_SET_ETOS",
@@ -57,17 +73,18 @@ export const etoActions = {
     (previewCode: string, data: IEtoContractData) => ({ previewCode, data }),
   ),
   setEtoWidgetError: createActionFactory("ETO_SET_ETO_WIDGET_ERROR"),
-
-  verifyEtoAccess: createActionFactory("ETO_VERIFY_ETO_ACCESS", (previewCode: string) => ({
-    previewCode,
-  })),
-
-  ensureEtoJurisdiction: createActionFactory(
-    "ETO_VERIFY_ETO_JURISDICTION",
-    (previewCode: string, jurisdiction: string) => ({
+  setTokenData: createActionFactory(
+    "PORTFOLIO_SET_TOKEN_DATA",
+    (previewCode: string, tokenData: IEtoTokenData) => ({
       previewCode,
-      jurisdiction,
+      tokenData,
     }),
   ),
-  confirmJurisdictionDisclaimer: createActionFactory("ETO_CONFIRM_JURISDICTION_DISCLAIMER"),
+  setAgreementsStatus: createActionFactory(
+    "ETO_SET_AGREEMENTS_STATUS",
+    (previewCode: string, statuses: TOfferingDocuments) => ({
+      previewCode,
+      statuses,
+    }),
+  ),
 };

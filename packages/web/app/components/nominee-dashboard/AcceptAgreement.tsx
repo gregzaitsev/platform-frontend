@@ -3,20 +3,9 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { compose, withProps } from "recompose";
 
 import { actions } from "../../modules/actions";
-import { EEtoAgreementStatus } from "../../modules/eto/types";
-import {
-  selectNomineeRAAAState,
-  selectNomineeTHAState,
-} from "../../modules/nominee-flow/selectors";
 import { ENomineeTask } from "../../modules/nominee-flow/types";
 import { appConnect } from "../../store";
-import { onEnterAction } from "../../utils/OnEnterAction";
 import { Button, EButtonLayout, EButtonTheme } from "../shared/buttons/Button";
-
-interface IStateProps {
-  nomineeTHAStatus: EEtoAgreementStatus;
-  nomineeRAAAStatus: EEtoAgreementStatus;
-}
 
 interface IExternalProps {
   task: ENomineeTask;
@@ -58,11 +47,7 @@ export const AcceptAgreementLayout: React.FunctionComponent<IComponentProps> = (
 );
 
 const acceptAgreement = compose<IComponentProps, {}>(
-  appConnect<IStateProps, IDispatchProps, IExternalProps>({
-    stateToProps: state => ({
-      nomineeTHAStatus: selectNomineeTHAState(state),
-      nomineeRAAAStatus: selectNomineeRAAAState(state),
-    }),
+  appConnect<{}, IDispatchProps, IExternalProps>({
     dispatchToProps: (dispatch, ownProps: IExternalProps) => {
       const signAction = isRAAA(ownProps.task)
         ? actions.txTransactions.startNomineeRAAASign()
@@ -71,15 +56,6 @@ const acceptAgreement = compose<IComponentProps, {}>(
       return {
         sign: () => dispatch(signAction),
       };
-    },
-  }),
-  onEnterAction<IStateProps>({
-    actionCreator: (dispatch, props) => {
-      if (
-        props.nomineeTHAStatus === EEtoAgreementStatus.ERROR ||
-        props.nomineeRAAAStatus === EEtoAgreementStatus.ERROR
-      )
-        dispatch(actions.nomineeFlow.loadNomineeTaskData());
     },
   }),
 );

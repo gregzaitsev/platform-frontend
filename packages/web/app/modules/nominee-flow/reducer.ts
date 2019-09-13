@@ -2,7 +2,6 @@ import { TCompanyEtoData, TEtoSpecsData } from "../../lib/api/eto/EtoApi.interfa
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
 import { actions } from "../actions";
-import { EEtoAgreementStatus } from "../eto/types";
 import {
   ENomineeLinkBankAccountStatus,
   ENomineeRedeemShareholderCapitalStatus,
@@ -19,8 +18,6 @@ export interface INomineeFlowState {
   nomineeEtos: { [previewCode: string]: TEtoSpecsData | undefined };
   nomineeEtosCompanies: { [companyId: string]: TCompanyEtoData | undefined };
   linkBankAccount: ENomineeLinkBankAccountStatus;
-  acceptTha: EEtoAgreementStatus;
-  acceptRaaa: EEtoAgreementStatus;
   redeemShareholderCapital: ENomineeRedeemShareholderCapitalStatus;
   uploadIsha: ENomineeUploadIshaStatus;
 }
@@ -32,8 +29,6 @@ const nomineeFlowInitialState: INomineeFlowState = {
   nomineeRequests: {},
   nomineeEtos: {},
   nomineeEtosCompanies: {},
-  acceptTha: EEtoAgreementStatus.NOT_DONE,
-  acceptRaaa: EEtoAgreementStatus.NOT_DONE,
   linkBankAccount: ENomineeLinkBankAccountStatus.NOT_DONE,
   redeemShareholderCapital: ENomineeRedeemShareholderCapitalStatus.NOT_DONE,
   uploadIsha: ENomineeUploadIshaStatus.NOT_DONE,
@@ -55,8 +50,6 @@ export const nomineeFlowReducer: AppReducer<INomineeFlowState> = (
         ...state,
         loading: false,
         nomineeRequests: action.payload.tasks.nomineeRequests,
-        acceptTha: action.payload.tasks.acceptTha,
-        acceptRaaa: action.payload.tasks.acceptRaaa,
       };
     case actions.nomineeFlow.storeNomineeRequest.getType():
       return {

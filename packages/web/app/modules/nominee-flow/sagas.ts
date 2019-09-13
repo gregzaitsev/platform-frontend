@@ -20,14 +20,14 @@ import {
 import { IssuerIdInvalid, NomineeRequestExists } from "../../lib/api/eto/EtoNomineeApi";
 import { nonNullable } from "../../utils/nonNullable";
 import { actions, TActionFromCreator } from "../actions";
-import { loadAgreementStatus, loadEtoContract } from "../eto/sagas";
+import { loadEtoContract } from "../eto/sagas";
 import { loadBankAccountDetails } from "../kyc/sagas";
 import { neuCall, neuTakeLatest, neuTakeUntil } from "../sagasUtils";
-import { EAgreementType } from "../tx/transactions/nominee/sign-agreement/types";
 import {
   selectActiveEtoPreviewCodeFromQueryString,
   selectNomineeActiveEtoPreviewCode,
   selectNomineeEtos,
+  selectNomineeEtoWithCompanyAndContract,
 } from "./selectors";
 import {
   ENomineeLinkBankAccountStatus,
@@ -50,8 +50,7 @@ export function* loadNomineeTaskData({
 
     const taskData = yield all({
       nomineeRequests: yield apiEtoNomineeService.getNomineeRequests(),
-      nomineeTHAStatus: yield neuCall(loadAgreementStatus, EAgreementType.THA),
-      nomineeRAAStatus: yield neuCall(loadAgreementStatus, EAgreementType.RAAA),
+      etoAgreementsStatus: yield neuCall(loadNomineeAgreements),
       // todo query here if data not in the store yet
       // linkBankAccount:
       // acceptTha:
@@ -72,8 +71,6 @@ export function* loadNomineeTaskData({
       actions.nomineeFlow.storeNomineeTaskData({
         nomineeRequests: nomineeRequestsConverted,
         linkBankAccount: ENomineeLinkBankAccountStatus.NOT_DONE,
-        acceptTha: taskData.nomineeTHAStatus,
-        acceptRaaa: taskData.nomineeRAAStatus,
         redeemShareholderCapital: ENomineeRedeemShareholderCapitalStatus.NOT_DONE,
         uploadIsha: ENomineeUploadIshaStatus.NOT_DONE,
       }),
@@ -148,6 +145,16 @@ export function* createNomineeRequest(
   } finally {
     yield put(actions.routing.goToDashboard());
     yield put(actions.nomineeFlow.loadingDone());
+  }
+}
+
+export function* loadNomineeAgreements(): Iterator<any> {
+  const nomineeEto: ReturnType<typeof selectNomineeEtoWithCompanyAndContract> = yield select(
+    selectNomineeEtoWithCompanyAndContract,
+  );
+
+  if (nomineeEto) {
+    yield put(actions.eto.loadEtoAgreementsStatus(nomineeEto));
   }
 }
 

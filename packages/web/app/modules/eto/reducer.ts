@@ -2,7 +2,7 @@ import { TCompanyEtoData, TEtoSpecsData } from "../../lib/api/eto/EtoApi.interfa
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
 import { actions } from "../actions";
-import { IEtoContractData, IEtoTokenData } from "./types";
+import { IEtoContractData, IEtoTokenData, TOfferingDocuments } from "./types";
 
 export interface IEtoState {
   etos: { [previewCode: string]: TEtoSpecsData | undefined };
@@ -12,6 +12,7 @@ export interface IEtoState {
   maxCapExceeded: { [previewCode: string]: boolean | undefined };
   etoWidgetError: boolean | undefined;
   tokenData: { [previewCode: string]: IEtoTokenData | undefined };
+  offeringDocumentsStatus: { [previewCode: string]: TOfferingDocuments | undefined };
 }
 
 export const etoFlowInitialState: IEtoState = {
@@ -22,6 +23,7 @@ export const etoFlowInitialState: IEtoState = {
   maxCapExceeded: {},
   etoWidgetError: undefined,
   tokenData: {},
+  offeringDocumentsStatus: {},
 };
 
 export const etoReducer: AppReducer<IEtoState> = (
@@ -79,6 +81,14 @@ export const etoReducer: AppReducer<IEtoState> = (
         tokenData: {
           ...state.tokenData,
           [action.payload.previewCode]: action.payload.tokenData,
+        },
+      };
+    case actions.eto.setAgreementsStatus.getType():
+      return {
+        ...state,
+        offeringDocumentsStatus: {
+          ...state.offeringDocumentsStatus,
+          [action.payload.previewCode]: action.payload.statuses,
         },
       };
   }

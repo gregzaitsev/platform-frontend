@@ -482,7 +482,7 @@ function* verifyEtoAccess(
 }
 
 // TODO: Move to generic eto module (the one that's not specific to investor/issuer/nominee eto)
-export function* loadAgreementStatus(
+function* loadAgreementStatus(
   { logger }: TGlobalDependencies,
   agreementType: EAgreementType,
   eto: TEtoWithCompanyAndContract,
@@ -522,11 +522,30 @@ export function* loadAgreementStatus(
   }
 }
 
+function* loadAgreementsStatus(
+  _: TGlobalDependencies,
+  { payload }: TActionFromCreator<typeof actions.eto.loadEtoAgreementsStatus>,
+): Iterator<any> {
+  try {
+    const statuses: Dictionary<EEtoAgreementStatus, EAgreementType> = yield all({
+      [EAgreementType.THA]: neuCall(loadAgreementStatus, EAgreementType.THA, payload.eto),
+      [EAgreementType.RAAA]: neuCall(loadAgreementStatus, EAgreementType.RAAA, payload.eto),
+    });
+
+    console.log(statuses);
+
+    yield put(actions.eto.setAgreementsStatus(payload.eto.previewCode, statuses));
+  } catch (e) {
+    // TODO: Add error handling
+  }
+}
+
 export function* etoSagas(): Iterator<any> {
   yield fork(neuTakeEvery, actions.eto.loadEtoPreview, loadEtoPreview);
   yield fork(neuTakeEvery, actions.eto.loadEto, loadEto);
   yield fork(neuTakeEvery, actions.eto.loadEtos, loadEtos);
   yield fork(neuTakeEvery, actions.eto.loadTokensData, loadTokensData);
+  yield fork(neuTakeEvery, actions.eto.loadEtoAgreementsStatus, loadAgreementsStatus);
 
   yield fork(neuTakeEvery, actions.eto.downloadEtoDocument, downloadDocument);
   yield fork(neuTakeEvery, actions.eto.downloadEtoTemplateByType, downloadTemplateByType);

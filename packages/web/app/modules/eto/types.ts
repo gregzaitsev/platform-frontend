@@ -1,5 +1,6 @@
 import { TCompanyEtoData, TEtoSpecsData } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
-import { DeepReadonly } from "../../types";
+import { DeepReadonly, Dictionary } from "../../types";
+import { EAgreementType } from "../tx/transactions/nominee/sign-agreement/types";
 
 export interface IEtoTotalInvestment {
   totalEquivEurUlps: string;
@@ -61,3 +62,5 @@ export enum EEtoAgreementStatus {
   DONE = "done",
   ERROR = "error",
 }
+
+export type TOfferingDocuments = Dictionary<EEtoAgreementStatus, EAgreementType>;

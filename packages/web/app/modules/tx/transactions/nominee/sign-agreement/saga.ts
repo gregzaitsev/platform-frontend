@@ -2,11 +2,13 @@ import { put, select } from "redux-saga/effects";
 
 import { ipfsLinkFromHash } from "../../../../../components/documents/utils";
 import { TGlobalDependencies } from "../../../../../di/setupBindings";
+import { EEtoState } from "../../../../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { ETOCommitment } from "../../../../../lib/contracts/ETOCommitment";
 import { ITxData } from "../../../../../lib/web3/types";
 import { EthereumAddressWithChecksum } from "../../../../../types";
 import { assertNever } from "../../../../../utils/assertNever";
 import { actions } from "../../../../actions";
+import { InvalidETOStateError } from "../../../../eto/errors";
 import { TEtoWithCompanyAndContract } from "../../../../eto/types";
 import { isOnChain } from "../../../../eto/utils";
 import { selectStandardGasPriceWithOverHead } from "../../../../gas/selectors";
@@ -23,9 +25,7 @@ export function* getAgreementContractAndHash(
   eto: TEtoWithCompanyAndContract,
 ): Iterator<any> {
   if (!isOnChain(eto)) {
-    throw new Error(
-      `ETO should be on_chain to get agreement details but the status is ${eto.state}`,
-    );
+    throw new InvalidETOStateError(eto.state, EEtoState.ON_CHAIN);
   }
 
   switch (agreementType) {
