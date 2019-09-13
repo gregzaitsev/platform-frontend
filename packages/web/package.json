@@ -219,6 +219,8 @@
     "hex2ascii": "^0.0.3",
     "history": "^4.7.2",
     "inversify": "^4.10.0",
+    "ipfs-unixfs": "^0.1.16",
+    "ipld-dag-pb": "0.14.0",
     "jstimezonedetect": "^1.0.6",
     "lodash": "^4.17.11",
     "moment": "^2.21.0",

@@ -23,6 +23,8 @@ export interface INomineeFlowState {
   acceptRaaa: ENomineeAcceptAgreementStatus;
   redeemShareholderCapital: ENomineeRedeemShareholderCapitalStatus;
   uploadIsha: ENomineeUploadIshaStatus;
+  ishaHash: string | undefined;
+  ishaUploading: boolean
 }
 
 const nomineeFlowInitialState: INomineeFlowState = {
@@ -37,6 +39,8 @@ const nomineeFlowInitialState: INomineeFlowState = {
   linkBankAccount: ENomineeLinkBankAccountStatus.NOT_DONE,
   redeemShareholderCapital: ENomineeRedeemShareholderCapitalStatus.NOT_DONE,
   uploadIsha: ENomineeUploadIshaStatus.NOT_DONE,
+  ishaHash: undefined,
+  ishaUploading: false
 };
 
 export const nomineeFlowReducer: AppReducer<INomineeFlowState> = (
@@ -57,6 +61,7 @@ export const nomineeFlowReducer: AppReducer<INomineeFlowState> = (
         nomineeRequests: action.payload.tasks.nomineeRequests,
         acceptTha: action.payload.tasks.acceptTha,
         acceptRaaa: action.payload.tasks.acceptRaaa,
+        redeemShareholderCapital:action.payload.tasks.redeemShareholderCapital,
       };
     case actions.nomineeFlow.storeNomineeRequest.getType():
       return {
@@ -74,7 +79,6 @@ export const nomineeFlowReducer: AppReducer<INomineeFlowState> = (
         loading: false,
       };
     case actions.nomineeFlow.setActiveNomineeEto.getType():
-      console.log("setting active eto",action.payload.previewCode)
       return {
         ...state,
         activeNomineeEtoPreviewCode: action.payload.previewCode,
@@ -84,6 +88,16 @@ export const nomineeFlowReducer: AppReducer<INomineeFlowState> = (
         ...state,
         nomineeEtos: action.payload.etos,
         nomineeEtosCompanies: action.payload.companies,
+      };
+    case actions.nomineeFlow.setIshaHash.getType():
+      return {
+        ...state,
+        ishaHash: action.payload.ishaHash
+      };
+    case actions.nomineeFlow.startAcceptIsha.getType():
+      return {
+        ...state,
+        ishaUploading: true
       };
     default:
       return state;

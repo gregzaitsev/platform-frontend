@@ -12,7 +12,7 @@ import { TEtoWithCompanyAndContract } from "../eto/types";
 import { selectRouter } from "../routing/selectors";
 import { selectIsVerificationFullyDone } from "../selectors";
 import {
-  ENomineeAcceptAgreementStatus,
+  ENomineeAcceptAgreementStatus, ENomineeRedeemShareholderCapitalStatus, ENomineeUploadIshaStatus,
   TNomineeRequestStorage,
 } from "./types";
 import { getActiveEtoPreviewCodeFromQueryString, getNomineeTaskStep } from "./utils";
@@ -34,8 +34,14 @@ export const selectLinkedNomineeEtoId = (state: IAppState): string | undefined =
 export const selectNomineeTHAState = (state: IAppState): ENomineeAcceptAgreementStatus =>
   state.nomineeFlow.acceptTha;
 
+export const selectNomineeISHAState = (state: IAppState): ENomineeUploadIshaStatus =>
+  state.nomineeFlow.uploadIsha
+
 export const selectNomineeRAAAState = (state: IAppState): ENomineeAcceptAgreementStatus =>
   state.nomineeFlow.acceptRaaa;
+
+export const selectRedeemShareCapitalState = (_:IAppState): ENomineeRedeemShareholderCapitalStatus =>
+  ENomineeRedeemShareholderCapitalStatus.DONE;
 
 export const selectNomineeEtos = (
   state: IAppState,
@@ -108,12 +114,16 @@ export const selectNomineeTaskStep = createSelector(
   selectIsBankAccountVerified,
   selectNomineeTHAState,
   selectNomineeRAAAState,
+  selectRedeemShareCapitalState,
+  selectNomineeISHAState,
   (
     verificationIsComplete,
     nomineeEto,
     isBankAccountVerified,
     nomineeTHAStatus,
     nomineeRAAAStatus,
+    selectRedeemShareCapitalState,
+    selectNomineeISHAState,
   ) =>
     getNomineeTaskStep(
       verificationIsComplete,
@@ -121,6 +131,8 @@ export const selectNomineeTaskStep = createSelector(
       isBankAccountVerified,
       nomineeTHAStatus,
       nomineeRAAAStatus,
+      selectRedeemShareCapitalState,
+      selectNomineeISHAState
     ),
 );
 
@@ -128,3 +140,9 @@ export const selectActiveEtoPreviewCodeFromQueryString = createSelector(
   selectRouter,
   state => getActiveEtoPreviewCodeFromQueryString(state.location.search),
 );
+
+export const selectIshaHash = (state: IAppState):string | undefined =>
+  state.nomineeFlow.ishaHash;
+
+export const selectIshaLoading = (state:IAppState):boolean =>
+  state.nomineeFlow.ishaUploading

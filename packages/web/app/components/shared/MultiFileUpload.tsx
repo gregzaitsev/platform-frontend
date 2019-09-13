@@ -27,7 +27,7 @@ interface IProps {
   "data-test-id"?: string;
 }
 
-const MultiFileUploadComponent: React.FunctionComponent<IProps> = ({
+export const MultiFileUploadComponent: React.FunctionComponent<IProps> = ({
   acceptedFiles,
   fileUploading,
   files,

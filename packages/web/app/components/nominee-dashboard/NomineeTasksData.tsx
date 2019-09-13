@@ -2,12 +2,12 @@ import * as React from "react";
 
 import { ENomineeTask } from "../../modules/nominee-flow/types";
 import { AcceptRAAA, AcceptTHA } from "./AcceptAgreement";
-import { AcceptIsha } from "./AcceptIsha";
+import { AcceptIsha } from "./acceptIsha/AcceptIsha";
 import { AccountSetup } from "./accountSetup/AccountSetup";
 import { LinkBankAccount } from "./linkBankAccount/LinkBankAccount";
 import { LinkToIssuer } from "./linkToIssuer/LinkToIssuer";
 import { NoTasks } from "./NoTasks";
-import { RedeemShareCapital } from "./RedeemShareCapital";
+import { RedeemShareCapital } from "./redeemShareCapital/RedeemShareCapital";
 
 export interface ITaskData {
   key: ENomineeTask;
@@ -46,8 +46,8 @@ export const nomineeTasksData: TNomineeTasksData = {
     key: ENomineeTask.REDEEM_SHARE_CAPITAL,
     taskRootComponent: RedeemShareCapital,
   },
-  [ENomineeTask.ACCEPT_ISHA]: {
-    key: ENomineeTask.ACCEPT_ISHA,
+  [ENomineeTask.UPLOAD_ISHA]: {
+    key: ENomineeTask.UPLOAD_ISHA,
     taskRootComponent: AcceptIsha,
   },
   [ENomineeTask.NONE]: {

@@ -965,6 +965,8 @@
   "nominee.sign-tha.success.text": "Thank you for signing the Token Holder Agreement.",
   "nominee.sign-tha.text": "Please review, agree and sign",
   "nominee.sign-tha.title": "Sign Token Holder Agreement",
+  "nominee.upload-isha.title":"Upload and Sign the Investor Shareholder Agreement",
+  "nominee.upload-isha.text":"Please upload and sign the Investor Shareholder Agreement (ISHA) to complete your Issuers’ fundraising campaign. You need to upload the same document you both signed. Should you not have this document, please contact Fifth Force GmbH.",
   "notifications.auth-session-timeout": "You have been logged out due to inactivity. Please login again.",
   "notifications.complete-request": "Please complete your profile in order to begin investing. By clicking anywhere within this banner, you’ll be redirected to your Profile.",
   "notifications.update-account": "Please update your profile before proceeding. After you have successfully verified your identity, you will be able to fundraise.",

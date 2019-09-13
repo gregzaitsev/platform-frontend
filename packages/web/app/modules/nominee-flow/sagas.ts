@@ -1,3 +1,6 @@
+const Unixfs = require('ipfs-unixfs');
+const {DAGNode} = require('ipld-dag-pb');
+
 import BigNumber from "bignumber.js";
 import { compose, isEmpty, keyBy, map, omit } from "lodash/fp";
 import { delay } from "redux-saga";
@@ -32,7 +35,8 @@ import {
   IAgreementContractAndHash,
 } from "../tx/transactions/nominee/sign-agreement/types";
 import {
-  selectActiveEtoPreviewCodeFromQueryString, selectLinkedNomineeEtoId,
+  selectActiveEtoPreviewCodeFromQueryString,
+  selectLinkedNomineeEtoId,
   selectNomineeActiveEtoPreviewCode,
   selectNomineeEtos,
   selectNomineeEtoWithCompanyAndContract,
@@ -40,29 +44,81 @@ import {
 import {
   ENomineeAcceptAgreementStatus,
   ENomineeLinkBankAccountStatus,
-  ENomineeRedeemShareholderCapitalStatus,
   ENomineeRequestError,
   ENomineeTask,
-  ENomineeUploadIshaStatus, ERedeemShareCapitalStatus,
+  ENomineeUploadIshaStatus,
+  ENomineeRedeemShareholderCapitalStatus,
   INomineeRequest,
   TNomineeRequestStorage,
 } from "./types";
 import { nomineeApiDataToNomineeRequests, nomineeRequestResponseToRequestStatus } from "./utils";
+import { selectIsBankAccountVerified } from "../bank-transfer-flow/selectors";
 import { ETOCommitment } from "../../lib/contracts/ETOCommitment";
+import { hashFromIpfsLink } from "../../components/documents/utils";
 
-export function* getRedeemCapitalStatus({
-  contractsService
-}: TGlobalDependencies,
-  ): Iterator<any> {
-  const nomineeEtoId = yield select(selectLinkedNomineeEtoId);
-  const etoCommitmentContract: ETOCommitment = yield contractsService.getETOCommitmentContract(
-    nomineeEtoId,
-  );
-  const contributionSummary = yield etoCommitmentContract.contributionSummary();
-  const capitalIncrease = contributionSummary[1];
+export function* nomineeBankAccountStatus() {
+  const bankStatus = yield select(selectIsBankAccountVerified);
+  return bankStatus ? ENomineeLinkBankAccountStatus.DONE : ENomineeLinkBankAccountStatus.NOT_DONE
+}
 
-  console.log("capitalIncrease",capitalIncrease);
-  return ERedeemShareCapitalStatus.NOT_DONE
+export function* loadIshaHash({
+  // contractsService,
+}: TGlobalDependencies) {
+  // const nomineeEtoId = yield select(selectLinkedNomineeEtoId);
+  //
+  // const etoCommitmentContract: ETOCommitment = yield contractsService.getETOCommitmentContract(
+  //   nomineeEtoId,
+  // );
+  // const ishaUrl = yield etoCommitmentContract.signedInvestmentAgreementUrl;
+  const ishaUrl = yield "ipfs:QmNPyPao7dEsQzKarCYCyGyDrutzWyACDMcq8HbQ1eGt2E"; //FIXME
+  if (ishaUrl !== "") {
+    const ishaHash = hashFromIpfsLink(ishaUrl);
+    yield put(actions.nomineeFlow.setIshaHash(ishaHash));
+    console.log("ishaHash", ishaHash)
+  }
+}
+
+export function* loadIshaStatus() {
+  //todo
+  // etoState !== claim && isha === undefined --> not_done
+  // etoState === claim --> done
+  // what if etoState === refund?
+  return ENomineeUploadIshaStatus.NOT_DONE
+}
+
+const generateBuffer = (file:File) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      return resolve(reader.result)
+    };
+    reader.onabort = () => {
+      return reject("aborted")
+    };
+    reader.onerror = (e:Event) => {
+      return reject(e)
+    };
+    reader.readAsArrayBuffer(file)
+  })
+};
+export function* acceptIsha({
+    logger,
+    contractsService
+  }: TGlobalDependencies,
+  action: TActionFromCreator<typeof actions.nomineeFlow.startAcceptIsha>) {
+  const arrayBuffer = yield generateBuffer(action.payload.isha)
+
+  const file = new Unixfs('file', Buffer.from(arrayBuffer))
+  const filePB = file.marshal()
+  console.log("arrayBuffer", arrayBuffer)
+
+  const dagNode = DAGNode.create(filePB,[],(err, node) => {
+    if(err) return console.error(err)
+    console.log("result",node.toJSON().multihash)
+
+  })
+
+//QmWtPnZxSwFRNvnXDe5wqXWG23jpS9djdwoTDRJrtDCDg9
 }
 
 export function* loadNomineeTaskData({
@@ -72,13 +128,15 @@ export function* loadNomineeTaskData({
 }: TGlobalDependencies): Iterator<any> {
   try {
     // load information that's needed to properly calculate nominee current task
-    yield all([neuCall(loadNomineeEtos), neuCall(loadBankAccountDetails)]);
+    yield all([neuCall(loadNomineeEtos), neuCall(loadBankAccountDetails), neuCall(loadIshaHash)]);
 
     const taskData = yield all({
       nomineeRequests: yield apiEtoNomineeService.getNomineeRequests(),
-      nomineeTHAStatus: yield neuCall(loadAgreementStatus, ENomineeTask.ACCEPT_THA),
-      nomineeRAAStatus: yield neuCall(loadAgreementStatus, ENomineeTask.ACCEPT_RAAA),
-      redeemCapitalStatus: yield neuCall(getRedeemCapitalStatus)
+      nomineeBankAccountStatus: yield nomineeBankAccountStatus(),
+      nomineeTHAStatus: yield ENomineeAcceptAgreementStatus.DONE,//yield neuCall(loadAgreementStatus, ENomineeTask.ACCEPT_THA),
+      nomineeRAAStatus: yield ENomineeAcceptAgreementStatus.DONE,//yield neuCall(loadAgreementStatus, ENomineeTask.ACCEPT_RAAA),
+      redeemShareholderCapital: yield ENomineeRedeemShareholderCapitalStatus.DONE, //this step should be skipped for now
+      uploadIsha: yield neuCall(loadIshaStatus)
       // todo query here if data not in the store yet
       // redeemShareholderCapital:
       // uploadIsha:
@@ -96,11 +154,11 @@ export function* loadNomineeTaskData({
     yield put(
       actions.nomineeFlow.storeNomineeTaskData({
         nomineeRequests: nomineeRequestsConverted,
-        linkBankAccount: ENomineeLinkBankAccountStatus.NOT_DONE,
+        linkBankAccount: taskData.nomineeBankAccountStatus,
         acceptTha: taskData.nomineeTHAStatus,
         acceptRaaa: taskData.nomineeRAAStatus,
-        redeemShareholderCapital: ENomineeRedeemShareholderCapitalStatus.NOT_DONE,
-        uploadIsha: ENomineeUploadIshaStatus.NOT_DONE,
+        redeemShareholderCapital: taskData.redeemShareholderCapital,
+        uploadIsha: taskData.uploadIsha,
       }),
     );
   } catch (e) {
@@ -265,9 +323,7 @@ export function* guardActiveEto({
     const previewCode: ReturnType<typeof selectNomineeActiveEtoPreviewCode> = yield select(
       selectNomineeActiveEtoPreviewCode,
     );
-    const forcedActiveEtoPreviewCode: ReturnType<
-      typeof selectActiveEtoPreviewCodeFromQueryString
-    > = yield select(selectActiveEtoPreviewCodeFromQueryString);
+    const forcedActiveEtoPreviewCode: ReturnType<typeof selectActiveEtoPreviewCodeFromQueryString> = yield select(selectActiveEtoPreviewCodeFromQueryString);
 
     if (isEmpty(etos)) {
       if (previewCode !== undefined) {
@@ -311,4 +367,5 @@ export function* nomineeFlowSagas(): Iterator<any> {
     actions.nomineeFlow.stopNomineeRequestsWatcher,
     nomineeRequestsWatcher,
   );
+  yield fork(neuTakeLatest, actions.nomineeFlow.startAcceptIsha, acceptIsha)
 }

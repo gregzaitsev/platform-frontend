@@ -47,4 +47,12 @@ export const nomineeFlowActions = {
       companies: Dictionary<TCompanyEtoData>;
     }) => ({ etos, companies }),
   ),
+  setIshaHash: createActionFactory(
+    "NOMINEE_FLOW_SET_ISHA_HASH",
+    (ishaHash: string | undefined) => ({ ishaHash })
+  ),
+  startAcceptIsha: createActionFactory(
+    "NOMINEE_FLOW_START_ISHA_UPLOAD",
+    (isha: File) => ({ isha })
+  )
 };

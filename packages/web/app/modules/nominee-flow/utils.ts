@@ -8,8 +8,9 @@ import { EETOStateOnChain, TEtoWithCompanyAndContract } from "../eto/types";
 import { isOnChain } from "../eto/utils";
 import {
   ENomineeAcceptAgreementStatus,
+  ENomineeRedeemShareholderCapitalStatus,
   ENomineeRequestStatus,
-  ENomineeTask,
+  ENomineeTask, ENomineeUploadIshaStatus,
   INomineeRequest,
   TNomineeRequestStorage,
 } from "./types";
@@ -99,8 +100,10 @@ export const getNomineeTaskStep = (
   verificationIsComplete: boolean,
   nomineeEto: TEtoWithCompanyAndContract | undefined,
   isBankAccountVerified: boolean,
-  THAStatus: ENomineeAcceptAgreementStatus | undefined,
-  RAAAStatus: ENomineeAcceptAgreementStatus | undefined,
+  THAStatus: ENomineeAcceptAgreementStatus,
+  RAAAStatus: ENomineeAcceptAgreementStatus,
+  redeemShareCapital: ENomineeRedeemShareholderCapitalStatus,
+  ISHAStatus: ENomineeUploadIshaStatus
 ): ENomineeTask => {
   if (!verificationIsComplete) {
     return ENomineeTask.ACCOUNT_SETUP;
@@ -119,6 +122,10 @@ export const getNomineeTaskStep = (
     nomineeIsEligibleToSignAgreement(nomineeEto)
   ) {
     return ENomineeTask.ACCEPT_RAAA;
+  } else if(redeemShareCapital !== ENomineeRedeemShareholderCapitalStatus.DONE) {
+    return ENomineeTask.REDEEM_SHARE_CAPITAL
+  } else if (ISHAStatus !== ENomineeUploadIshaStatus.DONE){
+    return ENomineeTask.UPLOAD_ISHA
   } else {
     return ENomineeTask.NONE;
   }

@@ -40,12 +40,6 @@ export enum ENomineeUploadIshaStatus {
   ERROR = "error",
 }
 
-export enum ERedeemShareCapitalStatus {
-  NOT_DONE = "not_done",
-  DONE = "done",
-  ERROR = "error",
-}
-
 export interface INomineeRequestMetadata {
   city: string;
   country: string;
@@ -78,5 +72,5 @@ export enum ENomineeTask {
   ACCEPT_THA = "acceptTha",
   ACCEPT_RAAA = "acceptRaaa",
   REDEEM_SHARE_CAPITAL = "redeemShareCapital",
-  ACCEPT_ISHA = "acceptIsha",
+  UPLOAD_ISHA = "uploadIsha",
 }

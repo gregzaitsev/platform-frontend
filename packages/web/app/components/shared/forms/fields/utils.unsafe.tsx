@@ -19,6 +19,7 @@ export enum EMimeType {
   PNG = "image/png",
   SVG = "image/svg+xml",
   ANY_IMAGE_TYPE = "image/*",
+  ANY_TYPE = "*/*"
 }
 
 export type TAcceptedFileType = EMimeType & string;
