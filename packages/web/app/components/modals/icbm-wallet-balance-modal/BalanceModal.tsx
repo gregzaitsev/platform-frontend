@@ -3,7 +3,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 
 import { Button, EButtonLayout } from "../../shared/buttons";
 import { DocumentTemplateButton } from "../../shared/DocumentLink";
-import { MoneyNew } from "../../shared/formatters/Money";
+import { Money } from "../../shared/formatters/Money";
 import { ECurrency, ENumberInputFormat, ENumberOutputFormat } from "../../shared/formatters/utils";
 import { Heading } from "../../shared/Heading";
 import { CurrencyIcon } from "../../shared/icons/CurrencyIcon";
@@ -81,7 +81,7 @@ export const BalanceModal: React.FunctionComponent<IBalanceModal> = ({
           </>
         }
         value={
-          <MoneyNew
+          <Money
             value={neumarksDue}
             inputFormat={ENumberInputFormat.ULPS}
             valueType={ECurrency.NEU}
@@ -99,7 +99,7 @@ export const BalanceModal: React.FunctionComponent<IBalanceModal> = ({
           </>
         }
         value={
-          <MoneyNew
+          <Money
             value={etherBalance}
             inputFormat={ENumberInputFormat.ULPS}
             outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}

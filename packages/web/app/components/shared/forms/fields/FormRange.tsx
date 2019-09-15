@@ -1,9 +1,9 @@
-import { connect, Field, FieldProps, isFunction } from "formik";
+import { connect, Field, FieldProps } from "formik";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
 import { TFormikConnect } from "../../../../types";
-import { findMax, findMin, getFieldSchema } from "../../../../utils/yupUtils";
+import { findMax, findMin, getSchemaField, getValidationSchema } from "../../../../utils/yupUtils";
 
 import * as styles from "./FormRange.module.scss";
 
@@ -88,8 +88,8 @@ const FormRangeBase: React.FunctionComponent<IProps & TFormikConnect> = ({
   formik: { validationSchema },
   ...props
 }) => {
-  const schema = isFunction(validationSchema) ? validationSchema() : validationSchema;
-  const fieldSchema = getFieldSchema(name, schema);
+  const schema = getValidationSchema(validationSchema);
+  const fieldSchema = getSchemaField(name, schema);
   const min = props.min !== undefined ? props.min : findMin(fieldSchema);
   const max = props.max !== undefined ? props.max : findMax(fieldSchema);
 

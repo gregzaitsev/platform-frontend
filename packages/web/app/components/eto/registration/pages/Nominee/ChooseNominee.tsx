@@ -3,7 +3,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { branch, compose, renderComponent } from "recompose";
 
 import { actions } from "../../../../../modules/actions";
-import { INomineeRequest } from "../../../../../modules/nominee-flow/reducer";
+import { INomineeRequest } from "../../../../../modules/nominee-flow/types";
 import { appConnect } from "../../../../../store";
 import { Button, EButtonLayout, EButtonTheme } from "../../../../shared/buttons/Button";
 import { FormHighlightGroup } from "../../../../shared/forms/FormHighlightGroup";
@@ -164,4 +164,4 @@ const ChooseNominee = compose<TWithNomineeProps & IDispatchProps, {}>(
   ),
 )(PendingNomineesComponent);
 
-export { ChooseNominee };
+export { ChooseNominee, PendingNomineesComponent };

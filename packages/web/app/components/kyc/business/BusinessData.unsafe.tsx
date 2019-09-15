@@ -15,7 +15,7 @@ import { appConnect } from "../../../store";
 import { IIntlProps, injectIntlHelpers } from "../../../utils/injectIntlHelpers.unsafe";
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { Button } from "../../shared/buttons";
-import { Form, FormField, FormSelectCountryField } from "../../shared/forms";
+import { FormDeprecated, FormField, FormSelectCountryField } from "../../shared/forms";
 import { EMimeType } from "../../shared/forms/fields/utils.unsafe";
 import { MultiFileUpload } from "../../shared/MultiFileUpload";
 import { KycPanel } from "../KycPanel";
@@ -58,7 +58,7 @@ type IProps = IStateProps & IDispatchProps;
 
 const KYCForm = injectIntlHelpers<FormikProps<IKycBusinessData> & IProps>(
   ({ intl: { formatIntlMessage }, ...props }) => (
-    <Form>
+    <FormDeprecated>
       <FormField
         data-test-id="kyc-company-business-data-company-name"
         label={formatIntlMessage("form.label.company-name")}
@@ -114,7 +114,7 @@ const KYCForm = injectIntlHelpers<FormikProps<IKycBusinessData> & IProps>(
           <FormattedMessage id="form.button.save" />
         </Button>
       </div>
-    </Form>
+    </FormDeprecated>
   ),
 );
 

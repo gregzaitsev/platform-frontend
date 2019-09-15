@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { multiplyBigNumbers } from "../../../../utils/BigNumberUtils";
-import { MoneyNew } from "../../../shared/formatters/Money";
+import { Money } from "../../../shared/formatters/Money";
 import {
   ECurrency,
   ENumberInputFormat,
@@ -27,7 +27,7 @@ const CalculatedFee: React.FunctionComponent<{ amount: string; bankFee: string }
   const calculatedFee = multiplyBigNumbers([providedAmount, bankFee]);
 
   return (
-    <MoneyNew
+    <Money
       data-test-id="bank-transfer.redeem.init.fee"
       value={calculatedFee}
       inputFormat={ENumberInputFormat.ULPS}

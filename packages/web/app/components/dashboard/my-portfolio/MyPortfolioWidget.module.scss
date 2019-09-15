@@ -1,38 +1,13 @@
-.content-wrapper {
-  @include media-breakpoint-up(md) {
-    flex-direction: row;
-  }
-
-  display: flex;
-  flex-grow: 1;
-  flex-direction: column;
-}
-
-.main {
-  @include media-breakpoint-up(md) {
-    padding-right: 20px;
-  }
-
-  @include media-breakpoint-down(md) {
-    padding-top: 20px;
-    padding-bottom: 20px;
-  }
-
-  align-content: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
-  width: 100%;
-}
-
-.welcome {
-  text-transform: uppercase;
-  font-weight: 200;
-}
-
 // todo this is a quick fix for neu widget in dashboard
 //  until we sort out the css ordering problem
 .panel-fix {
+  @include media-breakpoint-up(md) {
+    grid-template: auto / 2fr 1fr;
+  }
+
+  display: grid;
+  justify-content: center;
+  grid-gap: 2rem;
   align-content: stretch;
+  grid-template: 1fr auto / auto;
 }

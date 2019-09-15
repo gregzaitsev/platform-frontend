@@ -1,15 +1,15 @@
-import { find, findKey } from "lodash/fp";
+import { find } from "lodash/fp";
 import createCachedSelector from "re-reselect";
 import { createSelector } from "reselect";
 
-import { EEtoState, TEtoData, TEtoSpecsData } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
-import { IEtoDocument } from "../../lib/api/eto/EtoFileApi.interfaces";
-import { nomineeIgnoredTemplates } from "../../lib/api/eto/EtoFileUtils";
+import {
+  EEtoState,
+  TEtoDataWithCompany,
+  TEtoSpecsData,
+} from "../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { IAppState } from "../../store";
 import { DeepReadonly } from "../../types";
 import { nonNullable } from "../../utils/nonNullable";
-import { objectToFilteredArray } from "../../utils/objectToFilteredArray";
-import { selectUserId } from "../auth/selectors";
 import { selectBookbuildingStats } from "../bookbuilding-flow/selectors";
 import { selectIsEligibleToPreEto } from "../investor-portfolio/selectors";
 import { hiddenJurisdictions } from "./constants";
@@ -191,7 +191,7 @@ export const selectIsEtoAnOffer = (state: IAppState, previewCode: string, etoSta
 
 export const selectFilteredEtosByRestrictedJurisdictions = (
   state: IAppState,
-  etos: TEtoData[],
+  etos: TEtoDataWithCompany[],
   jurisdiction: string | undefined,
 ) =>
   jurisdiction
@@ -209,27 +209,3 @@ export const selectFilteredEtosByRestrictedJurisdictions = (
         );
       })
     : etos;
-
-export const selectNomineeEto = (state: IAppState): TEtoWithCompanyAndContract | undefined => {
-  const nomineeId = selectUserId(state);
-  const etoState = selectEtoState(state);
-  if (nomineeId) {
-    const previewCode = findKey(eto => eto!.nominee === nomineeId, etoState.etos);
-    return previewCode ? selectEtoWithCompanyAndContract(state, previewCode) : undefined;
-  } else {
-    throw new Error("linked nominee eto id is invalid");
-  }
-};
-
-export const selectNomineeEtoState = (state: IAppState) => {
-  const eto = selectNomineeEto(state);
-  return eto ? eto.state : undefined;
-};
-
-export const selectNomineeEtoTemplatesArray = (state: IAppState): IEtoDocument[] => {
-  const eto = selectNomineeEto(state);
-  const filterFunction = (key: string) =>
-    !nomineeIgnoredTemplates.some((templateKey: string) => templateKey === key);
-
-  return eto !== undefined ? objectToFilteredArray(filterFunction, eto.templates) : [];
-};

@@ -612,7 +612,7 @@ function* submitBusinessRequest(
   }
 }
 
-function* loadBankAccountDetails({
+export function* loadBankAccountDetails({
   apiKycService,
   logger,
   notificationCenter,

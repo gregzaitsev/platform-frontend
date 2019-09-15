@@ -12,7 +12,7 @@ import { TNomineeRequestResponse } from "../../lib/api/eto/EtoApi.interfaces.uns
 import { actions, TActionFromCreator } from "../actions";
 import { ensurePermissionsArePresentAndRunEffect } from "../auth/jwt/sagas";
 import { selectEtoNominee } from "../eto-flow/selectors";
-import { ENomineeUpdateRequestStatus, TNomineeRequestStorage } from "../nominee-flow/reducer";
+import { ENomineeUpdateRequestStatus, TNomineeRequestStorage } from "../nominee-flow/types";
 import { etoApiDataToNomineeRequests } from "../nominee-flow/utils";
 import { neuCall, neuTakeLatest, neuTakeUntil } from "../sagasUtils";
 

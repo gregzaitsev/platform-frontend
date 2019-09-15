@@ -35,7 +35,7 @@ describe("TransactionHistory", () => {
     cy.get(tid("transaction-history-details-modal")).should("exist");
   });
 
-  it("should watch for new transactions", () => {
+  it.skip("should watch for new transactions", () => {
     loginFixtureAccount("INV_HAS_EUR_HAS_KYC", { kyc: "business" });
 
     // generate withdraw transaction to have new item in tx history list

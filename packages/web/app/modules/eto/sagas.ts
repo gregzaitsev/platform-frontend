@@ -7,11 +7,12 @@ import { all, fork, put, race, select, take } from "redux-saga/effects";
 import { JurisdictionDisclaimerModal } from "../../components/eto/public-view/JurisdictionDisclaimerModal";
 import { EtoMessage } from "../../components/translatedMessages/messages";
 import { createMessage } from "../../components/translatedMessages/utils";
+import { Q18 } from "../../config/constants";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import {
   EEtoState,
   TCompanyEtoData,
-  TEtoData,
+  TEtoDataWithCompany,
   TEtoSpecsData,
 } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { IEtoDocument, immutableDocumentName } from "../../lib/api/eto/EtoFileApi.interfaces";
@@ -22,7 +23,7 @@ import { ETOCommitment } from "../../lib/contracts/ETOCommitment";
 import { EuroToken } from "../../lib/contracts/EuroToken";
 import { IAppState } from "../../store";
 import { Dictionary } from "../../types";
-import { divideBigNumbers } from "../../utils/BigNumberUtils";
+import { divideBigNumbers, multiplyBigNumbers } from "../../utils/BigNumberUtils";
 import { actions, TActionFromCreator } from "../actions";
 import { selectIsUserVerified, selectUserType } from "../auth/selectors";
 import { selectMyAssets } from "../investor-portfolio/selectors";
@@ -122,8 +123,8 @@ function* loadEto(
 
 export function* loadEtoContract(
   { contractsService, logger }: TGlobalDependencies,
-  eto: TEtoData,
-): any {
+  eto: TEtoDataWithCompany,
+): Iterator<any> {
   if (eto.state !== EEtoState.ON_CHAIN) {
     logger.error("Invalid eto state", new InvalidETOStateError(eto.state, EEtoState.ON_CHAIN), {
       etoId: eto.etoId,
@@ -272,7 +273,7 @@ function* watchEto(_: TGlobalDependencies, previewCode: string): any {
 function* loadEtos({ apiEtoService, logger, notificationCenter }: TGlobalDependencies): any {
   try {
     yield waitForKycStatus();
-    const etos: TEtoData[] = yield apiEtoService.getEtos();
+    const etos: TEtoDataWithCompany[] = yield apiEtoService.getEtos();
 
     const jurisdiction: string | undefined = yield select(selectClientJurisdiction);
 
@@ -282,15 +283,15 @@ function* loadEtos({ apiEtoService, logger, notificationCenter }: TGlobalDepende
         .map(eto => neuCall(loadEtoContract, eto)),
     );
 
-    const filteredEtosByJurisdictionRestrictions: TEtoData[] = yield select((state: IAppState) =>
-      selectFilteredEtosByRestrictedJurisdictions(state, etos, jurisdiction),
+    const filteredEtosByJurisdictionRestrictions: TEtoDataWithCompany[] = yield select(
+      (state: IAppState) => selectFilteredEtosByRestrictedJurisdictions(state, etos, jurisdiction),
     );
 
     const order = filteredEtosByJurisdictionRestrictions.map(eto => eto.previewCode);
 
     const companies = compose(
       keyBy((eto: TCompanyEtoData) => eto.companyId),
-      map((eto: TEtoData) => eto.company),
+      map((eto: TEtoDataWithCompany) => eto.company),
     )(filteredEtosByJurisdictionRestrictions);
 
     const etosByPreviewCode = compose(
@@ -373,14 +374,33 @@ function* loadTokensData({ contractsService }: TGlobalDependencies): any {
 
     const controllerGovernance = yield contractsService.getControllerGovernance(tokenController);
 
-    const [
-      totalCompanyShares,
+    let [
+      shareCapital,
       companyValuationEurUlps,
       ,
     ] = yield controllerGovernance.shareholderInformation();
 
+    // backward compatibility with FF Token Controller - may be removed after controller migration
+    if (Q18.gt(shareCapital)) {
+      // convert shares to capital amount with nominal share value of 1 (Q18)
+      shareCapital = shareCapital.mul(Q18);
+    }
+
+    // obtain nominal value of a share from IEquityToken
+    let shareNominalValueUlps;
+    try {
+      shareNominalValueUlps = yield equityToken.shareNominalValueUlps();
+    } catch (e) {
+      // make it backward compatible with FF ETO, which is always and forever Q18 and does not provide method above
+      shareNominalValueUlps = Q18;
+    }
+
+    // todo: use standard calcSharePrice util from calculator, after converting from wei scale
     const tokenPrice = divideBigNumbers(
-      divideBigNumbers(companyValuationEurUlps, totalCompanyShares),
+      divideBigNumbers(
+        multiplyBigNumbers([companyValuationEurUlps, shareNominalValueUlps]),
+        shareCapital,
+      ),
       tokensPerShare,
     );
 
@@ -388,7 +408,7 @@ function* loadTokensData({ contractsService }: TGlobalDependencies): any {
       actions.eto.setTokenData(eto.previewCode, {
         balance: balance.toString(),
         tokensPerShare: tokensPerShare.toString(),
-        totalCompanyShares: totalCompanyShares.toString(),
+        totalCompanyShares: shareCapital.toString(),
         companyValuationEurUlps: companyValuationEurUlps.toString(),
         tokenPrice: tokenPrice.toString(),
       }),
@@ -472,46 +492,11 @@ function* verifyEtoAccess(
   }
 }
 
-export function* loadNomineeEtos({
-  apiEtoService,
-  logger,
-  notificationCenter,
-}: TGlobalDependencies): any {
-  try {
-    const etos: TEtoData[] = yield apiEtoService.loadNomineeEtos();
-
-    yield all(
-      etos
-        .filter(eto => eto.state === EEtoState.ON_CHAIN)
-        .map(eto => neuCall(loadEtoContract, eto)),
-    );
-
-    const companies = compose(
-      keyBy((eto: TCompanyEtoData) => eto.companyId),
-      map((eto: TEtoData) => eto.company),
-    )(etos);
-
-    const etosByPreviewCode = compose(
-      keyBy((eto: TEtoSpecsData) => eto.previewCode),
-      // remove company prop from eto
-      // it's saved separately for consistency with other endpoints
-      map(omit("company")),
-    )(etos);
-
-    yield put(actions.eto.setEtos({ etos: etosByPreviewCode, companies }));
-  } catch (e) {
-    logger.error("nominee ETOs could not be loaded", e);
-
-    notificationCenter.error(createMessage(EtoMessage.COULD_NOT_LOAD_ETOS));
-  }
-}
-
 export function* etoSagas(): Iterator<any> {
   yield fork(neuTakeEvery, actions.eto.loadEtoPreview, loadEtoPreview);
   yield fork(neuTakeEvery, actions.eto.loadEto, loadEto);
   yield fork(neuTakeEvery, actions.eto.loadEtos, loadEtos);
   yield fork(neuTakeEvery, actions.eto.loadTokensData, loadTokensData);
-  yield fork(neuTakeLatest, actions.eto.getNomineeEtos, loadNomineeEtos);
 
   yield fork(neuTakeEvery, actions.eto.downloadEtoDocument, downloadDocument);
   yield fork(neuTakeEvery, actions.eto.downloadEtoTemplateByType, downloadTemplateByType);

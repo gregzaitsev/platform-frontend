@@ -9,7 +9,7 @@ import { EtoMaxCapExceededComponent } from "./EtoMaxCapExceeded";
 const eto = {
   etoId: "0x123434562134asdf2412341234adf12341234",
   preMoneyValuationEur: 10000,
-  existingCompanyShares: 10,
+  existingShareCapital: 10,
   equityTokensPerShare: 10,
   maxPledges: 500,
   maxTicketEur: 10000000,

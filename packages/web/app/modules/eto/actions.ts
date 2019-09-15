@@ -70,5 +70,4 @@ export const etoActions = {
     }),
   ),
   confirmJurisdictionDisclaimer: createActionFactory("ETO_CONFIRM_JURISDICTION_DISCLAIMER"),
-  getNomineeEtos: createActionFactory("NOMINEE_FLOW_LOAD_NOMINEE_ETOS"),
 };

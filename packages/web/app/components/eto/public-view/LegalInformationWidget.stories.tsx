@@ -13,7 +13,7 @@ const moreThanSix = {
   ...testCompany,
   shareholders: Array(12).fill({
     fullName: "The same, but different",
-    shares: 10000,
+    shareCapital: 10000,
   }),
 };
 

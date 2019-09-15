@@ -2,8 +2,8 @@ import * as React from "react";
 import { branch, compose, renderComponent, withProps } from "recompose";
 
 import { actions } from "../../modules/actions";
-import { selectNomineeEto } from "../../modules/eto/selectors";
 import { TEtoWithCompanyAndContract } from "../../modules/eto/types";
+import { selectNomineeEtoWithCompanyAndContract } from "../../modules/nominee-flow/selectors";
 import { appConnect } from "../../store";
 import { onEnterAction } from "../../utils/OnEnterAction";
 import { withContainer } from "../../utils/withContainer.unsafe";
@@ -37,13 +37,11 @@ export const connectToNomineeEto = <T extends {}>(
     createErrorBoundary(ErrorBoundaryLayout),
     appConnect<TLinkedNomineeStateProps, {}, T>({
       stateToProps: state => ({
-        eto: selectNomineeEto(state),
+        eto: selectNomineeEtoWithCompanyAndContract(state),
       }),
     }),
     onEnterAction({
-      actionCreator: dispatch => {
-        dispatch(actions.eto.getNomineeEtos());
-      },
+      actionCreator: dispatch => dispatch(actions.nomineeFlow.loadNomineeEtos()),
     }),
   )(WrappedComponent);
 

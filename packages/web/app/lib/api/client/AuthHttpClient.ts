@@ -24,6 +24,11 @@ export abstract class AuthorizedHttpClient implements IHttpClient {
       headers: {
         ...config.headers,
         Authorization: `Bearer ${this.objectStorage.get()}`,
+        /*
+         * Additional custom header required due authorization issues on iOS12/Safari
+         * https://github.com/Neufund/platform-frontend/issues/2425
+         */
+        "X-NF-Authorization": `Bearer ${this.objectStorage.get()}`,
       },
     };
   }

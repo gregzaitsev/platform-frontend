@@ -11,7 +11,7 @@ import { DashboardHeading } from "../eto/shared/DashboardHeading";
 import { EProjectStatusSize, ETOInvestorState } from "../eto/shared/ETOState";
 import { Container } from "../layouts/Container";
 import { FormatNumber } from "../shared/formatters/FormatNumber";
-import { MoneyNew } from "../shared/formatters/Money";
+import { Money } from "../shared/formatters/Money";
 import {
   ECurrency,
   ENumberInputFormat,
@@ -82,21 +82,21 @@ const PortfolioPastInvestments: React.FunctionComponent<IExternalProps> = ({ pas
               outputFormat={ENumberOutputFormat.INTEGER}
               data-test-id="past-investments-token-balance"
             />
-            <MoneyNew
+            <Money
               value={investorTicket.equivEurUlps}
               inputFormat={ENumberInputFormat.ULPS}
               valueType={ECurrency.EUR}
               outputFormat={ENumberOutputFormat.FULL}
               data-test-id="past-investments-invested-amount"
             />
-            <MoneyNew
+            <Money
               value={getTokenPrice(investorTicket.equityTokenInt, investorTicket.equivEurUlps)}
               inputFormat={ENumberInputFormat.FLOAT}
               valueType={EPriceFormat.EQUITY_TOKEN_PRICE_EURO}
               outputFormat={ENumberOutputFormat.FULL}
               data-test-id="past-investments-token-price"
             />
-            <MoneyNew
+            <Money
               value={investorTicket.rewardNmkUlps.toString()}
               inputFormat={ENumberInputFormat.ULPS}
               valueType={ECurrency.NEU}

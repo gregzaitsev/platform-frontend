@@ -4,15 +4,14 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
 import { generateCampaigningValidation } from "../../../../../lib/api/eto/EtoPledgeApi.interfaces.unsafe";
-import { IReedemData } from "../../../../modals/tx-sender/redeem/BankTransferRedeemInit";
 import { Button, ButtonSize, ButtonWidth } from "../../../../shared/buttons";
-import { MoneyNew } from "../../../../shared/formatters/Money";
+import { Money } from "../../../../shared/formatters/Money";
 import {
   ECurrency,
   ENumberInputFormat,
   ENumberOutputFormat,
 } from "../../../../shared/formatters/utils";
-import { CheckboxLayout, EInputSize, Form } from "../../../../shared/forms";
+import { CheckboxLayout, EInputSize, FormDeprecated } from "../../../../shared/forms";
 import { MaskedNumberInput } from "../../../../shared/MaskedNumberInput";
 import { Tooltip } from "../../../../shared/tooltips";
 
@@ -70,7 +69,7 @@ const CampaigningActivatedInvestorApprovedWidgetLayout: React.FunctionComponent<
         <div className={styles.label} data-test-id="campaigning-your-commitment">
           <FormattedMessage id="eto-overview.campaigning.your-commitment" />
           <br />
-          <MoneyNew
+          <Money
             value={pledgedAmount}
             inputFormat={ENumberInputFormat.FLOAT}
             valueType={ECurrency.EUR}
@@ -96,7 +95,7 @@ const CampaigningActivatedInvestorApprovedWidgetLayout: React.FunctionComponent<
       >
         <FormikConsumer>
           {({ values, setFieldValue, isValid, setFieldTouched }: FormikProps<IReedemData>) => (
-            <Form className={cn(styles.group, styles.groupNoPadding)}>
+            <FormDeprecated className={cn(styles.group, styles.groupNoPadding)}>
               <div className={cn(styles.label, styles.labelFull)}>
                 <FormattedMessage id="eto-overview.campaigning.indicate-commitment" />
               </div>
@@ -128,7 +127,7 @@ const CampaigningActivatedInvestorApprovedWidgetLayout: React.FunctionComponent<
                   <FormattedMessage id="shared-component.eto-overview.back-now" />
                 </Button>
               </div>
-            </Form>
+            </FormDeprecated>
           )}
         </FormikConsumer>
       </Formik>

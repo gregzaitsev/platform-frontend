@@ -1,11 +1,5 @@
 import { assertEtoDocuments } from "../utils/assertions";
-import {
-  checkForm,
-  fillForm,
-  TFormFixture,
-  TFormFixtureExpectedValues,
-  uploadDocumentToFieldWithTid,
-} from "../utils/forms";
+import { fillForm, TFormFixture, uploadDocumentToFieldWithTid } from "../utils/forms";
 import { goToIssuerDashboard } from "../utils/navigation";
 import { tid } from "../utils/selectors";
 import { createAndLoginNewUser } from "../utils/userHelpers";
@@ -14,6 +8,7 @@ import {
   createAndSetNominee,
   fillAndAssert,
   fillRequiredCompanyInformation,
+  openAndCheckValues,
   submitProposal,
 } from "./EtoRegistrationUtils";
 import {
@@ -24,16 +19,6 @@ import {
   votingRights,
   votingRightsExpectedValues,
 } from "./fixtures";
-
-const openAndCheckValues = (
-  section: string,
-  sectionForm: TFormFixture,
-  expectedValues?: TFormFixtureExpectedValues,
-) => {
-  cy.get(`${tid(section)} button`).click();
-  checkForm(sectionForm, expectedValues);
-  goToIssuerDashboard();
-};
 
 describe("Eto Forms", () => {
   it("should fill required fields and submit eto", function(): void {
@@ -76,6 +61,7 @@ describe("Eto Forms", () => {
         votingRightsExpectedValues,
       );
 
+      goToIssuerDashboard();
       assertUploadSignedTermsheetStep();
 
       cy.get(tid("dashboard-upload-termsheet-widget.call-to-action")).click();

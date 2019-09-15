@@ -148,7 +148,8 @@ export const testCompany: TCompanyEtoData = {
     },
   ],
   companyOneliner: "Equity Fundraising on Blockchain",
-  companyShares: 40859,
+  companyShareCapital: 40859,
+  shareCapitalCurrencyCode: "EUR",
   companySlideshare: {
     title: "",
     url: "",
@@ -315,23 +316,23 @@ export const testCompany: TCompanyEtoData = {
   shareholders: [
     {
       fullName: "Miau Capital GmbH",
-      shares: 14000,
+      shareCapital: 14000,
     },
     {
       fullName: "Rudolfix Software Insights UG",
-      shares: 14000,
+      shareCapital: 14000,
     },
     {
       fullName: "Triotor Beteiligungs GmbH",
-      shares: 2000,
+      shareCapital: 2000,
     },
     {
       fullName: "Atlantic Labs",
-      shares: 5000,
+      shareCapital: 5000,
     },
     {
       fullName: "Freigeist Capital I",
-      shares: 5500,
+      shareCapital: 5500,
     },
   ],
   socialChannels: [
@@ -780,7 +781,7 @@ export const testProduct = {
 };
 
 export const testEto: TEtoWithCompanyAndContract = {
-  authorizedCapitalShares: undefined,
+  authorizedCapital: undefined,
   newSharesToIssueInFixedSlots: undefined,
   canEnableBookbuilding: false,
   companyId: "0xC8f867Cf4Ed30b4fF0Aa4c4c8c6b684397B219B0",
@@ -795,7 +796,10 @@ export const testEto: TEtoWithCompanyAndContract = {
   equityTokenSymbol: "QTT",
   equityTokensPerShare: 10000,
   etoId: "0xfaDa8f267C054f469b52Ccbeb08250ACAAeE65dc" as EthereumAddressWithChecksum,
-  existingCompanyShares: 40976,
+  existingShareCapital: 40976,
+  shareCapitalCurrencyCode: "EUR",
+  newShareNominalValue: 1,
+  newShareNominalValueEur: 1,
   fixedSlotsMaximumDiscountFraction: 0.5,
   generalVotingRule: "positive",
   isBookbuilding: false,
@@ -805,6 +809,7 @@ export const testEto: TEtoWithCompanyAndContract = {
   minTicketEur: 100,
   minimumNewSharesToIssue: 1000,
   newSharesToIssue: 3452,
+  shareholdersVotingQuorum: 0.5,
   newSharesToIssueInWhitelist: 1534,
   nominee: "0xCB6470fa4b5D56C8f494e7c1CE56B28c548931a6",
   preMoneyValuationEur: 132664672.0464,
@@ -812,7 +817,6 @@ export const testEto: TEtoWithCompanyAndContract = {
   prospectusLanguage: "de",
   publicDiscountFraction: 0,
   publicDurationDays: 14,
-  shareNominalValueEur: 1,
   signingDurationDays: 14,
   startDate: "2018-11-16T05:03:56+00:00",
   state: EEtoState.ON_CHAIN,
@@ -869,6 +873,18 @@ export const testEto: TEtoWithCompanyAndContract = {
       mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       name: "termsheet_template",
     },
+  },
+  investmentCalculatedValues: {
+    sharePrice: 3237.61892987893,
+    canBeListed: true,
+    canGoOnChain: true,
+    publicSharePrice: 3237.618912123,
+    effectiveMaxTicket: 5000000,
+    maxInvestmentAmount: 5000000,
+    minInvestmentAmount: 1618809.45217126312,
+    discountedSharePrice: 2266.333231267162,
+    fixedSlotsMinSharePrice: 1618.80945127718,
+    maxInvestmentAmountWithAllDiscounts: 5000000,
   },
   whitelistDiscountFraction: 0.3,
   whitelistDurationDays: 7,

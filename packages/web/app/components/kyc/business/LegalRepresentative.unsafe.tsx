@@ -21,7 +21,7 @@ import {
   BOOL_FALSE_KEY,
   BOOL_TRUE_KEY,
   boolify,
-  Form,
+  FormDeprecated,
   FormField,
   FormFieldDate,
   FormSelectCountryField,
@@ -81,7 +81,7 @@ type IProps = IStateProps & IDispatchProps;
 
 const KYCForm = injectIntlHelpers<FormikProps<IKycLegalRepresentative> & IProps>(
   ({ intl: { formatIntlMessage }, ...props }) => (
-    <Form>
+    <FormDeprecated>
       <FormField
         data-test-id="kyc-company-legal-representative-first-name"
         label={formatIntlMessage("form.label.first-name")}
@@ -162,7 +162,7 @@ const KYCForm = injectIntlHelpers<FormikProps<IKycLegalRepresentative> & IProps>
           <FormattedMessage id="form.button.save" />
         </Button>
       </div>
-    </Form>
+    </FormDeprecated>
   ),
 );
 

@@ -12,11 +12,7 @@ $_logo-padding-sm: 16px;
   align-items: center;
 
   img {
-    @include media-breakpoint-up(md) {
-      width: 100%;
-    }
-
-    width: 160%;
+    width: 100%;
     object-fit: cover;
     user-select: none;
   }

@@ -11,7 +11,7 @@ import { appConnect } from "../../../store";
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { onLeaveAction } from "../../../utils/OnLeaveAction";
 import { Button, EButtonLayout } from "../../shared/buttons/Button";
-import { EThemeNew, MoneyNew } from "../../shared/formatters/Money";
+import { ETheme, Money } from "../../shared/formatters/Money";
 import { ENumberOutputFormat } from "../../shared/formatters/utils";
 import { Heading } from "../../shared/Heading";
 import { LoadingIndicator } from "../../shared/loading-indicator/LoadingIndicator";
@@ -73,11 +73,11 @@ const TransactionListLayout: React.FunctionComponent<TStateProps & TDispatchProp
                     />
                   }
                 />
-                <MoneyNew
+                <Money
                   className={cn(styles.amount, { [styles.amountIn]: isIncomeTransaction })}
                   inputFormat={transaction.amountFormat}
                   outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
-                  theme={isIncomeTransaction ? EThemeNew.GREEN : undefined}
+                  theme={isIncomeTransaction ? ETheme.GREEN : undefined}
                   value={transaction.amount}
                   valueType={transaction.currency}
                 />

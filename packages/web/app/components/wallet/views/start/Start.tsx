@@ -126,8 +126,8 @@ export const WalletStart = compose<React.FunctionComponent>(
     stateToProps: state => ({
       userAddress: selectEthereumAddressWithChecksum(state),
       // Wallet Related State
-      isLoading: selectIsLoading(state.wallet),
-      error: selectWalletError(state.wallet),
+      isLoading: selectIsLoading(state),
+      error: selectWalletError(state),
       isUserFullyVerified: selectIsUserFullyVerified(state),
       liquidWalletData: {
         ethAmount: selectLiquidEtherBalance(state),

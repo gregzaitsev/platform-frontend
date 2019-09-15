@@ -11,17 +11,15 @@ import { AccountSetupKycPendingComponent } from "../../settings/kyc-states/Accou
 import { Panel } from "../../shared/Panel";
 import { getMessageTranslation } from "../../translatedMessages/messages";
 import { StepStatus } from "../DashboardStepStatus";
-import { DashboardTitle } from "../NomineeDashboard";
+import { DashboardTitle } from "../NomineeDashboardTitle";
 
 import * as styles from "../NomineeDashboard.module.scss";
 
 interface IKycPendingProps {
   kycRequestStatus: EKycRequestStatus;
-  emailVerified: boolean;
-  backupCodesVerified: boolean;
 }
 
-export const AccountSetupKycPendingLayout: React.FunctionComponent<IKycPendingProps> = ({
+const AccountSetupKycPendingBase: React.FunctionComponent<IKycPendingProps> = ({
   kycRequestStatus,
 }) => (
   <>
@@ -42,11 +40,13 @@ export const AccountSetupKycPendingLayout: React.FunctionComponent<IKycPendingPr
   </>
 );
 
-export const AccountSetupKycPending = compose<IKycPendingProps, IKycPendingProps>(
+const AccountSetupKycPending = compose<IKycPendingProps, IKycPendingProps>(
   onEnterAction({
     actionCreator: dispatch => dispatch(actions.kyc.kycStartWatching()),
   }),
   onLeaveAction({
     actionCreator: dispatch => dispatch(actions.kyc.kycStopWatching()),
   }),
-)(AccountSetupKycPendingLayout);
+)(AccountSetupKycPendingBase);
+
+export { AccountSetupKycPendingBase, AccountSetupKycPending };

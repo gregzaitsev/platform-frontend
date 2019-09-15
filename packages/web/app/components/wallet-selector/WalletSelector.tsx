@@ -109,7 +109,7 @@ export const WalletSelectorLayout: React.FunctionComponent<
     (userType === EUserType.ISSUER && process.env.NF_ISSUERS_CAN_LOGIN_WITH_ANY_WALLET !== "1");
 
   return (
-    <WalletSelectorContainer data-test-id="register-layout">
+    <WalletSelectorContainer data-test-id="wallet-selector">
       {logoutReason === ELogoutReason.SESSION_TIMEOUT && (
         <Notification
           data-test-id="wallet-selector-session-timeout-notification"

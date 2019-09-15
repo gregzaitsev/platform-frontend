@@ -16,6 +16,20 @@
   margin: 0 px-to-rem(4px);
 }
 
+.blink {
+  @keyframes blinker {
+    from {
+      color: $neu-black;
+    }
+
+    to {
+      color: transparent;
+    }
+  }
+
+  animation: blinker 1s ease-in-out infinite;
+}
+
 .label {
   margin-top: px-to-rem(6px);
   font-size: px-to-rem(12px);

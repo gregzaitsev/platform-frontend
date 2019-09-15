@@ -7,4 +7,5 @@ export enum ELogoutReason {
 export enum EUserAuthType {
   LOGOUT = "LOGOUT",
   LOGIN = "LOGIN",
+  REFRESH = "REFRESH",
 }

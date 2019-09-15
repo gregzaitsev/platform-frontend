@@ -21,7 +21,7 @@ import * as icbmThumbnail from "../../../../assets/img/eto_offers/investment_thu
 const rootEto: TEtoWithCompanyAndContract = {
   ...testEto,
   preMoneyValuationEur: 10000,
-  existingCompanyShares: 10,
+  existingShareCapital: 10,
   equityTokensPerShare: 10,
   publicDiscountFraction: 0.2,
   whitelistDiscountFraction: 0.3,

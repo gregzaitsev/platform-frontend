@@ -1,16 +1,16 @@
 import { TEtoWithCompanyAndContract } from "../../../modules/eto/types";
 import { TEtoSpecsData, TPartialEtoSpecData } from "./EtoApi.interfaces.unsafe";
 
-export const getInvestmentAmount = (eto: TPartialEtoSpecData, sharePrice: number | undefined) => ({
-  minInvestmentAmount: getMaxInvestmentAmountWithDiscount(
+export const calcInvestmentAmount = (eto: TPartialEtoSpecData, sharePrice: number | undefined) => ({
+  minInvestmentAmount: calcMaxInvestmentAmountWithDiscount(
     eto,
     sharePrice,
     eto.minimumNewSharesToIssue,
   ),
-  maxInvestmentAmount: getMaxInvestmentAmountWithDiscount(eto, sharePrice, eto.newSharesToIssue),
+  maxInvestmentAmount: calcMaxInvestmentAmountWithDiscount(eto, sharePrice, eto.newSharesToIssue),
 });
 
-export const getNumberOfTokens = ({
+export const calcNumberOfTokens = ({
   newSharesToIssue = 1,
   minimumNewSharesToIssue = 0,
   equityTokensPerShare = 1,
@@ -19,24 +19,27 @@ export const getNumberOfTokens = ({
   computedMinNumberOfTokens: minimumNewSharesToIssue * equityTokensPerShare,
 });
 
-export const getCapPercent = ({
+export const calcCapPercent = ({
   newSharesToIssue = 1,
   minimumNewSharesToIssue = 0,
-  existingCompanyShares = 1,
+  existingShareCapital = 1,
+  newShareNominalValue = 1,
 }: TPartialEtoSpecData) => ({
-  computedMaxCapPercent: (newSharesToIssue / existingCompanyShares) * 100,
-  computedMinCapPercent: (minimumNewSharesToIssue / existingCompanyShares) * 100,
+  computedMaxCapPercent: ((newSharesToIssue * newShareNominalValue) / existingShareCapital) * 100,
+  computedMinCapPercent:
+    ((minimumNewSharesToIssue * newShareNominalValue) / existingShareCapital) * 100,
 });
 
-export const getShareAndTokenPrice = ({
+export const calcShareAndTokenPrice = ({
   preMoneyValuationEur = 0,
-  existingCompanyShares = 0,
+  existingShareCapital = 0,
+  newShareNominalValue = 1,
   equityTokensPerShare = 1,
 }: TPartialEtoSpecData) => {
   let sharePrice = 0;
   let tokenPrice = 0;
-  if (existingCompanyShares !== 0 && equityTokensPerShare !== 0 && preMoneyValuationEur !== 0) {
-    sharePrice = preMoneyValuationEur / existingCompanyShares;
+  if (existingShareCapital !== 0 && equityTokensPerShare !== 0 && preMoneyValuationEur !== 0) {
+    sharePrice = (preMoneyValuationEur * newShareNominalValue) / existingShareCapital;
     tokenPrice = sharePrice / equityTokensPerShare;
   }
   return {
@@ -45,7 +48,7 @@ export const getShareAndTokenPrice = ({
   };
 };
 
-const getMaxInvestmentAmountWithDiscount = (
+const calcMaxInvestmentAmountWithDiscount = (
   {
     newSharesToIssueInFixedSlots = 0,
     newSharesToIssueInWhitelist = 0,
@@ -70,14 +73,14 @@ const getMaxInvestmentAmountWithDiscount = (
 
   let amount = 0;
 
-  if (newSharesToIssueInFixedSlots > 0 && shares > 0) {
+  if (fixedSlotsMaximumDiscountFraction > 0 && shares > 0) {
     const minShares = Math.min(newSharesToIssueInFixedSlots, shares);
 
     amount += minShares * sharePrice * (1 - fixedSlotsMaximumDiscountFraction);
     shares -= minShares;
   }
 
-  if (newSharesToIssueInWhitelist > 0 && shares > 0) {
+  if (whitelistDiscountFraction > 0 && shares > 0) {
     const minShares = Math.min(newSharesToIssueInWhitelist, shares);
 
     amount += minShares * sharePrice * (1 - whitelistDiscountFraction);

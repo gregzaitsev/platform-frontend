@@ -1,76 +1,23 @@
+import { TCompanyEtoData, TEtoSpecsData } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
 import { actions } from "../actions";
-
-export enum ENomineeRequestStatus {
-  PENDING = "pending",
-  APPROVED = "approved",
-  REJECTED = "rejected",
-}
-
-export enum ENomineeUpdateRequestStatus {
-  APPROVED = "approved",
-  REJECTED = "rejected",
-}
-
-export enum ENomineeRequestError {
-  NONE = "none",
-  ISSUER_ID_ERROR = "issuer_id_error",
-  REQUEST_EXISTS = "REQUEST_EXISTS",
-  GENERIC_ERROR = "nominee_request_generic_error",
-}
-
-export enum ENomineeAcceptAgreementStatus {
-  NOT_DONE = "not_done",
-  DONE = "done",
-  ERROR = "error",
-}
-
-export enum ENomineeRedeemShareholderCapitalStatus {
-  NOT_DONE = "not_done",
-  DONE = "done",
-  ERROR = "error",
-}
-
-export enum ENomineeLinkBankAccountStatus {
-  NOT_DONE = "not_done",
-  DONE = "done",
-  ERROR = "error",
-}
-
-export enum ENomineeUploadIshaStatus {
-  NOT_DONE = "not_done",
-  DONE = "done",
-  ERROR = "error",
-}
-
-export interface INomineeRequestMetadata {
-  city: string;
-  country: string;
-  jurisdiction: string;
-  legalForm: string;
-  legalFormType: string;
-  name: string;
-  registrationNumber: string;
-  street: string;
-  zipCode: string;
-}
-
-export interface INomineeRequest {
-  state: ENomineeRequestStatus;
-  nomineeId: string;
-  etoId: string;
-  insertedAt: string;
-  updatedAt: string;
-  metadata: INomineeRequestMetadata;
-}
-
-export type TNomineeRequestStorage = { [id: string]: INomineeRequest }; //can be etoId or nomineeId
+import {
+  ENomineeAcceptAgreementStatus,
+  ENomineeLinkBankAccountStatus,
+  ENomineeRedeemShareholderCapitalStatus,
+  ENomineeRequestError,
+  ENomineeUploadIshaStatus,
+  TNomineeRequestStorage,
+} from "./types";
 
 export interface INomineeFlowState {
   loading: boolean;
   error: ENomineeRequestError;
+  activeNomineeEtoPreviewCode: string | undefined;
   nomineeRequests: TNomineeRequestStorage;
+  nomineeEtos: { [previewCode: string]: TEtoSpecsData | undefined };
+  nomineeEtosCompanies: { [companyId: string]: TCompanyEtoData | undefined };
   linkBankAccount: ENomineeLinkBankAccountStatus;
   acceptTha: ENomineeAcceptAgreementStatus;
   acceptRaaa: ENomineeAcceptAgreementStatus;
@@ -78,10 +25,13 @@ export interface INomineeFlowState {
   uploadIsha: ENomineeUploadIshaStatus;
 }
 
-const nomineeFlowInitialState = {
+const nomineeFlowInitialState: INomineeFlowState = {
   loading: false,
   error: ENomineeRequestError.NONE,
+  activeNomineeEtoPreviewCode: undefined,
   nomineeRequests: {},
+  nomineeEtos: {},
+  nomineeEtosCompanies: {},
   acceptTha: ENomineeAcceptAgreementStatus.NOT_DONE,
   acceptRaaa: ENomineeAcceptAgreementStatus.NOT_DONE,
   linkBankAccount: ENomineeLinkBankAccountStatus.NOT_DONE,
@@ -108,12 +58,6 @@ export const nomineeFlowReducer: AppReducer<INomineeFlowState> = (
         acceptTha: action.payload.tasks.acceptTha,
         acceptRaaa: action.payload.tasks.acceptRaaa,
       };
-    case actions.nomineeFlow.storeNomineeRequests.getType():
-      return {
-        ...state,
-        loading: false,
-        nomineeRequests: action.payload.nomineeRequests,
-      };
     case actions.nomineeFlow.storeNomineeRequest.getType():
       return {
         ...state,
@@ -128,6 +72,17 @@ export const nomineeFlowReducer: AppReducer<INomineeFlowState> = (
       return {
         ...state,
         loading: false,
+      };
+    case actions.nomineeFlow.setActiveNomineeEto.getType():
+      return {
+        ...state,
+        activeNomineeEtoPreviewCode: action.payload.previewCode,
+      };
+    case actions.nomineeFlow.setNomineeEtos.getType():
+      return {
+        ...state,
+        nomineeEtos: action.payload.etos,
+        nomineeEtosCompanies: action.payload.companies,
       };
     default:
       return state;

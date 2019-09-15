@@ -8,7 +8,7 @@ import * as Yup from "yup";
 import { actions } from "../../../../modules/actions";
 import { appConnect } from "../../../../store";
 import { Button } from "../../../shared/buttons";
-import { Form, FormField } from "../../../shared/forms";
+import { FormDeprecated, FormField } from "../../../shared/forms";
 import { FormConstantField } from "../../../shared/forms/fields/FormConstantField";
 import { WarningAlert } from "../../../shared/WarningAlert";
 import { getMessageTranslation } from "../../../translatedMessages/messages";
@@ -47,7 +47,7 @@ interface IOwnProps {
 type TProps = IOwnProps & IStateProps & IDispatchProps;
 
 const LoginLightWalletForm: React.FunctionComponent<TProps & FormikProps<IFormValues>> = props => (
-  <Form>
+  <FormDeprecated>
     <FormField
       type="password"
       placeholder="Password"
@@ -64,7 +64,7 @@ const LoginLightWalletForm: React.FunctionComponent<TProps & FormikProps<IFormVa
         Login
       </Button>
     </div>
-  </Form>
+  </FormDeprecated>
 );
 
 const LoginEnhancedLightWalletForm = withFormik<TProps, IFormValues>({

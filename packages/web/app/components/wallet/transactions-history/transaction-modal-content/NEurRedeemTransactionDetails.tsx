@@ -8,7 +8,7 @@ import {
   TExtractTxHistoryFromType,
 } from "../../../../modules/tx-history/types";
 import { DataRow, DataRowSeparator } from "../../../modals/tx-sender/shared/DataRow";
-import { MoneyNew } from "../../../shared/formatters/Money";
+import { Money } from "../../../shared/formatters/Money";
 import { ECurrency, ENumberOutputFormat } from "../../../shared/formatters/utils";
 import { getIconForCurrency } from "../../../shared/icons/CurrencyIcon";
 import { EtherscanAddressLink } from "../../../shared/links/EtherscanLink";
@@ -74,7 +74,7 @@ const NEurRedeemTransactionDetails: React.FunctionComponent<IExternalProps> = ({
         <DataRow
           caption={<FormattedMessage id="wallet.tx-list.modal.neur-redeem.bank-fee.caption" />}
           value={
-            <MoneyNew
+            <Money
               value={transaction.feeAmount}
               inputFormat={transaction.amountFormat}
               outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
@@ -88,7 +88,7 @@ const NEurRedeemTransactionDetails: React.FunctionComponent<IExternalProps> = ({
             <FormattedMessage id="wallet.tx-list.modal.neur-redeem.settled-amount.caption" />
           }
           value={
-            <MoneyNew
+            <Money
               value={transaction.settledAmount}
               inputFormat={transaction.amountFormat}
               outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}

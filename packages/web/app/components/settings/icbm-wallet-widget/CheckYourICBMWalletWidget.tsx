@@ -7,7 +7,7 @@ import { actions } from "../../../modules/actions";
 import { appConnect } from "../../../store";
 import { EColumnSpan } from "../../layouts/Container";
 import { Button, EButtonLayout, EIconPosition } from "../../shared/buttons";
-import { Form, FormFieldColorful } from "../../shared/forms";
+import { FormDeprecated, FormFieldColorful } from "../../shared/forms";
 import { Panel } from "../../shared/Panel";
 import { ECustomTooltipTextPosition, Tooltip } from "../../shared/tooltips";
 
@@ -70,13 +70,13 @@ export const CheckYourICBMWalletWidgetComponent: React.FunctionComponent<
       initialValues={{ address: "" }}
       onSubmit={values => loadICBMWallet(values.address)}
     >
-      <Form className={styles.section}>
+      <FormDeprecated className={styles.section}>
         <p>
           <FormattedMessage id="check-your-icbm-wallet-widget.notice" />
         </p>
 
         <FormContent />
-      </Form>
+      </FormDeprecated>
     </Formik>
   </Panel>
 );

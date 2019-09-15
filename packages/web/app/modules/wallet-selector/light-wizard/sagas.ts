@@ -20,22 +20,16 @@ import {
   createLightWalletVault,
   deserializeLightWalletVault,
 } from "../../../lib/web3/light-wallet/LightWalletUtils";
+import { IPersonalWallet } from "../../../lib/web3/PersonalWeb3";
 import { IAppState } from "../../../store";
 import { invariant } from "../../../utils/invariant";
 import { connectLightWallet } from "../../access-wallet/sagas";
 import { actions, TActionFromCreator } from "../../actions";
 import { checkEmailPromise } from "../../auth/email/sagas";
 import { createJwt } from "../../auth/jwt/sagas";
-import { logoutUser } from "../../auth/sagas";
 import { selectUserType } from "../../auth/selectors";
-import {
-  createUser,
-  loadUser,
-  loadUserPromise,
-  signInUser,
-  updateUser,
-  updateUserPromise,
-} from "../../auth/user/sagas";
+import { createUser, loadUser, logoutUser, updateUser } from "../../auth/user/external/sagas";
+import { signInUser } from "../../auth/user/sagas";
 import { userHasKycAndEmailVerified } from "../../eto-flow/selectors";
 import { displayInfoModalSaga } from "../../generic-modal/sagas";
 import { neuCall, neuTakeEvery } from "../../sagasUtils";
@@ -87,17 +81,17 @@ export async function setupLightWalletPromise(
 
 export function* lightWalletBackupWatch({ logger }: TGlobalDependencies): Iterator<any> {
   try {
-    const user = yield select((state: IAppState) => state.auth.user);
-    yield neuCall(updateUserPromise, { ...user, backupCodesVerified: true });
+    const user: IUser = yield select((state: IAppState) => state.auth.user);
+    yield neuCall(updateUser, { ...user, backupCodesVerified: true });
     yield call(
       displayInfoModalSaga,
       createMessage(BackupRecoveryMessage.BACKUP_SUCCESS_TITLE),
       createMessage(BackupRecoveryMessage.BACKUP_SUCCESS_DESCRIPTION),
     );
-    yield loadUser();
+    yield neuCall(loadUser);
 
-    const userType = yield select((s: IAppState) => selectUserType(s));
-    const kycAndEmailVerified = yield select((s: IAppState) => userHasKycAndEmailVerified(s));
+    const userType = yield select(selectUserType);
+    const kycAndEmailVerified = yield select(userHasKycAndEmailVerified);
 
     if (!kycAndEmailVerified && userType === EUserType.NOMINEE) {
       yield put(actions.routing.goToDashboard());
@@ -133,14 +127,20 @@ export function* loadSeedFromWalletWatch({
 }
 
 export function* lightWalletRecoverWatch(
-  { lightWalletConnector, web3Manager }: TGlobalDependencies,
+  { lightWalletConnector, web3Manager, apiUserService }: TGlobalDependencies,
   action: TActionFromCreator<typeof actions.walletSelector.lightWalletRecover>,
 ): Iterator<any> {
   try {
-    const userType = yield select((state: IAppState) => selectUrlUserType(state.router));
+    const userType: EUserType = yield select((state: IAppState) => selectUrlUserType(state.router));
 
     const { password, email, seed } = action.payload;
-    const walletMetadata = yield neuCall(setupLightWalletPromise, email, password, seed, userType);
+    const walletMetadata: ILightWalletMetadata = yield neuCall(
+      setupLightWalletPromise,
+      email,
+      password,
+      seed,
+      userType,
+    );
 
     yield put(actions.walletSelector.messageSigning());
     yield neuCall(createJwt, [EJwtPermissions.CHANGE_EMAIL_PERMISSION]);
@@ -153,12 +153,12 @@ export function* lightWalletRecoverWatch(
     };
     const isEmailAvailable = yield neuCall(checkEmailPromise, email);
     try {
-      const user: IUser = yield neuCall(loadUserPromise);
+      const user: IUser = yield apiUserService.me();
       if (isEmailAvailable) {
         userUpdate.newEmail = walletMetadata.email;
-        yield call(updateUser, userUpdate);
+        yield neuCall(updateUser, userUpdate);
       } else {
-        if (user.verifiedEmail === email.toLowerCase()) yield call(updateUser, userUpdate);
+        if (user.verifiedEmail === email.toLowerCase()) yield neuCall(updateUser, userUpdate);
         else {
           throw new EmailAlreadyExists();
         }
@@ -173,7 +173,11 @@ export function* lightWalletRecoverWatch(
       } else throw e;
     }
 
-    const wallet = yield connectLightWallet(lightWalletConnector, walletMetadata, password);
+    const wallet: IPersonalWallet = yield connectLightWallet(
+      lightWalletConnector,
+      walletMetadata,
+      password,
+    );
     yield web3Manager.plugPersonalWallet(wallet);
     yield neuCall(logoutUser);
 

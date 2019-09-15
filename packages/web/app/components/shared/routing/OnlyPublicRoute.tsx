@@ -5,8 +5,11 @@ import { branch, compose, renderComponent, renderNothing } from "recompose";
 import { actions } from "../../../modules/actions";
 import { selectIsAuthorized } from "../../../modules/auth/selectors";
 import { appConnect, AppDispatch } from "../../../store";
+import { CommonHtmlProps } from "../../../types";
 import { onEnterAction } from "../../../utils/OnEnterAction";
-import { LoadingComponent } from "../../dashboard/my-portfolio/MyPortfolioWidget";
+import { EColumnSpan } from "../../layouts/Container";
+import { LoadingIndicator } from "../loading-indicator/LoadingIndicator";
+import { Panel } from "../Panel";
 
 interface IStateProps {
   isAuthorized: boolean;
@@ -16,6 +19,15 @@ interface IComponentProps {
   isAuthorized: boolean;
   component: React.ReactType;
 }
+
+export const LoadingComponent: React.FunctionComponent<CommonHtmlProps> = ({
+  className,
+  style,
+}) => (
+  <Panel className={className} style={style} columnSpan={EColumnSpan.TWO_COL}>
+    <LoadingIndicator />
+  </Panel>
+);
 
 const OnlyPublicRouteComponent: React.FunctionComponent<IComponentProps> = ({
   component: Component,

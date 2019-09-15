@@ -1,7 +1,7 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
-import { MoneyNew } from "../../../../shared/formatters/Money";
+import { Money } from "../../../../shared/formatters/Money";
 import {
   ECurrency,
   ENumberInputFormat,
@@ -29,7 +29,7 @@ const WhitelistStatus: React.FunctionComponent<IInvestmentWidgetProps> = ({
           id="eto-overview-thumbnail.whitelist.amount-signed-up"
           values={{
             amount: (
-              <MoneyNew
+              <Money
                 value={pledgedAmount}
                 inputFormat={ENumberInputFormat.FLOAT}
                 outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
