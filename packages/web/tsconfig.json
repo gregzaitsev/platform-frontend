@@ -27,8 +27,7 @@
     "./app/**/*.ts",
     "./app/**/*.tsx",
     "./test/**/*.ts",
-    "./test/**/*.tsx",
-    "../../node_modules/cypress/types/index.d.ts"
+    "./test/**/*.tsx"
   ],
   "exclude": ["./app/test-e2e/**"]
 }
