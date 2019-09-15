@@ -5,4 +5,5 @@ export type TNEurRedeemAdditionalDetails = {
     accountNumberLast4: string;
   };
   bankFee: string;
+  totalRedeemed: string;
 };

@@ -1,6 +1,7 @@
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
 import { actions } from "../actions";
+import { ICalculatedRedeemData } from "./types";
 
 export enum EBankTransferFlowState {
   UNINITIALIZED = "uninitialized",
@@ -25,6 +26,7 @@ export interface IBankTransferState {
     minEuroUlps: string;
     bankFeeUlps: string;
   };
+  calculatedRedeemData?: ICalculatedRedeemData;
 }
 
 export const bankTransferInitialState: IBankTransferState = {
@@ -84,6 +86,11 @@ export const bankTransferFlowReducer: AppReducer<IBankTransferState> = (
       return {
         redeem: state.redeem,
         ...bankTransferInitialState,
+      };
+    case actions.bankTransferFlow.setCalculatedRedeemData.getType():
+      return {
+        ...state,
+        calculatedRedeemData: action.payload,
       };
   }
 

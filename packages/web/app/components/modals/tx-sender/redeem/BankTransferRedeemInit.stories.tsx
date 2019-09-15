@@ -22,5 +22,7 @@ storiesOf("BankTransferRedeem/Init", module)
       bankFee={Q18.mul(0.005).toString()}
       confirm={action("CONFIRM")}
       verifyBankAccount={action("LINK_ACCOUNT")}
+      calculateData={action("CALCULATE_DATA")}
+      calculatedData={undefined}
     />
   ));

@@ -97,4 +97,4 @@ export const ADVISORY_BOARD_TEXT_MIN_LENGTH = 1;
 export const ISO2022_AMOUNT_SCALE = 5;
 
 /* banking scale of display amounts */
-export const DISPLAY_AMOUNT_SCALE = 2;
+export const BANKING_AMOUNT_SCALE = 2;

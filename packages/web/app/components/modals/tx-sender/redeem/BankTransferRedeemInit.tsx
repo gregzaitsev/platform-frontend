@@ -11,8 +11,10 @@ import { actions } from "../../../../modules/actions";
 import { EBankTransferType } from "../../../../modules/bank-transfer-flow/reducer";
 import {
   selectBankRedeemMinAmount,
+  selectCalculatedRedeemData,
   selectRedeemFeeUlps,
 } from "../../../../modules/bank-transfer-flow/selectors";
+import { ICalculatedRedeemData } from "../../../../modules/bank-transfer-flow/types";
 import { selectLiquidEuroTokenBalance } from "../../../../modules/wallet/selectors";
 import { doesUserHaveEnoughNEuro, doesUserWithdrawMinimal } from "../../../../modules/web3/utils";
 import { appConnect } from "../../../../store";
@@ -20,6 +22,7 @@ import { onEnterAction } from "../../../../utils/OnEnterAction";
 import { Button, ButtonSize, EButtonLayout } from "../../../shared/buttons/Button";
 import { ButtonArrowRight } from "../../../shared/buttons/index";
 import { FormatNumber } from "../../../shared/formatters/FormatNumber";
+import { MoneyNew } from "../../../shared/formatters/Money";
 import {
   ECurrency,
   ENumberInputFormat,
@@ -36,8 +39,6 @@ import { MaskedNumberInput } from "../../../shared/MaskedNumberInput";
 import { ETheme, MoneySuiteWidget } from "../../../shared/MoneySuiteWidget/MoneySuiteWidget";
 import { Tooltip } from "../../../shared/tooltips/Tooltip";
 import { VerifiedBankAccount } from "../../../wallet/VerifiedBankAccount";
-import { CalculatedFee } from "./CalculatedFee";
-import { TotalRedeemed } from "./TotalRedeemed";
 
 import * as neuroIcon from "../../../../assets/img/nEUR_icon.svg";
 import * as styles from "./BankTransferRedeemInit.module.scss";
@@ -47,11 +48,13 @@ interface IStateProps {
   neuroAmount: string;
   neuroEuroAmount: string;
   bankFee: string;
+  calculatedData: ICalculatedRedeemData | undefined;
 }
 
 interface IDispatchProps {
   confirm: (tx: Partial<ITxData>) => void;
   verifyBankAccount: () => void;
+  calculateData: (amount: string) => void;
 }
 
 type IProps = IStateProps & IDispatchProps;
@@ -103,6 +106,8 @@ const BankTransferRedeemLayout: React.FunctionComponent<IProps> = ({
   neuroEuroAmount,
   verifyBankAccount,
   bankFee,
+  calculateData,
+  calculatedData,
 }) => (
   <>
     <Heading size={EHeadingSize.SMALL} level={4} className="mb-4">
@@ -142,20 +147,18 @@ const BankTransferRedeemLayout: React.FunctionComponent<IProps> = ({
               data-test-id="bank-transfer.reedem-init.redeem-whole-balance"
               className={styles.linkButton}
               onClick={() => {
-                setFieldValue(
-                  "amount",
-                  toFixedPrecision({
-                    value: neuroAmount,
-                    roundingMode: ERoundingMode.DOWN,
-                    inputFormat: ENumberInputFormat.ULPS,
-                    decimalPlaces: selectDecimalPlaces(
-                      ECurrency.EUR_TOKEN,
-                      ENumberOutputFormat.ONLY_NONZERO_DECIMALS,
-                    ),
-                  }),
-                  true,
-                );
+                const value = toFixedPrecision({
+                  value: neuroAmount,
+                  roundingMode: ERoundingMode.DOWN,
+                  inputFormat: ENumberInputFormat.ULPS,
+                  decimalPlaces: selectDecimalPlaces(
+                    ECurrency.EUR_TOKEN,
+                    ENumberOutputFormat.ONLY_NONZERO_DECIMALS,
+                  ),
+                });
+                setFieldValue("amount", value, true);
                 setFieldTouched("amount", true, true);
+                calculateData(value);
               }}
               layout={EButtonLayout.INLINE}
               size={ButtonSize.SMALL}
@@ -174,6 +177,7 @@ const BankTransferRedeemLayout: React.FunctionComponent<IProps> = ({
               onChangeFn={value => {
                 setFieldValue("amount", value);
                 setFieldTouched("amount", true);
+                calculateData(value);
               }}
               returnInvalidValues={true}
               showUnits={true}
@@ -205,9 +209,15 @@ const BankTransferRedeemLayout: React.FunctionComponent<IProps> = ({
                 </Heading>
               </Tooltip>
               <span className="text-warning">
-                {"-"}{" "}
-                {isValid && (
-                  <CalculatedFee bankFee={bankFee} amount={values.amount} maxAmount={neuroAmount} />
+                {"- "}
+                {isValid && calculatedData && (
+                  <MoneyNew
+                    data-test-id="bank-transfer.redeem.fee"
+                    value={calculatedData.bankFee}
+                    inputFormat={ENumberInputFormat.FLOAT}
+                    valueType={ECurrency.EUR}
+                    outputFormat={ENumberOutputFormat.FULL}
+                  />
                 )}
               </span>
             </section>
@@ -216,8 +226,14 @@ const BankTransferRedeemLayout: React.FunctionComponent<IProps> = ({
                 <FormattedMessage id="bank-transfer.redeem.init.total-redeemed" />
               </Heading>
               <span className="text-success">
-                {isValid ? (
-                  <TotalRedeemed bankFee={bankFee} amount={values.amount} maxAmount={neuroAmount} />
+                {isValid && calculatedData ? (
+                  <MoneyNew
+                    data-test-id="bank-transfer.redeem.total"
+                    value={calculatedData.totalRedeemed}
+                    inputFormat={ENumberInputFormat.FLOAT}
+                    valueType={ECurrency.EUR}
+                    outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
+                  />
                 ) : (
                   "-"
                 )}
@@ -255,11 +271,14 @@ const BankTransferRedeemInit = compose<IProps, {}>(
       neuroEuroAmount: selectLiquidEuroTokenBalance(state),
       bankFee: selectRedeemFeeUlps(state),
       minAmount: selectBankRedeemMinAmount(state),
+      calculatedData: selectCalculatedRedeemData(state),
     }),
     dispatchToProps: dispatch => ({
       verifyBankAccount: () =>
         dispatch(actions.bankTransferFlow.startBankTransfer(EBankTransferType.VERIFY)),
       confirm: (tx: Partial<ITxData>) => dispatch(actions.txSender.txSenderAcceptDraft(tx)),
+      calculateData: (amount: string) =>
+        dispatch(actions.bankTransferFlow.calculateRedeemData(amount)),
     }),
   }),
   withFormik<IStateProps & IDispatchProps, IReedemData>({

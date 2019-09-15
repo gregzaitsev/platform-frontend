@@ -2,6 +2,7 @@ const { join } = require("path");
 const { mapValues } = require("lodash");
 const dotenv = require("dotenv");
 const fs = require("fs");
+const URL = require("url");
 
 const { getArtifactsMeta } = require("../scripts/getArtifacts");
 
@@ -38,7 +39,7 @@ module.exports = function loadAppEnv(processEnv) {
   // if we want to serve local dev build on the network
   // we need to inject our local ip in the NF_RPC_PROVIDER
   if (!!process.env.NF_SERVE_ON_NETWORK) {
-    const rpcProviderUrl = new URL(process.env.NF_RPC_PROVIDER);
+    const rpcProviderUrl = new URL.URL(process.env.NF_RPC_PROVIDER);
     rpcProviderUrl.hostname = process.env.NF_SERVE_ON_NETWORK;
     allEnvs.NF_RPC_PROVIDER = rpcProviderUrl.toString();
   }

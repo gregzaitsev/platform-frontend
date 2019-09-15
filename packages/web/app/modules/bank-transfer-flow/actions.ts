@@ -1,6 +1,7 @@
 import { createActionFactory } from "@neufund/shared";
 
 import { EBankTransferType } from "./reducer";
+import { ICalculatedRedeemData } from "./types";
 
 export const bankTransferFLowActions = {
   // public actions
@@ -11,6 +12,10 @@ export const bankTransferFLowActions = {
 
   downloadNEurTokenAgreement: createActionFactory("BANK_TRANSFER_DOWNLOAD_TOKEN_AGREEMENT"),
   getRedeemData: createActionFactory("BANK_TRANSFER_GET_REDEEM_DATA"),
+  calculateRedeemData: createActionFactory(
+    "BANK_TRANSFER_CALCULATE_REDEEM_DATA",
+    (amount: string) => ({ amount }),
+  ),
 
   // private actions
   continueProcessing: createActionFactory("BANK_TRANSFER_FLOW_CONTINUE_PROCESSING"),
@@ -37,5 +42,9 @@ export const bankTransferFLowActions = {
       redeemBankFeeUlps,
       redeemMinEuroUlps,
     }),
+  ),
+  setCalculatedRedeemData: createActionFactory(
+    "BANK_TRANSFER_SET_CALCULATED_REDEEM_DATA",
+    (data: ICalculatedRedeemData) => data,
   ),
 };

@@ -1,19 +1,16 @@
 import BigNumber from "bignumber.js";
 import { put, select, take } from "redux-saga/effects";
 
-import { convertFromUlps } from "../../../../components/shared/formatters/utils";
-import { MONEY_DECIMALS } from "../../../../config/constants";
 import { TGlobalDependencies } from "../../../../di/setupBindings";
 import { ITxData } from "../../../../lib/web3/types";
 import { DeepReadonly } from "../../../../types";
-import { getPossibleMaxUlps } from "../../../../utils/Number.utils";
 import { actions } from "../../../actions";
-import { selectRedeemFeeUlps } from "../../../bank-transfer-flow/selectors";
+import { calculateRedeemData } from "../../../bank-transfer-flow/sagas";
+import { ICalculatedRedeemData } from "../../../bank-transfer-flow/types";
 import { selectStandardGasPriceWithOverHead } from "../../../gas/selectors";
 import { selectBankAccount } from "../../../kyc/selectors";
 import { TBankAccount } from "../../../kyc/types";
 import { neuCall } from "../../../sagasUtils";
-import { selectLiquidEuroTokenBalance } from "../../../wallet/selectors";
 import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
 import { ETxSenderType } from "../../types";
 
@@ -43,16 +40,15 @@ export function* startNEuroRedeemGenerator(_: TGlobalDependencies): any {
   const txDataFromUser = action.payload.txDraftData;
   const selectedAmount = txDataFromUser.value;
 
-  const nEURBalanceUlps = yield select(selectLiquidEuroTokenBalance);
+  // For security reasons calculate again with value submited by formik
+  const {
+    amountUlps,
+    bankFee,
+    totalRedeemed,
+    amount,
+  }: ICalculatedRedeemData = yield calculateRedeemData(selectedAmount);
 
-  // Whole precision number should be passed when there is whole balance redeemed
-  // also when user provided value has been used, then it have to be converted to Q18 via convertToBigInt
-  const redeemAmountUlps = getPossibleMaxUlps(nEURBalanceUlps, selectedAmount, 2);
-
-  const generatedTxDetails: ITxData = yield neuCall(
-    generateNeuWithdrawTransaction,
-    redeemAmountUlps,
-  );
+  const generatedTxDetails: ITxData = yield neuCall(generateNeuWithdrawTransaction, amountUlps);
 
   yield put(actions.txSender.setTransactionData(generatedTxDetails));
 
@@ -61,11 +57,10 @@ export function* startNEuroRedeemGenerator(_: TGlobalDependencies): any {
     throw new Error("During redeem process user should have bank account");
   }
 
-  const bankFee: string = yield select(selectRedeemFeeUlps);
-
   const additionalDetails = {
     bankFee,
-    amount: convertFromUlps(new BigNumber(redeemAmountUlps), MONEY_DECIMALS).toString(),
+    amount,
+    totalRedeemed,
     bankAccount: {
       bankName: bankAccount.details.bankName,
       accountNumberLast4: bankAccount.details.bankAccountNumberLast4,

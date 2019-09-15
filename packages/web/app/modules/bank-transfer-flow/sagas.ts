@@ -1,20 +1,31 @@
 import BigNumber from "bignumber.js";
+import { takeEvery } from "redux-saga";
 import { all, fork, put, select, take } from "redux-saga/effects";
 
+import { getPossibleMaxUlps } from "../../components/modals/tx-sender/redeem/utils";
+import {
+  isEmptyValue,
+  isValidNumber,
+  toFixedPrecision,
+} from "../../components/shared/formatters/utils";
 import { BankTransferFlowMessage } from "../../components/translatedMessages/messages";
 import { createMessage } from "../../components/translatedMessages/utils";
-import { IPFS_PROTOCOL } from "../../config/constants";
+import { IPFS_PROTOCOL, ISO2022_AMOUNT_SCALE } from "../../config/constants";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { TKycBankTransferPurpose } from "../../lib/api/kyc/KycApi.interfaces";
+import { calculateBankFee, subtractBankFee } from "../../utils/BankArithmetics";
 import { invariant } from "../../utils/invariant";
 import { actions, TActionFromCreator } from "../actions";
 import { selectIsUserFullyVerified } from "../auth/selectors";
 import { neuCall, neuTakeEvery } from "../sagasUtils";
+import { selectLiquidEuroTokenBalance } from "../wallet/selectors";
 import {
   selectBankTransferFlowReference,
   selectIsBankAccountVerified,
   selectIsBankTransferModalOpened,
+  selectRedeemFeeUlps,
 } from "./selectors";
+import { ICalculatedRedeemData } from "./types";
 
 function* generateReference({ apiKycService }: TGlobalDependencies): Iterable<any> {
   const { purpose }: TKycBankTransferPurpose = yield apiKycService.nEurPurchaseRequestPreparation();
@@ -93,7 +104,7 @@ export function* getRedeemData({ contractsService }: TGlobalDependencies): any {
     minEuroUlps: contractsService.euroTokenController.minWithdrawAmountEurUlps,
   });
 
-  yield put(actions.bankTransferFlow.setRedeemData(bankFeeUlps, minEuroUlps.toString()));
+  yield put(actions.bankTransferFlow.setRedeemData(bankFeeUlps.toString(), minEuroUlps.toString()));
 }
 
 export function* completeBankTransfer({ apiKycService, logger }: TGlobalDependencies): any {
@@ -107,6 +118,46 @@ export function* completeBankTransfer({ apiKycService, logger }: TGlobalDependen
   }
 }
 
+export function* calculateRedeemData(amount: string): Iterator<any> {
+  const walletBalanceUlps: string = yield select(selectLiquidEuroTokenBalance);
+  const bankFeeFractionUlps: string = yield select(selectRedeemFeeUlps);
+
+  const bankFeeFractionDec = toFixedPrecision({
+    value: bankFeeFractionUlps,
+    decimalPlaces: ISO2022_AMOUNT_SCALE,
+  });
+
+  // by default use BANKING_AMOUNT_SCALE as decimal precision
+  const providedAmountUlps = getPossibleMaxUlps(walletBalanceUlps, amount);
+  // use all decimal places without rounding
+  const providedAmountDec = toFixedPrecision({
+    value: providedAmountUlps,
+    decimalPlaces: undefined,
+  });
+
+  const bankFee = calculateBankFee(providedAmountDec, bankFeeFractionDec);
+  const totalRedeemed = subtractBankFee(providedAmountDec, bankFeeFractionDec);
+
+  return {
+    amount: providedAmountDec,
+    amountUlps: providedAmountUlps,
+    bankFee,
+    totalRedeemed,
+  };
+}
+
+export function* calculateRedeemDataSaga(
+  action: TActionFromCreator<typeof actions.bankTransferFlow.calculateRedeemData>,
+): Iterator<any> {
+  const amount = action.payload.amount;
+  if (!isValidNumber(amount) || (isEmptyValue(amount) && 0)) {
+    return;
+  }
+  const calculatedData: ICalculatedRedeemData = yield calculateRedeemData(amount);
+
+  yield put(actions.bankTransferFlow.setCalculatedRedeemData(calculatedData));
+}
+
 export function* bankTransferFlowSaga(): any {
   yield fork(neuTakeEvery, actions.bankTransferFlow.startBankTransfer, start);
   yield fork(neuTakeEvery, actions.bankTransferFlow.continueToSuccess, completeBankTransfer);
@@ -117,4 +168,5 @@ export function* bankTransferFlowSaga(): any {
   );
   yield fork(neuTakeEvery, "@@router/LOCATION_CHANGE", stop);
   yield fork(neuTakeEvery, actions.bankTransferFlow.getRedeemData, getRedeemData);
+  yield takeEvery(actions.bankTransferFlow.calculateRedeemData, calculateRedeemDataSaga);
 }

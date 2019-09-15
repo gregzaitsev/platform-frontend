@@ -13,8 +13,6 @@ import { InfoList } from "../shared/InfoList";
 import { InfoRow } from "../shared/InfoRow";
 import { TimestampRow } from "../shared/TimestampRow";
 import { TransactionDetailsComponent } from "../types";
-import { CalculatedFee } from "./CalculatedFee";
-import { TotalRedeemed } from "./TotalRedeemed";
 
 const BankTransferRedeemDetails: TransactionDetailsComponent<ETxSenderType.NEUR_REDEEM> = ({
   additionalData,
@@ -45,11 +43,27 @@ const BankTransferRedeemDetails: TransactionDetailsComponent<ETxSenderType.NEUR_
     />
     <InfoRow
       caption={<FormattedMessage id="bank-transfer.redeem.summary.bank-fee" />}
-      value={<CalculatedFee bankFee={additionalData.bankFee} amount={additionalData.amount} />}
+      value={
+        <MoneyNew
+          data-test-id="bank-transfer.redeem.fee"
+          value={additionalData.bankFee}
+          inputFormat={ENumberInputFormat.FLOAT}
+          valueType={ECurrency.EUR}
+          outputFormat={ENumberOutputFormat.FULL}
+        />
+      }
     />
     <InfoRow
       caption={<FormattedMessage id="bank-transfer.redeem.summary.total-return-amount" />}
-      value={<TotalRedeemed bankFee={additionalData.bankFee} amount={additionalData.amount} />}
+      value={
+        <MoneyNew
+          data-test-id="bank-transfer.redeem.total"
+          value={additionalData.totalRedeemed}
+          inputFormat={ENumberInputFormat.FLOAT}
+          valueType={ECurrency.EUR}
+          outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
+        />
+      }
     />
 
     {txTimestamp && <TimestampRow timestamp={txTimestamp} />}

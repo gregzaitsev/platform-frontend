@@ -3,7 +3,6 @@ import { storiesOf } from "@storybook/react";
 import * as moment from "moment";
 import * as React from "react";
 
-import { Q18 } from "../../../../config/constants";
 import { withMockedDate, withModalBody } from "../../../../utils/storybookHelpers.unsafe";
 import { BankTransferRedeemSuccessComponent } from "./BankTransferRedeemSuccess";
 
@@ -14,7 +13,8 @@ const props = {
   txHash: "0xdb3c43a0cfc4e221ecb52655eab3c3b88ba521a",
   additionalData: {
     amount: "20.50",
-    bankFee: Q18.mul(0.005).toString(),
+    bankFee: "0.15",
+    totalRedeemed: "20.35",
     bankAccount: {
       bankName: "mBank",
       accountNumberLast4: "1234",

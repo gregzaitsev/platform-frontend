@@ -65,3 +65,8 @@ export const selectIsBankAccountVerified = createSelector(
     return false;
   },
 );
+
+export const selectCalculatedRedeemData = createSelector(
+  selectBankTransferFlow,
+  bankTransferFlow => bankTransferFlow.calculatedRedeemData,
+);
