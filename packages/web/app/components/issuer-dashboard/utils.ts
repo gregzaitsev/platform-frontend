@@ -11,9 +11,11 @@ export enum EEtoStep {
   LISTING_PAGE_IN_REVIEW = "listing_page_in_review",
   UPLOAD_SIGNED_TERMSHEET = "upload_signed_termsheet",
   PUBLISH_INVESTMENT_OFFER = "publish_investment_offer",
-  SEVEN = "seven",
-  EIGHT = "eight",
-  NINE = "nine",
+  INVESTMENT_OFFER_IN_REVIEW = "investment_offer_in_review",
+  UPLOAD_OFFERING_DOCUMENT = "upload_offering_document",
+  UPLOAD_ISHA = "upload_isha",
+  WAIT_FOR_SMART_CONTRACT = "wait_for_smart_contract",
+  REQUEST_THA_SIGN = "nine",
   LINK_NOMINEE = "link_nominee",
 }
 
@@ -32,6 +34,8 @@ export const selectEtoStep = (
   isTermSheetSubmitted: boolean | undefined,
   isVotingRightsFilledWithAllRequired: boolean,
   isInvestmentAndEtoTermsFilledWithAllRequired: boolean,
+  isOfferingDocumentSubmitted: boolean | undefined,
+  isISHASubmitted: boolean | undefined,
 ): EEtoStep => {
   if (!isVerificationSectionDone) {
     return EEtoStep.VERIFICATION;
@@ -78,12 +82,24 @@ export const selectEtoStep = (
   }
 
   if (etoState === EEtoState.PENDING) {
-    return EEtoStep.SEVEN;
+    return EEtoStep.INVESTMENT_OFFER_IN_REVIEW;
+  }
+
+  if (etoState === EEtoState.LISTED || etoState === EEtoState.PROSPECTUS_APPROVED) {
+    if (isISHASubmitted) {
+      return EEtoStep.WAIT_FOR_SMART_CONTRACT;
+    }
+
+    if (isOfferingDocumentSubmitted) {
+      return EEtoStep.UPLOAD_ISHA;
+    }
+
+    return EEtoStep.UPLOAD_OFFERING_DOCUMENT;
   }
 
   if (etoState === EEtoState.ON_CHAIN) {
-    return EEtoStep.NINE;
+    return EEtoStep.REQUEST_THA_SIGN;
   }
 
-  return EEtoStep.EIGHT;
+  throw new Error("Eto step is not defined");
 };

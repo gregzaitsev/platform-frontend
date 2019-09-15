@@ -1,7 +1,7 @@
 import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
-import { ECurrencySymbol, EMoneyTransferNew, EThemeNew, MoneyNew } from "./Money";
+import { ECurrencySymbol, EMoneyTransfer, ETheme, Money } from "./Money";
 import { MoneyRange } from "./MoneyRange";
 import {
   EAbbreviatedNumberOutputFormat,
@@ -13,31 +13,31 @@ import {
 const value = "1234567" + "0".repeat(18);
 const value1 = "321" + "0".repeat(18);
 
-storiesOf("MoneyNew", module)
+storiesOf("Money", module)
   .add("default (with token code)", () => (
     <>
-      <MoneyNew
+      <Money
         inputFormat={ENumberInputFormat.ULPS}
         outputFormat={ENumberOutputFormat.FULL}
         valueType={ECurrency.EUR}
         value={value}
       />
       <br />
-      <MoneyNew
+      <Money
         inputFormat={ENumberInputFormat.ULPS}
         outputFormat={ENumberOutputFormat.FULL}
         valueType={ECurrency.NEU}
         value={value}
       />
       <br />
-      <MoneyNew
+      <Money
         inputFormat={ENumberInputFormat.ULPS}
         outputFormat={ENumberOutputFormat.FULL}
         valueType={ECurrency.EUR_TOKEN}
         value={value}
       />
       <br />
-      <MoneyNew
+      <Money
         inputFormat={ENumberInputFormat.ULPS}
         outputFormat={ENumberOutputFormat.FULL}
         valueType={ECurrency.ETH}
@@ -47,7 +47,7 @@ storiesOf("MoneyNew", module)
   ))
   .add("with FLOAT input", () => (
     <>
-      <MoneyNew
+      <Money
         outputFormat={ENumberOutputFormat.FULL}
         inputFormat={ENumberInputFormat.FLOAT}
         valueType={ECurrency.EUR}
@@ -57,7 +57,7 @@ storiesOf("MoneyNew", module)
   ))
   .add("output as Integer", () => (
     <>
-      <MoneyNew
+      <Money
         inputFormat={ENumberInputFormat.FLOAT}
         outputFormat={ENumberOutputFormat.INTEGER}
         valueType={ECurrency.EUR}
@@ -67,7 +67,7 @@ storiesOf("MoneyNew", module)
   ))
   .add("output as LONG abbrev.", () => (
     <>
-      <MoneyNew
+      <Money
         inputFormat={ENumberInputFormat.FLOAT}
         outputFormat={EAbbreviatedNumberOutputFormat.LONG}
         valueType={ECurrency.EUR}
@@ -77,7 +77,7 @@ storiesOf("MoneyNew", module)
   ))
   .add("output as SHORT abbrev.", () => (
     <>
-      <MoneyNew
+      <Money
         inputFormat={ENumberInputFormat.FLOAT}
         outputFormat={EAbbreviatedNumberOutputFormat.SHORT}
         valueType={ECurrency.EUR}
@@ -87,7 +87,7 @@ storiesOf("MoneyNew", module)
   ))
   .add("with default value", () => (
     <>
-      <MoneyNew
+      <Money
         inputFormat={ENumberInputFormat.ULPS}
         outputFormat={ENumberOutputFormat.FULL}
         valueType={ECurrency.EUR}
@@ -97,7 +97,7 @@ storiesOf("MoneyNew", module)
   ))
   .add("with custom default value", () => (
     <>
-      <MoneyNew
+      <Money
         inputFormat={ENumberInputFormat.ULPS}
         outputFormat={ENumberOutputFormat.FULL}
         valueType={ECurrency.EUR}
@@ -108,25 +108,25 @@ storiesOf("MoneyNew", module)
   ))
   .add("transfer", () => (
     <>
-      <MoneyNew
+      <Money
         inputFormat={ENumberInputFormat.ULPS}
         outputFormat={ENumberOutputFormat.FULL}
         valueType={ECurrency.EUR}
         value={value}
-        transfer={EMoneyTransferNew.INCOME}
+        transfer={EMoneyTransfer.INCOME}
       />
       <br />
-      <MoneyNew
+      <Money
         inputFormat={ENumberInputFormat.ULPS}
         outputFormat={ENumberOutputFormat.FULL}
         valueType={ECurrency.EUR}
         value={value}
-        transfer={EMoneyTransferNew.OUTCOME}
+        transfer={EMoneyTransfer.OUTCOME}
       />
     </>
   ))
   .add("with token code", () => (
-    <MoneyNew
+    <Money
       inputFormat={ENumberInputFormat.ULPS}
       outputFormat={ENumberOutputFormat.FULL}
       valueType={ECurrency.EUR}
@@ -137,38 +137,38 @@ storiesOf("MoneyNew", module)
   .add("themed", () => (
     <>
       <p>t-green</p>
-      <MoneyNew
+      <Money
         inputFormat={ENumberInputFormat.ULPS}
         outputFormat={ENumberOutputFormat.FULL}
         valueType={ECurrency.EUR}
         value={value}
-        theme={EThemeNew.GREEN}
+        theme={ETheme.GREEN}
       />
       <br />
       <br />
       <p>t-orange</p>
-      <MoneyNew
+      <Money
         inputFormat={ENumberInputFormat.ULPS}
         outputFormat={ENumberOutputFormat.FULL}
         valueType={ECurrency.ETH}
         value={value}
-        theme={EThemeNew.ORANGE}
+        theme={ETheme.ORANGE}
       />
       <br />
       <br />
       <p>big-value</p>
-      <MoneyNew
+      <Money
         inputFormat={ENumberInputFormat.ULPS}
         outputFormat={ENumberOutputFormat.FULL}
         valueType={ECurrency.ETH}
         value={value}
-        theme={EThemeNew.GREEN_BIG}
+        theme={ETheme.GREEN_BIG}
       />
     </>
   ))
   .add("price format", () => (
     <>
-      <MoneyNew
+      <Money
         inputFormat={ENumberInputFormat.ULPS}
         outputFormat={ENumberOutputFormat.FULL}
         valueType={ECurrency.EUR}
@@ -176,7 +176,7 @@ storiesOf("MoneyNew", module)
         currencySymbol={ECurrencySymbol.CODE}
       />
       <br />
-      <MoneyNew
+      <Money
         inputFormat={ENumberInputFormat.ULPS}
         outputFormat={ENumberOutputFormat.FULL}
         valueType={ECurrency.EUR}
@@ -184,14 +184,14 @@ storiesOf("MoneyNew", module)
         currencySymbol={ECurrencySymbol.NONE}
       />
       <br />
-      <MoneyNew
+      <Money
         inputFormat={ENumberInputFormat.ULPS}
         outputFormat={ENumberOutputFormat.FULL}
         valueType={ECurrency.ETH}
         value={"4212376189" + "0".repeat(10)}
       />
       <br />
-      <MoneyNew
+      <Money
         inputFormat={ENumberInputFormat.ULPS}
         outputFormat={ENumberOutputFormat.FULL}
         valueType={ECurrency.NEU}

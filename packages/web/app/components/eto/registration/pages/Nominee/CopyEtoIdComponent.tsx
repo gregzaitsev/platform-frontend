@@ -42,4 +42,4 @@ const CopyEtoIdComponent = compose<IProps, {}>(
   branch<IStateProps>(({ issuerId }) => issuerId === undefined, renderNothing),
 )(NoPendingNomineesComponent);
 
-export { CopyEtoIdComponent };
+export { CopyEtoIdComponent, NoPendingNomineesComponent };

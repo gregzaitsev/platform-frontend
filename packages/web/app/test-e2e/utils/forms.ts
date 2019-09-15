@@ -36,6 +36,7 @@ type TFormFieldFixture =
       type: "custom";
       method: string;
       value: any;
+      options?: object;
     }
   | string;
 
@@ -177,7 +178,7 @@ export const fillForm = (
         throw new Error(`Cannot find custom method ${method}`);
       }
 
-      method(key, field.value);
+      method(key, field.value, field.options);
     }
   });
 
@@ -192,11 +193,12 @@ export const fillForm = (
   }
 };
 
-export const checkForm = (fixture: TFormFixture, expectedValues?: TFormFixtureExpectedValues) => {
-  forEach(fixture, (field, key) => {
+export const checkForm = (fixture: TFormFixture, expectedValues: TFormFixtureExpectedValues) => {
+  forEach(expectedValues, (value, key) => {
+    const field = fixture[key];
     // the default is just typing a string into the input
     if (typeof field === "string") {
-      checkField(key, (expectedValues && expectedValues[key]) || field);
+      checkField(key, value);
     }
     // date
     else if (field.type === "date") {
@@ -217,7 +219,7 @@ export const checkForm = (fixture: TFormFixture, expectedValues?: TFormFixtureEx
     }
     // check or uncheck a radio
     else if (field.type === "radio") {
-      cy.get(`input[name="${key}"][value="${field.value}"]`).should("be.checked");
+      cy.get(`input[name="${key}"][value="${value}"]`).should("be.checked");
     }
     //check or uncheck a checkbox
     else if (field.type === "checkbox") {
@@ -258,11 +260,18 @@ export const getFieldError = (formTid: string, key: string): Cypress.Chainable<s
  * @param targetTid - test id of the dropzone field
  * @param fixture - which fixture to load
  */
-export const uploadDocumentToFieldWithTid = (targetTid: string, fixture: string) => {
+export const uploadDocumentToFieldWithTid = (
+  targetTid: string,
+  fixture: string,
+  options: { acceptWallet: boolean } = { acceptWallet: true },
+) => {
   cy.get(`${tid(targetTid)} ${tid("eto-add-document-drop-zone")}`).dropFile(fixture);
 
   cy.get(tid("documents-ipfs-modal-continue")).click();
-  acceptWallet();
+
+  if (options.acceptWallet) {
+    acceptWallet();
+  }
 
   cy.get(`${tid(targetTid)} ${tid("documents-download-document")}`).should("exist");
 };

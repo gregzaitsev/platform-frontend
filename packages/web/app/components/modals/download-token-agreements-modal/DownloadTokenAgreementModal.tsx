@@ -13,7 +13,7 @@ import { IImmutableFileId } from "../../../lib/api/immutable-storage/ImmutableSt
 import { actions } from "../../../modules/actions";
 import { selectEtoWithCompanyAndContractById } from "../../../modules/eto/selectors";
 import { TEtoWithCompanyAndContract } from "../../../modules/eto/types";
-import { selectIsPendingDownload } from "../../../modules/immutable-file/selectors";
+import { selectPendingDownloads } from "../../../modules/immutable-file/selectors";
 import { appConnect } from "../../../store";
 import { getInvestorDocumentTitles } from "../../documents/utils";
 import {
@@ -33,7 +33,7 @@ import * as styles from "./DownloadTokenAgreementModal.module.scss";
 interface IStateProps {
   isOpen: boolean;
   eto: TEtoWithCompanyAndContract | undefined;
-  isPendingDownload: (ipfsHash: string) => boolean;
+  pendingDownloads: ReturnType<typeof selectPendingDownloads>;
 }
 
 interface IDispatchProps {
@@ -50,7 +50,7 @@ const DownloadTokenAgreementModalComponent: React.FunctionComponent<IComponentPr
   generateTemplateByEtoId,
   downloadDocument,
   eto,
-  isPendingDownload,
+  pendingDownloads,
 }) => (
   <Modal isOpen={isOpen} onClose={onClose}>
     <Container>
@@ -86,7 +86,7 @@ const DownloadTokenAgreementModalComponent: React.FunctionComponent<IComponentPr
                       <ButtonIcon
                         className={styles.icon}
                         svgIcon={iconDownload}
-                        disabled={isPendingDownload(document.ipfsHash)}
+                        disabled={pendingDownloads[document.ipfsHash]}
                         data-test-id={`modals.portfolio.portfolio-assets.download-agreements-${
                           eto.etoId
                         }.download`}
@@ -128,7 +128,7 @@ const DownloadTokenAgreementModalComponent: React.FunctionComponent<IComponentPr
                       <ButtonIcon
                         className={styles.icon}
                         svgIcon={iconDownload}
-                        disabled={isPendingDownload(template.ipfsHash)}
+                        disabled={pendingDownloads[template.ipfsHash]}
                         data-test-id={`modals.portfolio.portfolio-assets.download-agreements-${
                           eto.etoId
                         }.download`}
@@ -154,9 +154,9 @@ const DownloadTokenAgreementModal = compose<IComponentProps, {}>(
       const etoId = selectDownloadAgreementModalEtoId(state);
       const eto = etoId ? selectEtoWithCompanyAndContractById(state, etoId) : undefined;
       return {
+        eto,
         isOpen: etoId ? selectDownloadAgrementModalIsOpen(state) : false,
-        eto: eto,
-        isPendingDownload: selectIsPendingDownload(state),
+        pendingDownloads: selectPendingDownloads(state),
       };
     },
     dispatchToProps: dispatch => ({

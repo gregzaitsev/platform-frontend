@@ -6,7 +6,7 @@ import { EEtoDocumentType, TEtoFormType } from "../../../lib/api/eto/EtoFileApi.
 import {
   EtoCompletedWidgetLayout,
   UploadInvestmentAgreementLayout,
-} from "./UploadInvestmentAgreementWidget.unsafe";
+} from "./UploadInvestmentAgreementWidget";
 
 const ipfsHash = "1243654we645";
 

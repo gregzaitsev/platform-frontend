@@ -5,7 +5,7 @@ import { amendEtoToCompatibleFormat } from "../../../modules/eto/utils";
 import { withParams } from "../../../utils/withParams";
 import { IHttpClient, IHttpResponse } from "../client/IHttpClient";
 import {
-  TGeneralEtoData,
+  TEtoDataWithCompany,
   TPartialCompanyEtoData,
   TPartialEtoSpecData,
 } from "./EtoApi.interfaces.unsafe";
@@ -63,6 +63,14 @@ export class EtoApi {
     });
   }
 
+  public async patchMyEto(data: TPartialEtoSpecData): Promise<IHttpResponse<TPartialEtoSpecData>> {
+    return this.authorizedHttpClient.patch<TPartialEtoSpecData>({
+      baseUrl: BASE_PATH,
+      url: ETO_DATA_PATH,
+      body: data,
+    });
+  }
+
   public async getEtoPreview(previewCode: string): Promise<TPartialCompanyEtoData> {
     return await this.httpClient
       .get<TPartialCompanyEtoData>({
@@ -100,15 +108,25 @@ export class EtoApi {
     });
   }
 
-  public async submitCompanyAndEto(): Promise<IHttpResponse<TGeneralEtoData>> {
-    return await this.authorizedHttpClient.post<TGeneralEtoData>({
+  public async patchCompany(
+    data: TPartialCompanyEtoData,
+  ): Promise<IHttpResponse<TPartialCompanyEtoData>> {
+    return this.authorizedHttpClient.patch<TPartialCompanyEtoData>({
+      baseUrl: BASE_PATH,
+      url: COMPANIES_ME_DATA_PATH,
+      body: data,
+    });
+  }
+
+  public async submitCompanyAndEto(): Promise<IHttpResponse<TEtoDataWithCompany>> {
+    return await this.authorizedHttpClient.post<TEtoDataWithCompany>({
       baseUrl: BASE_PATH,
       url: ETO_SUBMISSION_PATH,
     });
   }
 
-  public async publishCompanyAndEto(): Promise<IHttpResponse<TGeneralEtoData>> {
-    return await this.authorizedHttpClient.post<TGeneralEtoData>({
+  public async publishCompanyAndEto(): Promise<IHttpResponse<TEtoDataWithCompany>> {
+    return await this.authorizedHttpClient.post<TEtoDataWithCompany>({
       baseUrl: BASE_PATH,
       url: ETO_PREVIEW_SUBMISSION_PATH,
     });
@@ -116,8 +134,8 @@ export class EtoApi {
 
   public async changeBookBuildingState(
     isBookBuilding: boolean,
-  ): Promise<IHttpResponse<TGeneralEtoData>> {
-    return await this.authorizedHttpClient.put<TGeneralEtoData>({
+  ): Promise<IHttpResponse<TEtoDataWithCompany>> {
+    return await this.authorizedHttpClient.put<TEtoDataWithCompany>({
       baseUrl: BASE_PATH,
       url: ETO_BOOK_BUILDING_PATH,
       body: { is_bookbuilding: isBookBuilding },
@@ -138,11 +156,12 @@ export class EtoApi {
     });
   }
 
-  public async loadNomineeEtos(): Promise<IHttpResponse<TGeneralEtoData[]>> {
-    const response = await this.authorizedHttpClient.get<IHttpResponse<TGeneralEtoData[]>>({
+  public async loadNomineeEtos(): Promise<TEtoDataWithCompany[]> {
+    const response = await this.authorizedHttpClient.get<TEtoDataWithCompany[]>({
       baseUrl: BASE_PATH,
       url: NOMINEE_ETOS_PATH,
     });
+
     return response.body;
   }
 }

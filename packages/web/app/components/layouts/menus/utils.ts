@@ -1,8 +1,8 @@
 import { compose } from "recompose";
 
 import { userHasKycAndEmailVerified } from "../../../modules/eto-flow/selectors";
-import { selectNomineeEto } from "../../../modules/eto/selectors";
 import { TEtoWithCompanyAndContract } from "../../../modules/eto/types";
+import { selectNomineeEtoWithCompanyAndContract } from "../../../modules/nominee-flow/selectors";
 import { appConnect } from "../../../store";
 import { accountMenuData, menuSeparatorData } from "./MenuData";
 import { TMenuEntry } from "./MenuEntry";
@@ -46,7 +46,7 @@ const connectNomineeMenu = <T extends {}>(
   compose<INomineeMenuProps & T, T>(
     appConnect<INomineeMenuProps, {}, T>({
       stateToProps: state => ({
-        nomineeEto: selectNomineeEto(state),
+        nomineeEto: selectNomineeEtoWithCompanyAndContract(state),
       }),
     }),
   )(WrappedComponent);

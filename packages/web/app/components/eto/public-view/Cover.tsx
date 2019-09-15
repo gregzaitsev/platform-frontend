@@ -5,7 +5,7 @@ import { COMPANY_TAGS_LIMIT } from "../../../config/constants";
 import { EJurisdiction } from "../../../lib/api/eto/EtoProductsApi.interfaces";
 import { TTranslatedString } from "../../../types";
 import { Container, EColumnSpan, EContainerType } from "../../layouts/Container";
-import { EImageFit, IResponsiveImage, ResponsiveImage } from "../../shared/ResponsiveImage";
+import { IResponsiveImage, srcSetToString } from "../../shared/ResponsiveImage";
 import { Tag } from "../../shared/Tag";
 
 import * as styles from "./Cover.module.scss";
@@ -22,7 +22,6 @@ interface IProps {
 export const Cover: React.FunctionComponent<IProps> = ({
   companyBanner,
   companyName,
-  companyOneliner,
   companyLogo,
   tags = [],
 }) => (
@@ -31,22 +30,17 @@ export const Cover: React.FunctionComponent<IProps> = ({
     className={styles.cover}
     type={EContainerType.CONTAINER}
   >
-    <ResponsiveImage
-      className={styles.banner}
-      width={1250}
-      height={400}
-      srcSet={companyBanner.srcSet}
+    <img
+      src={companyBanner.srcSet["1x"]}
+      srcSet={srcSetToString(companyBanner.srcSet)}
       alt={companyBanner.alt}
-      fit={EImageFit.COVER}
     />
-
     <div className={styles.companyDetails}>
       <div className={styles.logoWrapper}>
         <img src={companyLogo.srcSet["1x"]} alt={companyLogo.alt} />
       </div>
       <div className={styles.details}>
-        <h2 className={styles.name}>{companyName}</h2>
-        <h3 className={styles.shortDescription}>{companyOneliner}</h3>
+        <h1 className={styles.name}>{companyName}</h1>
       </div>
       <div className={styles.tags}>
         {tags.slice(0, COMPANY_TAGS_LIMIT).map((tag, index) => (

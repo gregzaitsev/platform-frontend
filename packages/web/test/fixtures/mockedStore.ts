@@ -7,7 +7,7 @@ import { DeepPartial } from "../../app/types";
 import { testCompany, testEto } from "../fixtures";
 
 export const mockedStore: DeepPartial<IAppState> = {
-  etoFlow: {
+  etoIssuer: {
     eto: testEto,
     company: testCompany,
   },

@@ -31,11 +31,11 @@ export const SubmitProposalWidgetComponent: React.FunctionComponent<
   >
     <div className={styles.content}>
       <p className={cn(styles.text, "pt-2")}>
-        <FormattedMessage id="settings.submit-proposal-widget.completed-fields" />
+        <FormattedMessage id="settings.submit-your-proposal.description" />
       </p>
       <Col className="d-flex justify-content-center">
         <ButtonArrowRight data-test-id="eto-dashboard-submit-proposal" onClick={submitProposal}>
-          Submit
+          <FormattedMessage id="settings.submit-your-proposal.publish" />
         </ButtonArrowRight>
       </Col>
     </div>

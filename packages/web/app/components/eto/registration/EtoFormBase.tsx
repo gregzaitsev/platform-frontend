@@ -8,20 +8,20 @@ import {
   IProgressOptions,
   ProgressCalculator,
 } from "../../../modules/eto-flow/utils";
-import { TFormikConnect } from "../../../types";
-import { Form } from "../../shared/forms/Form";
+import { TDataTestId, TFormikConnect, TTranslatedString } from "../../../types";
+import { pickSchemaValues } from "../../../utils/yupUtils";
+import { Form, TFormProps } from "../../shared/forms";
 import { PercentageIndicatorBar } from "../../shared/PercentageIndicatorBar";
 import { Section } from "./Shared";
 
 import * as styles from "./EtoFormBase.module.scss";
 
 interface IProps {
-  title: string | React.ReactNode;
-  "data-test-id"?: string;
+  title: TTranslatedString;
 }
 
 interface IFormPercentageDoneProps {
-  validator: Yup.Schema<any>;
+  validationSchema: Yup.Schema<unknown>;
   progressOptions?: IProgressOptions;
 }
 
@@ -29,7 +29,7 @@ type TProps = IFormPercentageDoneProps & TFormikConnect;
 
 class PercentageFormDoneLayout extends React.Component<TProps> {
   calculate: ProgressCalculator = getFormFractionDoneCalculator(
-    this.props.validator,
+    this.props.validationSchema,
     this.props.progressOptions,
   );
 
@@ -53,20 +53,39 @@ const PercentageFormDone = compose<TProps, IFormPercentageDoneProps>(connect)(
   PercentageFormDoneLayout,
 );
 
-export const EtoFormBase: React.FunctionComponent<IProps & IFormPercentageDoneProps> = ({
+type TExternalProps<Values extends {}> = IProps &
+  TDataTestId &
+  IFormPercentageDoneProps &
+  TFormProps<Values>;
+
+export const EtoFormBase = <Values extends {}>({
   children,
   title,
-  validator,
   progressOptions,
-  "data-test-id": dataTestId,
-}) => (
-  <Form className={styles.form} data-test-id={dataTestId}>
-    <h4 className={styles.header}>{title}</h4>
+  initialValues,
+  validationSchema,
+  ...formProps
+}: TExternalProps<Values>) => {
+  // Filter to contain only known schema values
+  const values: Values = React.useMemo(() => pickSchemaValues(validationSchema, initialValues), [
+    validationSchema,
+    initialValues,
+  ]);
 
-    <Section>
-      <PercentageFormDone validator={validator} progressOptions={progressOptions} />
-    </Section>
+  return (
+    <Form<Values>
+      className={styles.form}
+      initialValues={values}
+      validationSchema={validationSchema}
+      {...formProps}
+    >
+      <h4 className={styles.header}>{title}</h4>
 
-    {children}
-  </Form>
-);
+      <Section>
+        <PercentageFormDone validationSchema={validationSchema} progressOptions={progressOptions} />
+      </Section>
+
+      {children}
+    </Form>
+  );
+};

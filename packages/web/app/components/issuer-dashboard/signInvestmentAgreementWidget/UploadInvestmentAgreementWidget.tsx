@@ -32,12 +32,12 @@ interface IDispatchProps {
 interface IStateProps {
   stateOnChain: EETOStateOnChain;
   agreementTemplate: IEtoDocument;
-  uploadedAgreement: IEtoDocument | null;
+  uploadedAgreement: IEtoDocument | undefined;
 }
 
 interface IUploadComponentStateProps {
   agreementTemplate: IEtoDocument;
-  uploadedAgreement: IEtoDocument | null;
+  uploadedAgreement: IEtoDocument | undefined;
 }
 
 interface IExternalProps {
@@ -117,7 +117,7 @@ export const UploadInvestmentAgreement = compose<React.FunctionComponent<IExtern
     renderComponent(EtoCompletedWidgetLayout),
   ),
   branch<IStateProps & IExternalProps>(
-    props => props.uploadedAgreement !== null,
+    props => props.uploadedAgreement !== undefined,
     renderComponent(SignInvestmentAgreement),
   ),
 )(UploadInvestmentAgreementLayout);

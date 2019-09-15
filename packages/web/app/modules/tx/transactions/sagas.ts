@@ -185,8 +185,6 @@ export function* etoSignInvestmentAgreementSaga(
       extraParam: action.payload,
     });
     logger.info("Signing investment agreement was successful");
-    // cleanup & refresh eto data
-    // yield put(actions.etoFlow.cleanupStartDate());
   } catch (e) {
     logger.info("Signing investment agreement was cancelled", e);
   }

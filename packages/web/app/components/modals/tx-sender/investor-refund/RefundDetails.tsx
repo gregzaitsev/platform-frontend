@@ -3,7 +3,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 
 import { ETxSenderType } from "../../../../modules/tx/types";
 import { isZero } from "../../../../utils/Number.utils";
-import { MoneyNew } from "../../../shared/formatters/Money";
+import { Money } from "../../../shared/formatters/Money";
 import {
   ECurrency,
   ENumberInputFormat,
@@ -29,7 +29,7 @@ const RefundTransactionDetails: TransactionDetailsComponent<ETxSenderType.INVEST
       caption={<FormattedMessage id="user-refund-flow.amount" />}
       value={
         isZero(additionalData.amountEth) ? (
-          <MoneyNew
+          <Money
             data-test-id="modals.tx-sender.user-refund-flow.amount.neur"
             value={additionalData.amountEurUlps}
             valueType={ECurrency.EUR_TOKEN}
@@ -37,7 +37,7 @@ const RefundTransactionDetails: TransactionDetailsComponent<ETxSenderType.INVEST
             outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
           />
         ) : (
-          <MoneyNew
+          <Money
             data-test-id="modals.tx-sender.user-refund-flow.amount.eth"
             value={additionalData.amountEth}
             valueType={ECurrency.ETH}
@@ -54,14 +54,14 @@ const RefundTransactionDetails: TransactionDetailsComponent<ETxSenderType.INVEST
         caption={<FormattedMessage id="user-refund-flow.cost" />}
         value={
           <>
-            <MoneyNew
+            <Money
               value={additionalData.costEurUlps}
               valueType={ECurrency.EUR}
               inputFormat={ENumberInputFormat.ULPS}
               outputFormat={ENumberOutputFormat.FULL}
             />
             {" ≈ "}
-            <MoneyNew
+            <Money
               value={additionalData.costUlps}
               valueType={ECurrency.ETH}
               inputFormat={ENumberInputFormat.ULPS}

@@ -5,9 +5,9 @@ import { externalRoutes } from "../../config/externalRoutes";
 import { EWalletSubType } from "../../modules/web3/types";
 import { TTranslatedString } from "../../types";
 import { assertNever } from "../../utils/assertNever";
-import { MoneyNew } from "../shared/formatters/Money";
+import { Money } from "../shared/formatters/Money";
 import { ECurrency, ENumberInputFormat, ENumberOutputFormat } from "../shared/formatters/utils";
-import { TMessage } from "./utils";
+import { formatMatchingFieldNames, TMessage } from "./utils";
 
 interface ITranslationValues {
   [SignInUserErrorMessages: string]: string;
@@ -49,7 +49,8 @@ export type TranslatedMessageType =
   | ENomineeRequestErrorNotifications
   | EEtoNomineeRequestNotifications
   | EEtoNomineeRequestMessages
-  | ETxValidationMessages;
+  | ETxValidationMessages
+  | EEtoNomineeActiveEtoNotifications;
 
 export enum GenericErrorMessage {
   GENERIC_ERROR = "genericError",
@@ -264,6 +265,8 @@ export enum ValidationMessage {
   VALIDATION_RESTRICTED_COUNTRY = "validationRestrictedCountry",
   VALIDATION_PECENTAGE_MAX = "validationPecentageMax",
   VALIDATION_PERCENTAGE_MIN = "validationPercentageMin",
+  VALIDATION_CURRENCY_CODE = "validationCurrencyCode",
+  VALIDATION_FIELDS_SHOULD_MATCH = "validationFieldsShouldMatch",
 }
 
 export enum MarketingEmailsMessage {
@@ -315,6 +318,11 @@ export enum EEtoNomineeRequestMessages {
   ISSUER_DELETE_NOMINEE_REQUEST_TEXT = "issuerDeleteNomineeRequestText",
   ISSUER_UPDATE_NOMINEE_REQUEST = "issuerUpdateNomineeRequest",
   ISSUER_UPDATE_NOMINEE_REQUEST_TEXT = "issuerUpdateNomineeRequestText",
+}
+
+export enum EEtoNomineeActiveEtoNotifications {
+  ACTIVE_ETO_SET_SUCCESS = "activeEtoSetSuccess",
+  ACTIVE_ETO_SET_ERROR = "activeEtoSetError",
 }
 
 export enum TestMessage {
@@ -635,7 +643,7 @@ const getMessageTranslation = ({ messageType, messageData }: TMessage): TTransla
           id="shared-component.eto-overview.error.min-pledge"
           values={{
             minPledge: (
-              <MoneyNew
+              <Money
                 value={messageData as number}
                 inputFormat={ENumberInputFormat.FLOAT}
                 valueType={ECurrency.EUR}
@@ -651,7 +659,7 @@ const getMessageTranslation = ({ messageType, messageData }: TMessage): TTransla
           id="shared-component.eto-overview.error.max-pledge"
           values={{
             maxPledge: (
-              <MoneyNew
+              <Money
                 value={messageData as number}
                 inputFormat={ENumberInputFormat.FLOAT}
                 valueType={ECurrency.EUR}
@@ -692,6 +700,15 @@ const getMessageTranslation = ({ messageType, messageData }: TMessage): TTransla
       return <FormattedMessage id="form.field.error.percentage.max" values={{ ...messageData }} />;
     case ValidationMessage.VALIDATION_PERCENTAGE_MIN:
       return <FormattedMessage id="form.field.error.percentage.min" values={{ ...messageData }} />;
+    case ValidationMessage.VALIDATION_CURRENCY_CODE:
+      return <FormattedMessage id="form.field.error.currency-code" values={{ ...messageData }} />;
+    case ValidationMessage.VALIDATION_FIELDS_SHOULD_MATCH:
+      return (
+        <FormattedMessage
+          id={"form.field.error.fileds-should-match"}
+          values={{ fieldNames: formatMatchingFieldNames(messageData as string[]) }}
+        />
+      );
 
     case MarketingEmailsMessage.UNSUBSCRIBE_ERROR:
       return <FormattedMessage id="settings.unsubscription.error" />;
@@ -763,6 +780,11 @@ const getMessageTranslation = ({ messageType, messageData }: TMessage): TTransla
       return <FormattedMessage id="eto-nominee.permissions.update-nominee-request-text" />;
     case EEtoNomineeRequestMessages.ISSUER_UPDATE_NOMINEE_REQUEST_TEXT:
       return <FormattedMessage id="eto-nominee.permissions.update-nominee-request-text" />;
+
+    case EEtoNomineeActiveEtoNotifications.ACTIVE_ETO_SET_SUCCESS:
+      return <FormattedMessage id="eto-nominee.active-eto.set-success" />;
+    case EEtoNomineeActiveEtoNotifications.ACTIVE_ETO_SET_ERROR:
+      return <FormattedMessage id="eto-nominee.active-eto.set-error" />;
 
     // NEVER DO THIS! This is only for tests, so that we don't bloat locales.json with test strings!
     case TestMessage.TEST_MESSAGE:

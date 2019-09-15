@@ -16,7 +16,7 @@ import {
   selectUser,
   selectVerifiedUserEmail,
 } from "../auth/selectors";
-import { updateUser } from "../auth/user/sagas";
+import { updateUser } from "../auth/user/external/sagas";
 import { neuCall, neuTakeEvery } from "../sagasUtils";
 import { selectLightWalletSalt } from "../web3/selectors";
 
@@ -27,7 +27,7 @@ function* addNewEmailEffect(
   const user = yield select((s: IAppState) => selectUser(s.auth));
   const salt = yield select(selectLightWalletSalt);
   logger.info("New Email added");
-  yield call(updateUser, { ...user, new_email: email, salt: salt });
+  yield neuCall(updateUser, { ...user, new_email: email, salt: salt });
   notificationCenter.info(createMessage(ProfileMessage.PROFILE_NEW_EMAIL_ADDED), {
     "data-test-id": "profile-email-change-success",
   });
@@ -37,7 +37,7 @@ function* abortEmailUpdateEffect({ notificationCenter, logger }: TGlobalDependen
   const user = yield select((s: IAppState) => selectUser(s.auth));
   const email = user.verifiedEmail;
   logger.info("Email change aborted");
-  yield call(updateUser, { ...user, new_email: email });
+  yield neuCall(updateUser, { ...user, new_email: email });
   notificationCenter.info(createMessage(ProfileMessage.PROFILE_ABORT_UPDATE_EMAIL_SUCCESS), {
     "data-test-id": "profile-email-change-aborted",
   });
@@ -50,7 +50,7 @@ function* resendEmailEffect({ notificationCenter, logger }: TGlobalDependencies)
   if (!email) throw new Error("No unverified email");
 
   logger.info("Email resent");
-  yield call(updateUser, { ...user, new_email: email, salt: salt });
+  yield neuCall(updateUser, { ...user, new_email: email, salt: salt });
   notificationCenter.info(createMessage(ProfileMessage.PROFILE_EMAIL_VERIFICATION_SENT));
 }
 

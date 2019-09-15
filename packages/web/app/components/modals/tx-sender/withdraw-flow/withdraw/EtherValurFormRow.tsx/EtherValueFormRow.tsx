@@ -5,7 +5,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 
 import { EAdditionalValidationDataNotifications } from "../../../../../../modules/tx/validator/reducer";
 import { isValidFormNumber } from "../../../../../../modules/tx/validator/withdraw/utils";
-import { MoneyNew } from "../../../../../shared/formatters/Money";
+import { Money } from "../../../../../shared/formatters/Money";
 import {
   ECurrency,
   ENumberInputFormat,
@@ -69,7 +69,7 @@ const EtherValueFormRow: React.FunctionComponent<{
     >
       <small>
         {"= "}
-        <MoneyNew
+        <Money
           value={
             isValidFormNumber(valueEuro)
               ? valueEuro

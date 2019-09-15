@@ -16,11 +16,17 @@ import * as styles from "./PublicView.module.scss";
 const CompanyDescription: React.FunctionComponent<{ eto: TEtoWithCompanyAndContract }> = ({
   eto,
 }) => {
-  const { companyDescription, keyQuoteInvestor, companyWebsite, brandName } = eto.company;
+  const {
+    companyDescription,
+    keyQuoteInvestor,
+    companyWebsite,
+    brandName,
+    companyOneliner,
+  } = eto.company;
   return companyDescription || keyQuoteInvestor ? (
     <>
       <Container columnSpan={EColumnSpan.TWO_COL}>
-        <DashboardHeading title={brandName} />
+        <DashboardHeading title={brandName + (companyOneliner ? ` — ${companyOneliner}` : "")} />
       </Container>
       <Panel columnSpan={EColumnSpan.TWO_COL}>
         {companyDescription && (

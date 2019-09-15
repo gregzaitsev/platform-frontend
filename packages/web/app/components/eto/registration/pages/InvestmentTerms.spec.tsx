@@ -9,7 +9,8 @@ import { InvestmentCalculator } from "./InvestmentTerms";
 describe("<InvestmentCalculator />", () => {
   const eto = {
     preMoneyValuationEur: "125000000",
-    existingCompanyShares: "40859",
+    existingShareCapital: "40859",
+    newShareNominalValue: "1",
     newSharesToIssue: "2952",
     minimumNewSharesToIssue: "1000",
     newSharesToIssueInFixedSlots: "2252",

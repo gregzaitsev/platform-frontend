@@ -1,7 +1,8 @@
 import { expect } from "chai";
-import { RouterState } from "connected-react-router";
 
 import { dummyEthereumAddress } from "../../../test/fixtures";
+import { IAppState } from "../../store";
+import { nonNullable } from "../../utils/nonNullable";
 import {
   getDummyBrowserWalletMetadata,
   getDummyLedgerWalletMetadata,
@@ -20,16 +21,7 @@ import { EWalletSubType, EWalletType } from "./types";
 describe("web3 > selectors", () => {
   const salt = "salt";
   const code = "code";
-  const vault = "vault";
   const email = "test@example.com";
-
-  const previousConnectedWallet = {
-    walletType: EWalletType.LIGHT,
-    address: dummyEthereumAddress,
-    vault,
-    email,
-    salt,
-  };
 
   describe("selectIsLightWallet", () => {
     it("should work with connected wallet", () => {
@@ -102,17 +94,19 @@ describe("web3 > selectors", () => {
 
   describe("selectActivationCodeFromQueryString", () => {
     it("should work with activation link", () => {
-      const state: RouterState = {
-        location: {
-          pathname: "/login/light",
-          state: undefined,
-          hash: "",
-          search: encodeURI(`?redirect=/&code=${code}`),
+      const state = {
+        router: {
+          location: {
+            pathname: "/login/light",
+            state: undefined,
+            hash: "",
+            search: encodeURI(`?redirect=/&code=${code}`),
+          },
+          action: "POP",
         },
-        action: "POP",
-      };
+      } as IAppState;
 
-      const result: any = selectActivationCodeFromQueryString(state);
+      const result = nonNullable(selectActivationCodeFromQueryString(state));
 
       expect(result.verificationCode === code).to.be.true;
     });
@@ -120,17 +114,18 @@ describe("web3 > selectors", () => {
 
   describe("selectLightWalletFromQueryString", () => {
     it("should work with activation link", () => {
-      const state: any = {
-        location: {
-          pathname: "/login/light",
-          state: undefined,
-          hash: "",
-          search: encodeURI(`?redirect=/&email=${email}&salt=${salt}`),
+      const state = {
+        router: {
+          location: {
+            pathname: "/login/light",
+            state: undefined,
+            hash: "",
+            search: encodeURI(`?redirect=/&email=${email}&salt=${salt}`),
+          },
         },
-        ...previousConnectedWallet,
-      };
+      } as IAppState;
 
-      const result: any = selectLightWalletFromQueryString(state);
+      const result = nonNullable(selectLightWalletFromQueryString(state));
 
       expect(result.email).to.be.eq(email);
 
@@ -138,19 +133,20 @@ describe("web3 > selectors", () => {
     });
 
     it("should not work if email or salt is not provided", () => {
-      const state: any = {
-        location: {
-          pathname: "/login/light",
-          state: undefined,
-          hash: "",
-          search: encodeURI(`?redirect=/&email=${email}`),
+      const state = {
+        router: {
+          location: {
+            pathname: "/login/light",
+            state: undefined,
+            hash: "",
+            search: encodeURI(`?redirect=/&email=${email}`),
+          },
         },
-        ...previousConnectedWallet,
-      };
+      } as IAppState;
 
       expect(selectLightWalletFromQueryString(state)).to.be.undefined;
 
-      state.search = encodeURI(`?redirect=/&salt=${salt}`);
+      state.router.location.search = encodeURI(`?redirect=/&salt=${salt}`);
 
       expect(selectLightWalletFromQueryString(state)).to.be.undefined;
     });
@@ -158,15 +154,16 @@ describe("web3 > selectors", () => {
 
   describe("selectLightWalletEmailFromQueryString", () => {
     it("should not detect light wallet when salt is missing", () => {
-      const state: any = {
-        location: {
-          pathname: "/login/light",
-          state: undefined,
-          hash: "",
-          search: encodeURI(`?redirect=/&email=${email}`),
+      const state = {
+        router: {
+          location: {
+            pathname: "/login/light",
+            state: undefined,
+            hash: "",
+            search: encodeURI(`?redirect=/&email=${email}`),
+          },
         },
-        ...previousConnectedWallet,
-      };
+      } as IAppState;
 
       expect(selectLightWalletEmailFromQueryString(state)).to.be.undefined;
     });

@@ -66,18 +66,16 @@ export const notificationsReducer: AppReducer<INotificationsState> = (
   return state;
 };
 
-export const settingsNotificationIssuer = () => ({
+export const settingsNotificationIssuer = (): INotification => ({
   id: Date.now(),
   type: ENotificationType.WARNING,
   text: ENotificationText.COMPLETE_UPDATE_ACCOUNT,
-  actionLinkText: "Go to profile",
   onClickAction: routingActions.goToProfile(),
 });
 
-export const settingsNotificationInvestor = () => ({
+export const settingsNotificationInvestor = (): INotification => ({
   id: Date.now(),
   type: ENotificationType.WARNING,
   text: ENotificationText.COMPLETE_REQUEST_NOTIFICATION,
   onClickAction: routingActions.goToProfile(),
-  clickable: true,
 });

@@ -2,7 +2,7 @@ import * as cn from "classnames";
 import * as React from "react";
 
 import { TDataTestId, TTranslatedString } from "../../../types";
-import { MoneyNew } from "../formatters/Money";
+import { Money } from "../formatters/Money";
 import {
   ENumberInputFormat,
   ENumberOutputFormat,
@@ -100,7 +100,7 @@ const MoneySingleSuiteWidget: React.FunctionComponent<
 }) => (
   <div className={cn(styles.moneySuiteWidget, theme, size, textPosition)}>
     {textPosition === ETextPosition.LEFT && <Icon icon={icon} />}
-    <MoneyNew
+    <Money
       data-test-id={dataTestId}
       value={value}
       inputFormat={inputFormat}
@@ -162,7 +162,7 @@ const MoneySuiteWidget: React.FunctionComponent<IMoneySuiteWidgetProps & TDataTe
       size={getSize(size)}
       data-test-id={dataTestId}
       top={
-        <MoneyNew
+        <Money
           value={largeNumber}
           inputFormat={inputFormat}
           outputFormat={outputFormat}
@@ -172,7 +172,7 @@ const MoneySuiteWidget: React.FunctionComponent<IMoneySuiteWidgetProps & TDataTe
       bottom={
         <>
           {useTildeSign ? <>~</> : <>=</>}{" "}
-          <MoneyNew
+          <Money
             value={value}
             inputFormat={inputFormat}
             outputFormat={outputFormat}

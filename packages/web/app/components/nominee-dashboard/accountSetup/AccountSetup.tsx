@@ -10,7 +10,7 @@ import {
 import { selectKycRequestStatus } from "../../../modules/kyc/selectors";
 import { appConnect } from "../../../store";
 import { Panel } from "../../shared/Panel";
-import { DashboardTitle } from "../NomineeDashboard";
+import { DashboardTitle } from "../NomineeDashboardTitle";
 import { nomineeAccountSetupSteps } from "./AccountSetupData";
 import { AccountSetupStep } from "./AccountSetupFlow";
 import { AccountSetupKycPending } from "./AccountSetupKycPending";
@@ -69,11 +69,7 @@ export const AccountSetup = compose<INomineeAccountSetupSteps, {}>(
       [EKycRequestStatus.PENDING, EKycRequestStatus.IGNORED, EKycRequestStatus.REJECTED].includes(
         props.kycRequestStatus,
       ),
-    renderComponent(
-      withProps<{ kycRequestStatus: EKycRequestStatus }, IStateProps>(({ kycRequestStatus }) => ({
-        kycRequestStatus,
-      }))(AccountSetupKycPending),
-    ),
+    renderComponent(AccountSetupKycPending),
   ),
   withProps<INomineeAccountSetupSteps, IStateProps>(
     ({ emailVerified, backupCodesVerified, kycRequestStatus }: IStateProps) => ({

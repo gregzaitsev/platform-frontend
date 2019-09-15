@@ -5,7 +5,7 @@ import { Col, Container, Row } from "reactstrap";
 
 import * as YupTS from "../../../../lib/yup-ts.unsafe";
 import { Button } from "../../../shared/buttons";
-import { Form, FormFieldBoolean } from "../../../shared/forms";
+import { FormDeprecated, FormFieldBoolean } from "../../../shared/forms";
 
 const getSummaryFormSchema = () =>
   YupTS.object({
@@ -24,7 +24,7 @@ const SummaryForm: React.FunctionComponent<IExternalProps> = ({ onSubmit }) => (
     onSubmit={onSubmit}
   >
     {({ isValid }) => (
-      <Form>
+      <FormDeprecated>
         <Container>
           <Row className="justify-content-center">
             <Col xs={12} className="mb-3 d-flex justify-content-center">
@@ -49,7 +49,7 @@ const SummaryForm: React.FunctionComponent<IExternalProps> = ({ onSubmit }) => (
             </Col>
           </Row>
         </Container>
-      </Form>
+      </FormDeprecated>
     )}
   </Formik>
 );

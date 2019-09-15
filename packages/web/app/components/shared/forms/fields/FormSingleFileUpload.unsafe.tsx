@@ -140,9 +140,6 @@ export const FormSingleFileUpload = compose<
       showNotification: (message: TMessage) =>
         dispatch(actions.notificationModal.notify({ type: ENotificationModalType.ERROR, message })),
     }),
-    options: {
-      pure: false,
-    },
   }),
   formikConnect,
 )(FormSingleFileUploadComponent);

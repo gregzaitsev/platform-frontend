@@ -2,15 +2,15 @@ import { storiesOf } from "@storybook/react";
 import { Formik } from "formik";
 import * as React from "react";
 
-import { Form } from "../Form";
+import { FormDeprecated } from "../FormDeprecated";
 import { FormFieldDate } from "./FormFieldDate";
 
 storiesOf("forms/fields/FieldDate", module).add("default", () => (
   <Formik initialValues={{}} onSubmit={() => {}}>
     {() => (
-      <Form>
+      <FormDeprecated>
         <FormFieldDate label="Date of birth" name="dob" />
-      </Form>
+      </FormDeprecated>
     )}
   </Formik>
 ));

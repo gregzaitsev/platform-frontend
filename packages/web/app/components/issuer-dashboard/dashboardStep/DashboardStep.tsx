@@ -1,6 +1,8 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
+import { EOfferingDocumentType } from "../../../lib/api/eto/EtoProductsApi.interfaces";
+import { assertNever } from "../../../utils/assertNever";
 import { DashboardHeading } from "../../eto/shared/DashboardHeading";
 import { Container, EColumnSpan } from "../../layouts/Container";
 import { EEtoStep } from "../utils";
@@ -8,6 +10,7 @@ import { LinkNomineeStep } from "./LinkNomineeStep";
 
 interface IEtoStep {
   etoStep: EEtoStep;
+  offeringDocumentType: EOfferingDocumentType | undefined;
 }
 
 const selectStepComponent = (props: IEtoStep) => {
@@ -62,7 +65,7 @@ const selectStepComponent = (props: IEtoStep) => {
           data-test-id="eto-dashboard-publish"
         />
       );
-    case EEtoStep.SEVEN:
+    case EEtoStep.INVESTMENT_OFFER_IN_REVIEW:
       return (
         <>
           <DashboardHeading
@@ -72,17 +75,47 @@ const selectStepComponent = (props: IEtoStep) => {
           <FormattedMessage id="eto-dashboard.review.description" />
         </>
       );
-    case EEtoStep.EIGHT:
+    case EEtoStep.UPLOAD_OFFERING_DOCUMENT: {
+      switch (props.offeringDocumentType) {
+        case EOfferingDocumentType.PROSPECTUS:
+          return (
+            <DashboardHeading
+              title={<FormattedMessage id="eto-dashboard.upload-prospectus-document" />}
+              data-test-id="eto-dashboard-upload-prospectus-document"
+            />
+          );
+        case EOfferingDocumentType.MEMORANDUM:
+          return (
+            <DashboardHeading
+              title={<FormattedMessage id="eto-dashboard.upload-memorandum-document" />}
+              data-test-id="eto-dashboard-upload-memorandum-document"
+            />
+          );
+        default:
+          throw new Error(`Invalid offering document type (${props.offeringDocumentType})`);
+      }
+    }
+    case EEtoStep.UPLOAD_ISHA:
       return (
         <DashboardHeading
-          title={<FormattedMessage id="eto-dashboard.live" />}
-          data-test-id="eto-dashboard-live"
+          title={<FormattedMessage id="eto-dashboard.upload-isha" />}
+          data-test-id="eto-dashboard-upload-isha"
         />
       );
-    case EEtoStep.NINE:
+    case EEtoStep.WAIT_FOR_SMART_CONTRACT:
+      return (
+        <>
+          <DashboardHeading
+            title={<FormattedMessage id="eto-dashboard.waiting-for-smart-contracts" />}
+            data-test-id="eto-dashboard-waiting-for-smart-contracts"
+          />
+          <FormattedMessage id="eto-dashboard.waiting-for-smart-contracts.description" />
+        </>
+      );
+    case EEtoStep.REQUEST_THA_SIGN:
       return <DashboardHeading title={<FormattedMessage id="eto-dashboard.start-fundraising" />} />;
     default:
-      return null;
+      return assertNever(props.etoStep);
   }
 };
 

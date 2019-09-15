@@ -14,6 +14,7 @@ import { selectBackupCodesVerified, selectVerifiedUserEmail } from "../../module
 import {
   selectCanEnableBookBuilding,
   selectCombinedEtoCompanyData,
+  selectIsISHAPreviewSubmitted,
   selectIsMarketingDataVisibleInPreview,
   selectIsOfferingDocumentSubmitted,
   selectIssuerEtoOfferingDocumentType,
@@ -48,9 +49,10 @@ import { ChooseEtoStartDateWidget } from "./chooseEtoStartDateWidget/ChooseEtoSt
 import { DashboardStep } from "./dashboardStep/DashboardStep";
 import { ETOFormsProgressSection } from "./ETOFormsProgressSection";
 import { PublishETOWidget } from "./PublishETOWidget";
-import { UploadInvestmentAgreement } from "./signInvestmentAgreementWidget/UploadInvestmentAgreementWidget.unsafe";
+import { UploadInvestmentAgreement } from "./signInvestmentAgreementWidget/UploadInvestmentAgreementWidget";
 import { SubmitProposalWidget } from "./submitProposalWidget/SubmitProposalWidget";
 import { UploadInvestmentMemorandum } from "./UploadInvestmentMemorandum";
+import { UploadISHA } from "./UploadISHA";
 import { UploadProspectusWidget } from "./UploadProspectusWidget";
 import { UploadTermSheetWidget } from "./UploadTermSheetWidget";
 import { EEtoStep, selectEtoStep } from "./utils";
@@ -69,7 +71,8 @@ interface IStateProps {
   canEnableBookbuilding: boolean;
   combinedEtoCompanyData: ReturnType<typeof selectCombinedEtoCompanyData>;
   isTermSheetSubmitted?: boolean;
-  isOfferingDocumentSubmitted?: boolean;
+  isOfferingDocumentSubmitted: boolean | undefined;
+  isISHASubmitted: boolean | undefined;
   offeringDocumentType: EOfferingDocumentType | undefined;
   isMarketingDataVisibleInPreview?: EEtoMarketingDataVisibleInPreview;
 }
@@ -104,6 +107,7 @@ interface IEtoStateRender {
   shouldViewSubmissionSection?: boolean;
   isTermSheetSubmitted?: boolean;
   isOfferingDocumentSubmitted?: boolean;
+  isISHASubmitted: boolean | undefined;
   canEnableBookbuilding: boolean;
   offeringDocumentType: EOfferingDocumentType | undefined;
   shouldViewEtoSettings: boolean;
@@ -115,6 +119,7 @@ const EtoDashboardStateViewComponent: React.FunctionComponent<IEtoStateRender> =
   shouldViewSubmissionSection,
   isTermSheetSubmitted,
   isOfferingDocumentSubmitted,
+  isISHASubmitted,
   canEnableBookbuilding,
   offeringDocumentType,
   shouldViewEtoSettings,
@@ -161,12 +166,17 @@ const EtoDashboardStateViewComponent: React.FunctionComponent<IEtoStateRender> =
           {canEnableBookbuilding && (
             <BookBuildingWidget columnSpan={EColumnSpan.ONE_AND_HALF_COL} />
           )}
+
           {!isOfferingDocumentSubmitted &&
             (offeringDocumentType === EOfferingDocumentType.PROSPECTUS ? (
               <UploadProspectusWidget columnSpan={EColumnSpan.ONE_AND_HALF_COL} />
             ) : (
               <UploadInvestmentMemorandum columnSpan={EColumnSpan.ONE_AND_HALF_COL} />
             ))}
+
+          {isOfferingDocumentSubmitted && !isISHASubmitted && (
+            <UploadISHA columnSpan={EColumnSpan.ONE_AND_HALF_COL} />
+          )}
 
           <ETOFormsProgressSection shouldViewEtoSettings={shouldViewSubmissionSection} />
         </>
@@ -206,22 +216,16 @@ const VerificationSection: React.FunctionComponent<TVerificationSection> = ({
 }) => (
   <>
     <Container columnSpan={EColumnSpan.THREE_COL} type={EContainerType.INHERIT_GRID}>
-      <DashboardStep etoStep={etoStep} />
+      <DashboardStep etoStep={etoStep} offeringDocumentType={props.offeringDocumentType} />
     </Container>
     <SettingsWidgets isDynamic={true} {...props} columnSpan={EColumnSpan.ONE_AND_HALF_COL} />
   </>
 );
 
 const VerifiedUserSection: React.FunctionComponent<TVerificationSection> = ({
-  canEnableBookbuilding,
   eto,
   etoStep,
-  isOfferingDocumentSubmitted,
-  isTermSheetSubmitted,
-  offeringDocumentType,
-  shouldViewEtoSettings,
-  shouldViewMarketingSubmissionSection,
-  shouldViewSubmissionSection,
+  ...rest
 }) => {
   if (eto) {
     return (
@@ -248,19 +252,10 @@ const VerifiedUserSection: React.FunctionComponent<TVerificationSection> = ({
         </Container>
 
         <Container columnSpan={EColumnSpan.THREE_COL} type={EContainerType.INHERIT_GRID}>
-          <DashboardStep etoStep={etoStep} />
+          <DashboardStep etoStep={etoStep} offeringDocumentType={rest.offeringDocumentType} />
         </Container>
 
-        <EtoDashboardStateViewComponent
-          isTermSheetSubmitted={isTermSheetSubmitted}
-          isOfferingDocumentSubmitted={isOfferingDocumentSubmitted}
-          shouldViewEtoSettings={shouldViewEtoSettings}
-          shouldViewSubmissionSection={shouldViewSubmissionSection}
-          eto={eto}
-          canEnableBookbuilding={canEnableBookbuilding}
-          offeringDocumentType={offeringDocumentType}
-          shouldViewMarketingSubmissionSection={shouldViewMarketingSubmissionSection}
-        />
+        <EtoDashboardStateViewComponent eto={eto} {...rest} />
       </>
     );
   } else {
@@ -301,6 +296,7 @@ const EtoDashboard = compose<React.FunctionComponent>(
       canEnableBookbuilding: selectCanEnableBookBuilding(s),
       isTermSheetSubmitted: selectIsTermSheetSubmitted(s),
       isOfferingDocumentSubmitted: selectIsOfferingDocumentSubmitted(s),
+      isISHASubmitted: selectIsISHAPreviewSubmitted(s),
       combinedEtoCompanyData: selectCombinedEtoCompanyData(s),
       offeringDocumentType: selectIssuerEtoOfferingDocumentType(s),
       isMarketingDataVisibleInPreview: selectIsMarketingDataVisibleInPreview(s),
@@ -351,6 +347,8 @@ const EtoDashboard = compose<React.FunctionComponent>(
             props.isTermSheetSubmitted,
             isVotingRightsFilledWithAllRequired,
             isInvestmentAndEtoTermsFilledWithAllRequired,
+            props.isOfferingDocumentSubmitted,
+            props.isISHASubmitted,
           )
         : EEtoStep.VERIFICATION,
     };

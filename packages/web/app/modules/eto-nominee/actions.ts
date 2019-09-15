@@ -1,6 +1,6 @@
 import { createActionFactory } from "@neufund/shared";
 
-import { TNomineeRequestStorage } from "../nominee-flow/reducer";
+import { TNomineeRequestStorage } from "../nominee-flow/types";
 
 export const etoNomineeActions = {
   getNomineeRequests: createActionFactory("ETO_NOMINEE_GET_NOMINEE_REQUESTS"),

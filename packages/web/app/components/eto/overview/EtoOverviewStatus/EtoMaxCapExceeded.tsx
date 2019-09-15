@@ -9,7 +9,7 @@ import { selectEtherPriceEur } from "../../../../modules/shared/tokenPrice/selec
 import { appConnect } from "../../../../store";
 import { divideBigNumbers } from "../../../../utils/BigNumberUtils";
 import { FormatNumber } from "../../../shared/formatters/FormatNumber";
-import { MoneyNew } from "../../../shared/formatters/Money";
+import { Money } from "../../../shared/formatters/Money";
 import {
   ECurrency,
   ENumberInputFormat,
@@ -57,7 +57,7 @@ const EtoMaxCapExceededComponent: React.FunctionComponent<
       </div>
       <div className={styles.header}>
         <div>
-          <MoneyNew
+          <Money
             value={divideBigNumbers(eto.contract!.totalInvestment.totalEquivEurUlps, etherPriceEur)}
             inputFormat={ENumberInputFormat.ULPS}
             valueType={ECurrency.ETH}
@@ -82,7 +82,7 @@ const EtoMaxCapExceededComponent: React.FunctionComponent<
       </div>
       <div className={styles.header}>
         <div>
-          <MoneyNew
+          <Money
             value={eto.contract!.totalInvestment.totalTokensInt}
             inputFormat={ENumberInputFormat.FLOAT}
             outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}

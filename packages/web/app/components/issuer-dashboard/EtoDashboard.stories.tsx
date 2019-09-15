@@ -11,7 +11,7 @@ import { EtoDashboardLayout } from "./EtoDashboard";
 import { EEtoStep } from "./utils";
 
 // KYC is not filled
-const stateStepOne = {
+const verificationStep = {
   backupCodesVerified: true,
   shouldViewEtoSettings: false,
   shouldViewMarketingSubmissionSection: false,
@@ -26,107 +26,121 @@ const stateStepOne = {
   userHasKycAndEmailVerified: false,
   shouldViewSubmissionSection: false,
   etoStep: EEtoStep.VERIFICATION,
+  isISHASubmitted: false,
 };
 
 // Fill in information about your company
-const stateStepTwo = {
-  ...stateStepOne,
+const companyInformationStep = {
+  ...verificationStep,
   isVerificationSectionDone: true,
   userHasKycAndEmailVerified: true,
   etoStep: EEtoStep.FILL_INFORMATION_ABOUT_COMPANY,
 };
 
 // Publish your listing page
-const stateStepThree = {
-  ...stateStepTwo,
+const publishListingPageStep = {
+  ...companyInformationStep,
   shouldViewEtoSettings: true,
   shouldViewMarketingSubmissionSection: true,
   etoStep: EEtoStep.PUBLISH_LISTING_PAGE,
 };
 
 // Publish your listing page
-const stateStepThreeFilled = {
-  ...stateStepThree,
+const publishListingPageStepFilled = {
+  ...publishListingPageStep,
   shouldViewSubmissionSection: true,
   shouldViewMarketingSubmissionSection: true,
 };
 
 // Listing page in review
-const stateStepFour = {
-  ...stateStepThree,
+const listingPageInReviewStep = {
+  ...publishListingPageStep,
   shouldViewMarketingSubmissionSection: false,
   etoStep: EEtoStep.LISTING_PAGE_IN_REVIEW,
 };
 
-const stateStepFourFilled = {
-  ...stateStepThreeFilled,
+const listingPageInReviewStepFilled = {
+  ...publishListingPageStepFilled,
   shouldViewMarketingSubmissionSection: false,
   etoStep: EEtoStep.LISTING_PAGE_IN_REVIEW,
 };
 
 // Set up your ETO
-const stateStepFive = {
-  ...stateStepFour,
+const uploadTermsheetStep = {
+  ...listingPageInReviewStep,
   etoStep: EEtoStep.UPLOAD_SIGNED_TERMSHEET,
 };
 
-const stateStepFiveFilled = {
-  ...stateStepFourFilled,
+const uploadTermsheetStepFilled = {
+  ...listingPageInReviewStepFilled,
   etoStep: EEtoStep.UPLOAD_SIGNED_TERMSHEET,
 };
 
-const stateStepSix = {
-  ...stateStepFiveFilled,
+const publishInvestmentStep = {
+  ...uploadTermsheetStepFilled,
   isTermSheetSubmitted: true,
   etoStep: EEtoStep.PUBLISH_INVESTMENT_OFFER,
 };
 
-const stateStepSeven = {
-  ...stateStepSix,
-  eto: { ...stateStepSix.eto, state: EEtoState.PENDING },
-  etoStep: EEtoStep.SEVEN,
+const investmentOfferInReviewStep = {
+  ...publishInvestmentStep,
+  eto: { ...publishInvestmentStep.eto, state: EEtoState.PENDING },
+  etoStep: EEtoStep.INVESTMENT_OFFER_IN_REVIEW,
 };
 
-const stateStepEight = {
-  ...stateStepSix,
-  eto: { ...stateStepSix.eto, state: EEtoState.LISTED },
-  etoStep: EEtoStep.EIGHT,
+const uploadOfferingDocumentProspectusStep = {
+  ...publishInvestmentStep,
+  eto: { ...publishInvestmentStep.eto, state: EEtoState.LISTED },
+  etoStep: EEtoStep.UPLOAD_OFFERING_DOCUMENT,
 };
 
-const stateStepEightMemorandum = {
-  ...stateStepSix,
-  eto: { ...stateStepSix.eto, state: EEtoState.LISTED },
+const uploadOfferingDocumentMemorandumStep = {
+  ...uploadOfferingDocumentProspectusStep,
   offeringDocumentType: EOfferingDocumentType.MEMORANDUM,
-  etoStep: EEtoStep.EIGHT,
 };
 
-const stateStepEightOnChain = {
-  ...stateStepEight,
-  eto: { ...stateStepEight.eto, state: EEtoState.ON_CHAIN },
+const uploadISHAStep = {
+  ...uploadOfferingDocumentProspectusStep,
+  etoStep: EEtoStep.UPLOAD_ISHA,
+  isOfferingDocumentSubmitted: true,
+};
+
+const waitingForContractsStep = {
+  ...uploadISHAStep,
+  etoStep: EEtoStep.WAIT_FOR_SMART_CONTRACT,
+  isISHASubmitted: true,
+};
+
+const requestTHAStep = {
+  ...waitingForContractsStep,
+  etoStep: EEtoStep.REQUEST_THA_SIGN,
+  eto: { ...uploadOfferingDocumentProspectusStep.eto, state: EEtoState.ON_CHAIN },
 };
 
 storiesOf("ETO-Flow/Dashboard/StateView", module)
   .addDecorator(withStore(mockedStore))
-  .add("Step 1 - Verification", () => <EtoDashboardLayout {...stateStepOne} />)
-  .add("Step 2 - Company info", () => <EtoDashboardLayout {...stateStepTwo} />)
-  .add("Step 3 - Publish listing (ETO not filled)", () => (
-    <EtoDashboardLayout {...stateStepThree} />
+  .add("Verification", () => <EtoDashboardLayout {...verificationStep} />)
+  .add("Company info", () => <EtoDashboardLayout {...companyInformationStep} />)
+  .add("Publish listing (ETO not filled)", () => <EtoDashboardLayout {...publishListingPageStep} />)
+  .add("Publish listing (ETO filled)", () => (
+    <EtoDashboardLayout {...publishListingPageStepFilled} />
   ))
-  .add("Step 3 - Publish listing (ETO filled)", () => (
-    <EtoDashboardLayout {...stateStepThreeFilled} />
+  .add("Publish pending (ETO not filled)", () => (
+    <EtoDashboardLayout {...listingPageInReviewStep} />
   ))
-  .add("Step 4 - Publish pending (ETO not filled)", () => <EtoDashboardLayout {...stateStepFour} />)
-  .add("Step 4 - Publish pending (ETO filled)", () => (
-    <EtoDashboardLayout {...stateStepFourFilled} />
+  .add("Publish pending (ETO filled)", () => (
+    <EtoDashboardLayout {...listingPageInReviewStepFilled} />
   ))
-  .add("Step 5 - Set up ETO (ETO not filled)", () => <EtoDashboardLayout {...stateStepFive} />)
-  .add("Step 5 - Set up ETO (ETO filled)", () => <EtoDashboardLayout {...stateStepFiveFilled} />)
-  .add("Step 6 - Publish your investment offer", () => <EtoDashboardLayout {...stateStepSix} />)
-  .add("Step 7 - Investment offer in review", () => <EtoDashboardLayout {...stateStepSeven} />)
-  .add("Step 8 - Campaign is live", () => <EtoDashboardLayout {...stateStepEight} />)
-  .add("Step 8 - Campaign is live (Memorandum)", () => (
-    <EtoDashboardLayout {...stateStepEightMemorandum} />
+  .add("Set up ETO (ETO not filled)", () => <EtoDashboardLayout {...uploadTermsheetStep} />)
+  .add("Set up ETO (ETO filled)", () => <EtoDashboardLayout {...uploadTermsheetStepFilled} />)
+  .add("Publish your investment offer", () => <EtoDashboardLayout {...publishInvestmentStep} />)
+  .add("Investment offer in review", () => <EtoDashboardLayout {...investmentOfferInReviewStep} />)
+  .add("Upload offering document (Prospectus)", () => (
+    <EtoDashboardLayout {...uploadOfferingDocumentProspectusStep} />
   ))
-  .add("Step 8 - Campaign is live (On chain)", () => (
-    <EtoDashboardLayout {...stateStepEightOnChain} />
-  ));
+  .add("Upload offering document (Memorandum)", () => (
+    <EtoDashboardLayout {...uploadOfferingDocumentMemorandumStep} />
+  ))
+  .add("Upload ISHA step", () => <EtoDashboardLayout {...uploadISHAStep} />)
+  .add("Waiting for contracts step", () => <EtoDashboardLayout {...waitingForContractsStep} />)
+  .add("Request nominee to sign THA", () => <EtoDashboardLayout {...requestTHAStep} />);

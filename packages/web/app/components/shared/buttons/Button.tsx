@@ -1,7 +1,7 @@
 import * as cn from "classnames";
 import * as React from "react";
 
-import { CommonHtmlProps } from "../../../types";
+import { CommonHtmlProps, TDataTestId } from "../../../types";
 import { InlineIcon } from "../icons";
 import { LoadingIndicator } from "../loading-indicator";
 
@@ -68,7 +68,7 @@ export interface IButtonProps extends TGeneralButton, CommonHtmlProps {
 
 const Button: React.ForwardRefExoticComponent<
   { children?: React.ReactNode } & IButtonProps & React.RefAttributes<HTMLButtonElement>
-> = React.forwardRef<HTMLButtonElement, IButtonProps>(
+> = React.forwardRef<HTMLButtonElement, IButtonProps & TDataTestId>(
   (
     {
       children,
@@ -86,12 +86,14 @@ const Button: React.ForwardRefExoticComponent<
       textPosition,
       isActive,
       onClick,
+      "data-test-id": dataTestId,
       ...props
     },
     ref,
   ) => (
     <button
       ref={ref}
+      data-test-id={dataTestId}
       className={cn(
         styles.button,
         className,

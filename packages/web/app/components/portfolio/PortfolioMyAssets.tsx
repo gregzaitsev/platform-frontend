@@ -15,7 +15,7 @@ import { DashboardHeading } from "../eto/shared/DashboardHeading";
 import { Container } from "../layouts/Container";
 import { Button, ButtonLink, ButtonSize, EButtonLayout, EIconPosition } from "../shared/buttons";
 import { FormatNumber } from "../shared/formatters/FormatNumber";
-import { MoneyNew } from "../shared/formatters/Money";
+import { Money } from "../shared/formatters/Money";
 import { ECurrency, ENumberInputFormat, ENumberOutputFormat } from "../shared/formatters/utils";
 import { ENewTableCellLayout, NewTable, NewTableRow } from "../shared/table";
 
@@ -76,19 +76,19 @@ const PortfolioMyAssetsComponent: React.FunctionComponent<TComponentProps> = ({
             <img src={neuIcon} alt="" className={cn("mr-2", styles.token)} />
             <span>{"NEU"}</span>
           </>
-          <MoneyNew
+          <Money
             value={myNeuBalance}
             inputFormat={ENumberInputFormat.ULPS}
             valueType={ECurrency.NEU}
             outputFormat={ENumberOutputFormat.FULL}
           />
-          <MoneyNew
+          <Money
             value={neuValue}
             inputFormat={ENumberInputFormat.ULPS}
             valueType={ECurrency.EUR}
             outputFormat={ENumberOutputFormat.FULL}
           />
-          <MoneyNew
+          <Money
             value={neuPrice}
             inputFormat={ENumberInputFormat.FLOAT}
             valueType={ECurrency.EUR}
@@ -130,13 +130,13 @@ const PortfolioMyAssetsComponent: React.FunctionComponent<TComponentProps> = ({
                   outputFormat={ENumberOutputFormat.INTEGER}
                 />
               </span>
-              <MoneyNew
+              <Money
                 value={multiplyBigNumbers([tokenData.tokenPrice, tokenData.balance])}
                 inputFormat={ENumberInputFormat.ULPS}
                 valueType={ECurrency.EUR}
                 outputFormat={ENumberOutputFormat.FULL}
               />
-              <MoneyNew
+              <Money
                 value={tokenData.tokenPrice}
                 inputFormat={ENumberInputFormat.ULPS}
                 valueType={ECurrency.EUR}

@@ -15,7 +15,7 @@ import { appConnect } from "../../../../../store";
 import { onEnterAction } from "../../../../../utils/OnEnterAction";
 import { appRoutes } from "../../../../appRoutes";
 import { ButtonLink } from "../../../../shared/buttons";
-import { MoneyNew } from "../../../../shared/formatters/Money";
+import { Money } from "../../../../shared/formatters/Money";
 import {
   ECurrency,
   ENumberInputFormat,
@@ -102,7 +102,7 @@ const CampaigningActivatedWidgetComponent: React.FunctionComponent<IProps> = ({
               <FormattedMessage id="shared-component.eto-overview.amount-backed" />
             </span>
             <span className={styles.value} data-test-id="eto-bookbuilding-amount-backed">
-              <MoneyNew
+              <Money
                 value={pledgedAmount}
                 valueType={ECurrency.EUR}
                 inputFormat={ENumberInputFormat.FLOAT}
@@ -156,7 +156,7 @@ const CampaigningActivatedWidgetComponent: React.FunctionComponent<IProps> = ({
                 id="shared-component.eto-overview.whitelist.success.summary"
                 values={{
                   totalAmount: (
-                    <MoneyNew
+                    <Money
                       value={pledgedAmount}
                       inputFormat={ENumberInputFormat.FLOAT}
                       valueType={ECurrency.EUR}

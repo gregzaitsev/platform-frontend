@@ -126,7 +126,7 @@ const EtoViewLayout: React.FunctionComponent<IProps> = ({ eto, publicView }) => 
 
           {isYouTubeVideoAvailable && (
             <Container>
-              <DashboardHeading title={<FormattedMessage id="eto.public-view.youtube" />} />
+              <DashboardHeading title={<FormattedMessage id="eto.public-view.video" />} />
               <Video youTubeUrl={companyVideo && companyVideo.url} hasModal />
             </Container>
           )}

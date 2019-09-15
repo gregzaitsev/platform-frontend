@@ -1,17 +1,18 @@
 .token-symbol-widget {
-  @include media-breakpoint-down(sm) {
-    margin-bottom: 0;
-    margin-top: 10px;
+  @include media-breakpoint-up(md) {
+    margin-top: px-to-rem(10px);
   }
 
-  @include media-breakpoint-only(md) {
-    margin-bottom: 15px;
-    margin-top: 15px;
+  @include media-breakpoint-up(lg) {
+    margin-bottom: px-to-rem(20px);
+    margin-top: px-to-rem(28px);
   }
 
   display: flex;
-  margin-bottom: 20px;
-  margin-top: 28px;
+
+  margin-top: px-to-rem(20px);
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .token-image-wrapper {
@@ -26,14 +27,9 @@
   overflow: hidden;
 }
 
-.brand-name {
-  @include font-headline-medium;
-
-  color: $neu-slate-grey;
-}
-
 .token-name {
   @include font-label;
 
   color: $neu-slate-grey;
+  margin: 0;
 }

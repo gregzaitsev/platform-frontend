@@ -1,4 +1,4 @@
-import { put, select } from "redux-saga/effects";
+import { Effect, fork, put, select } from "redux-saga/effects";
 
 import { AuthMessage } from "../../../components/translatedMessages/messages";
 import { createMessage } from "../../../components/translatedMessages/utils";
@@ -9,7 +9,7 @@ import { TStoredWalletMetadata } from "../../../lib/persistence/WalletMetadataOb
 import { IAppState } from "../../../store";
 import { actions } from "../../actions";
 import { userHasKycAndEmailVerified } from "../../eto-flow/selectors";
-import { neuCall } from "../../sagasUtils";
+import { neuCall, neuTakeEvery } from "../../sagasUtils";
 import {
   selectActivationCodeFromQueryString,
   selectEmailFromQueryString,
@@ -17,7 +17,7 @@ import {
 import { EWalletType } from "../../web3/types";
 import { selectUserEmail, selectUserType, selectVerifiedUserEmail } from "../selectors";
 import { ELogoutReason } from "../types";
-import { loadUser } from "../user/sagas";
+import { loadUser } from "../user/external/sagas";
 
 /**
  * Email Verification
@@ -26,8 +26,8 @@ export function* verifyUserEmail({
   notificationCenter,
   walletStorage,
 }: TGlobalDependencies): Iterator<any> {
-  const userCode = yield select((s: IAppState) => selectActivationCodeFromQueryString(s.router));
-  const urlEmail = yield select((s: IAppState) => selectEmailFromQueryString(s.router));
+  const userCode = yield select(selectActivationCodeFromQueryString);
+  const urlEmail = yield select(selectEmailFromQueryString);
   const userEmail = yield select((s: IAppState) => selectUserEmail(s.auth));
 
   if (userEmail && userEmail !== urlEmail) {
@@ -45,7 +45,7 @@ export function* verifyUserEmail({
   const verifiedEmail = yield select((s: IAppState) => selectVerifiedUserEmail(s.auth));
 
   yield neuCall(verifyUserEmailPromise, userCode, urlEmail, verifiedEmail);
-  yield loadUser();
+  yield neuCall(loadUser);
 
   const walletMetadata = walletStorage.get();
   // Update metadata email only when wallet type is LightWallet
@@ -91,4 +91,8 @@ export async function checkEmailPromise(
 ): Promise<boolean> {
   const emailStatus = await apiUserService.emailStatus(email);
   return emailStatus.isAvailable;
+}
+
+export function* authEmailSagas(): Iterator<Effect> {
+  yield fork(neuTakeEvery, actions.auth.verifyEmail, verifyUserEmail);
 }

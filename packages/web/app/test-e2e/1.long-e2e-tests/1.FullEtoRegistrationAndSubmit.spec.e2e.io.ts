@@ -1,4 +1,8 @@
-import { createAndSetNominee, fillAndAssertFull } from "../eto-registration/EtoRegistrationUtils";
+import {
+  createAndSetNominee,
+  fillAndAssertFull,
+  openAndCheckValues,
+} from "../eto-registration/EtoRegistrationUtils";
 import {
   aboutForm,
   equityTokenInfoForm,
@@ -10,6 +14,7 @@ import {
   mediaForm,
   productVisionForm,
   votingRights,
+  votingRightsExpectedValues,
 } from "../eto-registration/fixtures";
 import { fillForm } from "../utils/forms";
 import { goToIssuerDashboard } from "../utils/navigation";
@@ -100,5 +105,27 @@ describe("Eto Forms", () => {
     createAndSetNominee();
 
     fillAndAssertFull("eto-progress-widget-voting-right", votingRights);
+
+    openAndCheckValues(
+      "eto-progress-widget-voting-right",
+      votingRights,
+      votingRightsExpectedValues,
+    );
+
+    goToIssuerDashboard();
+
+    // Remove advisory board
+    fillAndAssertFull("eto-progress-widget-voting-right", {
+      advisoryBoardSelector: { value: "false", type: "radio" },
+      "eto-registration-voting-rights-submit": {
+        type: "submit",
+      },
+    });
+
+    // TODO: Uncomment after #3433 get's fixed
+    // Check if advisory board was correctly removed
+    // openAndCheckValues("eto-progress-widget-voting-right", votingRights, {
+    //   advisoryBoardSelector: "false",
+    // });
   });
 });

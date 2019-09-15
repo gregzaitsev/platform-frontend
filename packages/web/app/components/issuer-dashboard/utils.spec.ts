@@ -17,6 +17,8 @@ describe("selectEtoStep", () => {
         false,
         false,
         false,
+        false,
+        false,
       ),
     ).to.eq(EEtoStep.VERIFICATION);
 
@@ -30,6 +32,8 @@ describe("selectEtoStep", () => {
         true,
         true,
         true,
+        false,
+        false,
       ),
     ).to.eq(EEtoStep.VERIFICATION);
   });
@@ -41,6 +45,8 @@ describe("selectEtoStep", () => {
         EEtoState.PREVIEW,
         false,
         EEtoMarketingDataVisibleInPreview.NOT_VISIBLE,
+        false,
+        false,
         false,
         false,
         false,
@@ -58,6 +64,8 @@ describe("selectEtoStep", () => {
         false,
         false,
         false,
+        false,
+        false,
       ),
     ).to.eq(EEtoStep.PUBLISH_LISTING_PAGE);
   });
@@ -69,6 +77,8 @@ describe("selectEtoStep", () => {
         EEtoState.PREVIEW,
         true,
         EEtoMarketingDataVisibleInPreview.VISIBILITY_PENDING,
+        false,
+        false,
         false,
         false,
         false,
@@ -85,6 +95,8 @@ describe("selectEtoStep", () => {
         false,
         true,
         true,
+        false,
+        false,
       ),
     ).to.eq(EEtoStep.LISTING_PAGE_IN_REVIEW);
   });
@@ -99,6 +111,8 @@ describe("selectEtoStep", () => {
         false,
         false,
         true,
+        false,
+        false,
       ),
     ).to.eq(EEtoStep.LINK_NOMINEE);
   });
@@ -113,6 +127,8 @@ describe("selectEtoStep", () => {
         false,
         true,
         true,
+        false,
+        false,
       ),
     ).to.eq(EEtoStep.UPLOAD_SIGNED_TERMSHEET);
 
@@ -126,11 +142,13 @@ describe("selectEtoStep", () => {
         false,
         true,
         true,
+        false,
+        false,
       ),
     ).to.eq(EEtoStep.UPLOAD_SIGNED_TERMSHEET);
   });
 
-  it("should return step 6 if verification is done, state is PREVIEW, eto data is filled and term sheet has been submitted", () => {
+  it("should return step PUBLISH_INVESTMENT_OFFER if verification is done, state is PREVIEW, eto data is filled and term sheet has been submitted", () => {
     expect(
       selectEtoStep(
         true,
@@ -140,6 +158,8 @@ describe("selectEtoStep", () => {
         true,
         true,
         true,
+        false,
+        false,
       ),
     ).to.eq(EEtoStep.PUBLISH_INVESTMENT_OFFER);
 
@@ -152,11 +172,13 @@ describe("selectEtoStep", () => {
         true,
         true,
         true,
+        false,
+        false,
       ),
     ).to.eq(EEtoStep.PUBLISH_INVESTMENT_OFFER);
   });
 
-  it("should return step 7 when state is PENDING", () => {
+  it("should return step INVESTMENT_OFFER_IN_REVIEW when state is PENDING", () => {
     expect(
       selectEtoStep(
         true,
@@ -166,8 +188,10 @@ describe("selectEtoStep", () => {
         true,
         true,
         true,
+        false,
+        false,
       ),
-    ).to.eq(EEtoStep.SEVEN);
+    ).to.eq(EEtoStep.INVESTMENT_OFFER_IN_REVIEW);
 
     expect(
       selectEtoStep(
@@ -178,11 +202,14 @@ describe("selectEtoStep", () => {
         true,
         true,
         true,
+        false,
+        false,
       ),
-    ).to.eq(EEtoStep.SEVEN);
+    ).to.eq(EEtoStep.INVESTMENT_OFFER_IN_REVIEW);
   });
 
-  it("should return step 8 for other states", () => {
+  it("should return step UPLOAD_OFFERING_DOCUMENT after investment offer was accepted", () => {
+    // In Listed state
     expect(
       selectEtoStep(
         true,
@@ -192,45 +219,44 @@ describe("selectEtoStep", () => {
         true,
         true,
         true,
+        false,
+        false,
       ),
-    ).to.eq(EEtoStep.EIGHT);
+    ).to.eq(EEtoStep.UPLOAD_OFFERING_DOCUMENT);
 
+    // In prospectus approved state
+    expect(
+      selectEtoStep(
+        true,
+        EEtoState.PROSPECTUS_APPROVED,
+        true,
+        EEtoMarketingDataVisibleInPreview.VISIBLE,
+        true,
+        true,
+        true,
+        false,
+        false,
+      ),
+    ).to.eq(EEtoStep.UPLOAD_OFFERING_DOCUMENT);
+  });
+
+  it("should return step UPLOAD_ISHA after investment offer document was uploaded", () => {
+    // In Listed state
     expect(
       selectEtoStep(
         true,
         EEtoState.LISTED,
         true,
-        EEtoMarketingDataVisibleInPreview.NOT_VISIBLE,
-        true,
-        true,
-        true,
-      ),
-    ).to.eq(EEtoStep.EIGHT);
-
-    expect(
-      selectEtoStep(
-        true,
-        EEtoState.ON_CHAIN,
-        true,
         EEtoMarketingDataVisibleInPreview.VISIBLE,
         true,
         true,
         true,
+        true,
+        false,
       ),
-    ).to.eq(EEtoStep.NINE);
+    ).to.eq(EEtoStep.UPLOAD_ISHA);
 
-    expect(
-      selectEtoStep(
-        true,
-        EEtoState.ON_CHAIN,
-        true,
-        EEtoMarketingDataVisibleInPreview.NOT_VISIBLE,
-        true,
-        true,
-        true,
-      ),
-    ).to.eq(EEtoStep.NINE);
-
+    // In prospectus approved state
     expect(
       selectEtoStep(
         true,
@@ -240,19 +266,57 @@ describe("selectEtoStep", () => {
         true,
         true,
         true,
+        true,
+        false,
       ),
-    ).to.eq(EEtoStep.EIGHT);
+    ).to.eq(EEtoStep.UPLOAD_ISHA);
+  });
 
+  it("should return step WAIT_FOR_SMART_CONTRACT after ISHA was uploaded", () => {
+    // In Listed state
+    expect(
+      selectEtoStep(
+        true,
+        EEtoState.LISTED,
+        true,
+        EEtoMarketingDataVisibleInPreview.VISIBLE,
+        true,
+        true,
+        true,
+        true,
+        true,
+      ),
+    ).to.eq(EEtoStep.WAIT_FOR_SMART_CONTRACT);
+
+    // In prospectus approved state
     expect(
       selectEtoStep(
         true,
         EEtoState.PROSPECTUS_APPROVED,
         true,
-        EEtoMarketingDataVisibleInPreview.NOT_VISIBLE,
+        EEtoMarketingDataVisibleInPreview.VISIBLE,
+        true,
+        true,
         true,
         true,
         true,
       ),
-    ).to.eq(EEtoStep.EIGHT);
+    ).to.eq(EEtoStep.WAIT_FOR_SMART_CONTRACT);
+  });
+
+  it("should return step REQUEST_THA_SIGN after contracts were deployed", () => {
+    expect(
+      selectEtoStep(
+        true,
+        EEtoState.ON_CHAIN,
+        true,
+        EEtoMarketingDataVisibleInPreview.VISIBLE,
+        true,
+        true,
+        true,
+        true,
+        true,
+      ),
+    ).to.eq(EEtoStep.REQUEST_THA_SIGN);
   });
 });

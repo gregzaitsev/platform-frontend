@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 
 import { symbols } from "../../../di/symbols";
-import { ENomineeUpdateRequestStatus } from "../../../modules/nominee-flow/reducer";
+import { ENomineeUpdateRequestStatus } from "../../../modules/nominee-flow/types";
 import { withParams } from "../../../utils/withParams";
 import { IHttpClient } from "../client/IHttpClient";
 import { TNomineeRequestResponse } from "./EtoApi.interfaces.unsafe";

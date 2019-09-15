@@ -35,9 +35,6 @@ interface IAdditionalInfoProps {
 
 const StatusOfEto: React.FunctionComponent<IStatusOfEtoProps> = ({ eto, publicView }) => (
   <div className={styles.statusOfEto}>
-    <span className={styles.title}>
-      <FormattedMessage id="shared-component.eto-overview.status-of-eto" />
-    </span>
     {/* In case it's a public view (something investor sees) show proper investor status, otherwise show issuer related state */}
     {publicView ? <ETOInvestorState eto={eto} /> : <ETOIssuerState eto={eto} />}
   </div>

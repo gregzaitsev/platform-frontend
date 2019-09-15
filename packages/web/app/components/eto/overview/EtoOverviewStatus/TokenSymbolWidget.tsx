@@ -15,18 +15,16 @@ const TokenSymbolWidget: React.FunctionComponent<ITokenSymbolWidgetProps> = ({
   tokenSymbol,
   tokenName,
   tokenImage,
-  brandName,
 }) => (
   <div className={styles.tokenSymbolWidget}>
     <div className={styles.tokenImageWrapper}>
       <ResponsiveImage {...tokenImage} className={styles.tokenImage} />
     </div>
     <div>
-      <h3 className={styles.brandName}>{brandName}</h3>
-      <h4 className={styles.tokenName}>
+      <h3 className={styles.tokenName}>
         {tokenName}
         {tokenSymbol && ` (${tokenSymbol})`}
-      </h4>
+      </h3>
     </div>
   </div>
 );

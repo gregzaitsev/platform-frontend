@@ -1,4 +1,5 @@
 import { includes, some } from "lodash";
+import { createSelector } from "reselect";
 
 import { appRoutes } from "../../components/appRoutes";
 import { EUserType } from "../../lib/api/users/interfaces";
@@ -47,8 +48,17 @@ export const selectIsVisibleSecurityNotification = (state: IAppState): boolean =
   return selectIsActionRequiredSettings(state);
 };
 
-export const selectSettingsNotificationType = (state: IAppState) =>
-  selectIsInvestor(state) ? settingsNotificationInvestor() : settingsNotificationIssuer();
+export const selectSettingsNotificationType = createSelector(
+  selectIsInvestor,
+  isInvestor => (isInvestor ? settingsNotificationInvestor() : settingsNotificationIssuer()),
+);
 
 export const selectSettingsNotification = (state: IAppState) =>
   selectIsVisibleSecurityNotification(state) ? selectSettingsNotificationType(state) : undefined;
+
+export const selectNotificationsWithDerived = createSelector(
+  selectNotifications,
+  selectSettingsNotification,
+  (notifications, settingsNotification) =>
+    settingsNotification ? notifications.concat(settingsNotification) : notifications,
+);

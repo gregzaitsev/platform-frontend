@@ -1,4 +1,4 @@
-import { call, Effect, put, select } from "redux-saga/effects";
+import { call, Effect, fork, put, select } from "redux-saga/effects";
 
 import { calculateTimeLeft } from "../../../components/shared/utils";
 import { TMessage } from "../../../components/translatedMessages/utils";
@@ -9,12 +9,11 @@ import { getJwtExpiryDate, hasValidPermissions } from "../../../utils/JWTUtils";
 import { EDelayTiming, safeDelay } from "../../../utils/safeTimers";
 import { accessWalletAndRunEffect } from "../../access-wallet/sagas";
 import { actions } from "../../actions";
-import { neuCall } from "../../sagasUtils";
+import { neuCall, neuTakeLatest } from "../../sagasUtils";
 import { selectEthereumAddressWithChecksum } from "../../web3/selectors";
 import { AUTH_JWT_TIMING_THRESHOLD, AUTH_TOKEN_REFRESH_THRESHOLD } from "../constants";
 import { JwtNotAvailable, MessageSignCancelledError } from "../errors";
 import { selectJwt } from "../selectors";
-import { ELogoutReason } from "../types";
 
 /**
  * Load to store jwt from browser storage
@@ -204,11 +203,15 @@ export function* handleJwtTimeout({ logger }: TGlobalDependencies): Iterator<any
         yield neuCall(refreshJWT);
         break;
       case EDelayTiming.DELAYED:
-        yield put(actions.auth.logout({ logoutType: ELogoutReason.SESSION_TIMEOUT }));
+        yield put(actions.auth.jwtTimeout());
         break;
     }
   } catch (e) {
     logger.error("Failed to handle jwt timeout", e);
     throw e;
   }
+}
+
+export function* authJwtSagas(): Iterator<Effect> {
+  yield fork(neuTakeLatest, actions.auth.loadJWT, handleJwtTimeout);
 }

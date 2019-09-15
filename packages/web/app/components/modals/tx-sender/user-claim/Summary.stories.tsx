@@ -18,7 +18,7 @@ storiesOf("User Claim Summary", module)
       }}
       onAccept={() => {}}
       generateTemplateByEtoId={() => {}}
-      isPendingDownload={_ => false}
+      pendingDownloads={{}}
       etoData={
         {
           etoId: "0xfaDa8f267C054f469b52Ccbeb08250ACAAeE65dc",

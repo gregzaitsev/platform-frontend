@@ -46,11 +46,9 @@ const toolbar = [
 const RichTextAreaLayoutComponent: React.FunctionComponent<
   TExternalProps & TRenderPropsProp & CommonHtmlProps
 > = ({ name, invalid, disabled, value, onChange, placeholder, uploadAdapterFactory }) => {
-  const editorRef = React.useRef<TCkEditor>();
+  const [editor, setEditor] = React.useState<TCkEditor>();
 
   React.useEffect(() => {
-    const editor = editorRef.current;
-
     if (editor) {
       const view = editor.editing.view;
 
@@ -69,7 +67,7 @@ const RichTextAreaLayoutComponent: React.FunctionComponent<
         writer.setAttribute("id", name, viewEditableRoot);
       });
     }
-  }, [invalid, name, editorRef.current]);
+  }, [invalid, name, editor]);
 
   return (
     <div
@@ -97,7 +95,7 @@ const RichTextAreaLayoutComponent: React.FunctionComponent<
         disabled={disabled}
         data={value}
         onInit={(editor: TCkEditor) => {
-          editorRef.current = editor;
+          setEditor(editor);
 
           editor.plugins.get("FileRepository").createUploadAdapter = uploadAdapterFactory;
         }}
@@ -116,9 +114,9 @@ const RichTextAreaLayout = compose<
   fromRenderProps<TRenderPropsProp, TExternalProps, NonNullable<TContainerContext>>(
     ContainerContext.Consumer,
     container => ({
-      uploadAdapterFactory: container.get<TRichTextEditorUploadAdapterFactoryType>(
-        symbols.richTextEditorUploadAdapter,
-      ),
+      uploadAdapterFactory:
+        container &&
+        container.get<TRichTextEditorUploadAdapterFactoryType>(symbols.richTextEditorUploadAdapter),
     }),
   ),
 )(RichTextAreaLayoutComponent);

@@ -182,9 +182,9 @@ export const selectLockedWalletConnected = (state: IAppState): boolean =>
     (state.wallet.data && state.wallet.data.euroTokenLockedWallet.unlockDate !== "0")
   );
 
-export const selectIsLoading = (state: IWalletState): boolean => state.loading;
+export const selectIsLoading = (state: IAppState): boolean => state.wallet.loading;
 
-export const selectWalletError = (state: IWalletState): string | undefined => state.error;
+export const selectWalletError = (state: IAppState): string | undefined => state.wallet.error;
 
 export const selectIsEtherUpgradeTargetSet = (state: IAppState): boolean =>
   !!(

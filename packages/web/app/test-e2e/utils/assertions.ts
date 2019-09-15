@@ -1,7 +1,10 @@
 import { find, get } from "lodash";
 
 import { appRoutes } from "../../components/appRoutes";
-import { walletRegisterRoutes } from "../../components/wallet-selector/walletRoutes";
+import {
+  walletLoginRoutes,
+  walletRegisterRoutes,
+} from "../../components/wallet-selector/walletRoutes";
 import { mockApiUrl } from "../config";
 import { tid } from "./selectors";
 import { getPendingTransactions } from "./userHelpers";
@@ -34,8 +37,13 @@ export const assertLanding = () => {
 };
 
 export const assertRegister = () => {
-  cy.get(tid("register-layout")).should("exist");
+  cy.get(tid("wallet-selector")).should("exist");
   cy.url().should("contain", walletRegisterRoutes.light);
+};
+
+export const assertLogin = () => {
+  cy.get(tid("wallet-selector")).should("exist");
+  cy.url().should("contain", walletLoginRoutes.light);
 };
 
 export const assertPortfolio = () => {

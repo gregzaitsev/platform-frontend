@@ -3,15 +3,14 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { compose, withProps } from "recompose";
 
 import { actions } from "../../modules/actions";
-import { ENomineeAcceptAgreementStatus } from "../../modules/nominee-flow/reducer";
 import {
   selectNomineeRAAAState,
   selectNomineeTHAState,
 } from "../../modules/nominee-flow/selectors";
+import { ENomineeAcceptAgreementStatus, ENomineeTask } from "../../modules/nominee-flow/types";
 import { appConnect } from "../../store";
 import { onEnterAction } from "../../utils/OnEnterAction";
 import { Button, EButtonLayout, EButtonTheme } from "../shared/buttons/Button";
-import { ENomineeTask } from "./NomineeTasksData";
 
 interface IStateProps {
   nomineeTHAStatus: ENomineeAcceptAgreementStatus;

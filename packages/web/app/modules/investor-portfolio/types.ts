@@ -8,6 +8,12 @@ export interface ITokenDisbursal {
   timeToFirstDisbursalRecycle: number;
 }
 
+export type TTokenDisbursalData = {
+  loading: boolean;
+  error: boolean;
+  data?: ITokenDisbursal[];
+};
+
 export interface IInvestorTicket {
   equivEurUlps: string;
   rewardNmkUlps: string;
@@ -42,12 +48,13 @@ export type TETOWithTokenData = TEtoWithCompanyAndContract & {
 export interface IIncomingPayoutsData {
   euroTokenIncomingPayoutValue: string;
   etherTokenIncomingPayoutValue: string;
+  snapshotDate: number; //posix timestamp
 }
 
 export interface IIncomingPayouts {
   loading: boolean;
+  error: boolean;
   data?: IIncomingPayoutsData;
-  payoutDone: boolean;
 }
 
 export enum EUserRefundStatus {

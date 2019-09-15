@@ -23,12 +23,12 @@ enum ECurrencySymbol {
   NONE = "none",
 }
 
-enum EMoneyTransferNew {
+enum EMoneyTransfer {
   INCOME = styles.income,
   OUTCOME = styles.outcome,
 }
 
-enum EThemeNew {
+enum ETheme {
   GREEN = styles.tGreen,
   ORANGE = styles.tOrange,
   GREEN_BIG = styles.tBigValue,
@@ -45,15 +45,14 @@ interface IMoneyCommonProps {
   roundingMode?: ERoundingMode;
   currencySymbol?: ECurrencySymbol;
   currencyClassName?: string;
-  transfer?: EMoneyTransferNew;
-  theme?: EThemeNew;
+  transfer?: EMoneyTransfer;
+  theme?: ETheme;
   defaultValue?: React.ReactChild;
   className?: string;
   "data-test-id"?: string;
 }
 
-//todo will rename it to Money after the old money is gone
-const MoneyNew: React.FunctionComponent<IMoneyProps & IMoneyCommonProps & CommonHtmlProps> = ({
+const Money: React.FunctionComponent<IMoneyProps & IMoneyCommonProps & CommonHtmlProps> = ({
   value,
   inputFormat,
   outputFormat,
@@ -125,4 +124,4 @@ const MoneyNew: React.FunctionComponent<IMoneyProps & IMoneyCommonProps & Common
   );
 };
 
-export { MoneyNew, IMoneyCommonProps, EMoneyTransferNew, ECurrencySymbol, EThemeNew };
+export { Money, IMoneyCommonProps, EMoneyTransfer, ECurrencySymbol, ETheme };

@@ -1,4 +1,4 @@
-.background {
+.wrapper {
   display: flex;
   flex-direction: column;
   background: $neu-pale-blue;
@@ -33,6 +33,9 @@
 }
 
 .content {
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
   flex-grow: 1;
 }
 

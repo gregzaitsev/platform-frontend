@@ -8,7 +8,7 @@ import { injectIntlHelpers } from "../../../utils/injectIntlHelpers.unsafe";
 import { EColumnSpan } from "../../layouts/Container";
 import { Button, EButtonLayout } from "../../shared/buttons";
 import { ButtonArrowRight } from "../../shared/buttons/Button";
-import { Form, FormField } from "../../shared/forms/index";
+import { FormDeprecated, FormField } from "../../shared/forms/index";
 import { Panel } from "../../shared/Panel";
 import { connectVerifyEmailComponent } from "./ConnectVerifyEmail";
 
@@ -77,7 +77,7 @@ function isValid(props: FormikProps<IFormValues>): boolean {
 
 const SetEmailForm = injectIntlHelpers<IEnhancedFormProps & FormikProps<IFormValues>>(
   ({ intl: { formatIntlMessage }, ...props }) => (
-    <Form className={cn("mt-2 pt-0 mb-0")}>
+    <FormDeprecated className={cn("mt-2 pt-0 mb-0")}>
       <FormField
         placeholder={formatIntlMessage("settings.verify-email-widget.email-placeholder")}
         name="email"
@@ -102,7 +102,7 @@ const SetEmailForm = injectIntlHelpers<IEnhancedFormProps & FormikProps<IFormVal
           <FormattedMessage id="form.button.submit" />
         </Button>
       </div>
-    </Form>
+    </FormDeprecated>
   ),
 );
 

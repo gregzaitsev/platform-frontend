@@ -1,4 +1,4 @@
-import { includes, mapValues } from "lodash";
+import { includes } from "lodash";
 import * as moment from "moment";
 import * as Yup from "yup";
 
@@ -10,16 +10,6 @@ import { createMessage } from "../../../components/translatedMessages/utils";
 import { ECountries } from "./countries.enum";
 
 /**
- * Schema helpers
- * semi documented.... :)
- */
-export const makeAllRequired = (schema: Yup.ObjectSchema<any>): Yup.ObjectSchema<any> => {
-  const oldFields: { [key: string]: Yup.MixedSchema } = (schema as any).fields;
-  const newFields = mapValues(oldFields, schema => schema.required());
-  return Yup.object().shape(newFields);
-};
-
-/**
  * Date schema
  */
 const DATE_SCHEME = "YYYY-M-D";
@@ -27,13 +17,15 @@ const parse = (s: string) => moment(s, DATE_SCHEME, true);
 
 export const dateSchema = (v: Yup.StringSchema) =>
   v
-    .transform(function(_value: any, originalValue: string): string {
-      const date = parse(originalValue);
-      if (!date.isValid()) {
-        return "";
-      }
-      return date.format(DATE_SCHEME);
-    })
+    .transform(
+      (_value: unknown, originalValue: string): string => {
+        const date = parse(originalValue);
+        if (!date.isValid()) {
+          return "";
+        }
+        return date.format(DATE_SCHEME);
+      },
+    )
     .test(
       "is-valid",
       getMessageTranslation(createMessage(ValidationMessage.VALIDATION_INVALID_DATE)),

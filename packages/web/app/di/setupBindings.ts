@@ -25,6 +25,11 @@ import { KycApi } from "../lib/api/kyc/KycApi";
 import { MarketingEmailsApi } from "../lib/api/users/MarketingEmailsApi";
 import { UsersApi } from "../lib/api/users/UsersApi";
 import { VaultApi } from "../lib/api/vault/VaultApi";
+import {
+  BroadcastChannel,
+  createNewBroadcastChannel,
+} from "../lib/dependencies/broadcast-channel/broadcastChannel";
+import { UserActivityChannelMessage } from "../lib/dependencies/broadcast-channel/types";
 import { detectBrowser, TDetectBrowser } from "../lib/dependencies/detectBrowser";
 import { ILogger, Logger } from "../lib/dependencies/logger";
 import { NotificationCenter } from "../lib/dependencies/NotificationCenter";
@@ -229,6 +234,12 @@ export function setupBindings(config: IConfig): Container {
     .inSingletonScope();
 
   container.bind(symbols.intlWrapper).toConstantValue(new IntlWrapper());
+  container
+    .bind(symbols.userActivityChannel)
+    .toDynamicValue(() =>
+      createNewBroadcastChannel<UserActivityChannelMessage>(symbols.userActivityChannel.toString()),
+    )
+    .inSingletonScope();
 
   return container;
 }
@@ -283,6 +294,9 @@ export const createGlobalDependencies = (container: Container) => ({
   marketingEmailsApi: container.get<MarketingEmailsApi>(symbols.marketingEmailsApi),
 
   intlWrapper: container.get<IntlWrapper>(symbols.intlWrapper),
+  userActivityChannel: container.get<BroadcastChannel<UserActivityChannelMessage>>(
+    symbols.userActivityChannel,
+  ),
 });
 
 export type TGlobalDependencies = ReturnType<typeof createGlobalDependencies>;

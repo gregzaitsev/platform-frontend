@@ -4,8 +4,10 @@
   }
 
   @include media-breakpoint-up(md) {
+    @include font-default;
     margin-bottom: -2rem;
   }
+  @include font-thin;
 
   margin-bottom: -1rem;
   height: auto;
@@ -17,7 +19,7 @@
   padding: 1rem;
   background-color: $neu-white-two;
 
-  text-transform: uppercase;
+  font-weight: 400;
 
   .icon {
     height: px-to-rem(16px);

@@ -26,7 +26,7 @@ import { Document } from "../../shared/Document";
 import { DocumentTemplateButton } from "../../shared/DocumentLink";
 import { createErrorBoundary } from "../../shared/errorBoundary/ErrorBoundary.unsafe";
 import { ErrorBoundaryPanel } from "../../shared/errorBoundary/ErrorBoundaryPanel";
-import { MoneyNew } from "../../shared/formatters/Money";
+import { Money } from "../../shared/formatters/Money";
 import { ECurrency, ENumberInputFormat, ENumberOutputFormat } from "../../shared/formatters/utils";
 import { LoadingIndicator } from "../../shared/loading-indicator/index";
 import { Panel } from "../../shared/Panel";
@@ -82,7 +82,7 @@ const BookBuildingStats = ({ bookBuildingStats, maxPledges, downloadCSV }: IBook
         <FormattedMessage id="shared-component.eto-overview.amount-backed" />
       </span>
       <span className={styles.value}>
-        <MoneyNew
+        <Money
           value={bookBuildingStats.pledgedAmount}
           inputFormat={ENumberInputFormat.FLOAT}
           valueType={ECurrency.EUR}

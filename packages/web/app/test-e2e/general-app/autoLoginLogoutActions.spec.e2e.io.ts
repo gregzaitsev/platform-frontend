@@ -1,4 +1,15 @@
-import { assertDashboard, assertLanding, goToDashboard, goToLanding } from "../utils";
+import BroadcastChannel from "broadcast-channel";
+
+import { symbols } from "../../di/symbols";
+import {
+  assertDashboard,
+  assertLanding,
+  assertLogin,
+  goToDashboard,
+  goToLanding,
+  tid,
+} from "../utils";
+import { cyPromise } from "../utils/cyPromise";
 import {
   createAndLoginNewUser,
   getJwtToken,
@@ -9,6 +20,7 @@ import {
 } from "../utils/userHelpers";
 
 const REGISTRATION_LOGIN_DONE = "logged_in";
+const AUTH_INACTIVITY_THRESHOLD = 300000;
 
 const clearKeyFromStorageWithEvents = (Window: Window, key: string) => {
   Window.dispatchEvent(
@@ -32,7 +44,85 @@ const setKeyFromStorageWithEvents = (Window: Window, key: string, newValue: stri
   );
 };
 
+export enum EUserActivityMessage {
+  USER_ACTIVE = "user-active",
+}
+
+export declare type UserActivityChannelMessage = {
+  status: EUserActivityMessage;
+};
+
+const channel: BroadcastChannel<UserActivityChannelMessage> = new BroadcastChannel(
+  symbols.userActivityChannel.toString(),
+);
+
+const pushTimeThenPostMessage = (clock: any) =>
+  cyPromise(() => {
+    // Posting a message takes some time before it reaches to another browser this generates race conditions
+    // We need to await for sometimes to guarantee that the posted message was received
+    cy.wait(500);
+    clock.tick(AUTH_INACTIVITY_THRESHOLD / 2);
+    return channel.postMessage({
+      status: EUserActivityMessage.USER_ACTIVE,
+    });
+  });
+
 describe("auto-logout/auto-login", () => {
+  describe("Automatic Actions", () => {
+    it("should logout automatically when a user has no activity", () => {
+      createAndLoginNewUser({
+        type: "investor",
+        kyc: "business",
+      }).then(() => {
+        goToDashboard();
+        const now = Date.now();
+        cy.clock(now).then(clock => {
+          clock.tick(AUTH_INACTIVITY_THRESHOLD / 2);
+          assertDashboard();
+          clock.tick(AUTH_INACTIVITY_THRESHOLD);
+          assertLogin();
+        });
+      });
+    });
+
+    it("should not logout automatically when a user has activity", () => {
+      createAndLoginNewUser({
+        type: "investor",
+        kyc: "business",
+      }).then(() => {
+        goToDashboard();
+        const now = Date.now();
+        cy.clock(now).then(clock => {
+          cyPromise(() => {
+            clock.tick(AUTH_INACTIVITY_THRESHOLD / 2);
+            cy.get(tid("authorized-layout-wallet-button")).trigger("mousedown");
+            return cy.get(tid("authorized-layout-wallet-button")).trigger("mouseleave");
+          }).then(() => {
+            clock.tick(AUTH_INACTIVITY_THRESHOLD / 2);
+            assertDashboard();
+          });
+        });
+      });
+    });
+
+    it("should not logout automatically when a user has activity in another tab", () => {
+      createAndLoginNewUser({
+        type: "investor",
+        kyc: "business",
+      }).then(() => {
+        goToDashboard();
+        const now = Date.now();
+        cy.clock(now).then(clock => {
+          pushTimeThenPostMessage(clock);
+          pushTimeThenPostMessage(clock);
+          pushTimeThenPostMessage(clock);
+          assertDashboard();
+        });
+      });
+    });
+  });
+});
+describe("User Driven Actions", () => {
   it("should logout automatically when a user logs out from another tab", () => {
     createAndLoginNewUser({
       type: "investor",

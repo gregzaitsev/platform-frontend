@@ -1,13 +1,10 @@
 import * as cn from "classnames";
-import { compact, isEmpty } from "lodash";
+import { isEmpty } from "lodash";
 import * as React from "react";
 import { branch, compose, renderNothing } from "recompose";
 
 import { INotification } from "../../../modules/notifications/reducer";
-import {
-  selectNotifications,
-  selectSettingsNotification,
-} from "../../../modules/notifications/selectors";
+import { selectNotificationsWithDerived } from "../../../modules/notifications/selectors";
 import { appConnect, AppDispatch } from "../../../store";
 import { Notification } from "./Notification";
 
@@ -18,7 +15,7 @@ interface IExternalProps {
 }
 
 interface IStateProps {
-  notifications: INotification[];
+  notifications: readonly INotification[];
 }
 
 interface IDispatchProps {
@@ -46,13 +43,9 @@ const NotificationWidgetComponent: React.FunctionComponent<IProps & IExternalPro
 
 export const NotificationWidget = compose<IProps, IExternalProps>(
   appConnect<IStateProps, IDispatchProps>({
-    stateToProps: state => {
-      const notifications = selectNotifications(state);
-      const appStateDerivedNotifications = compact([selectSettingsNotification(state)]);
-      return {
-        notifications: [...notifications, ...appStateDerivedNotifications],
-      };
-    },
+    stateToProps: state => ({
+      notifications: selectNotificationsWithDerived(state),
+    }),
   }),
-  branch<IStateProps>(state => isEmpty(state.notifications), renderNothing),
+  branch<IStateProps>(props => isEmpty(props.notifications), renderNothing),
 )(NotificationWidgetComponent);

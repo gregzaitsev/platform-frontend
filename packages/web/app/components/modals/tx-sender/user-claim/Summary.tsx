@@ -10,7 +10,7 @@ import {
 } from "../../../../lib/api/eto/EtoFileApi.interfaces";
 import { IImmutableFileId } from "../../../../lib/api/immutable-storage/ImmutableStorage.interfaces";
 import { actions } from "../../../../modules/actions";
-import { selectIsPendingDownload } from "../../../../modules/immutable-file/selectors";
+import { selectPendingDownloads } from "../../../../modules/immutable-file/selectors";
 import { selectMyInvestorTicketByEtoId } from "../../../../modules/investor-portfolio/selectors";
 import { TETOWithInvestorTicket } from "../../../../modules/investor-portfolio/types";
 import { selectTxAdditionalData } from "../../../../modules/tx/sender/selectors";
@@ -31,7 +31,7 @@ import * as styles from "./Summary.module.scss";
 interface IStateProps {
   additionalData: TClaimAdditionalData;
   etoData: TETOWithInvestorTicket;
-  isPendingDownload: (ipfsHash: string) => boolean;
+  pendingDownloads: ReturnType<typeof selectPendingDownloads>;
 }
 
 interface IDispatchProps {
@@ -48,7 +48,7 @@ export const UserClaimSummaryComponent: React.FunctionComponent<TComponentProps>
   onAccept,
   downloadDocument,
   generateTemplateByEtoId,
-  isPendingDownload,
+  pendingDownloads,
 }) => (
   <Container>
     <Heading className="mb-4" size={EHeadingSize.SMALL} level={4}>
@@ -82,7 +82,7 @@ export const UserClaimSummaryComponent: React.FunctionComponent<TComponentProps>
                 <ButtonIcon
                   className={styles.icon}
                   svgIcon={iconDownload}
-                  disabled={isPendingDownload(document.ipfsHash)}
+                  disabled={pendingDownloads[document.ipfsHash]}
                   data-test-id="token-claim-agreements"
                   onClick={() =>
                     downloadDocument(
@@ -123,7 +123,7 @@ export const UserClaimSummaryComponent: React.FunctionComponent<TComponentProps>
                   className={styles.icon}
                   svgIcon={iconDownload}
                   data-test-id="token-claim-agreements"
-                  disabled={isPendingDownload(template.ipfsHash)}
+                  disabled={pendingDownloads[template.ipfsHash]}
                   onClick={() =>
                     generateTemplateByEtoId({ ...template, asPdf: true }, etoData.etoId)
                   }
@@ -146,7 +146,7 @@ export const UserClaimSummary = appConnect<IStateProps, IDispatchProps, {}>({
     return {
       additionalData,
       etoData: selectMyInvestorTicketByEtoId(state, additionalData.etoId)!,
-      isPendingDownload: selectIsPendingDownload(state),
+      pendingDownloads: selectPendingDownloads(state),
     };
   },
   dispatchToProps: d => ({

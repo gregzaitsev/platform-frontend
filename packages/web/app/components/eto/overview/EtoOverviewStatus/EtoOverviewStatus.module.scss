@@ -29,6 +29,10 @@
 }
 
 .status-of-eto {
+  @include media-breakpoint-up(md) {
+    align-self: flex-start;
+  }
+
   grid-area: eto-status;
   font-size: 12px;
   letter-spacing: -.2px;
@@ -36,10 +40,6 @@
   color: $neu-greyish-brown;
   text-transform: uppercase;
   align-self: center;
-
-  .title {
-    margin-right: px-to-rem(10px);
-  }
 }
 
 .eto-title-wrapper {
@@ -221,7 +221,7 @@
 
   @include media-breakpoint-up(lg) {
     display: block;
-    grid-row: 1 / span 2;
+    grid-row: 1 / span 3;
     align-self: stretch;
     justify-self: center;
     margin: 10px 20px;

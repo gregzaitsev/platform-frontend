@@ -3,17 +3,17 @@ import * as React from "react";
 import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 import { branch, compose, renderComponent, renderNothing, withProps } from "recompose";
 
-import { selectNomineeEto } from "../../../modules/eto/selectors";
 import { TEtoWithCompanyAndContract } from "../../../modules/eto/types";
+import {
+  selectNomineeEtoWithCompanyAndContract,
+  selectNomineeRequests,
+  selectNomineeStateError,
+} from "../../../modules/nominee-flow/selectors";
 import {
   ENomineeRequestError,
   ENomineeRequestStatus,
   INomineeRequest,
-} from "../../../modules/nominee-flow/reducer";
-import {
-  selectNomineeRequests,
-  selectNomineeStateError,
-} from "../../../modules/nominee-flow/selectors";
+} from "../../../modules/nominee-flow/types";
 import { takeLatestNomineeRequest } from "../../../modules/nominee-flow/utils";
 import { appConnect } from "../../../store";
 import { TTranslatedString } from "../../../types";
@@ -129,7 +129,7 @@ export const NomineeRequestContainer: React.FunctionComponent = ({ children }) =
 export const LinkToIssuer = compose<IStateProps, {}>(
   appConnect<IStateProps>({
     stateToProps: state => ({
-      nomineeEto: selectNomineeEto(state),
+      nomineeEto: selectNomineeEtoWithCompanyAndContract(state),
       nomineeRequest: takeLatestNomineeRequest(selectNomineeRequests(state)), //only take the latest one for now
       nomineeRequestError: selectNomineeStateError(state),
     }),

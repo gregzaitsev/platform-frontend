@@ -12,7 +12,7 @@ import {
 import { selectQuintessenceBankAccount } from "../../../../modules/kyc/selectors";
 import { appConnect } from "../../../../store";
 import { ButtonArrowRight } from "../../../shared/buttons";
-import { MoneyNew } from "../../../shared/formatters/Money";
+import { Money } from "../../../shared/formatters/Money";
 import {
   ECurrency,
   ENumberInputFormat,
@@ -54,7 +54,7 @@ const BankTransferPurchaseLayout: React.FunctionComponent<IProps> = ({
         data-test-id="bank-transfer.purchase.summary.min-amount"
         caption={<FormattedMessage id="bank-transfer.purchase.summary.min-amount" />}
         value={
-          <MoneyNew
+          <Money
             value={minAmount}
             inputFormat={ENumberInputFormat.ULPS}
             valueType={ECurrency.EUR}

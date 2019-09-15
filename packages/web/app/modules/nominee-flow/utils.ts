@@ -1,9 +1,18 @@
+import { isString } from "lodash/fp";
+import * as queryString from "query-string";
+
 import { ENomineeRequestStatusTranslation } from "../../components/translatedMessages/messages";
 import { createMessage, TMessage } from "../../components/translatedMessages/utils";
 import { TNomineeRequestResponse } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { EETOStateOnChain, TEtoWithCompanyAndContract } from "../eto/types";
 import { isOnChain } from "../eto/utils";
-import { ENomineeRequestStatus, INomineeRequest, TNomineeRequestStorage } from "./reducer";
+import {
+  ENomineeAcceptAgreementStatus,
+  ENomineeRequestStatus,
+  ENomineeTask,
+  INomineeRequest,
+  TNomineeRequestStorage,
+} from "./types";
 
 export const nomineeRequestToTranslationMessage = (status: ENomineeRequestStatus): TMessage => {
   switch (status) {
@@ -84,3 +93,39 @@ export const nomineeIsEligibleToSignAgreement = (nomineeEto: TEtoWithCompanyAndC
   isOnChain(nomineeEto) &&
   nomineeEto.contract.timedState === EETOStateOnChain.Setup &&
   nomineeEto.contract.startOfStates[EETOStateOnChain.Whitelist] === undefined;
+
+// TODO: Move to redux selector
+export const getNomineeTaskStep = (
+  verificationIsComplete: boolean,
+  nomineeEto: TEtoWithCompanyAndContract | undefined,
+  isBankAccountVerified: boolean,
+  THAStatus: ENomineeAcceptAgreementStatus | undefined,
+  RAAAStatus: ENomineeAcceptAgreementStatus | undefined,
+): ENomineeTask => {
+  if (!verificationIsComplete) {
+    return ENomineeTask.ACCOUNT_SETUP;
+  } else if (nomineeEto === undefined) {
+    return ENomineeTask.LINK_TO_ISSUER;
+  } else if (!isBankAccountVerified) {
+    return ENomineeTask.LINK_BANK_ACCOUNT;
+  } else if (
+    THAStatus !== ENomineeAcceptAgreementStatus.DONE &&
+    nomineeIsEligibleToSignAgreement(nomineeEto)
+  ) {
+    return ENomineeTask.ACCEPT_THA;
+  } else if (
+    THAStatus === ENomineeAcceptAgreementStatus.DONE &&
+    RAAAStatus !== ENomineeAcceptAgreementStatus.DONE &&
+    nomineeIsEligibleToSignAgreement(nomineeEto)
+  ) {
+    return ENomineeTask.ACCEPT_RAAA;
+  } else {
+    return ENomineeTask.NONE;
+  }
+};
+
+export const getActiveEtoPreviewCodeFromQueryString = (query: string) => {
+  const { eto } = queryString.parse(query);
+
+  return isString(eto) ? eto : undefined;
+};

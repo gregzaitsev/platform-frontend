@@ -3,6 +3,7 @@ import { branch, renderComponent } from "recompose";
 import { compose } from "redux";
 
 import { actions } from "../../../modules/actions";
+import { selectIssuerEtoLoading } from "../../../modules/eto-flow/selectors";
 import { appConnect } from "../../../store";
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { withContainer } from "../../../utils/withContainer.unsafe";
@@ -25,7 +26,7 @@ export const EtoRegister = compose<React.FunctionComponent>(
   onEnterAction({ actionCreator: d => d(actions.etoFlow.loadIssuerEto()) }),
   appConnect<IStateProps>({
     stateToProps: s => ({
-      isLoading: s.etoFlow.loading,
+      isLoading: selectIssuerEtoLoading(s),
     }),
   }),
   branch<IStateProps>(props => props.isLoading, renderComponent(LoadingIndicator)),

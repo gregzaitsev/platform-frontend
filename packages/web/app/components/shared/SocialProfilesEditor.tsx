@@ -182,10 +182,11 @@ interface IProfilesWithData {
 class SocialProfilesEditorLayout extends React.Component<IProps & TFormikConnect, IState> {
   state: IState = { selectedFields: [], filteredFields: [] };
 
-  setSelectedFields = (values: IProps & TFormikConnect, name: string) => {
+  setSelectedFields = () => {
     const {
       profiles,
-      formik: { setFieldValue },
+      name,
+      formik: { setFieldValue, values },
     } = this.props;
     const socialMediaValues: TSocialChannelsType = getIn(values, name) || [];
 
@@ -206,11 +207,7 @@ class SocialProfilesEditorLayout extends React.Component<IProps & TFormikConnect
   };
 
   componentDidMount(): void {
-    const {
-      formik: { values },
-      name,
-    } = this.props;
-    this.setSelectedFields(values, name);
+    this.setSelectedFields();
   }
 
   shouldComponentUpdate(nextProps: IProps & TFormikConnect, nextState: IState): boolean {
@@ -267,6 +264,6 @@ class SocialProfilesEditorLayout extends React.Component<IProps & TFormikConnect
   }
 }
 
-export const SocialProfilesEditor = connect<IProps, Array<TSocialChannelsType>>(
+export const SocialProfilesEditor = connect<IProps, TSocialChannelsType>(
   SocialProfilesEditorLayout,
 );

@@ -42,7 +42,7 @@ import { appRoutes } from "../../../appRoutes";
 import { InfoAlert } from "../../../shared/Alerts";
 import { Button, EButtonLayout } from "../../../shared/buttons";
 import { ButtonSize, ButtonTextPosition } from "../../../shared/buttons/Button";
-import { MoneyNew } from "../../../shared/formatters/Money";
+import { Money } from "../../../shared/formatters/Money";
 import {
   ECurrency,
   ENumberInputFormat,
@@ -277,7 +277,7 @@ export class InvestmentSelectionComponent extends React.Component<IProps, IState
                   </Label>
                   <InfoAlert data-test-id="invest-modal.est-neu-tokens">
                     {(showTokens && !error && neuReward && (
-                      <MoneyNew
+                      <Money
                         value={neuReward}
                         inputFormat={ENumberInputFormat.ULPS}
                         valueType={ECurrency.NEU}
@@ -311,7 +311,7 @@ export class InvestmentSelectionComponent extends React.Component<IProps, IState
                 <div>
                   + <FormattedMessage id="investment-flow.estimated-gas-cost" />:{" "}
                   <span className="text-warning" data-test-id="invest-modal-gas-cost">
-                    <MoneyNew
+                    <Money
                       value={gasCostEuro}
                       inputFormat={ENumberInputFormat.ULPS}
                       outputFormat={ENumberOutputFormat.FULL}
@@ -319,7 +319,7 @@ export class InvestmentSelectionComponent extends React.Component<IProps, IState
                       roundingMode={ERoundingMode.UP}
                     />
                     {" ≈ "}
-                    <MoneyNew
+                    <Money
                       value={gasCostEth}
                       inputFormat={ENumberInputFormat.ULPS}
                       outputFormat={ENumberOutputFormat.FULL}
@@ -332,14 +332,14 @@ export class InvestmentSelectionComponent extends React.Component<IProps, IState
               <div>
                 <FormattedMessage id="investment-flow.total" />:{" "}
                 <span className="text-warning" data-test-id="invest-modal-total-cost">
-                  <MoneyNew
+                  <Money
                     value={this.calculateTotalCostIfValid(gasCostEuro, euroValue)}
                     inputFormat={ENumberInputFormat.ULPS}
                     valueType={ECurrency.EUR}
                     outputFormat={ENumberOutputFormat.FULL}
                   />
                   {" ≈ "}
-                  <MoneyNew
+                  <Money
                     value={this.calculateTotalCostIfValid(gasCostEth, ethValue)}
                     inputFormat={ENumberInputFormat.ULPS}
                     outputFormat={ENumberOutputFormat.FULL}

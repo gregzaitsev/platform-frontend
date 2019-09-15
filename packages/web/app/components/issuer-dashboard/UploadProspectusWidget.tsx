@@ -1,6 +1,6 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
-import { compose } from "redux";
+import { compose } from "recompose";
 
 import { appRoutes } from "../appRoutes";
 import { EColumnSpan } from "../layouts/Container";
@@ -16,7 +16,7 @@ export const UploadProspectusWidgetComponent: React.FunctionComponent<IExternalP
   columnSpan,
 }) => (
   <DashboardLinkWidget
-    title={<FormattedMessage id={"settings.upload-prospectus.title"} />}
+    title={<FormattedMessage id="settings.upload-prospectus.title" />}
     text={<FormattedMessage id="settings.upload-prospectus-please-upload-prospectus" />}
     to={appRoutes.documents}
     buttonText={<FormattedMessage id="settings.upload-prospectus.title" />}
@@ -24,6 +24,6 @@ export const UploadProspectusWidgetComponent: React.FunctionComponent<IExternalP
   />
 );
 
-export const UploadProspectusWidget = compose<React.FunctionComponent<IExternalProps>>(
+export const UploadProspectusWidget = compose<IExternalProps, IExternalProps>(
   createErrorBoundary(ErrorBoundaryPanel),
 )(UploadProspectusWidgetComponent);
