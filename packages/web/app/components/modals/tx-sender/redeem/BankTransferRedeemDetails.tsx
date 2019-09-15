@@ -44,7 +44,7 @@ const BankTransferRedeemDetails: TransactionDetailsComponent<ETxSenderType.NEUR_
     <InfoRow
       caption={<FormattedMessage id="bank-transfer.redeem.summary.bank-fee" />}
       value={
-        <MoneyNew
+        <Money
           data-test-id="bank-transfer.redeem.fee"
           value={additionalData.bankFee}
           inputFormat={ENumberInputFormat.FLOAT}
@@ -56,7 +56,7 @@ const BankTransferRedeemDetails: TransactionDetailsComponent<ETxSenderType.NEUR_
     <InfoRow
       caption={<FormattedMessage id="bank-transfer.redeem.summary.total-return-amount" />}
       value={
-        <MoneyNew
+        <Money
           data-test-id="bank-transfer.redeem.total"
           value={additionalData.totalRedeemed}
           inputFormat={ENumberInputFormat.FLOAT}

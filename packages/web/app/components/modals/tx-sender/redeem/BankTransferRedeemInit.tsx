@@ -22,7 +22,7 @@ import { onEnterAction } from "../../../../utils/OnEnterAction";
 import { Button, ButtonSize, EButtonLayout } from "../../../shared/buttons/Button";
 import { ButtonArrowRight } from "../../../shared/buttons/index";
 import { FormatNumber } from "../../../shared/formatters/FormatNumber";
-import { MoneyNew } from "../../../shared/formatters/Money";
+import { Money } from "../../../shared/formatters/Money";
 import {
   ECurrency,
   ENumberInputFormat,
@@ -211,7 +211,7 @@ const BankTransferRedeemLayout: React.FunctionComponent<IProps> = ({
               <span className="text-warning">
                 {"- "}
                 {isValid && calculatedData && (
-                  <MoneyNew
+                  <Money
                     data-test-id="bank-transfer.redeem.fee"
                     value={calculatedData.bankFee}
                     inputFormat={ENumberInputFormat.FLOAT}
@@ -227,7 +227,7 @@ const BankTransferRedeemLayout: React.FunctionComponent<IProps> = ({
               </Heading>
               <span className="text-success">
                 {isValid && calculatedData ? (
-                  <MoneyNew
+                  <Money
                     data-test-id="bank-transfer.redeem.total"
                     value={calculatedData.totalRedeemed}
                     inputFormat={ENumberInputFormat.FLOAT}
