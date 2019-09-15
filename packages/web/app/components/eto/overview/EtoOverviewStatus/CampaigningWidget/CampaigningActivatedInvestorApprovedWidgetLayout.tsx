@@ -34,6 +34,10 @@ export interface ICampaigningActivatedInvestorWidgetLayoutProps {
   maxPledge?: number;
 }
 
+interface IPledgeData {
+  amount: string;
+}
+
 const CampaigningActivatedInvestorApprovedWidgetLayout: React.FunctionComponent<
   ICampaigningActivatedInvestorWidgetLayoutProps
 > = ({
@@ -94,7 +98,7 @@ const CampaigningActivatedInvestorApprovedWidgetLayout: React.FunctionComponent<
         validationSchema={generateCampaigningValidation(minPledge, maxPledge)}
       >
         <FormikConsumer>
-          {({ values, setFieldValue, isValid, setFieldTouched }: FormikProps<IReedemData>) => (
+          {({ values, setFieldValue, isValid, setFieldTouched }: FormikProps<IPledgeData>) => (
             <FormDeprecated className={cn(styles.group, styles.groupNoPadding)}>
               <div className={cn(styles.label, styles.labelFull)}>
                 <FormattedMessage id="eto-overview.campaigning.indicate-commitment" />
@@ -113,12 +117,11 @@ const CampaigningActivatedInvestorApprovedWidgetLayout: React.FunctionComponent<
                   }}
                   returnInvalidValues={true}
                   showUnits={true}
-                  decimals={0}
                 />
               </div>
               <div className={cn(styles.value, styles.backNow)}>
                 <Button
-                  data-test-id="eto-bookbuilding-back-now"
+                  data-test-id="eto-bookbuilding-commit"
                   type="submit"
                   size={ButtonSize.SMALL}
                   width={ButtonWidth.BLOCK}

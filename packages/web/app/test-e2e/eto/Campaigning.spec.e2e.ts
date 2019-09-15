@@ -71,7 +71,7 @@ describe("Eto campaigning state", () => {
               type: "radio",
               value: "true",
             },
-            "eto-bookbuilding-back-now": { type: "submit" },
+            "eto-bookbuilding-commit": { type: "submit" },
           });
 
           confirmAccessModal();
@@ -94,7 +94,7 @@ describe("Eto campaigning state", () => {
 
             fillForm({
               amount: CHANGED_AMOUNT,
-              "eto-bookbuilding-back-now": { type: "submit" },
+              "eto-bookbuilding-commit": { type: "submit" },
             });
 
             confirmAccessModal();

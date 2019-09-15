@@ -42,16 +42,12 @@ interface IProps {
   prefix?: TTranslatedString;
   suffix?: TTranslatedString;
   size?: EInputSize;
-  decimals?: number;
 }
 
 export class MaskedNumberInput extends React.Component<IProps> {
-  decimals =
-    this.props.decimals !== undefined
-      ? this.props.decimals
-      : this.props.valueType
-      ? selectDecimalPlaces(this.props.valueType)
-      : DEFAULT_DECIMAL_PLACES;
+  decimals = this.props.valueType
+    ? selectDecimalPlaces(this.props.valueType, this.props.outputFormat)
+    : DEFAULT_DECIMAL_PLACES;
 
   formatValue = (value: string): string => {
     if (isEmptyValue(value)) {
