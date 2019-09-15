@@ -48,7 +48,7 @@ const EtoStatusComponentChooser: React.FunctionComponent<IStateProps & IExternal
 
   switch (timedState) {
     case EETOStateOnChain.Setup: {
-      if (isAuthorized && eto.investmentCalculatedValues) {
+      if (isAuthorized) {
         const nextState = isEligibleToPreEto ? EETOStateOnChain.Whitelist : EETOStateOnChain.Public;
         const nextStateStartDate = eto.contract ? eto.contract.startOfStates[nextState] : undefined;
 

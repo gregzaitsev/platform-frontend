@@ -465,20 +465,6 @@ export const EtoInvestmentTermsType = YupTS.object({
 
 export type TEtoInvestmentTermsType = YupTS.TypeOf<typeof EtoInvestmentTermsType>;
 
-export interface IInvestmentCalculatedValues {
-  canBeListed: boolean;
-  canGoOnChain: boolean;
-  discountedSharePrice: number;
-  effectiveMaxTicket: number;
-  etoTerms: number;
-  fixedSlotsMinSharePrice: number;
-  maxInvestmentAmount: number;
-  maxInvestmentAmountWithAllDiscounts: number;
-  minInvestmentAmount: number;
-  publicSharePrice: number;
-  sharePrice: number;
-}
-
 interface IAdditionalEtoType {
   etoId: EthereumAddressWithChecksum;
   companyId: string;
@@ -494,7 +480,6 @@ interface IAdditionalEtoType {
   product: TEtoProduct;
   nomineeDisplayName?: string;
   hasDividendRights?: boolean;
-  investmentCalculatedValues?: IInvestmentCalculatedValues;
 }
 
 export type TBookbuildingStatsType = {
