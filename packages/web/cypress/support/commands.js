@@ -37,6 +37,7 @@ const LOCAL_STORAGE_MEMORY = new Map();
 const DEFAULT_STORAGE_KEY = "main";
 
 Cypress.Commands.add("saveLocalStorage", (memoryKey = DEFAULT_STORAGE_KEY) => {
+  console.log(memoryKey, { ...localStorage });
   LOCAL_STORAGE_MEMORY.set(memoryKey, { ...localStorage });
 });
 

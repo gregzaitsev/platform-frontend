@@ -36,6 +36,7 @@ export const selectEtoStep = (
   isInvestmentAndEtoTermsFilledWithAllRequired: boolean,
   isOfferingDocumentSubmitted: boolean | undefined,
   isISHASubmitted: boolean | undefined,
+  areAgreementsSignedByNominee: boolean | undefined,
 ): EEtoStep => {
   if (!isVerificationSectionDone) {
     return EEtoStep.VERIFICATION;
@@ -98,11 +99,14 @@ export const selectEtoStep = (
   }
 
   if (etoState === EEtoState.ON_CHAIN) {
-    if (true) {
-      return EEtoStep.WAIT_FOR_NOMINEE_DOCUMENTS;
+    /**
+     * When nominee sign THA and RAA agreements we can set start date
+     */
+    if (areAgreementsSignedByNominee) {
+      return EEtoStep.SETUP_START_DATE;
     }
 
-    return EEtoStep.SETUP_START_DATE;
+    return EEtoStep.WAIT_FOR_NOMINEE_DOCUMENTS;
   }
 
   throw new Error("Eto step is not defined");

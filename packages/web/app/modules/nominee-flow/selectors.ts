@@ -7,8 +7,8 @@ import { IAppState } from "../../store";
 import { nonNullable } from "../../utils/nonNullable";
 import { objectToFilteredArray } from "../../utils/objectToFilteredArray";
 import { selectIsBankAccountVerified } from "../bank-transfer-flow/selectors";
-import { selectDocumentsStatus, selectEtoContract, selectEtoSubState } from "../eto/selectors";
-import { TEtoWithCompanyAndContract, TOfferingDocuments } from "../eto/types";
+import { selectAgreementsStatus, selectEtoContract, selectEtoSubState } from "../eto/selectors";
+import { TEtoWithCompanyAndContract, TOfferingAgreementsStatus } from "../eto/types";
 import { selectRouter } from "../routing/selectors";
 import { selectIsVerificationFullyDone } from "../selectors";
 import { ENomineeRequestStatus, TNomineeRequestStorage } from "./types";
@@ -97,11 +97,11 @@ export const selectNomineeEtoTemplatesArray = (state: IAppState): IEtoDocument[]
 
 export const selectNomineeEtoDocumentsStatus = (
   state: IAppState,
-): TOfferingDocuments | undefined => {
+): TOfferingAgreementsStatus | undefined => {
   const eto = selectNomineeEtoWithCompanyAndContract(state);
 
   if (eto !== undefined) {
-    return selectDocumentsStatus(state, eto.previewCode);
+    return selectAgreementsStatus(state, eto.previewCode);
   }
 
   return undefined;

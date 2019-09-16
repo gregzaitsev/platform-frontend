@@ -8,7 +8,7 @@ import {
   EEtoAgreementStatus,
   EETOStateOnChain,
   TEtoWithCompanyAndContract,
-  TOfferingDocuments,
+  TOfferingAgreementsStatus,
 } from "../eto/types";
 import { isOnChain } from "../eto/utils";
 import { EAgreementType } from "../tx/transactions/nominee/sign-agreement/types";
@@ -104,7 +104,7 @@ export const getNomineeTaskStep = (
   verificationIsComplete: boolean,
   nomineeEto: TEtoWithCompanyAndContract | undefined,
   isBankAccountVerified: boolean,
-  documentsStatus: TOfferingDocuments,
+  documentsStatus: TOfferingAgreementsStatus,
 ): ENomineeTask => {
   if (!verificationIsComplete) {
     return ENomineeTask.ACCOUNT_SETUP;

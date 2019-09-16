@@ -12,6 +12,7 @@ import { EKycRequestStatus } from "../../lib/api/kyc/KycApi.interfaces";
 import { actions } from "../../modules/actions";
 import { selectBackupCodesVerified, selectVerifiedUserEmail } from "../../modules/auth/selectors";
 import {
+  selectAreAgreementsSignedByNominee,
   selectCanEnableBookBuilding,
   selectCombinedEtoCompanyData,
   selectIsISHAPreviewSubmitted,
@@ -74,7 +75,8 @@ interface IStateProps {
   isOfferingDocumentSubmitted: boolean | undefined;
   isISHASubmitted: boolean | undefined;
   offeringDocumentType: EOfferingDocumentType | undefined;
-  isMarketingDataVisibleInPreview?: EEtoMarketingDataVisibleInPreview;
+  isMarketingDataVisibleInPreview: EEtoMarketingDataVisibleInPreview | undefined;
+  areAgreementsSignedByNominee: ReturnType<typeof selectAreAgreementsSignedByNominee>;
 }
 
 interface IComputedProps {
@@ -227,7 +229,7 @@ const VerifiedUserSection: React.FunctionComponent<TVerificationSection> = ({
   etoStep,
   ...rest
 }) => {
-  if (eto) {
+  if (eto && etoStep) {
     return (
       <>
         <Container columnSpan={EColumnSpan.THREE_COL} className="mb-5">
@@ -300,11 +302,11 @@ const EtoDashboard = compose<React.FunctionComponent>(
       combinedEtoCompanyData: selectCombinedEtoCompanyData(s),
       offeringDocumentType: selectIssuerEtoOfferingDocumentType(s),
       isMarketingDataVisibleInPreview: selectIsMarketingDataVisibleInPreview(s),
+      areAgreementsSignedByNominee: selectAreAgreementsSignedByNominee(s),
     }),
     dispatchToProps: dispatch => ({
       initEtoView: () => {
-        dispatch(actions.etoFlow.loadIssuerEto());
-        dispatch(actions.kyc.kycLoadIndividualDocumentList());
+        dispatch(actions.etoFlow.loadIssuerStep());
       },
     }),
   }),
@@ -349,6 +351,7 @@ const EtoDashboard = compose<React.FunctionComponent>(
             isInvestmentAndEtoTermsFilledWithAllRequired,
             props.isOfferingDocumentSubmitted,
             props.isISHASubmitted,
+            props.areAgreementsSignedByNominee,
           )
         : EEtoStep.VERIFICATION,
     };

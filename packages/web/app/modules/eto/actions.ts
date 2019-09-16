@@ -7,7 +7,7 @@ import {
   IEtoContractData,
   IEtoTokenData,
   TEtoWithCompanyAndContract,
-  TOfferingDocuments,
+  TOfferingAgreementsStatus,
 } from "./types";
 
 export const etoActions = {
@@ -82,7 +82,7 @@ export const etoActions = {
   ),
   setAgreementsStatus: createActionFactory(
     "ETO_SET_AGREEMENTS_STATUS",
-    (previewCode: string, statuses: TOfferingDocuments) => ({
+    (previewCode: string, statuses: TOfferingAgreementsStatus) => ({
       previewCode,
       statuses,
     }),

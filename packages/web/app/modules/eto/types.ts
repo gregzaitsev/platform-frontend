@@ -63,4 +63,4 @@ export enum EEtoAgreementStatus {
   ERROR = "error",
 }
 
-export type TOfferingDocuments = Dictionary<EEtoAgreementStatus, EAgreementType>;
+export type TOfferingAgreementsStatus = Dictionary<EEtoAgreementStatus, EAgreementType>;

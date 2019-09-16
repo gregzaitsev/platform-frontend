@@ -31,7 +31,7 @@ const fillEtoToLinkNomineeStep = (issuerAddress: string) => {
 };
 
 describe("Eto Forms link nominee", () => {
-  it(`
+  it.only(`
     should move from "Publish Listing Page" to "Link nominee" step 
     after filling required fields from "Eto Terms" and "Investment Terms" forms
     and then go through nominee linking process on both issuer and nominee side
