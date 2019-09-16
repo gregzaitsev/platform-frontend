@@ -1,6 +1,10 @@
 import * as Yup from "yup";
 
-import { ECurrency } from "../../../components/shared/formatters/utils";
+import {
+  ECurrency,
+  stripNumberFormatting,
+  parseInputToNumber,
+} from "../../../components/shared/formatters/utils";
 import {
   getMessageTranslation,
   ValidationMessage,
@@ -18,22 +22,20 @@ export interface IBookBuildingStats {
   pledgedAmount: number;
 }
 
-export const generateCampaigningValidation = (minPledge: number, maxPledge?: number) => {
-  const amount = Yup.number()
-    .typeError(getMessageTranslation(createMessage(ValidationMessage.VALIDATION_INTEGER)))
-    .min(
-      minPledge,
-      getMessageTranslation(createMessage(ValidationMessage.VALIDATION_MIN_PLEDGE, minPledge)),
-    )
-    .integer()
-    .required();
-
-  return Yup.object({
-    amount: maxPledge
-      ? amount.max(
-          maxPledge,
-          getMessageTranslation(createMessage(ValidationMessage.VALIDATION_MAX_PLEDGE, maxPledge)),
-        )
-      : amount,
+export const generateCampaigningValidation = (minPledge: number, maxPledge?: number) =>
+  Yup.object({
+    amount: Yup.string()
+      .required()
+      .matches(/^[0-9]*$/, "Must be a number")
+      // .typeError(getMessageTranslation(createMessage(ValidationMessage.VALIDATION_INTEGER)))
+      .test(
+        "minAmount",
+        getMessageTranslation(createMessage(ValidationMessage.VALIDATION_MIN_PLEDGE, minPledge)),
+        (test: string) => !!(parseInt(test, 10) >= minPledge),
+      )
+      .test(
+        "maxAmount",
+        getMessageTranslation(createMessage(ValidationMessage.VALIDATION_MAX_PLEDGE, maxPledge)),
+        (test: string) => !!(parseInt(test, 10) <= (maxPledge || Infinity)),
+      ),
   });
-};

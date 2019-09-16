@@ -1,5 +1,5 @@
 import * as cn from "classnames";
-import { Formik, FormikConsumer, FormikProps } from "formik";
+import { Formik, FormikConsumer, FormikProps, yupToFormErrors } from "formik";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
@@ -92,14 +92,32 @@ const CampaigningActivatedInvestorApprovedWidgetLayout: React.FunctionComponent<
         </div>
       </div>
     ) : (
-      <Formik<{ amount: number | "" }>
+      <Formik<{ amount: string }>
         initialValues={{ amount: pledgedAmount }}
         onSubmit={({ amount }) => backNow(Number(amount))}
-        validationSchema={generateCampaigningValidation(minPledge, maxPledge)}
+        validate={values => {
+          try {
+            generateCampaigningValidation(minPledge, maxPledge).validateSync(values, {
+              abortEarly: false,
+            });
+          } catch (errors) {
+            return yupToFormErrors(errors);
+          }
+          return undefined;
+        }}
       >
         <FormikConsumer>
-          {({ values, setFieldValue, isValid, setFieldTouched }: FormikProps<IPledgeData>) => (
+          {({
+            values,
+            setFieldValue,
+            isValid,
+            setFieldTouched,
+            touched,
+            errors,
+          }: FormikProps<IPledgeData>) => (
             <FormDeprecated className={cn(styles.group, styles.groupNoPadding)}>
+              {console.log(touched)}
+              {console.log(errors)}
               <div className={cn(styles.label, styles.labelFull)}>
                 <FormattedMessage id="eto-overview.campaigning.indicate-commitment" />
               </div>

@@ -50,9 +50,18 @@ export class MaskedNumberInput extends React.Component<IProps> {
     : DEFAULT_DECIMAL_PLACES;
 
   formatValue = (value: string): string => {
+    debugger;
     if (isEmptyValue(value)) {
       return "";
     } else if (isValidNumber(value)) {
+      const test = toFixedPrecision({
+        value,
+        roundingMode: ERoundingMode.DOWN,
+        inputFormat: ENumberInputFormat.FLOAT,
+        outputFormat: this.props.outputFormat,
+        decimalPlaces: this.decimals,
+      });
+      debugger;
       return toFixedPrecision({
         value,
         roundingMode: ERoundingMode.DOWN,
@@ -92,9 +101,10 @@ export class MaskedNumberInput extends React.Component<IProps> {
   };
 
   changeValue = (value: string) => {
-    const processedValue =
-      this.decimals === 0 && value.includes(".") ? value.replace(".", "") : value;
-    const validValue: string | null = parseInputToNumber(processedValue);
+    /* const processedValue =
+      this.decimals === 0 && value.includes(".") ? value.replace(".", "") : value; */
+    // debugger;
+    const validValue: string | null = parseInputToNumber(value);
 
     if (validValue !== null) {
       const newValue = this.formatOnChange(validValue, this.state.value);
