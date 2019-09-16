@@ -1,5 +1,5 @@
 const Unixfs = require('ipfs-unixfs');
-const {DAGNode} = require('ipld-dag-pb');
+const dagPB = require('ipld-dag-pb');
 
 import BigNumber from "bignumber.js";
 import { compose, isEmpty, keyBy, map, omit } from "lodash/fp";
@@ -112,11 +112,13 @@ export function* acceptIsha({
   const filePB = file.marshal()
   console.log("arrayBuffer", arrayBuffer)
 
-  const dagNode = DAGNode.create(filePB,[],(err, node) => {
-    if(err) return console.error(err)
-    console.log("result",node.toJSON().multihash)
+  const dagNode = new dagPB.DAGNode(filePB,[])
+  console.log("node",dagNode, dagNode.toJSON())
+  console.log("hash",yield dagPB.util.cid(dagNode.Data), dagNode.toJSON())
 
-  })
+  console.log("result",dagNode.toJSON().multihash)
+
+
 
 //QmWtPnZxSwFRNvnXDe5wqXWG23jpS9djdwoTDRJrtDCDg9
 }

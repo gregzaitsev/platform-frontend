@@ -28,7 +28,6 @@ export const AcceptIshaLayout: React.FunctionComponent<TProps> = ({onDrop, loadi
     </p>
     <Dropzone
       data-test-id="eto-add-document-drop-zone"
-      // accept="*/*"
       onDrop={onDropFile}
       activeClassName={styles.invisible}
       acceptClassName={styles.invisible}
