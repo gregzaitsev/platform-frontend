@@ -10,7 +10,7 @@ import {
 } from "../../../modules/eto-flow/utils";
 import { TDataTestId, TFormikConnect, TTranslatedString } from "../../../types";
 import { pickSchemaValues } from "../../../utils/yupUtils";
-import { Form, TFormProps } from "../../shared/forms";
+import { Form, TFormProps } from "../../shared/forms/index";
 import { PercentageIndicatorBar } from "../../shared/PercentageIndicatorBar";
 import { Section } from "./Shared";
 
@@ -22,6 +22,7 @@ interface IProps {
 
 interface IFormPercentageDoneProps {
   validationSchema: Yup.Schema<unknown>;
+  validate?: (x:unknown, y:unknown) => void;
   progressOptions?: IProgressOptions;
 }
 
@@ -64,6 +65,7 @@ export const EtoFormBase = <Values extends {}>({
   progressOptions,
   initialValues,
   validationSchema,
+  validate,
   ...formProps
 }: TExternalProps<Values>) => {
   // Filter to contain only known schema values
@@ -76,7 +78,8 @@ export const EtoFormBase = <Values extends {}>({
     <Form<Values>
       className={styles.form}
       initialValues={values}
-      validationSchema={validationSchema}
+      // validationSchema={validate ? undefined : validationSchema}
+      validate={validate}
       {...formProps}
     >
       <h4 className={styles.header}>{title}</h4>

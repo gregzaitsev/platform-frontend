@@ -54,7 +54,7 @@ const findNonEmptyKeyValueField = (data: ICompoundField | undefined) => {
   if (data) {
     const keys = Object.keys(data);
 
-    return data[keys[0]] !== undefined && data[keys[1]] !== undefined;
+    return data[keys[0]] !== undefined || data[keys[1]] !== undefined;
   }
 
   return undefined;
@@ -64,6 +64,17 @@ const findNonEmptyKeyValueField = (data: ICompoundField | undefined) => {
 export const removeEmptyKeyValueFields = () => (data: ICompoundField[] | undefined) => {
   if (data !== undefined && data !== null) {
     const cleanData = data.filter(field => findNonEmptyKeyValueField(field));
+    console.log("cleanData",cleanData)
+    return cleanData.length ? cleanData : undefined;
+  } else {
+    return undefined;
+  }
+};
+
+export const setEmptyKeyValueFieldsUndefined = () => (data: ICompoundField[] | undefined) => {
+  if (data !== undefined && data !== null) {
+    const cleanData = data.map(field => {return findNonEmptyKeyValueField(field) ? field : undefined});
+    console.log("cleanData",cleanData)
     return cleanData.length ? cleanData : undefined;
   } else {
     return undefined;

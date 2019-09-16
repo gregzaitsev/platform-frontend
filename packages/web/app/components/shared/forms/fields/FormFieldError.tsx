@@ -1,6 +1,7 @@
 import * as cn from "classnames";
 import { FormikConsumer, getIn } from "formik";
 import * as React from "react";
+import {get} from 'lodash'
 
 import { CommonHtmlProps, TTranslatedString } from "../../../../types";
 import { isNonValid } from "./utils.unsafe";
@@ -49,16 +50,22 @@ const FormFieldError: React.FunctionComponent<IProps> = ({
   invalid,
 }) => (
   <FormikConsumer>
-    {({ touched, errors, submitCount }) =>
-      (isNonValid(touched, errors, name, submitCount, ignoreTouched) || invalid) && (
-        <FormError
-          name={name}
-          message={getIn(errors, name) || defaultMessage}
-          className={className}
-          alignLeft={alignLeft}
-        />
-      )
-    }
+    {({ touched, errors, submitCount }) => {
+      const res = getIn(errors, name);
+      console.log("FormFieldError",res, typeof res === 'string' || React.isValidElement(res))
+      if(typeof res === 'string' || React.isValidElement(res)) {
+        return (isNonValid(touched, errors, name, submitCount, ignoreTouched) || invalid) && (
+          <FormError
+            name={name}
+            message={getIn(errors, name) || defaultMessage}
+            className={className}
+            alignLeft={alignLeft}
+          />
+        )
+      } else {
+        return null
+      }
+    }}
   </FormikConsumer>
 );
 

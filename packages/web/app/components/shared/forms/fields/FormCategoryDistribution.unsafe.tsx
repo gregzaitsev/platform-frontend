@@ -44,13 +44,14 @@ class KeyValueCompoundFieldBase extends React.Component<IProps & IInternalProps 
   name = this.props.name;
 
   setAllFieldsTouched = () => {
-    if (this.props.validationSchema) {
-      return Object.keys(this.props.validationSchema.fields).map(key => {
+    // if (this.props.validationSchema) {
+      return this.props.formFieldKeys.map(key => {
+      console.log("setAllFieldsTouched",`${this.name}.${key}`)
         this.props.formik.setFieldTouched(`${this.name}.${key}`, true);
       });
-    }
+    // }
 
-    return undefined;
+    // return undefined;
   };
 
   compoundFieldValidation = (fieldName: string, neighborName: string) => {
