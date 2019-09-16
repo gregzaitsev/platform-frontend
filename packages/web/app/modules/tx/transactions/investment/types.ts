@@ -1,10 +1,13 @@
+import { TEtoInvestmentCalculatedValues } from "../../../../lib/api/eto/EtoApi.interfaces.unsafe";
+
 export type TInvestmentAdditionalData = {
   eto: {
     etoId: string;
     companyName: string;
-    existingCompanyShares: number;
+    existingShareCapital: number;
     preMoneyValuationEur: number;
     equityTokensPerShare: number;
+    investmentCalculatedValues: Partial<TEtoInvestmentCalculatedValues>;
   };
   equityTokens: string;
   estimatedReward: string;

@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { Q18 } from "../../../../config/constants";
 import { multiplyBigNumbers, subtractBigNumbers } from "../../../../utils/BigNumberUtils";
-import { MoneyNew } from "../../../shared/formatters/Money";
+import { Money } from "../../../shared/formatters/Money";
 import {
   ECurrency,
   ENumberInputFormat,
@@ -20,7 +20,7 @@ const TotalRedeemed: React.FunctionComponent<{ amount: string; bankFee: string }
   const totalRedeemed = subtractBigNumbers([Q18.mul(providedAmount), calculatedFee]);
 
   return (
-    <MoneyNew
+    <Money
       value={totalRedeemed}
       inputFormat={ENumberInputFormat.ULPS}
       valueType={ECurrency.EUR}

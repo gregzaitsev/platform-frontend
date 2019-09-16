@@ -1,12 +1,17 @@
 import { FormikErrors, FormikTouched } from "formik";
-import { get, isFunction } from "lodash";
+import { get } from "lodash";
 import * as React from "react";
 import { FormGroup, InputProps } from "reactstrap";
 import { createNumberMask } from "text-mask-addons/dist/textMaskAddons";
 import { Schema } from "yup";
 
 import { ArrayWithAtLeastOneMember, Dictionary, TTranslatedString } from "../../../../types";
-import { getFieldSchema, getSchemaMeta, isRequired } from "../../../../utils/yupUtils";
+import {
+  getSchemaField,
+  getSchemaMeta,
+  getValidationSchema,
+  isRequired,
+} from "../../../../utils/yupUtils";
 import { ECurrency } from "../../formatters/utils";
 import { selectDecimalPlaces } from "../../Money.unsafe";
 import { FormFieldLabel } from "./FormFieldLabel";
@@ -85,8 +90,8 @@ export const withCountedCharacters = (val: InputProps["value"] = "", limit: numb
 
 export const isFieldRequired = (validationSchema: any, name: string) => {
   if (validationSchema) {
-    const schema = isFunction(validationSchema) ? validationSchema() : validationSchema;
-    const fieldSchema = getFieldSchema(name, schema);
+    const schema = getValidationSchema(validationSchema);
+    const fieldSchema = getSchemaField(name, schema);
     return isRequired(fieldSchema);
   } else {
     return false;
@@ -95,8 +100,8 @@ export const isFieldRequired = (validationSchema: any, name: string) => {
 
 export const isWysiwyg = <T extends any>(validationSchema: Schema<T>, name: string) => {
   if (validationSchema) {
-    const schema = isFunction(validationSchema) ? validationSchema() : validationSchema;
-    const fieldSchema = getFieldSchema(name, schema);
+    const schema = getValidationSchema(validationSchema);
+    const fieldSchema = getSchemaField(name, schema);
 
     const meta = fieldSchema ? getSchemaMeta(fieldSchema) : undefined;
 

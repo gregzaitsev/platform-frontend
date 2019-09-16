@@ -453,9 +453,21 @@ export const getEto = (etoID: string): Cypress.Chainable<TEtoDataWithCompany> =>
 
   return cy
     .request({ url: ETOS_PATH, method: "GET" })
-    .then(
-      (etos: IHttpPartialResponse<TEtoDataWithCompany>) =>
-        etos.body &&
-        toCamelCase(etos.body).filter((eto: TEtoDataWithCompany) => eto.etoId === etoID)[0],
-    );
+    .then((etos: IHttpPartialResponse<TEtoDataWithCompany>) => {
+      if (!etos.body) {
+        throw new Error(`There is no body response from ${ETOS_PATH} ping backend about this`);
+      }
+
+      const result: TEtoDataWithCompany[] = toCamelCase(etos.body).filter(
+        (eto: TEtoDataWithCompany) => eto.etoId === etoID,
+      );
+
+      if (result.length === 0) {
+        throw new Error(
+          "Something is wrong with the fixtures, this sometimes happens due to users changing fixtures from the platform. ",
+        );
+      }
+      // If there is more than one eto just return the first one
+      return result[0];
+    });
 };

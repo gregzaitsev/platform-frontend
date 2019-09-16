@@ -141,8 +141,9 @@ export type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
  */
 export type XOR<T extends object, U extends object> = (Without<T, U> & U) | (Without<U, T> & T);
 
-export type TFormikConnect = {
-  formik: FormikContext<any>;
+// TODO: Remove `any` and provide correct types everywhere
+export type TFormikConnect<Values = any> = {
+  formik: FormikContext<Values>;
 };
 
 export type TElementRef<T> = null | T;

@@ -63,6 +63,14 @@ export class EtoApi {
     });
   }
 
+  public async patchMyEto(data: TPartialEtoSpecData): Promise<IHttpResponse<TPartialEtoSpecData>> {
+    return this.authorizedHttpClient.patch<TPartialEtoSpecData>({
+      baseUrl: BASE_PATH,
+      url: ETO_DATA_PATH,
+      body: data,
+    });
+  }
+
   public async getEtoPreview(previewCode: string): Promise<TPartialCompanyEtoData> {
     return await this.httpClient
       .get<TPartialCompanyEtoData>({
@@ -94,6 +102,16 @@ export class EtoApi {
     data: TPartialCompanyEtoData,
   ): Promise<IHttpResponse<TPartialCompanyEtoData>> {
     return await this.authorizedHttpClient.put<TPartialCompanyEtoData>({
+      baseUrl: BASE_PATH,
+      url: COMPANIES_ME_DATA_PATH,
+      body: data,
+    });
+  }
+
+  public async patchCompany(
+    data: TPartialCompanyEtoData,
+  ): Promise<IHttpResponse<TPartialCompanyEtoData>> {
+    return this.authorizedHttpClient.patch<TPartialCompanyEtoData>({
       baseUrl: BASE_PATH,
       url: COMPANIES_ME_DATA_PATH,
       body: data,

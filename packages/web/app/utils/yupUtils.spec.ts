@@ -1,7 +1,15 @@
 import { expect } from "chai";
 import * as Yup from "yup";
 
-import { findMax, findMin, getFieldSchema, isRequired } from "./yupUtils";
+import { AssertEqual, assertType } from "../../test/testUtils";
+import {
+  findMax,
+  findMin,
+  getSchemaField,
+  isRequired,
+  makeAllRequired,
+  pickSchemaValues,
+} from "./yupUtils";
 
 describe("yupUtils", () => {
   describe("isRequired", () => {
@@ -10,7 +18,7 @@ describe("yupUtils", () => {
         id: Yup.string().required(),
       });
 
-      const idField = getFieldSchema("id", schema);
+      const idField = getSchemaField("id", schema);
 
       expect(isRequired(idField)).to.be.true;
     });
@@ -20,7 +28,7 @@ describe("yupUtils", () => {
         name: Yup.string(),
       });
 
-      const nameField = getFieldSchema("name", schema);
+      const nameField = getSchemaField("name", schema);
 
       expect(isRequired(nameField)).to.be.false;
     });
@@ -41,6 +49,33 @@ describe("yupUtils", () => {
       const schema = Yup.number().max(max);
 
       expect(findMax(schema)).to.be.equal(max);
+    });
+  });
+
+  describe("pickSchemaValues", () => {
+    it("should pick only values defined by schema", () => {
+      type expectedType = { foo: string };
+      const result: expectedType = pickSchemaValues(Yup.object({ foo: Yup.string() }), {
+        foo: "bar",
+        baz: "quix",
+      });
+
+      assertType<AssertEqual<typeof result, expectedType>>(true);
+
+      expect(result).to.be.keys("foo");
+      expect(result).to.have.property("foo", "bar");
+    });
+  });
+
+  describe("makeAllRequired", () => {
+    it("should make schema fields required", () => {
+      const requiredSchema = makeAllRequired(Yup.object({ foo: Yup.string(), bar: Yup.number() }));
+
+      const fooSchema = getSchemaField("foo", requiredSchema);
+      const barSchema = getSchemaField("bar", requiredSchema);
+
+      expect(isRequired(fooSchema)).to.be.true;
+      expect(isRequired(barSchema)).to.be.true;
     });
   });
 });

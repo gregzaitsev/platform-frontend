@@ -49,6 +49,7 @@ export const symbols = makeDebugSymbols({
   storage: Symbol(),
   asyncIntervalSchedulerFactory: Symbol(),
   detectBrowser: Symbol(),
+  userActivityChannel: Symbol(),
 
   intlWrapper: Symbol(),
 

@@ -11,6 +11,7 @@ export interface IConfig {
     universeContractAddress: string;
   };
   backendRoot: IBackendRoot;
+  isMochaRunning?: boolean;
 }
 
 export function getConfig(env: NodeJS.ProcessEnv): IConfig {

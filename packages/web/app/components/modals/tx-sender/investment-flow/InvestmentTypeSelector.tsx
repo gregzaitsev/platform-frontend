@@ -7,7 +7,7 @@ import { EInvestmentType } from "../../../../modules/investment-flow/reducer";
 import { getCurrencyByInvestmentType } from "../../../../modules/investment-flow/utils";
 import { ETokenType } from "../../../../modules/tx/types";
 import { Button, ButtonWidth, EButtonLayout, EButtonTheme } from "../../../shared/buttons";
-import { MoneyNew } from "../../../shared/formatters/Money";
+import { Money } from "../../../shared/formatters/Money";
 import {
   ECurrency,
   ENumberInputFormat,
@@ -60,7 +60,7 @@ const WalletBalanceValues: React.FunctionComponent<WalletSelectionData> = wallet
     case EInvestmentType.Eth:
       return (
         <>
-          <MoneyNew
+          <Money
             valueType={ECurrency.ETH}
             inputFormat={ENumberInputFormat.ULPS}
             outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
@@ -68,7 +68,7 @@ const WalletBalanceValues: React.FunctionComponent<WalletSelectionData> = wallet
           />
           <div className={styles.balanceEur}>
             ={" "}
-            <MoneyNew
+            <Money
               inputFormat={ENumberInputFormat.ULPS}
               valueType={ECurrency.EUR}
               outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
@@ -82,7 +82,7 @@ const WalletBalanceValues: React.FunctionComponent<WalletSelectionData> = wallet
     case EInvestmentType.ICBMnEuro:
       return (
         <>
-          <MoneyNew
+          <Money
             inputFormat={ENumberInputFormat.ULPS}
             outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
             valueType={ECurrency.EUR_TOKEN}
@@ -90,7 +90,7 @@ const WalletBalanceValues: React.FunctionComponent<WalletSelectionData> = wallet
           />
           <div className={styles.balanceEur}>
             ={" "}
-            <MoneyNew
+            <Money
               valueType={ECurrency.EUR}
               inputFormat={ENumberInputFormat.ULPS}
               outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}

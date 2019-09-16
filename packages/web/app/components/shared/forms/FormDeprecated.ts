@@ -11,7 +11,10 @@ import { omitProps } from "../../../utils/omitProps";
 
 type TProps = React.ComponentProps<typeof FormikForm>;
 
-const Form = compose<TProps, TProps>(
+/**
+ * @deprecated Use `Form` component
+ */
+const FormDeprecated = compose<TProps, TProps>(
   formikConnect,
   fromRenderProps<{ logger: ILogger | undefined }, any, TContainerContext>(
     ContainerContext.Consumer,
@@ -33,7 +36,7 @@ const Form = compose<TProps, TProps>(
         if (invalidInput) {
           invalidInput.focus();
         } else {
-          this.props.logger!.warn(`It's not possible to focus invalid field: ${selector}`);
+          this.props.logger!.warn(`It's not possible to focus invalid field`);
         }
       }
     },
@@ -42,4 +45,4 @@ const Form = compose<TProps, TProps>(
   omitProps(["logger"]),
 )(FormikForm);
 
-export { Form };
+export { FormDeprecated };

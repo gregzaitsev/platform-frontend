@@ -8,7 +8,7 @@ import * as YupTS from "../../../../lib/yup-ts.unsafe";
 import { actions } from "../../../../modules/actions";
 import { appConnect } from "../../../../store";
 import { Button, ButtonArrowRight, EButtonLayout } from "../../../shared/buttons";
-import { ECheckboxLayout, Form, FormFieldBoolean } from "../../../shared/forms";
+import { ECheckboxLayout, FormDeprecated, FormFieldBoolean } from "../../../shared/forms";
 import { Heading } from "../../../shared/Heading";
 import { ExternalLink } from "../../../shared/links";
 
@@ -54,7 +54,7 @@ const BankTransferVerifyAgreementLayout: React.FunctionComponent<IProps> = ({
       onSubmit={goToSummary}
     >
       {({ isValid }) => (
-        <Form className="d-inline-block">
+        <FormDeprecated className="d-inline-block">
           <FormFieldBoolean
             className="mb-3"
             layout={ECheckboxLayout.BLOCK}
@@ -107,7 +107,7 @@ const BankTransferVerifyAgreementLayout: React.FunctionComponent<IProps> = ({
           >
             <FormattedMessage id="bank-verification.agreement.continue" />
           </ButtonArrowRight>
-        </Form>
+        </FormDeprecated>
       )}
     </Formik>
   </section>

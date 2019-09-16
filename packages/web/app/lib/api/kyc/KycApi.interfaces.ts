@@ -1,14 +1,14 @@
 import * as Yup from "yup";
 
+import { makeAllRequired } from "../../../utils/yupUtils";
 import * as YupTS from "../../yup-ts.unsafe";
 import {
   countryCode,
   isUsCitizen,
-  makeAllRequired,
   percentage,
   personBirthDate,
   restrictedCountry,
-} from "../util/schemaHelpers.unsafe";
+} from "../util/customSchemas.unsafe";
 
 export enum EKycRequestType {
   BUSINESS = "business",

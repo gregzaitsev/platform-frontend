@@ -9,7 +9,7 @@ import { appConnect } from "../../store";
 import { DashboardHeading } from "../eto/shared/DashboardHeading";
 import { Container, EColumnSpan, EContainerType } from "../layouts/Container";
 import { Button, ButtonSize, EButtonLayout, EButtonTheme } from "../shared/buttons";
-import { EThemeNew, MoneyNew } from "../shared/formatters/Money";
+import { ETheme, Money } from "../shared/formatters/Money";
 import { ENumberInputFormat, ENumberOutputFormat, selectUnits } from "../shared/formatters/utils";
 import { Heading } from "../shared/Heading";
 import { CurrencyIcon } from "../shared/icons/CurrencyIcon";
@@ -67,12 +67,12 @@ const AssetPortfolioLayout: React.FunctionComponent<ILayoutProps & IDispatchToPr
                 <>
                   {tokensDisbursal
                     .map(t => (
-                      <MoneyNew
+                      <Money
                         value={t.amountToBeClaimed}
                         inputFormat={ENumberInputFormat.ULPS}
                         valueType={t.token}
                         outputFormat={ENumberOutputFormat.FULL}
-                        theme={EThemeNew.GREEN_BIG}
+                        theme={ETheme.GREEN_BIG}
                         key={t.token}
                       />
                     ))
@@ -115,15 +115,15 @@ const AssetPortfolioLayout: React.FunctionComponent<ILayoutProps & IDispatchToPr
               <CurrencyIcon currency={tokenDisbursal.token} className="mr-2" />
               {selectUnits(tokenDisbursal.token)}
             </>
-            <MoneyNew
+            <Money
               value={tokenDisbursal.amountToBeClaimed}
               inputFormat={ENumberInputFormat.ULPS}
               valueType={tokenDisbursal.token}
               outputFormat={ENumberOutputFormat.FULL}
               data-test-id={`asset-portfolio.payout.amount-to-be-claimed`}
-              theme={EThemeNew.GREEN}
+              theme={ETheme.GREEN}
             />
-            <MoneyNew
+            <Money
               value={tokenDisbursal.totalDisbursedAmount}
               inputFormat={ENumberInputFormat.ULPS}
               valueType={tokenDisbursal.token}

@@ -47,9 +47,12 @@ const investTxData: React.ComponentProps<typeof TxErrorLayout> = {
     eto: {
       etoId: "123",
       companyName: "Test Co",
-      existingCompanyShares: 20,
+      existingShareCapital: 20,
       preMoneyValuationEur: 100,
       equityTokensPerShare: 10,
+      investmentCalculatedValues: {
+        sharePrice: 100 / (20 * 10),
+      },
     },
     equityTokens: "211",
     estimatedReward: convertToBigInt("125"),

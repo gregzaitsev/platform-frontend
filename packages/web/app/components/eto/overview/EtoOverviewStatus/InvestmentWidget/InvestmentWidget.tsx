@@ -12,7 +12,7 @@ import { appRoutes } from "../../../../appRoutes";
 import { etoPublicViewLink } from "../../../../appRouteUtils";
 import { Button, ButtonLink } from "../../../../shared/buttons";
 import { FormatNumber } from "../../../../shared/formatters/FormatNumber";
-import { MoneyNew } from "../../../../shared/formatters/Money";
+import { Money } from "../../../../shared/formatters/Money";
 import {
   ECurrency,
   ENumberInputFormat,
@@ -128,14 +128,14 @@ const InvestmentStats: React.FunctionComponent<IInvestmentStatsProps> = ({ eto }
       <div>
         <div className={styles.header}>
           <div>
-            <MoneyNew
+            <Money
               value={eto.contract.totalInvestment.etherTokenBalance}
               inputFormat={ENumberInputFormat.ULPS}
               outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
               valueType={ECurrency.ETH}
             />
             <br />
-            <MoneyNew
+            <Money
               value={eto.contract.totalInvestment.euroTokenBalance}
               inputFormat={ENumberInputFormat.ULPS}
               outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}

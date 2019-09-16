@@ -4,6 +4,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import * as Yup from "yup";
 
 import { CommonHtmlProps, TFormikConnect, TTranslatedString } from "../../../../types";
+import { getValidationSchema } from "../../../../utils/yupUtils";
 import { ButtonIcon, ButtonIconPlaceholder } from "../../buttons";
 import { FormInput } from "./FormInput";
 import { NumberTransformingField } from "./NumberTransformingField";
@@ -153,7 +154,8 @@ class ArrayOfKeyValueFieldsBase extends React.Component<
   private setFieldValue = this.props.formik.setFieldValue;
   private validationSchema =
     this.props.formik.validationSchema &&
-    this.props.formik.validationSchema().fields[this.props.name]._subType;
+    (getValidationSchema(this.props.formik.validationSchema) as any).fields[this.props.name]
+      ._subType;
 
   constructor(props: IProps & IExternalProps & CommonHtmlProps & TFormikConnect) {
     super(props);

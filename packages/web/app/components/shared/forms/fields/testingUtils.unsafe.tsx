@@ -1,7 +1,7 @@
 import { Formik } from "formik";
 import * as React from "react";
 
-import { Form } from "../Form";
+import { FormDeprecated } from "../FormDeprecated";
 
 /**
  * Use only for testing and storybook.
@@ -17,7 +17,7 @@ export const formWrapper = (formState: any, onSubmit?: (values: any) => any) => 
       }
 
       return (
-        <Form>
+        <FormDeprecated>
           <Component />
           {onSubmit && (
             <button data-test-id="test-form-submit" onClick={submitForm}>
@@ -25,7 +25,7 @@ export const formWrapper = (formState: any, onSubmit?: (values: any) => any) => 
             </button>
           )}
           <span data-test-id="test-form-submit-count">Submit count: {submitCount}</span>
-        </Form>
+        </FormDeprecated>
       );
     }}
   </Formik>

@@ -35,7 +35,7 @@ import { EAgreementType } from "../tx/transactions/nominee/sign-agreement/types"
 import { IEtoFlowState } from "./types";
 import { isValidEtoStartDate, sortProducts } from "./utils";
 
-export const selectIssuerEtoFlow = (state: IAppState) => state.etoFlow;
+export const selectIssuerEtoFlow = (state: IAppState) => state.etoIssuer;
 
 export const selectIssuerEto: (state: IAppState) => TEtoSpecsData | undefined = createSelector(
   selectIssuerEtoFlow,
@@ -162,9 +162,9 @@ export const selectIssuerEtoDateToWhitelistMinDuration = (state: IAppState): Big
   );
 };
 
-export const selectIssuerEtoLoading = (state: IAppState): boolean => state.etoFlow.loading;
+export const selectIssuerEtoLoading = (state: IAppState): boolean => state.etoIssuer.loading;
 
-export const selectNewEtoDateSaving = (state: IAppState): boolean => state.etoFlow.etoDateSaving;
+export const selectNewEtoDateSaving = (state: IAppState): boolean => state.etoIssuer.etoDateSaving;
 
 export const selectCombinedEtoCompanyData = createSelector(
   selectIssuerCompany,
@@ -246,10 +246,10 @@ export const selectUploadedInvestmentAgreement = (
 };
 
 export const selectInvestmentAgreementLoading = (state: DeepReadonly<IAppState>): boolean =>
-  state.etoFlow.signedInvestmentAgreementUrlLoading;
+  state.etoIssuer.signedInvestmentAgreementUrlLoading;
 
 export const selectSignedInvestmentAgreementUrl = (state: DeepReadonly<IAppState>): string | null =>
-  state.etoFlow.signedInvestmentAgreementUrl;
+  state.etoIssuer.signedInvestmentAgreementUrl;
 
 export const userHasKycAndEmailVerified = (state: IAppState) =>
   selectKycRequestStatus(state) === EKycRequestStatus.ACCEPTED &&
@@ -258,7 +258,7 @@ export const userHasKycAndEmailVerified = (state: IAppState) =>
 export const selectIsGeneralEtoLoading = (state: IAppState) =>
   selectIssuerEtoLoading(state) && selectEtoDocumentsLoading(state.etoDocuments);
 
-export const selectNewPreEtoStartDate = (state: IAppState) => state.etoFlow.newStartDate;
+export const selectNewPreEtoStartDate = (state: IAppState) => state.etoIssuer.newStartDate;
 
 export const selectPreEtoStartDateFromContract = (state: IAppState) => {
   const eto = selectIssuerEtoWithCompanyAndContract(state);
@@ -315,7 +315,7 @@ export const selectAvailableProducts = createSelector(
   },
 );
 
-export const selectIsSaving = createSelector(
+export const selectIssuerEtoSaving = createSelector(
   selectIssuerEtoFlow,
   state => state.saving,
 );

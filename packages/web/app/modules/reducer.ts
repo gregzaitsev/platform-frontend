@@ -57,7 +57,7 @@ export const appReducers = {
   wallet: walletReducer,
   txHistory: txHistoryReducer,
   notifications: notificationsReducer,
-  etoFlow: etoFlowReducer,
+  etoIssuer: etoFlowReducer,
   bookBuildingFlow: bookBuildingFlowReducer,
   etoDocuments: etoDocumentReducer,
   etoNominee: etoNomineeReducer,

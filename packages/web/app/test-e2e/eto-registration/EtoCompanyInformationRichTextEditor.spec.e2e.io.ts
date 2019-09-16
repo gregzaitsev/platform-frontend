@@ -1,15 +1,10 @@
-import { etoRegisterRoutes } from "../../components/eto/registration/routes";
 import { assertIssuerDashboard } from "../utils/assertions";
 import { fillForm, uploadSingleFileToField } from "../utils/forms";
 import { goToEtoPreview } from "../utils/navigation";
 import { formField, tid } from "../utils/selectors";
 import { createAndLoginNewUser } from "../utils/userHelpers";
+import { goToCompanyInformation } from "./EtoRegistrationUtils";
 import { aboutFormRequired, aboutFormSubmit } from "./fixtures";
-
-const goToCompanyInformation = () => {
-  cy.visit(etoRegisterRoutes.companyInformation);
-  cy.get(tid("eto.form.company-information")).should("exist");
-};
 
 describe("Eto Company Information Rich Text Editor", () => {
   before(() => {

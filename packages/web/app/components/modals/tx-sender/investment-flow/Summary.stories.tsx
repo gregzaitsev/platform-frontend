@@ -10,8 +10,11 @@ const data = {
       companyName: "X company",
       etoId: "0x123434562134asdf2412341234adf12341234",
       preMoneyValuationEur: 0,
-      existingCompanyShares: 0,
+      existingShareCapital: 0,
       equityTokensPerShare: 0,
+      investmentCalculatedValues: {
+        sharePrice: 0,
+      },
     },
     investmentEth: "12345678900000000000",
     investmentEur: "12345678900000000000000",
@@ -33,8 +36,11 @@ const dataWithPriceDiscount = {
     eto: {
       ...data.additionalData.eto,
       preMoneyValuationEur: 10000,
-      existingCompanyShares: 10,
+      existingShareCapital: 10,
       equityTokensPerShare: 10,
+      investmentCalculatedValues: {
+        sharePrice: 1000 / (10 * 10),
+      },
     },
   },
 };

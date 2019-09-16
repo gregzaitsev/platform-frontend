@@ -10,7 +10,7 @@ import { actions } from "../../../../modules/actions";
 import { appConnect } from "../../../../store";
 import { IIntlProps, injectIntlHelpers } from "../../../../utils/injectIntlHelpers.unsafe";
 import { Button } from "../../../shared/buttons";
-import { Form, FormField } from "../../../shared/forms";
+import { FormDeprecated, FormField } from "../../../shared/forms";
 import { TMessage } from "../../../translatedMessages/utils";
 
 import * as styles from "./RegisterLightWallet.module.scss";
@@ -66,7 +66,7 @@ class RegisterLightWalletForm extends React.Component<
   };
 
   render = () => (
-    <Form className="my-3">
+    <FormDeprecated className="my-3">
       <FormField
         placeholder={this.props.intl.formatIntlMessage("wallet-selector.register.email")}
         type="email"
@@ -99,7 +99,7 @@ class RegisterLightWalletForm extends React.Component<
           )}
         </Button>
       </div>
-    </Form>
+    </FormDeprecated>
   );
 }
 

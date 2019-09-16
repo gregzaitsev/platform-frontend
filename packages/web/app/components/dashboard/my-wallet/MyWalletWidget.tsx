@@ -20,7 +20,7 @@ import { onEnterAction } from "../../../utils/OnEnterAction";
 import { appRoutes } from "../../appRoutes";
 import { EColumnSpan } from "../../layouts/Container";
 import { ButtonLink, EButtonLayout, EButtonTheme, EIconPosition } from "../../shared/buttons";
-import { MoneyNew } from "../../shared/formatters/Money";
+import { Money } from "../../shared/formatters/Money";
 import { ECurrency, ENumberInputFormat, ENumberOutputFormat } from "../../shared/formatters/utils";
 import { LoadingIndicator } from "../../shared/loading-indicator";
 import { MoneySuiteWidget } from "../../shared/MoneySuiteWidget/MoneySuiteWidget";
@@ -95,7 +95,7 @@ export const MyWalletWidgetComponentBody: React.FunctionComponent<StateProps> = 
               <span className={cn(styles.smallFont)}>
                 <FormattedMessage id="dashboard.my-wallet-widget.total" />
               </span>
-              <MoneyNew
+              <Money
                 value={totalAmount}
                 valueType={ECurrency.EUR}
                 inputFormat={ENumberInputFormat.ULPS}

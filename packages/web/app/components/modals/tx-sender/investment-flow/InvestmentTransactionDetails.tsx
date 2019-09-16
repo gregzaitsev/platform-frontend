@@ -1,11 +1,10 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
-import { getShareAndTokenPrice } from "../../../../lib/api/eto/EtoUtils";
 import { ETxSenderType } from "../../../../modules/tx/types";
 import { addBigNumbers, multiplyBigNumbers } from "../../../../utils/BigNumberUtils";
 import { FormatNumber } from "../../../shared/formatters/FormatNumber";
-import { MoneyNew } from "../../../shared/formatters/Money";
+import { Money } from "../../../shared/formatters/Money";
 import {
   ECurrency,
   ENumberInputFormat,
@@ -76,7 +75,7 @@ const EquityTokensValue: React.FunctionComponent<IEquityTockenValue> = ({ equity
 const EstimatedRewardValue: React.FunctionComponent<IEstimatedReward> = ({ estimatedReward }) => (
   <span>
     <img src={neuIcon} alt="" />{" "}
-    <MoneyNew
+    <Money
       value={estimatedReward}
       inputFormat={ENumberInputFormat.ULPS}
       valueType={ECurrency.NEU}
@@ -87,7 +86,7 @@ const EstimatedRewardValue: React.FunctionComponent<IEstimatedReward> = ({ estim
 
 const Investment: React.FunctionComponent<IInvestment> = ({ investmentEur, investmentEth }) => (
   <>
-    <MoneyNew
+    <Money
       data-test-id="euro"
       value={investmentEur}
       inputFormat={ENumberInputFormat.ULPS}
@@ -95,7 +94,7 @@ const Investment: React.FunctionComponent<IInvestment> = ({ investmentEur, inves
       outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
     />
     {" ≈ "}
-    <MoneyNew
+    <Money
       data-test-id="eth"
       value={investmentEth}
       inputFormat={ENumberInputFormat.ULPS}
@@ -110,7 +109,7 @@ const TokenPriceAndDiscount: React.FunctionComponent<ITokenPriceAndDiscount> = (
   discount,
 }) => (
   <>
-    <MoneyNew
+    <Money
       data-test-id="token-price"
       value={actualTokenPrice}
       inputFormat={ENumberInputFormat.FLOAT}
@@ -134,7 +133,7 @@ const TokenPriceAndDiscount: React.FunctionComponent<ITokenPriceAndDiscount> = (
 
 const Total: React.FunctionComponent<ITotal> = ({ totalCostEur, totalCostEth }) => (
   <>
-    <MoneyNew
+    <Money
       data-test-id="total-cost-euro"
       value={totalCostEur}
       inputFormat={ENumberInputFormat.ULPS}
@@ -142,7 +141,7 @@ const Total: React.FunctionComponent<ITotal> = ({ totalCostEur, totalCostEth }) 
       outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
     />
     {" ≈ "}
-    <MoneyNew
+    <Money
       data-test-id="total-cost-eth"
       value={totalCostEth}
       inputFormat={ENumberInputFormat.ULPS}
@@ -166,11 +165,9 @@ const InvestmentTransactionDetails: TransactionDetailsComponent<ETxSenderType.IN
     additionalData.equityTokens,
   );
 
-  const { tokenPrice: fullTokenPrice } = getShareAndTokenPrice({
-    preMoneyValuationEur: additionalData.eto.preMoneyValuationEur,
-    existingCompanyShares: additionalData.eto.existingCompanyShares,
-    equityTokensPerShare: additionalData.eto.equityTokensPerShare,
-  });
+  const fullTokenPrice =
+    additionalData.eto.investmentCalculatedValues.sharePrice! /
+    additionalData.eto.equityTokensPerShare;
 
   const discount = getTokenPriceDiscount(fullTokenPrice.toString(), actualTokenPrice);
   return (
@@ -203,7 +200,7 @@ const InvestmentTransactionDetails: TransactionDetailsComponent<ETxSenderType.IN
         data-test-id="investment-flow.summary.transaction-cost"
         caption={<FormattedMessage id="investment-flow.summary.transaction-cost" />}
         value={
-          <MoneyNew
+          <Money
             value={additionalData.gasCostEth}
             inputFormat={ENumberInputFormat.ULPS}
             valueType={ECurrency.ETH}

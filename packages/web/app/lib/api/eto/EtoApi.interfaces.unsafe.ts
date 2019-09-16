@@ -12,27 +12,37 @@ import {
   MAX_VOTING_DURATION,
   MAX_VOTING_FINALIZATION_DURATION,
   MAX_VOTING_MAJORITY_FRACTION,
-  MIN_COMPANY_SHARES,
-  MIN_EXISTING_COMPANY_SHARES,
+  MAX_VOTING_QUORUM,
+  MIN_COMPANY_SHARE_CAPITAL,
+  MIN_EXISTING_SHARE_CAPITAL,
+  MIN_NEW_SHARE_NOMINAL_VALUE,
   MIN_NEW_SHARES_TO_ISSUE,
   MIN_PRE_MONEY_VALUATION_EUR,
   MIN_RESTRICTED_ACT_VOTING_DURATION,
-  MIN_SHARE_NOMINAL_VALUE_EUR,
   MIN_VOTING_DURATION,
   MIN_VOTING_FINALIZATION_DURATION,
   MIN_VOTING_MAJORITY_FRACTION,
+  MIN_VOTING_QUORUM,
   NEW_SHARES_TO_ISSUE_IN_FIXED_SLOTS,
   NEW_SHARES_TO_ISSUE_IN_WHITELIST,
 } from "../../../config/constants";
 import { DeepPartial, DeepReadonly, EthereumAddressWithChecksum } from "../../../types";
 import * as YupTS from "../../yup-ts.unsafe";
-import { dateSchema, percentage } from "../util/schemaHelpers.unsafe";
+import { dateSchema, percentage } from "../util/customSchemas.unsafe";
 import { TEtoDocumentTemplates } from "./EtoFileApi.interfaces";
 import { TEtoProduct } from "./EtoProductsApi.interfaces";
 
 /** COMPANY ETO RELATED INTERFACES
  *  only deals with "/companies/me"
  */
+
+export const CurrencyCodeType = YupTS.string().enhance((v: StringSchema) =>
+  v.matches(/^[A-Z]{3}$/, {
+    message: getMessageTranslation(
+      createMessage(ValidationMessage.VALIDATION_CURRENCY_CODE),
+    ) as string,
+  }),
+);
 
 const EtoFounderType = YupTS.object({
   fullName: YupTS.string(),
@@ -135,7 +145,7 @@ type TEtoKeyIndividualsType = YupTS.TypeOf<typeof EtoKeyIndividualsType>;
 
 const EtoLegalShareholderType = YupTS.object({
   fullName: YupTS.string().optional(),
-  shares: YupTS.number()
+  shareCapital: YupTS.number()
     .optional()
     .enhance(v => v.moreThan(0)),
 });
@@ -156,10 +166,10 @@ export const EtoLegalInformationType = YupTS.object({
   companyStage: YupTS.string().optional(),
   numberOfFounders: YupTS.number().optional(),
   lastFundingSizeEur: YupTS.number().optional(),
-  companyShares: YupTS.number().enhance(v => v.min(MIN_COMPANY_SHARES)),
+  companyShareCapital: YupTS.number().enhance(v => v.min(MIN_COMPANY_SHARE_CAPITAL)),
+  shareCapitalCurrencyCode: CurrencyCodeType,
   shareholders: YupTS.array(EtoLegalShareholderType.optional()).optional(),
 });
-
 type TEtoLegalData = YupTS.TypeOf<typeof EtoLegalInformationType>;
 
 const marketingLinksType = YupTS.array(
@@ -238,6 +248,7 @@ export enum EtoStateToCamelcase {
   "prospectus_approved" = "prospectusApproved",
   "on_chain" = "onChain",
 }
+
 // Since only keys are transformed from snake case to camel case we have to manually map states
 // see@ swagger /api/eto-listing/ui/#!/ETO/api_eto_get_me
 // see@ swagger api/eto-listing/ui/#!/Documents/api_document_documents_state_info
@@ -320,6 +331,21 @@ export const getEtoTermsSchema = ({
     }),
   });
 
+export const EtoInvestmentCalculatedValues = YupTS.object({
+  minInvestmentAmount: YupTS.number(),
+  maxInvestmentAmountWithAllDiscounts: YupTS.number(),
+  maxInvestmentAmount: YupTS.number(),
+  effectiveMaxTicket: YupTS.number(),
+  sharePrice: YupTS.number(),
+  publicSharePrice: YupTS.number(),
+  discountedSharePrice: YupTS.number(),
+  fixedSlotsMinSharePrice: YupTS.number(),
+  canBeListed: YupTS.boolean(),
+  canGoOnChain: YupTS.boolean(),
+});
+
+export type TEtoInvestmentCalculatedValues = YupTS.TypeOf<typeof EtoInvestmentCalculatedValues>;
+
 export type TEtoTermsType = YupTS.TypeOf<ReturnType<typeof getEtoTermsSchema>>;
 
 export const EtoEquityTokenInfoType = YupTS.object({
@@ -362,6 +388,9 @@ export const EtoVotingRightsType = YupTS.object({
   votingMajorityFraction: YupTS.number()
     .enhance(v => v.min(MIN_VOTING_MAJORITY_FRACTION))
     .enhance(v => v.max(MAX_VOTING_MAJORITY_FRACTION)),
+  shareholdersVotingQuorum: YupTS.number()
+    .enhance(v => v.min(MIN_VOTING_QUORUM))
+    .enhance(v => v.max(MAX_VOTING_QUORUM)),
   advisoryBoard: YupTS.string().optional(),
   hasDragAlongRights: YupTS.boolean(),
   hasTagAlongRights: YupTS.boolean(),
@@ -373,10 +402,36 @@ export type TEtoVotingRightsType = YupTS.TypeOf<typeof EtoVotingRightsType>;
 
 export const EtoInvestmentTermsType = YupTS.object({
   equityTokensPerShare: YupTS.number(),
-  shareNominalValueEur: YupTS.number().enhance(v => v.min(MIN_SHARE_NOMINAL_VALUE_EUR)),
+  newShareNominalValue: YupTS.number().enhance((v: StringSchema) =>
+    v.min(MIN_NEW_SHARE_NOMINAL_VALUE),
+  ),
+  newShareNominalValueEur: YupTS.number().enhance(v =>
+    v
+      .min(MIN_NEW_SHARE_NOMINAL_VALUE)
+      .when(
+        ["shareCapitalCurrencyCode", "newShareNominalValue"],
+        (currencyCode: string, newShareNominalValue: string) => {
+          if (currencyCode === "EUR") {
+            return v.test(
+              "match",
+              getMessageTranslation(
+                createMessage(ValidationMessage.VALIDATION_FIELDS_SHOULD_MATCH, [
+                  "Share nominal value",
+                  "Share nominal value in EUR",
+                ]),
+              ),
+              v => v === newShareNominalValue,
+            );
+          } else {
+            return;
+          }
+        },
+      ),
+  ),
   preMoneyValuationEur: YupTS.number().enhance(v => v.min(MIN_PRE_MONEY_VALUATION_EUR)),
-  existingCompanyShares: YupTS.number().enhance(v => v.min(MIN_EXISTING_COMPANY_SHARES)),
-  authorizedCapitalShares: YupTS.number().optional(),
+  existingShareCapital: YupTS.number().enhance(v => v.min(MIN_EXISTING_SHARE_CAPITAL)),
+  shareCapitalCurrencyCode: CurrencyCodeType,
+  authorizedCapital: YupTS.number().optional(),
   newSharesToIssue: YupTS.number()
     .enhance(v => v.required())
     .enhance(v =>
@@ -441,8 +496,9 @@ export type TBookbuildingStatsType = {
 export type TEtoSpecsData = TEtoTermsType &
   TEtoEquityTokenInfoType &
   TEtoVotingRightsType &
-  TEtoInvestmentTermsType &
-  IAdditionalEtoType;
+  TEtoInvestmentTermsType & {
+    investmentCalculatedValues: TEtoInvestmentCalculatedValues;
+  } & IAdditionalEtoType;
 
 /*General Interfaces */
 export type TPartialEtoSpecData = DeepPartial<TEtoSpecsData>;

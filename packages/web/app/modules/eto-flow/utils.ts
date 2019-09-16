@@ -94,7 +94,7 @@ export const etoInvestmentTermsProgressOptions: IProgressOptions = {
     publicDiscountFraction: true,
     whitelistDiscountFraction: true,
     newSharesToIssueInWhitelist: true,
-    authorizedCapitalShares: true,
+    authorizedCapital: true,
   },
 };
 

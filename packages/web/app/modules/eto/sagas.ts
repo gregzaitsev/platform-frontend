@@ -9,6 +9,7 @@ import { hashFromIpfsLink } from "../../components/documents/utils";
 import { JurisdictionDisclaimerModal } from "../../components/eto/public-view/JurisdictionDisclaimerModal";
 import { EtoMessage } from "../../components/translatedMessages/messages";
 import { createMessage } from "../../components/translatedMessages/utils";
+import { Q18 } from "../../config/constants";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import {
   EEtoState,
@@ -24,7 +25,7 @@ import { ETOCommitment } from "../../lib/contracts/ETOCommitment";
 import { EuroToken } from "../../lib/contracts/EuroToken";
 import { IAppState } from "../../store";
 import { Dictionary } from "../../types";
-import { divideBigNumbers } from "../../utils/BigNumberUtils";
+import { divideBigNumbers, multiplyBigNumbers } from "../../utils/BigNumberUtils";
 import { actions, TActionFromCreator } from "../actions";
 import { selectIsUserVerified, selectUserType } from "../auth/selectors";
 import { selectMyAssets } from "../investor-portfolio/selectors";
@@ -382,14 +383,33 @@ function* loadTokensData({ contractsService }: TGlobalDependencies): any {
 
     const controllerGovernance = yield contractsService.getControllerGovernance(tokenController);
 
-    const [
-      totalCompanyShares,
+    let [
+      shareCapital,
       companyValuationEurUlps,
       ,
     ] = yield controllerGovernance.shareholderInformation();
 
+    // backward compatibility with FF Token Controller - may be removed after controller migration
+    if (Q18.gt(shareCapital)) {
+      // convert shares to capital amount with nominal share value of 1 (Q18)
+      shareCapital = shareCapital.mul(Q18);
+    }
+
+    // obtain nominal value of a share from IEquityToken
+    let shareNominalValueUlps;
+    try {
+      shareNominalValueUlps = yield equityToken.shareNominalValueUlps();
+    } catch (e) {
+      // make it backward compatible with FF ETO, which is always and forever Q18 and does not provide method above
+      shareNominalValueUlps = Q18;
+    }
+
+    // todo: use standard calcSharePrice util from calculator, after converting from wei scale
     const tokenPrice = divideBigNumbers(
-      divideBigNumbers(companyValuationEurUlps, totalCompanyShares),
+      divideBigNumbers(
+        multiplyBigNumbers([companyValuationEurUlps, shareNominalValueUlps]),
+        shareCapital,
+      ),
       tokensPerShare,
     );
 
@@ -397,7 +417,7 @@ function* loadTokensData({ contractsService }: TGlobalDependencies): any {
       actions.eto.setTokenData(eto.previewCode, {
         balance: balance.toString(),
         tokensPerShare: tokensPerShare.toString(),
-        totalCompanyShares: totalCompanyShares.toString(),
+        totalCompanyShares: shareCapital.toString(),
         companyValuationEurUlps: companyValuationEurUlps.toString(),
         tokenPrice: tokenPrice.toString(),
       }),

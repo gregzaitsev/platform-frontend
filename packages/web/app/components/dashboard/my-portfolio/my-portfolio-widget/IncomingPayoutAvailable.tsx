@@ -9,7 +9,7 @@ import { DataUnavailableError } from "../../../../utils/errors";
 import { appRoutes } from "../../../appRoutes";
 import { EButtonLayout, EIconPosition } from "../../../shared/buttons/Button";
 import { ButtonLink } from "../../../shared/buttons/ButtonLink";
-import { EThemeNew, MoneyNew } from "../../../shared/formatters/Money";
+import { ETheme, Money } from "../../../shared/formatters/Money";
 import { ENumberInputFormat, ENumberOutputFormat } from "../../../shared/formatters/utils";
 
 import * as arrowRight from "../../../../assets/img/inline_icons/arrow_right.svg";
@@ -30,13 +30,13 @@ export const IncomingPayoutAvailableBase: React.FunctionComponent<
       <>
         {tokensDisbursal
           .map(t => (
-            <MoneyNew
+            <Money
               value={t.amountToBeClaimed}
               valueType={t.token}
               inputFormat={ENumberInputFormat.ULPS}
               outputFormat={ENumberOutputFormat.FULL}
               key={t.token}
-              theme={EThemeNew.GREEN}
+              theme={ETheme.GREEN}
               className={styles.incomingValue}
             />
           ))

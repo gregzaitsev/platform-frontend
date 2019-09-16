@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 import { appRoutes } from "../../appRoutes";
 import { ButtonLink, EButtonTheme } from "../../shared/buttons/index";
-import { loginWalletRoutes, walletRegisterRoutes } from "../../wallet-selector/walletRoutes";
+import { walletLoginRoutes, walletRegisterRoutes } from "../../wallet-selector/walletRoutes";
 import { Menu } from "../menus/menu/Menu";
 import { MobileMenu } from "../menus/mobileMenu/MobileMenu";
 import { MyAccountMenu } from "../menus/MyAccountMenu";
@@ -40,7 +40,7 @@ const LoginButton: React.FunctionComponent<IHeaderButton> = ({ className }) => (
     innerClassName={cn(styles.buttonInner)}
     data-test-id="Header-login"
     isActive={false}
-    to={loginWalletRoutes.light}
+    to={walletLoginRoutes.light}
   >
     <FormattedMessage id="header.login-button" />
   </ButtonLink>

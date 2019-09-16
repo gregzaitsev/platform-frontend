@@ -17,20 +17,24 @@ describe("investor-portfolio > selectors", () => {
       sinon.stub(etoSelectors, "selectEtoById").returns({
         minTicketEur: 10,
         maxTicketEur: 1000,
+        investmentCalculatedValues: {
+          sharePrice: 300,
+        },
+        equityTokensPerShare: 200,
       });
       sinon.stub(investorTicketSelectors, "selectCalculatedContribution").returns({
         minTicketEurUlps: new BigNumber("20").mul(Q18),
         maxTicketEurUlps: new BigNumber("2000").mul(Q18),
       });
       sinon.stub(investorTicketSelectors, "selectInvestorTicket").returns(undefined);
-      sinon.stub(etoUtils, "getShareAndTokenPrice").returns({ tokenPrice: 1.5 });
+      sinon.stub(etoUtils, "calcShareAndTokenPrice").returns({ tokenPrice: 1.5 });
     });
 
     afterEach(() => {
       (etoSelectors.selectEtoById as sinon.SinonStub).restore();
       (investorTicketSelectors.selectInvestorTicket as sinon.SinonStub).restore();
       (investorTicketSelectors.selectCalculatedContribution as sinon.SinonStub).restore();
-      (etoUtils.getShareAndTokenPrice as sinon.SinonStub).restore();
+      (etoUtils.calcShareAndTokenPrice as sinon.SinonStub).restore();
     });
 
     // tslint:disable-next-line:no-object-literal-type-assertion

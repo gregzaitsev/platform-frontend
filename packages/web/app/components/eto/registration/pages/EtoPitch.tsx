@@ -1,4 +1,3 @@
-import { FormikProps, withFormik } from "formik";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { setDisplayName } from "recompose";
@@ -9,7 +8,11 @@ import {
   TPartialCompanyEtoData,
 } from "../../../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { actions } from "../../../../modules/actions";
-import { selectIssuerCompany } from "../../../../modules/eto-flow/selectors";
+import {
+  selectIssuerCompany,
+  selectIssuerEtoLoading,
+  selectIssuerEtoSaving,
+} from "../../../../modules/eto-flow/selectors";
 import { EEtoFormTypes } from "../../../../modules/eto-flow/types";
 import { appConnect } from "../../../../store";
 import { Button, EButtonLayout } from "../../../shared/buttons";
@@ -22,7 +25,7 @@ import {
   convertPercentageToFraction,
   removeEmptyKeyValueFields,
 } from "../../utils";
-import { EtoFormBase } from "../EtoFormBase.unsafe";
+import { EtoFormBase } from "../EtoFormBase";
 import { Section } from "../Shared";
 
 import * as styles from "../Shared.module.scss";
@@ -37,14 +40,16 @@ interface IDispatchProps {
   saveData: (values: TPartialCompanyEtoData) => void;
 }
 
-type IProps = IStateProps & IDispatchProps & FormikProps<TPartialCompanyEtoData>;
+type IProps = IStateProps & IDispatchProps;
 
 const distributionSuggestions = ["Development", "Other"];
 
 const EtoRegistrationPitchComponent = (props: IProps) => (
   <EtoFormBase
     title={<FormattedMessage id="eto.form-progress-widget.company-information.product-vision" />}
-    validator={EtoPitchType.toYup()}
+    validationSchema={EtoPitchType.toYup()}
+    initialValues={convert(props.stateValues, toFormState)}
+    onSubmit={props.saveData}
   >
     <Section>
       <FormTextArea
@@ -165,26 +170,16 @@ const EtoRegistrationPitch = compose<React.FunctionComponent>(
   setDisplayName(EEtoFormTypes.ProductVision),
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: s => ({
-      loadingData: s.etoFlow.loading,
-      savingData: s.etoFlow.saving,
+      loadingData: selectIssuerEtoLoading(s),
+      savingData: selectIssuerEtoSaving(s),
       stateValues: selectIssuerCompany(s) as TPartialCompanyEtoData,
     }),
     dispatchToProps: dispatch => ({
-      saveData: (data: TPartialCompanyEtoData) => {
-        const convertedData = convert(data, fromFormState);
-        dispatch(
-          actions.etoFlow.saveDataStart({
-            companyData: convertedData,
-            etoData: {},
-          }),
-        );
+      saveData: (company: TPartialCompanyEtoData) => {
+        const convertedCompany = convert(company, fromFormState);
+        dispatch(actions.etoFlow.saveCompanyStart(convertedCompany));
       },
     }),
-  }),
-  withFormik<IStateProps & IDispatchProps, TPartialCompanyEtoData>({
-    validationSchema: EtoPitchType.toYup(),
-    mapPropsToValues: props => convert(props.stateValues, toFormState),
-    handleSubmit: (values, props) => props.props.saveData(values),
   }),
 )(EtoRegistrationPitchComponent);
 

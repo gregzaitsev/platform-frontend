@@ -164,4 +164,4 @@ const ChooseNominee = compose<TWithNomineeProps & IDispatchProps, {}>(
   ),
 )(PendingNomineesComponent);
 
-export { ChooseNominee };
+export { ChooseNominee, PendingNomineesComponent };

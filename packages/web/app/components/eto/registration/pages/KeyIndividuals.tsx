@@ -1,5 +1,5 @@
 import * as cn from "classnames";
-import { connect, FieldArray, FormikProps, withFormik } from "formik";
+import { connect, FieldArray } from "formik";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { setDisplayName } from "recompose";
@@ -11,11 +11,15 @@ import {
   TPartialCompanyEtoData,
 } from "../../../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { actions } from "../../../../modules/actions";
-import { selectIssuerCompany } from "../../../../modules/eto-flow/selectors";
+import {
+  selectIssuerCompany,
+  selectIssuerEtoLoading,
+  selectIssuerEtoSaving,
+} from "../../../../modules/eto-flow/selectors";
 import { EEtoFormTypes } from "../../../../modules/eto-flow/types";
 import { appConnect } from "../../../../store";
 import { TFormikConnect, TTranslatedString } from "../../../../types";
-import { getFieldSchema, isRequired } from "../../../../utils/yupUtils";
+import { getSchemaField, getValidationSchema, isRequired } from "../../../../utils/yupUtils";
 import { Button, ButtonIcon, EButtonLayout, EIconPosition } from "../../../shared/buttons";
 import { FormField, FormTextArea } from "../../../shared/forms";
 import { FormSingleFileUpload } from "../../../shared/forms/fields/FormSingleFileUpload.unsafe";
@@ -24,7 +28,7 @@ import { FormHighlightGroup } from "../../../shared/forms/FormHighlightGroup";
 import { FormSection } from "../../../shared/forms/FormSection";
 import { SOCIAL_PROFILES_PERSON, SocialProfilesEditor } from "../../../shared/SocialProfilesEditor";
 import { convert, generateKeys, removeKeys, setDefaultValueIfUndefined } from "../../utils";
-import { EtoFormBase } from "../EtoFormBase.unsafe";
+import { EtoFormBase } from "../EtoFormBase";
 import { Section } from "../Shared";
 
 import * as downIcon from "../../../../assets/img/inline_icons/down.svg";
@@ -44,7 +48,7 @@ interface IDispatchProps {
   saveData: (values: TPartialCompanyEtoData) => void;
 }
 
-type IProps = IStateProps & IDispatchProps & FormikProps<TPartialCompanyEtoData>;
+type IProps = IStateProps & IDispatchProps;
 
 interface IIndividual {
   onRemoveClick: () => void;
@@ -164,7 +168,7 @@ class KeyIndividualsGroupLayout extends React.Component<IKeyIndividualsGroup & T
     const { formik, name } = this.props;
     const { validationSchema } = formik;
 
-    const fieldSchema = getFieldSchema(name, validationSchema());
+    const fieldSchema = getSchemaField(name, getValidationSchema(validationSchema));
     return isRequired(fieldSchema);
   }
 
@@ -228,7 +232,9 @@ const KeyIndividualsGroup = connect<IKeyIndividualsGroup, TEtoKeyIndividualType>
 const EtoRegistrationKeyIndividualsComponent = (props: IProps) => (
   <EtoFormBase
     title={<FormattedMessage id="eto.form.key-individuals.title" />}
-    validator={EtoKeyIndividualsType.toYup()}
+    validationSchema={EtoKeyIndividualsType.toYup()}
+    initialValues={convert(props.stateValues, toFormState)}
+    onSubmit={props.saveData}
   >
     <Section className={localStyles.sectionWrapper}>
       <KeyIndividualsGroup
@@ -277,21 +283,16 @@ const EtoRegistrationKeyIndividuals = compose<React.FunctionComponent>(
   setDisplayName(EEtoFormTypes.KeyIndividuals),
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: s => ({
-      loadingData: s.etoFlow.loading,
-      savingData: s.etoFlow.saving,
+      loadingData: selectIssuerEtoLoading(s),
+      savingData: selectIssuerEtoSaving(s),
       stateValues: selectIssuerCompany(s) as TPartialCompanyEtoData,
     }),
     dispatchToProps: dispatch => ({
-      saveData: (data: TPartialCompanyEtoData) => {
-        const convertedData = convert(data, fromFormState);
-        dispatch(actions.etoFlow.saveDataStart({ companyData: convertedData, etoData: {} }));
+      saveData: (company: TPartialCompanyEtoData) => {
+        const convertedCompany = convert(company, fromFormState);
+        dispatch(actions.etoFlow.saveCompanyStart(convertedCompany));
       },
     }),
-  }),
-  withFormik<IStateProps & IDispatchProps, TPartialCompanyEtoData>({
-    validationSchema: EtoKeyIndividualsType.toYup(),
-    mapPropsToValues: props => convert(props.stateValues, toFormState),
-    handleSubmit: (values, props) => props.props.saveData(values),
   }),
 )(EtoRegistrationKeyIndividualsComponent);
 

@@ -9,7 +9,7 @@ import { TDataTestId } from "../../../../types";
 import { withContainer } from "../../../../utils/withContainer.unsafe";
 import { ButtonLink } from "../../../shared/buttons";
 import { ExternalLink } from "../../../shared/links";
-import { loginWalletRoutes } from "../../walletRoutes";
+import { walletLoginRoutes } from "../../walletRoutes";
 import { WalletSelectorContainer } from "../../WalletSelectorContainer";
 import { recoverRoutes } from "../router/recoverRoutes";
 
@@ -61,7 +61,7 @@ export const LoginHelpLayout: React.FunctionComponent<{}> = () => (
     </Col>
     <Col md={12}>
       <Row className="ml-2 mt-5 pt-5 mr-2 justify-content-between align-items-center">
-        <Link to={loginWalletRoutes.light}>
+        <Link to={walletLoginRoutes.light}>
           <i className="fa fa-lg fa-angle-left mr-1" />
           <FormattedMessage id="wallet-selector.recover.help.back" />
         </Link>

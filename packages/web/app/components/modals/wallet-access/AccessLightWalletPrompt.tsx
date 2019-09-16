@@ -4,7 +4,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 
 import { TTranslatedString } from "../../../types";
 import { Button, EButtonLayout } from "../../shared/buttons";
-import { Form, FormField } from "../../shared/forms";
+import { FormDeprecated, FormField } from "../../shared/forms";
 
 interface IStateProps {
   isUnlocked: boolean;
@@ -23,7 +23,7 @@ export interface IFormValues {
 }
 
 const AccessLightWalletForm = (formikBag: FormikProps<IFormValues> & IProps) => (
-  <Form className="mb-0">
+  <FormDeprecated className="mb-0">
     <div className="ml-sm-5 mr-sm-5">
       <FormField
         type="password"
@@ -42,7 +42,7 @@ const AccessLightWalletForm = (formikBag: FormikProps<IFormValues> & IProps) => 
         <FormattedMessage id="modal.light-wallet.button.accept" />
       </Button>
     </div>
-  </Form>
+  </FormDeprecated>
 );
 
 const EnhancedForm = withFormik<IProps, IFormValues>({

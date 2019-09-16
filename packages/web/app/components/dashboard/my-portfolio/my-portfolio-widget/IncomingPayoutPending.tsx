@@ -12,7 +12,7 @@ import {
 import { appConnect } from "../../../../store";
 import { isZero } from "../../../../utils/Number.utils";
 import { Counter } from "../../../shared/Counter.unsafe";
-import { EThemeNew, MoneyNew } from "../../../shared/formatters/Money";
+import { ETheme, Money } from "../../../shared/formatters/Money";
 import {
   ECurrency,
   ENumberInputFormat,
@@ -48,28 +48,28 @@ export const IncomingPayoutPendingBase: React.FunctionComponent<IIncomingPayoutD
     {children}
     <div>
       {!isZero(euroTokenIncomingPayout) && (
-        <MoneyNew
+        <Money
           value={euroTokenIncomingPayout}
           inputFormat={ENumberInputFormat.ULPS}
           outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
           valueType={ECurrency.EUR_TOKEN}
           data-test-id="incoming-payout-euro-token"
           className={styles.incomingValue}
-          theme={EThemeNew.GREEN}
+          theme={ETheme.GREEN}
         />
       )}
       {!isZero(euroTokenIncomingPayout) && !isZero(etherTokenIncomingPayout) && (
         <span className={styles.incomingValue}> & </span>
       )}
       {!isZero(etherTokenIncomingPayout) && (
-        <MoneyNew
+        <Money
           value={etherTokenIncomingPayout}
           inputFormat={ENumberInputFormat.ULPS}
           valueType={ECurrency.ETH}
           outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
           data-test-id="incoming-payout-ether-token"
           className={styles.incomingValue}
-          theme={EThemeNew.GREEN}
+          theme={ETheme.GREEN}
         />
       )}
     </div>

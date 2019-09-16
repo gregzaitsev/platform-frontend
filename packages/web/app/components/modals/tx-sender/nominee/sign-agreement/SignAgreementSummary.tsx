@@ -16,7 +16,7 @@ import { RequiredByKeys } from "../../../../../types";
 import { Button, EButtonLayout, EButtonTheme } from "../../../../shared/buttons/Button";
 import { DocumentTemplateButton } from "../../../../shared/DocumentLink";
 import { FormFieldBoolean } from "../../../../shared/forms/fields/FormFieldBoolean";
-import { Form } from "../../../../shared/forms/Form";
+import { FormDeprecated } from "../../../../shared/forms/FormDeprecated";
 import { EHeadingSize, Heading } from "../../../../shared/Heading";
 import { InlineIcon } from "../../../../shared/icons/InlineIcon";
 import { isRAASign, selectDocument } from "./utils";
@@ -103,7 +103,7 @@ const SignNomineeAgreementSummaryLayout: React.FunctionComponent<TComponentProps
       validationSchema={SignFormSchema.toYup()}
     >
       {({ isValid }) => (
-        <Form>
+        <FormDeprecated>
           <FormFieldBoolean
             className="my-4"
             label={
@@ -126,7 +126,7 @@ const SignNomineeAgreementSummaryLayout: React.FunctionComponent<TComponentProps
           >
             <FormattedMessage id="nominee.sign-agreement.sign" />
           </Button>
-        </Form>
+        </FormDeprecated>
       )}
     </Formik>
   </section>

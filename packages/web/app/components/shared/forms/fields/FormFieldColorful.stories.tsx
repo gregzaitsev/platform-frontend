@@ -2,16 +2,16 @@ import { storiesOf } from "@storybook/react";
 import { Formik } from "formik";
 import * as React from "react";
 
-import { Form } from "../Form";
+import { FormDeprecated } from "../FormDeprecated";
 import { FormFieldColorful } from "./FormFieldColorful.unsafe";
 
 storiesOf("forms/fields/FormFieldColorful", module)
   .add("default", () => (
     <Formik initialValues={{}} onSubmit={() => {}}>
       {() => (
-        <Form>
+        <FormDeprecated>
           <FormFieldColorful placeholder="Form field colorful" name="value" />
-        </Form>
+        </FormDeprecated>
       )}
     </Formik>
   ))
@@ -23,9 +23,9 @@ storiesOf("forms/fields/FormFieldColorful", module)
       onSubmit={() => {}}
     >
       {() => (
-        <Form>
+        <FormDeprecated>
           <FormFieldColorful placeholder="Form field colorful" name="value" showAvatar={true} />
-        </Form>
+        </FormDeprecated>
       )}
     </Formik>
   ));

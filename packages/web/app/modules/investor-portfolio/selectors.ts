@@ -6,7 +6,6 @@ import { shouldShowToken } from "../../components/portfolio/utils";
 import { ECurrency } from "../../components/shared/formatters/utils";
 import { Q18 } from "../../config/constants";
 import { TEtoSpecsData } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
-import { getShareAndTokenPrice } from "../../lib/api/eto/EtoUtils";
 import { IAppState } from "../../store";
 import { compareBigNumbers } from "../../utils/BigNumberUtils";
 import { isZero } from "../../utils/Number.utils";
@@ -141,7 +140,7 @@ export const selectCalculatedEtoTicketSizesUlpsById = (state: IAppState, etoId: 
 
   if (min && max) {
     if (eto && investorTicket) {
-      const { tokenPrice } = getShareAndTokenPrice(eto);
+      const tokenPrice = eto.investmentCalculatedValues.sharePrice / eto.equityTokensPerShare;
       min = BigNumber.max(min.sub(investorTicket.equivEurUlps), Q18.mul(tokenPrice.toString()));
       max = BigNumber.max(max.sub(investorTicket.equivEurUlps), 0);
     }
@@ -174,7 +173,7 @@ export const selectIsEligibleToPreEto = (state: IAppState, etoId: string) => {
 };
 
 export const selectShouldShowWhitelistDiscount = (state: IAppState, eto: TEtoSpecsData) => {
-  const isPreEto = selectEtoOnChainStateById(state, eto.etoId);
+  const isPreEto = selectEtoOnChainStateById(state, eto.etoId) === EETOStateOnChain.Whitelist;
   const isEligibleToPreEto = selectIsEligibleToPreEto(state, eto.etoId);
   return Boolean(eto.whitelistDiscountFraction && isEligibleToPreEto && isPreEto);
 };

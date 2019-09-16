@@ -2,7 +2,7 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
 import { ETxSenderType } from "../../../../modules/tx/types";
-import { MoneyNew } from "../../../shared/formatters/Money";
+import { Money } from "../../../shared/formatters/Money";
 import {
   ENumberInputFormat,
   ENumberOutputFormat,
@@ -28,7 +28,7 @@ const AcceptTransactionDetails: TransactionDetailsComponent<
           />
         }
         value={
-          <MoneyNew
+          <Money
             value={disbursal.amountToBeClaimed}
             valueType={disbursal.token}
             inputFormat={ENumberInputFormat.ULPS}

@@ -2,7 +2,7 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
 import { ETxSenderType } from "../../../../modules/tx/types";
-import { MoneyNew } from "../../../shared/formatters/Money";
+import { Money } from "../../../shared/formatters/Money";
 import {
   ECurrency,
   ENumberInputFormat,
@@ -33,7 +33,7 @@ const ClaimTransactionDetails: TransactionDetailsComponent<ETxSenderType.USER_CL
     <InfoRow
       caption={<FormattedMessage id="user-claim-flow.estimated-reward" />}
       value={
-        <MoneyNew
+        <Money
           value={additionalData.neuRewardUlps}
           valueType={ECurrency.NEU}
           inputFormat={ENumberInputFormat.ULPS}
@@ -45,7 +45,7 @@ const ClaimTransactionDetails: TransactionDetailsComponent<ETxSenderType.USER_CL
     <InfoRow
       caption={<FormattedMessage id="upgrade-flow.transaction-cost" />}
       value={
-        <MoneyNew
+        <Money
           value={additionalData.costUlps}
           valueType={ECurrency.ETH}
           inputFormat={ENumberInputFormat.ULPS}
