@@ -40,9 +40,9 @@ export const selectEtoStep = (
   isInvestmentAndEtoTermsFilledWithAllRequired: boolean,
   isOfferingDocumentSubmitted: boolean | undefined,
   isISHASubmitted: boolean | undefined,
-  areAgreementsSignedByNominee: boolean,
+  areAgreementsSignedByNominee: boolean | undefined,
   preEtoStartDate: Date | undefined,
-): EEtoStep => {
+): EEtoStep | undefined => {
   if (!isVerificationSectionDone) {
     return EEtoStep.VERIFICATION;
   }
@@ -112,8 +112,10 @@ export const selectEtoStep = (
       /**
        * When nominee sign THA and RAA agreements we can set start date
        */
-      if (areAgreementsSignedByNominee) {
+      if (areAgreementsSignedByNominee !== undefined) {
         return EEtoStep.SETUP_START_DATE;
+      } else {
+        return undefined;
       }
 
       return EEtoStep.WAIT_FOR_NOMINEE_AGREEMENTS;

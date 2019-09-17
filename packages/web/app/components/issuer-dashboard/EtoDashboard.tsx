@@ -88,7 +88,7 @@ interface IComputedProps {
   shouldViewEtoSettings: boolean;
   shouldViewSubmissionSection: boolean;
   shouldViewMarketingSubmissionSection: boolean;
-  etoStep: EEtoStep;
+  etoStep: EEtoStep | undefined;
 }
 
 type TVerificationSection = Omit<
@@ -98,7 +98,7 @@ type TVerificationSection = Omit<
   | "areAgreementsSignedByNominee"
   | "preEtoStartDate"
 > &
-  Omit<IComputedProps, "isVerificationSectionDone">;
+  Omit<RequiredByKeys<IComputedProps, "etoStep">, "isVerificationSectionDone">;
 
 interface IDispatchProps {
   initEtoView: () => void;
@@ -287,7 +287,7 @@ const EtoDashboardLayout: React.FunctionComponent<
     | "areAgreementsSignedByNominee"
     | "preEtoStartDate"
   > &
-    IComputedProps
+    RequiredByKeys<IComputedProps, "etoStep">
 > = props => {
   const { isVerificationSectionDone, ...rest } = props;
 
@@ -343,11 +343,7 @@ const EtoDashboard = compose<React.FunctionComponent>(
     },
   }),
   withContainer(Layout),
-  branch<IStateProps>(
-    props => props.areAgreementsSignedByNominee === undefined,
-    renderComponent(LoadingIndicator),
-  ),
-  withProps<IComputedProps, RequiredByKeys<IStateProps, "areAgreementsSignedByNominee">>(props => {
+  withProps<IComputedProps, IStateProps>(props => {
     const marketingFormsProgress = calculateMarketingEtoData(props.combinedEtoCompanyData);
     const etoInvestmentAndEtoTermsFormsProgress = calculateInvestmentAndEtoTermsEtoData(
       props.combinedEtoCompanyData,
@@ -395,6 +391,7 @@ const EtoDashboard = compose<React.FunctionComponent>(
         : EEtoStep.VERIFICATION,
     };
   }),
+  branch<IComputedProps>(props => props.etoStep === undefined, renderComponent(LoadingIndicator)),
 )(EtoDashboardLayout);
 
 export { EtoDashboard, EtoDashboardLayout, EtoDashboardStateViewComponent };
