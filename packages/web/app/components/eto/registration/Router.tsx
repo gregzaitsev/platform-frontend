@@ -5,7 +5,7 @@ import { SwitchConnected } from "../../../utils/connectedRouting";
 import { EtoRegistrationCompanyInformation } from "./pages/CompanyInformation";
 import { EtoEquityTokenInfo } from "./pages/EtoEquityTokenInfo";
 import { EtoRegistrationMedia } from "./pages/EtoMedia";
-import { EtoRegistrationPitch } from "./pages/EtoPitch";
+import { EtoRegistrationPitch } from "./pages/EtoPitch/EtoPitch";
 import { EtoRegistrationTerms } from "./pages/EtoTerms";
 import { EtoVotingRights } from "./pages/EtoVotingRights/EtoVotingRights";
 import { EtoInvestmentTerms } from "./pages/InvestmentTerms";

@@ -8,7 +8,7 @@ import { Panel } from "../../../shared/Panel";
 import { EtoRegistrationCompanyInformationComponent } from "./CompanyInformation";
 import { EtoEquityTokenInfoComponent } from "./EtoEquityTokenInfo";
 import { EtoRegistrationMediaComponent } from "./EtoMedia";
-import { EtoRegistrationPitchComponent } from "./EtoPitch";
+import { EtoRegistrationPitchComponent } from "./EtoPitch/EtoPitch";
 import { EtoVotingRightsComponent } from "./EtoVotingRights/EtoVotingRights";
 import { EtoRegistrationKeyIndividualsComponent } from "./KeyIndividuals";
 import { EtoRegistrationLegalInformationComponent } from "./LegalInformation";

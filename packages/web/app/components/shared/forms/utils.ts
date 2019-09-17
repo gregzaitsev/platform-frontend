@@ -1,7 +1,7 @@
 import * as Yup from "yup";
 import {yupToFormErrors} from 'formik'
 
-type TConversionAndValidationSpec<Data> = {
+export type TConversionAndValidationSpec<Data> = {
   validator: Yup.Schema<unknown>,
   conversionFn: (data:Data) => unknown
 }

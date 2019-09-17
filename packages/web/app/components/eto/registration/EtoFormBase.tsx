@@ -15,7 +15,7 @@ import { PercentageIndicatorBar } from "../../shared/PercentageIndicatorBar";
 import { Section } from "./Shared";
 
 import * as styles from "./EtoFormBase.module.scss";
-import { validateForm } from "./pages/EtoPitch";
+import { validateForm } from "./pages/EtoPitch/EtoPitch";
 
 interface IProps {
   title: TTranslatedString;
