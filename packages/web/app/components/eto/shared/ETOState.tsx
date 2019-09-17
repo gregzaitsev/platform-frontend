@@ -90,11 +90,11 @@ const stateToClassName: Partial<Record<EEtoState | EETOStateOnChain | EEtoSubSta
 
   // eto sub states
   [EEtoSubState.MARKETING_LISTING_IN_REVIEW]: styles.orange,
-  [EEtoSubState.CAMPAIGNING]: styles.blue,
-  [EEtoSubState.WHITELISTING_LIMIT_REACHED]: styles.blue,
+  [EEtoSubState.CAMPAIGNING]: styles.green,
+  [EEtoSubState.WHITELISTING_LIMIT_REACHED]: styles.green,
   [EEtoSubState.WHITELISTING]: styles.green,
-  [EEtoSubState.COUNTDOWN_TO_PUBLIC_SALE]: styles.blue,
-  [EEtoSubState.COUNTDOWN_TO_PRESALE]: styles.blue,
+  [EEtoSubState.COUNTDOWN_TO_PUBLIC_SALE]: styles.green,
+  [EEtoSubState.COUNTDOWN_TO_PRESALE]: styles.green,
 };
 
 const getState = (eto: TEtoWithCompanyAndContract): EETOStateOnChain | EEtoState | EEtoSubState => {
