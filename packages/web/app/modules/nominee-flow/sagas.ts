@@ -26,7 +26,6 @@ import { loadBankAccountDetails } from "../kyc/sagas";
 import { neuCall, neuTakeLatest, neuTakeUntil } from "../sagasUtils";
 import {
   selectActiveEtoPreviewCodeFromQueryString,
-  selectNomineeActiveEtoPreviewCode,
   selectNomineeEtos,
   selectNomineeEtoWithCompanyAndContract,
 } from "./selectors";
@@ -52,7 +51,7 @@ export function* loadNomineeTaskData({
 
     if (isVerified) {
       // load information that's needed to properly calculate nominee current task
-      yield all([neuCall(loadNomineeEtos), neuCall(loadBankAccountDetails)]);
+      yield put(actions.nomineeFlow.loadNomineeEtos());
 
       // wait for active eto to be set
       // even when eto is not yet linked `setActiveNomineeEto` get's dispatched
@@ -61,6 +60,7 @@ export function* loadNomineeTaskData({
       const taskData = yield all({
         nomineeRequests: apiEtoNomineeService.getNomineeRequests(),
         etoAgreementsStatus: neuCall(loadNomineeAgreements),
+        bankAccountDetails: neuCall(loadBankAccountDetails),
         // todo query here if data not in the store yet
         // linkBankAccount:
         // acceptTha:
@@ -212,23 +212,16 @@ export function* guardActiveEto({
   try {
     const etos: ReturnType<typeof selectNomineeEtos> = yield select(selectNomineeEtos);
 
-    const forcedActiveEtoPreviewCode: ReturnType<
-      typeof selectActiveEtoPreviewCodeFromQueryString
-    > = yield select(selectActiveEtoPreviewCodeFromQueryString);
-
     if (etos === undefined || isEmpty(etos)) {
       yield put(actions.nomineeFlow.setActiveNomineeEto(undefined));
     } else {
-      const previewCode: ReturnType<typeof selectNomineeActiveEtoPreviewCode> = yield select(
-        selectNomineeActiveEtoPreviewCode,
-      );
+      const forcedActiveEtoPreviewCode: ReturnType<
+        typeof selectActiveEtoPreviewCodeFromQueryString
+      > = yield select(selectActiveEtoPreviewCodeFromQueryString);
+
       // For testing purpose we can force another ETO to be active (by default it's the first one)
       const shouldForceSpecificEtoToBeActive =
-        forcedActiveEtoPreviewCode !== undefined &&
-        forcedActiveEtoPreviewCode !== previewCode &&
-        etos[forcedActiveEtoPreviewCode] !== undefined;
-
-      const doesActiveEtoExist = previewCode === undefined || etos[previewCode] === undefined;
+        forcedActiveEtoPreviewCode !== undefined && etos[forcedActiveEtoPreviewCode] !== undefined;
 
       if (shouldForceSpecificEtoToBeActive) {
         yield put(actions.nomineeFlow.setActiveNomineeEto(forcedActiveEtoPreviewCode));
@@ -236,7 +229,7 @@ export function* guardActiveEto({
         notificationCenter.info(
           createMessage(EEtoNomineeActiveEtoNotifications.ACTIVE_ETO_SET_SUCCESS),
         );
-      } else if (doesActiveEtoExist) {
+      } else {
         const firstEto = nonNullable(Object.values(etos)[0]);
         yield put(actions.nomineeFlow.setActiveNomineeEto(firstEto.previewCode));
       }

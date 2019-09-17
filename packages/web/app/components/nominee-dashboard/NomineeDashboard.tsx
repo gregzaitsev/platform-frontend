@@ -32,11 +32,8 @@ export const NomineeDashboard = compose<RequiredByKeys<IStateProps, "nomineeTask
       dispatch(actions.nomineeFlow.loadNomineeTaskData());
     },
   }),
-  branch<IStateProps>(props => props.isLoading, renderComponent(LoadingIndicator)),
   branch<IStateProps>(
-    props => props.nomineeTaskStep === undefined,
-    () => {
-      throw new Error("Nominee task step should be properly calculated at this point");
-    },
+    props => props.isLoading || props.nomineeTaskStep === undefined,
+    renderComponent(LoadingIndicator),
   ),
 )(NomineeDashboardTasks);
