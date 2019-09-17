@@ -1,6 +1,5 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
-import { FormikValues } from "formik";
 
 import {
   EtoPitchType,
@@ -10,7 +9,6 @@ import { ArrayOfKeyValueFields, FormFieldError, FormTextArea } from "../../../..
 import { FormHighlightGroup } from "../../../../shared/forms/FormHighlightGroup";
 import { EtoFormBase } from "../../EtoFormBase";
 import { Section } from "../../Shared";
-import { convertAndValidatePipeline } from "../../../../shared/forms/utils";
 import { connectEtoRegistrationPitch, TComponentProps } from "./connectEtoPitch";
 import { TDispatchProps } from "../EtoVotingRights/EtoVotingRights";
 
@@ -22,7 +20,7 @@ const EtoRegistrationPitchComponent = (props: TComponentProps & TDispatchProps) 
   <EtoFormBase
     title={<FormattedMessage id="eto.form-progress-widget.company-information.product-vision" />}
     validationSchema={EtoPitchType.toYup()}
-    validate={(values: FormikValues) => convertAndValidatePipeline(props.validationSpecs, values)}
+    validate={props.validationFn}
     initialValues={props.initialValues}
     onSubmit={props.saveData}
   >

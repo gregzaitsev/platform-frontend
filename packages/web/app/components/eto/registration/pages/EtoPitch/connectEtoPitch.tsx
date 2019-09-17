@@ -17,7 +17,8 @@ import {
 } from "../../../utils";
 import { actions } from "../../../../../modules/actions";
 import { percentage } from "../../../../../lib/api/util/customSchemas.unsafe";
-import { TConversionAndValidationSpec } from "../../../../shared/forms/utils";
+import { convertAndValidatePipeline } from "../../../../shared/forms/utils";
+import { FormikValues } from "formik";
 
 type TDispatchProps = {
   saveData: (values: TPartialCompanyEtoData) => void;
@@ -25,7 +26,7 @@ type TDispatchProps = {
 
 type TWithProps = {
   initialValues: TPartialCompanyEtoData,
-  validationSpecs: TConversionAndValidationSpec<TPartialCompanyEtoData>[]
+  validationFn: (values: FormikValues) => void
 }
 
 export type TComponentProps = {
@@ -80,6 +81,10 @@ const validator = Yup.object().shape({
   businessModel: Yup.string().meta({ isWysiwyg: true }),
 });
 
+//TODO write a decent schema transformation/mutation fn
+const finalValidator = validator.clone();
+finalValidator.fields.useOfCapitalList = Yup.number().min(1,"please describe allocation of 100% of your funds").max(1,"that's too much"); //fixme translations, wording
+
 const percentConversionSpec = [parseStringToFloat({passThroughInvalidData:true}), convertPercentageToFraction({passThroughInvalidData:true})];
 
 const validationConversionSpec = {
@@ -90,6 +95,15 @@ const validationConversionSpec = {
 const finalValidationConversionSpec = {
   useOfCapitalList: [removeEmptyKeyValueFields(),
     convertInArray({ percent: percentConversionSpec })]
+};
+
+const finalConversion = (data:TPartialCompanyEtoData) => {
+  const dataCopy = convert(finalValidationConversionSpec)(data);
+
+  dataCopy.useOfCapitalList = dataCopy.useOfCapitalList!.reduce((acc:number, {percent})=> {
+    return acc += percent;
+  },0);
+  return dataCopy
 };
 
 const connectEtoRegistrationPitch = (WrappedComponent: React.FunctionComponent<TComponentProps & TDispatchProps>) =>
@@ -110,10 +124,11 @@ const connectEtoRegistrationPitch = (WrappedComponent: React.FunctionComponent<T
     }),
     withProps<TWithProps, TStateProps & TDispatchProps>((p) => ({
       initialValues: convert(toFormState)(p.stateValues),
-      validationSpecs: [
+      validationFn: (values: FormikValues) => convertAndValidatePipeline([
         { validator, conversionFn: convert(validationConversionSpec) },
-        { validator, conversionFn: convert(finalValidationConversionSpec) }
-      ]
+        { validator, conversionFn: convert(finalValidationConversionSpec) },
+        { validator: finalValidator, conversionFn: finalConversion }
+      ], values)
     }))
   )(WrappedComponent);
 
@@ -129,3 +144,7 @@ const fromFormState = {
 };
 
 export { connectEtoRegistrationPitch }
+
+//TODO fix translations
+// add schema transformation fn
+// check

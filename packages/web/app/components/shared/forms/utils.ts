@@ -18,6 +18,7 @@ export const validateForm = (validator:Yup.Schema<any>, data:any) => {
 };
 
 export const convertAndValidatePipeline = <Data extends {}>(validationSpec:TConversionAndValidationSpec<Data>[], data:Data) => {
+
   let res = undefined;
   for(let {conversionFn,validator} of validationSpec) {
     const converted = conversionFn(data);

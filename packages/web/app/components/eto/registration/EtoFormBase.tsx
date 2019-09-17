@@ -13,9 +13,9 @@ import { pickSchemaValues } from "../../../utils/yupUtils";
 import { Form, TFormProps } from "../../shared/forms/index";
 import { PercentageIndicatorBar } from "../../shared/PercentageIndicatorBar";
 import { Section } from "./Shared";
+import { validateForm } from "../../shared/forms/utils";
 
 import * as styles from "./EtoFormBase.module.scss";
-import { validateForm } from "./pages/EtoPitch/EtoPitch";
 
 interface IProps {
   title: TTranslatedString;
@@ -25,6 +25,10 @@ type TFormPercentageDoneProps = {
   validationSchema: Yup.Schema<unknown>;
   progressOptions?: IProgressOptions;
 }
+
+type TValidatorProps<Values> = {
+  validate?: (x:Values, y: unknown) => void
+};
 
 type TProps = TFormPercentageDoneProps & TFormikConnect;
 
@@ -58,7 +62,7 @@ type TExternalProps<Values extends {}> = IProps &
   TDataTestId &
   TFormPercentageDoneProps &
   TFormProps<Values> &
-  {validate: (x:Values, y: unknown) => void};
+  TValidatorProps<Values>
 
 export const EtoFormBase = <Values extends {}>({
   children,
