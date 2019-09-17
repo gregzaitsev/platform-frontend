@@ -15,7 +15,7 @@ export enum EEtoStep {
   UPLOAD_OFFERING_DOCUMENT = "upload_offering_document",
   UPLOAD_ISHA = "upload_isha",
   WAIT_FOR_SMART_CONTRACT = "wait_for_smart_contract",
-  WAIT_FOR_NOMINEE_DOCUMENTS = "wait_for_nominee_documents",
+  WAIT_FOR_NOMINEE_AGREEMENTS = "wait_for_nominee_agreements",
   SETUP_START_DATE = "setup_start_date",
   WAITING_FOR_FUNDRAISING_TO_START = "waiting_for_fundraising_to_start",
   FUNDRAISING_IS_LIVE = "fundraising_is_live",
@@ -116,7 +116,7 @@ export const selectEtoStep = (
         return EEtoStep.SETUP_START_DATE;
       }
 
-      return EEtoStep.WAIT_FOR_NOMINEE_DOCUMENTS;
+      return EEtoStep.WAIT_FOR_NOMINEE_AGREEMENTS;
     }
 
     return EEtoStep.FUNDRAISING_IS_LIVE;

@@ -112,18 +112,23 @@ const selectStepComponent = (props: IEtoStep) => {
           <FormattedMessage id="eto-dashboard.waiting-for-smart-contracts.description" />
         </>
       );
-    case EEtoStep.WAIT_FOR_NOMINEE_DOCUMENTS:
+    case EEtoStep.WAIT_FOR_NOMINEE_AGREEMENTS:
       return (
         <>
           <DashboardHeading
             title={<FormattedMessage id="eto-dashboard.waiting-for-nominee-documents" />}
-            data-test-id="eto-dashboard-waiting-for-nominee-documents"
+            data-test-id="eto-dashboard-waiting-for-nominee-agreements"
           />
           <FormattedMessage id="eto-dashboard.waiting-for-nominee-documents.description" />
         </>
       );
     case EEtoStep.SETUP_START_DATE:
-      return <DashboardHeading title={<FormattedMessage id="eto-dashboard.setup-start-date" />} />;
+      return (
+        <DashboardHeading
+          title={<FormattedMessage id="eto-dashboard.setup-start-date" />}
+          data-test-id="eto-dashboard-set-start-date"
+        />
+      );
 
     case EEtoStep.WAITING_FOR_FUNDRAISING_TO_START:
       return (

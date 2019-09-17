@@ -378,7 +378,7 @@ describe("selectEtoStep", () => {
     ).to.eq(EEtoStep.WAIT_FOR_SMART_CONTRACT);
   });
 
-  it("should return step WAIT_FOR_NOMINEE_DOCUMENTS after contracts were deployed", () => {
+  it("should return step WAIT_FOR_NOMINEE_AGREEMENTS after contracts were deployed", () => {
     expect(
       selectEtoStep(
         true,
@@ -394,10 +394,10 @@ describe("selectEtoStep", () => {
         false,
         undefined,
       ),
-    ).to.eq(EEtoStep.WAIT_FOR_NOMINEE_DOCUMENTS);
+    ).to.eq(EEtoStep.WAIT_FOR_NOMINEE_AGREEMENTS);
   });
 
-  it("should return step WAIT_FOR_NOMINEE_DOCUMENTS after contracts were deployed", () => {
+  it("should return step WAIT_FOR_NOMINEE_AGREEMENTS after contracts were deployed", () => {
     expect(
       selectEtoStep(
         true,
@@ -413,7 +413,7 @@ describe("selectEtoStep", () => {
         false,
         undefined,
       ),
-    ).to.eq(EEtoStep.WAIT_FOR_NOMINEE_DOCUMENTS);
+    ).to.eq(EEtoStep.WAIT_FOR_NOMINEE_AGREEMENTS);
   });
 
   it("should return step SETUP_START_DATE after nominee sign agreements", () => {

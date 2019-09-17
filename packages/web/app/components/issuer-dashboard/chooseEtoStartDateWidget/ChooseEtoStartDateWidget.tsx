@@ -326,18 +326,11 @@ const ChangeDate: React.ComponentType<IChangeDateStateProps & IDispatchProps> = 
   );
 };
 
-const SetNewDate: React.ComponentType<IStateProps & IDispatchProps> = props => (
-  <>
-    <FormattedHTMLMessage tagName="span" id="eto.settings.choose-eto-start-date" />
-    <DateChooser {...props} />
-  </>
-);
-
 const EtoStartDateWidgetComponent: React.ComponentType<
   IStateProps & IDispatchProps & IExternalProps
 > = ({ etoDate, ...props }) => (
   <WidgetPanel columnSpan={props.columnSpan}>
-    <div className={styles.content}>
+    <div className={styles.content} data-test-id="eto-settings-set-start-date">
       <p className={styles.text}>
         <FormattedHTMLMessage
           tagName="span"
@@ -348,7 +341,7 @@ const EtoStartDateWidgetComponent: React.ComponentType<
       {etoDate ? (
         <ChangeDate etoDate={etoDate} {...props} />
       ) : (
-        <SetNewDate etoDate={etoDate} {...props} />
+        <DateChooser etoDate={etoDate} {...props} />
       )}
     </div>
   </WidgetPanel>
@@ -411,7 +404,7 @@ const ChooseEtoStartDateWidget = compose<
   }),
   branch<IStateProps>(
     props =>
-      !!props.areAgreementsSignedByNominee &&
+      !props.areAgreementsSignedByNominee &&
       !(props.etoDate && calculateTimeLeft(props.etoDate, true) > 0),
     renderNothing,
   ),
