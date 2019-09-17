@@ -109,13 +109,13 @@ export const selectEtoStep = (
         return EEtoStep.WAITING_FOR_FUNDRAISING_TO_START;
       }
 
-      /**
-       * When nominee sign THA and RAA agreements we can set start date
-       */
-      if (areAgreementsSignedByNominee !== undefined) {
-        return EEtoStep.SETUP_START_DATE;
-      } else {
+      if (areAgreementsSignedByNominee === undefined) {
         return undefined;
+        /**
+         * When nominee sign THA and RAA agreements we can set start date
+         */
+      } else if (areAgreementsSignedByNominee) {
+        return EEtoStep.SETUP_START_DATE;
       }
 
       return EEtoStep.WAIT_FOR_NOMINEE_AGREEMENTS;
