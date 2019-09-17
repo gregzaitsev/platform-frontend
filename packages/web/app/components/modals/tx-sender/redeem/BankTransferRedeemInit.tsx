@@ -48,7 +48,7 @@ interface IStateProps {
   neuroAmount: string;
   neuroEuroAmount: string;
   bankFee: string;
-  calculatedData: ICalculatedRedeemData | undefined;
+  calculatedData: ICalculatedRedeemData;
 }
 
 interface IDispatchProps {
@@ -210,7 +210,7 @@ const BankTransferRedeemLayout: React.FunctionComponent<IProps> = ({
               </Tooltip>
               <span className="text-warning">
                 {"- "}
-                {isValid && calculatedData && (
+                {isValid && (
                   <Money
                     data-test-id="bank-transfer.redeem.fee"
                     value={calculatedData.bankFee}
@@ -226,7 +226,7 @@ const BankTransferRedeemLayout: React.FunctionComponent<IProps> = ({
                 <FormattedMessage id="bank-transfer.redeem.init.total-redeemed" />
               </Heading>
               <span className="text-success">
-                {isValid && calculatedData ? (
+                {isValid ? (
                   <Money
                     data-test-id="bank-transfer.redeem.total"
                     value={calculatedData.totalRedeemed}

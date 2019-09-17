@@ -13,10 +13,10 @@ describe("getPossibleMaxUlps", () => {
     );
 
     // with precision provided
-    expect(getPossibleMaxUlps(convertToBigInt("10278127.1988124"), "10278127.19", 2)).to.be.eq(
+    expect(getPossibleMaxUlps(convertToBigInt("10278127.1988124"), "10278127.19")).to.be.eq(
       convertToBigInt("10278127.1988124"),
     );
-    expect(getPossibleMaxUlps(convertToBigInt("10278127.1988124"), "124.28", 2)).to.be.eq(
+    expect(getPossibleMaxUlps(convertToBigInt("10278127.1988124"), "124.28")).to.be.eq(
       convertToBigInt("124.28"),
     );
   });

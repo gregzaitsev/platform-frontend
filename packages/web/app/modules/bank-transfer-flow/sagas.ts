@@ -4,13 +4,14 @@ import { all, fork, put, select, take } from "redux-saga/effects";
 
 import { getPossibleMaxUlps } from "../../components/modals/tx-sender/redeem/utils";
 import {
+  ENumberInputFormat,
   isEmptyValue,
   isValidNumber,
   toFixedPrecision,
 } from "../../components/shared/formatters/utils";
 import { BankTransferFlowMessage } from "../../components/translatedMessages/messages";
 import { createMessage } from "../../components/translatedMessages/utils";
-import { IPFS_PROTOCOL, ISO2022_AMOUNT_SCALE } from "../../config/constants";
+import { IPFS_PROTOCOL } from "../../config/constants";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { TKycBankTransferPurpose } from "../../lib/api/kyc/KycApi.interfaces";
 import { calculateBankFee, subtractBankFee } from "../../utils/BankArithmetics";
@@ -122,11 +123,6 @@ export function* calculateRedeemData(amount: string): Iterator<any> {
   const walletBalanceUlps: string = yield select(selectLiquidEuroTokenBalance);
   const bankFeeFractionUlps: string = yield select(selectRedeemFeeUlps);
 
-  const bankFeeFractionDec = toFixedPrecision({
-    value: bankFeeFractionUlps,
-    decimalPlaces: ISO2022_AMOUNT_SCALE,
-  });
-
   // by default use BANKING_AMOUNT_SCALE as decimal precision
   const providedAmountUlps = getPossibleMaxUlps(walletBalanceUlps, amount);
   // use all decimal places without rounding
@@ -135,8 +131,16 @@ export function* calculateRedeemData(amount: string): Iterator<any> {
     decimalPlaces: undefined,
   });
 
-  const bankFee = calculateBankFee(providedAmountDec, bankFeeFractionDec);
-  const totalRedeemed = subtractBankFee(providedAmountDec, bankFeeFractionDec);
+  const bankFee = calculateBankFee(
+    providedAmountUlps,
+    bankFeeFractionUlps,
+    ENumberInputFormat.ULPS,
+  );
+  const totalRedeemed = subtractBankFee(
+    providedAmountUlps,
+    bankFeeFractionUlps,
+    ENumberInputFormat.ULPS,
+  );
 
   return {
     amount: providedAmountDec,

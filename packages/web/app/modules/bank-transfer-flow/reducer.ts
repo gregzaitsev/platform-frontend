@@ -26,8 +26,15 @@ export interface IBankTransferState {
     minEuroUlps: string;
     bankFeeUlps: string;
   };
-  calculatedRedeemData?: ICalculatedRedeemData;
+  calculatedRedeemData: ICalculatedRedeemData;
 }
+
+const calculatedRedeemDataInitialState: ICalculatedRedeemData = {
+  amount: "0",
+  amountUlps: "0",
+  bankFee: "0",
+  totalRedeemed: "0",
+};
 
 export const bankTransferInitialState: IBankTransferState = {
   state: EBankTransferFlowState.UNINITIALIZED,
@@ -35,6 +42,7 @@ export const bankTransferInitialState: IBankTransferState = {
   minEuroUlps: "",
   reference: "",
   bankFeeUlps: "",
+  calculatedRedeemData: calculatedRedeemDataInitialState,
 };
 
 export const bankTransferFlowReducer: AppReducer<IBankTransferState> = (

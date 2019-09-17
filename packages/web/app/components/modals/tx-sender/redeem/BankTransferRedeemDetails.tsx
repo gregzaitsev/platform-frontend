@@ -49,7 +49,7 @@ const BankTransferRedeemDetails: TransactionDetailsComponent<ETxSenderType.NEUR_
           value={additionalData.bankFee}
           inputFormat={ENumberInputFormat.FLOAT}
           valueType={ECurrency.EUR}
-          outputFormat={ENumberOutputFormat.FULL}
+          outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
         />
       }
     />
