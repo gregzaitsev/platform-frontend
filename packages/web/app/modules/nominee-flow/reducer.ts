@@ -15,7 +15,7 @@ export interface INomineeFlowState {
   error: ENomineeRequestError;
   activeNomineeEtoPreviewCode: string | undefined;
   nomineeRequests: TNomineeRequestStorage;
-  nomineeEtos: { [previewCode: string]: TEtoSpecsData | undefined };
+  nomineeEtos: { [previewCode: string]: TEtoSpecsData | undefined } | undefined;
   nomineeEtosCompanies: { [companyId: string]: TCompanyEtoData | undefined };
   linkBankAccount: ENomineeLinkBankAccountStatus;
   redeemShareholderCapital: ENomineeRedeemShareholderCapitalStatus;
@@ -27,7 +27,7 @@ const nomineeFlowInitialState: INomineeFlowState = {
   error: ENomineeRequestError.NONE,
   activeNomineeEtoPreviewCode: undefined,
   nomineeRequests: {},
-  nomineeEtos: {},
+  nomineeEtos: undefined,
   nomineeEtosCompanies: {},
   linkBankAccount: ENomineeLinkBankAccountStatus.NOT_DONE,
   redeemShareholderCapital: ENomineeRedeemShareholderCapitalStatus.NOT_DONE,

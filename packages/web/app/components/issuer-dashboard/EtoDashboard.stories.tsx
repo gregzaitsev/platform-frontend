@@ -116,6 +116,7 @@ const requestTHAStep = {
   etoStep: EEtoStep.SETUP_START_DATE,
   eto: { ...uploadOfferingDocumentProspectusStep.eto, state: EEtoState.ON_CHAIN },
 };
+// TODO: add new steps
 
 storiesOf("ETO-Flow/Dashboard/StateView", module)
   .addDecorator(withStore(mockedStore))

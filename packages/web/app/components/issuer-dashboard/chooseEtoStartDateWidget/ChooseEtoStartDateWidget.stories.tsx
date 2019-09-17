@@ -16,6 +16,8 @@ const data = {
   newDateSaving: false,
   transactionMining: false,
   issuerEtoLoading: false,
+  areAgreementsSignedByNominee: true,
+  canChangeEtoStartDate: true,
 };
 
 const dummyNow = new Date("2021-12-31T05:03:56.000Z");
@@ -27,5 +29,9 @@ storiesOf("ETO-Flow/ChooseEtoStartDateWidget", module)
     <EtoStartDateWidgetComponent {...data} etoDate={new Date("2028-12-20")} />
   ))
   .add("starting date cannot be changed anymore", () => (
-    <EtoStartDateWidgetComponent {...data} etoDate={new Date("2018-12-24")} />
+    <EtoStartDateWidgetComponent
+      {...data}
+      etoDate={new Date("2018-12-24")}
+      canChangeEtoStartDate={false}
+    />
   ));

@@ -21,6 +21,7 @@ import {
   selectIssuerEtoOfferingDocumentType,
   selectIssuerEtoWithCompanyAndContract,
   selectIsTermSheetSubmitted,
+  selectPreEtoStartDateFromContract,
   userHasKycAndEmailVerified,
 } from "../../modules/eto-flow/selectors";
 import {
@@ -29,6 +30,7 @@ import {
   calculateVotingRightsEtoData,
 } from "../../modules/eto-flow/utils";
 import { TEtoWithCompanyAndContract } from "../../modules/eto/types";
+import { isOnChain } from "../../modules/eto/utils";
 import { selectKycRequestStatus } from "../../modules/kyc/selectors";
 import { selectIsLightWallet } from "../../modules/web3/selectors";
 import { appConnect } from "../../store";
@@ -77,6 +79,7 @@ interface IStateProps {
   offeringDocumentType: EOfferingDocumentType | undefined;
   isMarketingDataVisibleInPreview: EEtoMarketingDataVisibleInPreview | undefined;
   areAgreementsSignedByNominee: ReturnType<typeof selectAreAgreementsSignedByNominee>;
+  preEtoStartDate: ReturnType<typeof selectPreEtoStartDateFromContract>;
 }
 
 interface IComputedProps {
@@ -87,7 +90,13 @@ interface IComputedProps {
   etoStep: EEtoStep;
 }
 
-type TVerificationSection = Omit<IStateProps, "combinedEtoCompanyData"> &
+type TVerificationSection = Omit<
+  IStateProps,
+  | "combinedEtoCompanyData"
+  | "isMarketingDataVisibleInPreview"
+  | "areAgreementsSignedByNominee"
+  | "preEtoStartDate"
+> &
   Omit<IComputedProps, "isVerificationSectionDone">;
 
 interface IDispatchProps {
@@ -270,7 +279,14 @@ const VerifiedUserSection: React.FunctionComponent<TVerificationSection> = ({
 };
 
 const EtoDashboardLayout: React.FunctionComponent<
-  Omit<IStateProps, "combinedEtoCompanyData"> & IComputedProps
+  Omit<
+    IStateProps,
+    | "combinedEtoCompanyData"
+    | "isMarketingDataVisibleInPreview"
+    | "areAgreementsSignedByNominee"
+    | "preEtoStartDate"
+  > &
+    IComputedProps
 > = props => {
   const { isVerificationSectionDone, ...rest } = props;
 
@@ -303,6 +319,7 @@ const EtoDashboard = compose<React.FunctionComponent>(
       offeringDocumentType: selectIssuerEtoOfferingDocumentType(s),
       isMarketingDataVisibleInPreview: selectIsMarketingDataVisibleInPreview(s),
       areAgreementsSignedByNominee: selectAreAgreementsSignedByNominee(s),
+      preEtoStartDate: selectPreEtoStartDateFromContract(s),
     }),
     dispatchToProps: dispatch => ({
       initEtoView: () => {
@@ -344,6 +361,7 @@ const EtoDashboard = compose<React.FunctionComponent>(
         ? selectEtoStep(
             isVerificationSectionDone,
             props.eto.state,
+            isOnChain(props.eto) ? props.eto.contract.timedState : undefined,
             shouldViewEtoSettings,
             props.isMarketingDataVisibleInPreview,
             props.isTermSheetSubmitted,
@@ -352,6 +370,7 @@ const EtoDashboard = compose<React.FunctionComponent>(
             props.isOfferingDocumentSubmitted,
             props.isISHASubmitted,
             props.areAgreementsSignedByNominee,
+            props.preEtoStartDate,
           )
         : EEtoStep.VERIFICATION,
     };

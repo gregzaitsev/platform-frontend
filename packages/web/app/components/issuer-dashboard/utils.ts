@@ -2,6 +2,7 @@ import {
   EEtoMarketingDataVisibleInPreview,
   EEtoState,
 } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
+import { EETOStateOnChain } from "../../modules/eto/types";
 
 export enum EEtoStep {
   VERIFICATION = "verification",
@@ -16,6 +17,8 @@ export enum EEtoStep {
   WAIT_FOR_SMART_CONTRACT = "wait_for_smart_contract",
   WAIT_FOR_NOMINEE_DOCUMENTS = "wait_for_nominee_documents",
   SETUP_START_DATE = "setup_start_date",
+  WAITING_FOR_FUNDRAISING_TO_START = "waiting_for_fundraising_to_start",
+  FUNDRAISING_IS_LIVE = "fundraising_is_live",
   LINK_NOMINEE = "link_nominee",
 }
 
@@ -29,6 +32,7 @@ export enum EEtoStep {
 export const selectEtoStep = (
   isVerificationSectionDone: boolean,
   etoState: EEtoState,
+  etoOnChainState: EETOStateOnChain | undefined,
   shouldViewEtoSettings: boolean,
   isMarketingDataVisibleInPreview: EEtoMarketingDataVisibleInPreview | undefined,
   isTermSheetSubmitted: boolean | undefined,
@@ -37,6 +41,7 @@ export const selectEtoStep = (
   isOfferingDocumentSubmitted: boolean | undefined,
   isISHASubmitted: boolean | undefined,
   areAgreementsSignedByNominee: boolean | undefined,
+  preEtoStartDate: Date | undefined,
 ): EEtoStep => {
   if (!isVerificationSectionDone) {
     return EEtoStep.VERIFICATION;
@@ -99,14 +104,22 @@ export const selectEtoStep = (
   }
 
   if (etoState === EEtoState.ON_CHAIN) {
-    /**
-     * When nominee sign THA and RAA agreements we can set start date
-     */
-    if (areAgreementsSignedByNominee) {
-      return EEtoStep.SETUP_START_DATE;
+    if (etoOnChainState === EETOStateOnChain.Setup) {
+      if (preEtoStartDate !== undefined) {
+        return EEtoStep.WAITING_FOR_FUNDRAISING_TO_START;
+      }
+
+      /**
+       * When nominee sign THA and RAA agreements we can set start date
+       */
+      if (areAgreementsSignedByNominee) {
+        return EEtoStep.SETUP_START_DATE;
+      }
+
+      return EEtoStep.WAIT_FOR_NOMINEE_DOCUMENTS;
     }
 
-    return EEtoStep.WAIT_FOR_NOMINEE_DOCUMENTS;
+    return EEtoStep.FUNDRAISING_IS_LIVE;
   }
 
   throw new Error("Eto step is not defined");

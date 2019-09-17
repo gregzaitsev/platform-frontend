@@ -123,7 +123,17 @@ const selectStepComponent = (props: IEtoStep) => {
         </>
       );
     case EEtoStep.SETUP_START_DATE:
-      return <DashboardHeading title={<FormattedMessage id="eto-dashboard.start-fundraising" />} />;
+      return <DashboardHeading title={<FormattedMessage id="eto-dashboard.setup-start-date" />} />;
+
+    case EEtoStep.WAITING_FOR_FUNDRAISING_TO_START:
+      return (
+        <DashboardHeading
+          title={<FormattedMessage id="eto-dashboard.waiting-for-fundraising-start" />}
+        />
+      );
+
+    case EEtoStep.FUNDRAISING_IS_LIVE:
+      return <DashboardHeading title={<FormattedMessage id="eto-dashboard.fundraising-live" />} />;
     default:
       return assertNever(props.etoStep);
   }

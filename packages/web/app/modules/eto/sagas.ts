@@ -552,8 +552,6 @@ function* loadAgreementsStatus(
       [EAgreementType.RAAA]: neuCall(loadAgreementStatus, EAgreementType.RAAA, payload.eto),
     });
 
-    console.log(statuses);
-
     yield put(actions.eto.setAgreementsStatus(payload.eto.previewCode, statuses));
   } catch (e) {
     // TODO: Add error handling

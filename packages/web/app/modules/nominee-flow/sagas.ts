@@ -49,8 +49,8 @@ export function* loadNomineeTaskData({
     yield all([neuCall(loadNomineeEtos), neuCall(loadBankAccountDetails)]);
 
     const taskData = yield all({
-      nomineeRequests: yield apiEtoNomineeService.getNomineeRequests(),
-      etoAgreementsStatus: yield neuCall(loadNomineeAgreements),
+      nomineeRequests: apiEtoNomineeService.getNomineeRequests(),
+      etoAgreementsStatus: neuCall(loadNomineeAgreements),
       // todo query here if data not in the store yet
       // linkBankAccount:
       // acceptTha:
@@ -149,6 +149,9 @@ export function* createNomineeRequest(
 }
 
 export function* loadNomineeAgreements(): Iterator<any> {
+  // TODO: find a better way to wait
+  yield delay(1000);
+
   const nomineeEto: ReturnType<typeof selectNomineeEtoWithCompanyAndContract> = yield select(
     selectNomineeEtoWithCompanyAndContract,
   );
@@ -205,7 +208,7 @@ export function* guardActiveEto({
       typeof selectActiveEtoPreviewCodeFromQueryString
     > = yield select(selectActiveEtoPreviewCodeFromQueryString);
 
-    if (isEmpty(etos)) {
+    if (etos === undefined || isEmpty(etos)) {
       if (previewCode !== undefined) {
         yield put(actions.nomineeFlow.setActiveNomineeEto(undefined));
       }
