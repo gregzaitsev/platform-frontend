@@ -111,13 +111,6 @@ const waitingForContractsStep = {
   isISHASubmitted: true,
 };
 
-const requestTHAStep = {
-  ...waitingForContractsStep,
-  etoStep: EEtoStep.SETUP_START_DATE,
-  eto: { ...uploadOfferingDocumentProspectusStep.eto, state: EEtoState.ON_CHAIN },
-};
-// TODO: add new steps
-
 storiesOf("ETO-Flow/Dashboard/StateView", module)
   .addDecorator(withStore(mockedStore))
   .add("Verification", () => <EtoDashboardLayout {...verificationStep} />)
@@ -143,5 +136,4 @@ storiesOf("ETO-Flow/Dashboard/StateView", module)
     <EtoDashboardLayout {...uploadOfferingDocumentMemorandumStep} />
   ))
   .add("Upload ISHA step", () => <EtoDashboardLayout {...uploadISHAStep} />)
-  .add("Waiting for contracts step", () => <EtoDashboardLayout {...waitingForContractsStep} />)
-  .add("Request nominee to sign THA", () => <EtoDashboardLayout {...requestTHAStep} />);
+  .add("Waiting for contracts step", () => <EtoDashboardLayout {...waitingForContractsStep} />);
