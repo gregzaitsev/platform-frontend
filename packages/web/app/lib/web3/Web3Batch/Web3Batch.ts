@@ -25,7 +25,7 @@ class Web3AutoExecuteBatch {
   }
 
   private execute = () => {
-    this.logger.info(`Number of web3 node rpc request batched: ${this.web3Batch.requests.length}`);
+    // this.logger.info(`Number of web3 node rpc request batched: ${this.web3Batch.requests.length}`);
 
     this.web3Batch.execute();
     this.web3Batch = undefined;

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
-import { setDisplayName } from "recompose";
+import { setDisplayName, withProps } from "recompose";
 import { compose } from "redux";
 import * as Yup from 'yup';
 
@@ -22,17 +22,18 @@ import { FormHighlightGroup } from "../../../shared/forms/FormHighlightGroup";
 import {
   convert,
   convertFractionToPercentage,
-  convertInArray,
+  convertInArray, convertLater,
   convertPercentageToFraction,
   removeEmptyKeyValueFields, setEmptyKeyValueFieldsUndefined,
 } from "../../utils";
 import { EtoFormBase } from "../EtoFormBase";
 import { Section } from "../Shared";
+import { percentage } from "../../../../lib/api/util/customSchemas.unsafe";
+import { FormikValues } from "formik";
+import { NumberSchema, ObjectSchema, StringSchema } from "yup";
+import { convertAndValidatePipeline } from "../../../shared/forms/utils";
 
 import * as styles from "../Shared.module.scss";
-import { percentage } from "../../../../lib/api/util/customSchemas.unsafe";
-import { ValidationError } from "yup";
-import { yupToFormErrors } from "formik";
 
 interface IStateProps {
   loadingData: boolean;
@@ -48,22 +49,26 @@ type IProps = IStateProps & IDispatchProps;
 
 const distributionSuggestions = ["Development", "Other"];
 
-const EtoCapitalListElementsRequired = Yup.object().shape({
+type EEtoCapitalListSchema = {
+  percent: NumberSchema,
+  description: StringSchema
+}
+
+const EtoCapitalListRequired = Yup.object().shape({
   percent: percentage.required(),
   description: Yup.string().required()
 });
 
-const EtoCapitalListElementsNotRequired = Yup.object().shape({
+const EtoCapitalListNotRequired = Yup.object().shape({
   percent: percentage.notRequired(),
   description: Yup.string().notRequired()
 });
 
-const EtoCapitalListValidator = Yup.lazy(value => {
-  console.log("EtoCapitalListValidator", value);
+const EtoCapitalListValidator = Yup.lazy((value: EEtoCapitalListSchema) => {
   if (value && (value['percent'] !== undefined || value['description'] !== undefined)) {
-    return EtoCapitalListElementsRequired;
+    return EtoCapitalListRequired as ObjectSchema<EEtoCapitalListSchema>;
   } else {
-    return EtoCapitalListElementsNotRequired;
+    return EtoCapitalListNotRequired as ObjectSchema<EEtoCapitalListSchema>;
   }
 });
 
@@ -85,7 +90,6 @@ const validator = Yup.object().shape({
   businessModel: Yup.string().meta({ isWysiwyg: true }),
 });
 
-
 const validationConversionSpec = {
   useOfCapitalList: setEmptyKeyValueFieldsUndefined()
 };
@@ -94,44 +98,12 @@ const finalValidationConversionSpec = {
   useOfCapitalList: removeEmptyKeyValueFields()
 };
 
-const convertToFormikPath = (path: string) => {
-  return path.replace(/\[(.+)\]/g, ".$1")
-};
-
 const EtoRegistrationPitchComponent = (props: IProps) => (
   <EtoFormBase
     title={<FormattedMessage id="eto.form-progress-widget.company-information.product-vision" />}
     validationSchema={EtoPitchType.toYup()}
-    validate={(values) => {
-      const convertedValues = convert(values, validationConversionSpec);
-      console.log("convertedValues", values, convertedValues);
-      try {
-        validator.validateSync(convertedValues);
-      } catch (e) {
-        if (e instanceof ValidationError) {
-          const err = yupToFormErrors(e);
-          console.log("errors", err);
-          err.inspiration = 'bla'
-          return err
-
-        }
-      }
-      const finalConvertedValues = convert(values, finalValidationConversionSpec)
-
-      try {
-        validator.validateSync(finalConvertedValues);
-      } catch (e) {
-        if (e instanceof ValidationError) {
-          const err = { [convertToFormikPath(e.path)]: e.message };
-          console.log("final errors", e, err);
-          err.inspiration = 'bla'
-
-          return err
-        }
-      }
-    }}
-
-    initialValues={convert(props.stateValues, toFormState)}
+    validate={(values: FormikValues) => convertAndValidatePipeline(props.validationSpec, values)}
+    initialValues={props.initialValues}
     onSubmit={props.saveData}
   >
     <Section>
@@ -265,6 +237,13 @@ const EtoRegistrationPitch = compose<React.FunctionComponent>(
       },
     }),
   }),
+  withProps<{initialValues: TPartialCompanyEtoData},IStateProps>((p) => ({
+    initialValues: convert(p.stateValues, toFormState),
+    validationSpec:[
+      { validator, conversionFn: convertLater(validationConversionSpec) },
+      { validator, conversionFn: convertLater(finalValidationConversionSpec) }
+    ]
+  }))
 )(EtoRegistrationPitchComponent);
 
 const toFormState = {

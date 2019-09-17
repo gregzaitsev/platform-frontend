@@ -15,18 +15,18 @@ import { PercentageIndicatorBar } from "../../shared/PercentageIndicatorBar";
 import { Section } from "./Shared";
 
 import * as styles from "./EtoFormBase.module.scss";
+import { validateForm } from "./pages/EtoPitch";
 
 interface IProps {
   title: TTranslatedString;
 }
 
-interface IFormPercentageDoneProps {
+type TFormPercentageDoneProps = {
   validationSchema: Yup.Schema<unknown>;
-  validate?: (x:unknown, y:unknown) => void;
   progressOptions?: IProgressOptions;
 }
 
-type TProps = IFormPercentageDoneProps & TFormikConnect;
+type TProps = TFormPercentageDoneProps & TFormikConnect;
 
 class PercentageFormDoneLayout extends React.Component<TProps> {
   calculate: ProgressCalculator = getFormFractionDoneCalculator(
@@ -50,14 +50,15 @@ class PercentageFormDoneLayout extends React.Component<TProps> {
   }
 }
 
-const PercentageFormDone = compose<TProps, IFormPercentageDoneProps>(connect)(
+const PercentageFormDone = compose<TProps, TFormPercentageDoneProps>(connect)(
   PercentageFormDoneLayout,
 );
 
 type TExternalProps<Values extends {}> = IProps &
   TDataTestId &
-  IFormPercentageDoneProps &
-  TFormProps<Values>;
+  TFormPercentageDoneProps &
+  TFormProps<Values> &
+  {validate: (x:Values, y: unknown) => void};
 
 export const EtoFormBase = <Values extends {}>({
   children,
@@ -78,8 +79,9 @@ export const EtoFormBase = <Values extends {}>({
     <Form<Values>
       className={styles.form}
       initialValues={values}
-      // validationSchema={validate ? undefined : validationSchema}
-      validate={validate}
+      validate={validate ? validate : (values) => {
+        validateForm(validationSchema, values)
+      }}
       {...formProps}
     >
       <h4 className={styles.header}>{title}</h4>
