@@ -546,16 +546,12 @@ function* loadAgreementsStatus(
   _: TGlobalDependencies,
   { payload }: TActionFromCreator<typeof actions.eto.loadEtoAgreementsStatus>,
 ): Iterator<any> {
-  try {
-    const statuses: Dictionary<EEtoAgreementStatus, EAgreementType> = yield all({
-      [EAgreementType.THA]: neuCall(loadAgreementStatus, EAgreementType.THA, payload.eto),
-      [EAgreementType.RAAA]: neuCall(loadAgreementStatus, EAgreementType.RAAA, payload.eto),
-    });
+  const statuses: Dictionary<EEtoAgreementStatus, EAgreementType> = yield all({
+    [EAgreementType.THA]: neuCall(loadAgreementStatus, EAgreementType.THA, payload.eto),
+    [EAgreementType.RAAA]: neuCall(loadAgreementStatus, EAgreementType.RAAA, payload.eto),
+  });
 
-    yield put(actions.eto.setAgreementsStatus(payload.eto.previewCode, statuses));
-  } catch (e) {
-    // TODO: Add error handling
-  }
+  yield put(actions.eto.setAgreementsStatus(payload.eto.previewCode, statuses));
 }
 
 export function* etoSagas(): Iterator<any> {
