@@ -40,7 +40,7 @@ export const selectEtoStep = (
   isInvestmentAndEtoTermsFilledWithAllRequired: boolean,
   isOfferingDocumentSubmitted: boolean | undefined,
   isISHASubmitted: boolean | undefined,
-  areAgreementsSignedByNominee: boolean | undefined,
+  areAgreementsSignedByNominee: boolean,
   preEtoStartDate: Date | undefined,
 ): EEtoStep => {
   if (!isVerificationSectionDone) {

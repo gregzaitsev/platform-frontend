@@ -1,6 +1,6 @@
 import * as React from "react";
 import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
-import { lifecycle, withProps } from "recompose";
+import { branch, lifecycle, renderComponent, withProps } from "recompose";
 import { compose } from "redux";
 
 import {
@@ -34,6 +34,7 @@ import { isOnChain } from "../../modules/eto/utils";
 import { selectKycRequestStatus } from "../../modules/kyc/selectors";
 import { selectIsLightWallet } from "../../modules/web3/selectors";
 import { appConnect } from "../../store";
+import { RequiredByKeys } from "../../types";
 import { onEnterAction } from "../../utils/OnEnterAction";
 import { withContainer } from "../../utils/withContainer.unsafe";
 import { DashboardHeading } from "../eto/shared/DashboardHeading";
@@ -327,7 +328,26 @@ const EtoDashboard = compose<React.FunctionComponent>(
       },
     }),
   }),
-  withProps<IComputedProps, IStateProps>(props => {
+  onEnterAction<IStateProps & IDispatchProps>({
+    actionCreator: (_, props) => {
+      if (props.userHasKycAndEmailVerified) {
+        props.initEtoView();
+      }
+    },
+  }),
+  lifecycle<IStateProps & IDispatchProps, {}>({
+    componentDidUpdate(nextProps: IStateProps & IDispatchProps): void {
+      if (this.props.userHasKycAndEmailVerified !== nextProps.userHasKycAndEmailVerified) {
+        this.props.initEtoView();
+      }
+    },
+  }),
+  withContainer(Layout),
+  branch<IStateProps>(
+    props => props.areAgreementsSignedByNominee === undefined,
+    renderComponent(LoadingIndicator),
+  ),
+  withProps<IComputedProps, RequiredByKeys<IStateProps, "areAgreementsSignedByNominee">>(props => {
     const marketingFormsProgress = calculateMarketingEtoData(props.combinedEtoCompanyData);
     const etoInvestmentAndEtoTermsFormsProgress = calculateInvestmentAndEtoTermsEtoData(
       props.combinedEtoCompanyData,
@@ -375,21 +395,6 @@ const EtoDashboard = compose<React.FunctionComponent>(
         : EEtoStep.VERIFICATION,
     };
   }),
-  onEnterAction<IStateProps & IDispatchProps>({
-    actionCreator: (_, props) => {
-      if (props.userHasKycAndEmailVerified) {
-        props.initEtoView();
-      }
-    },
-  }),
-  lifecycle<IStateProps & IDispatchProps, {}>({
-    componentDidUpdate(nextProps: IStateProps & IDispatchProps): void {
-      if (this.props.userHasKycAndEmailVerified !== nextProps.userHasKycAndEmailVerified) {
-        this.props.initEtoView();
-      }
-    },
-  }),
-  withContainer(Layout),
 )(EtoDashboardLayout);
 
 export { EtoDashboard, EtoDashboardLayout, EtoDashboardStateViewComponent };

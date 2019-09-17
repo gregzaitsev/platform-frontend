@@ -1,6 +1,6 @@
 import { compose, isEmpty, keyBy, map, omit } from "lodash/fp";
 import { delay } from "redux-saga";
-import { all, fork, put, select } from "redux-saga/effects";
+import { all, fork, put, select, take } from "redux-saga/effects";
 
 import {
   EEtoNomineeActiveEtoNotifications,
@@ -47,6 +47,10 @@ export function* loadNomineeTaskData({
   try {
     // load information that's needed to properly calculate nominee current task
     yield all([neuCall(loadNomineeEtos), neuCall(loadBankAccountDetails)]);
+
+    // wait for active eto to be set
+    // even when eto is not yet linked `setActiveNomineeEto` get's dispatched
+    yield take(actions.nomineeFlow.setActiveNomineeEto);
 
     const taskData = yield all({
       nomineeRequests: apiEtoNomineeService.getNomineeRequests(),
@@ -149,9 +153,6 @@ export function* createNomineeRequest(
 }
 
 export function* loadNomineeAgreements(): Iterator<any> {
-  // TODO: find a better way to wait
-  yield delay(1000);
-
   const nomineeEto: ReturnType<typeof selectNomineeEtoWithCompanyAndContract> = yield select(
     selectNomineeEtoWithCompanyAndContract,
   );
@@ -201,18 +202,17 @@ export function* guardActiveEto({
 }: TGlobalDependencies): Iterable<any> {
   try {
     const etos: ReturnType<typeof selectNomineeEtos> = yield select(selectNomineeEtos);
-    const previewCode: ReturnType<typeof selectNomineeActiveEtoPreviewCode> = yield select(
-      selectNomineeActiveEtoPreviewCode,
-    );
+
     const forcedActiveEtoPreviewCode: ReturnType<
       typeof selectActiveEtoPreviewCodeFromQueryString
     > = yield select(selectActiveEtoPreviewCodeFromQueryString);
 
     if (etos === undefined || isEmpty(etos)) {
-      if (previewCode !== undefined) {
-        yield put(actions.nomineeFlow.setActiveNomineeEto(undefined));
-      }
+      yield put(actions.nomineeFlow.setActiveNomineeEto(undefined));
     } else {
+      const previewCode: ReturnType<typeof selectNomineeActiveEtoPreviewCode> = yield select(
+        selectNomineeActiveEtoPreviewCode,
+      );
       // For testing purpose we can force another ETO to be active (by default it's the first one)
       const shouldForceSpecificEtoToBeActive =
         forcedActiveEtoPreviewCode !== undefined &&
