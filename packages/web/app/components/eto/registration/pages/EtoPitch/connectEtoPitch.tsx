@@ -1,4 +1,6 @@
+import * as Yup from "yup";
 import { compose, setDisplayName, withProps } from "recompose";
+
 import { EEtoFormTypes } from "../../../../../modules/eto-flow/types";
 import { appConnect } from "../../../../../store";
 import {
@@ -11,16 +13,11 @@ import {
   convert,
   convertFractionToPercentage,
   convertInArray,
-  convertLater, convertPercentageToFraction,
+  convertLater, convertNumberToString, convertPercentageToFraction, parseStringToFloat,
   removeEmptyKeyValueFields, setEmptyKeyValueFieldsUndefined
 } from "../../../utils";
 import { actions } from "../../../../../modules/actions";
-import { EtoRegistrationPitchComponent } from "./EtoPitch";
-import * as Yup from "yup";
-import { NumberSchema } from "yup";
-import { StringSchema } from "yup";
 import { percentage } from "../../../../../lib/api/util/customSchemas.unsafe";
-import { ObjectSchema } from "yup";
 import { TConversionAndValidationSpec } from "../../../../shared/forms/utils";
 
 type TDispatchProps = {
@@ -44,8 +41,8 @@ type TStateProps = {
 }
 
 type EEtoCapitalListSchema = {
-  percent: NumberSchema,
-  description: StringSchema
+  percent: Yup.NumberSchema,
+  description: Yup.StringSchema
 }
 
 const EtoCapitalListRequired = Yup.object().shape({
@@ -60,9 +57,9 @@ const EtoCapitalListNotRequired = Yup.object().shape({
 
 const EtoCapitalListValidator = Yup.lazy((value: EEtoCapitalListSchema) => {
   if (value && (value['percent'] !== undefined || value['description'] !== undefined)) {
-    return EtoCapitalListRequired as ObjectSchema<EEtoCapitalListSchema>;
+    return EtoCapitalListRequired as Yup.ObjectSchema<EEtoCapitalListSchema>;
   } else {
-    return EtoCapitalListNotRequired as ObjectSchema<EEtoCapitalListSchema>;
+    return EtoCapitalListNotRequired as Yup.ObjectSchema<EEtoCapitalListSchema>;
   }
 });
 
@@ -84,47 +81,52 @@ const validator = Yup.object().shape({
   businessModel: Yup.string().meta({ isWysiwyg: true }),
 });
 
+const percentConversionSpec = [parseStringToFloat({passThroughInvalidData:true}), convertPercentageToFraction({passThroughInvalidData:true})];
+
 const validationConversionSpec = {
-  useOfCapitalList: setEmptyKeyValueFieldsUndefined()
+  useOfCapitalList: [setEmptyKeyValueFieldsUndefined(),
+    convertInArray({ percent: percentConversionSpec })]
 };
 
 const finalValidationConversionSpec = {
-  useOfCapitalList: removeEmptyKeyValueFields()
+  useOfCapitalList: [removeEmptyKeyValueFields(),
+    convertInArray({ percent: percentConversionSpec })]
 };
 
-const EtoRegistrationPitch = compose<TComponentProps & TDispatchProps,{}>(
-  setDisplayName(EEtoFormTypes.ProductVision),
-  appConnect<TStateProps, TDispatchProps>({
-    stateToProps: s => ({
-      loadingData: selectIssuerEtoLoading(s),
-      savingData: selectIssuerEtoSaving(s),
-      stateValues: selectIssuerCompany(s) as TPartialCompanyEtoData,
+const connectEtoRegistrationPitch = (WrappedComponent: React.FunctionComponent<TComponentProps & TDispatchProps>) =>
+  compose<TComponentProps & TDispatchProps, {}>(
+    setDisplayName(EEtoFormTypes.ProductVision),
+    appConnect<TStateProps, TDispatchProps>({
+      stateToProps: s => ({
+        loadingData: selectIssuerEtoLoading(s),
+        savingData: selectIssuerEtoSaving(s),
+        stateValues: selectIssuerCompany(s) as TPartialCompanyEtoData,
+      }),
+      dispatchToProps: dispatch => ({
+        saveData: (company: TPartialCompanyEtoData) => {
+          const convertedCompany = convert(company, fromFormState);
+          dispatch(actions.etoFlow.saveCompanyStart(convertedCompany));
+        },
+      }),
     }),
-    dispatchToProps: dispatch => ({
-      saveData: (company: TPartialCompanyEtoData) => {
-        const convertedCompany = convert(company, fromFormState);
-        dispatch(actions.etoFlow.saveCompanyStart(convertedCompany));
-      },
-    }),
-  }),
-  withProps<TWithProps,TStateProps>((p) => ({
-    initialValues: convert(p.stateValues, toFormState),
-    validationSpecs:[
-      { validator, conversionFn: convertLater(validationConversionSpec) },
-      { validator, conversionFn: convertLater(finalValidationConversionSpec) }
-    ]
-  }))
-)(EtoRegistrationPitchComponent);
+    withProps<TWithProps, TStateProps & TDispatchProps>((p) => ({
+      initialValues: convert(p.stateValues, toFormState),
+      validationSpecs: [
+        { validator, conversionFn: convertLater(validationConversionSpec) },
+        { validator, conversionFn: convertLater(finalValidationConversionSpec) }
+      ]
+    }))
+  )(WrappedComponent);
 
 const toFormState = {
-  useOfCapitalList: [convertInArray({ percent: convertFractionToPercentage() })],
+  useOfCapitalList: [convertInArray({ percent: [convertFractionToPercentage(), convertNumberToString()] })],
 };
 
 const fromFormState = {
   useOfCapitalList: [
     removeEmptyKeyValueFields(),
-    convertInArray({ percent: convertPercentageToFraction() }),
+    convertInArray({ percent: [parseStringToFloat(), convertPercentageToFraction()] }),
   ],
 };
 
-export {EtoRegistrationPitch}
+export { connectEtoRegistrationPitch }

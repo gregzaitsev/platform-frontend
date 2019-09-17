@@ -11,7 +11,7 @@ import { FormHighlightGroup } from "../../../../shared/forms/FormHighlightGroup"
 import { EtoFormBase } from "../../EtoFormBase";
 import { Section } from "../../Shared";
 import { convertAndValidatePipeline } from "../../../../shared/forms/utils";
-import { TComponentProps } from "./connectEtoPitch";
+import { connectEtoRegistrationPitch, TComponentProps } from "./connectEtoPitch";
 import { TDispatchProps } from "../EtoVotingRights/EtoVotingRights";
 
 import * as styles from "../../Shared.module.scss";
@@ -94,8 +94,6 @@ const EtoRegistrationPitchComponent = (props: TComponentProps & TDispatchProps) 
         <ArrayOfKeyValueFields
           name="useOfCapitalList"
           suggestions={distributionSuggestions}
-          prefix="%"
-          transformRatio={100}
           fieldNames={["description", "percent"]}
         />
         <FormFieldError name={"useOfCapitalList"} />
@@ -142,6 +140,5 @@ const EtoRegistrationPitchComponent = (props: TComponentProps & TDispatchProps) 
   </EtoFormBase>
 );
 
-
-
-export { EtoRegistrationPitchComponent };
+const EtoRegistrationPitch = connectEtoRegistrationPitch(EtoRegistrationPitchComponent);
+export { EtoRegistrationPitch, EtoRegistrationPitchComponent };

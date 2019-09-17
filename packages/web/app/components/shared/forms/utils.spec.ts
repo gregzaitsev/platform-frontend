@@ -61,7 +61,7 @@ describe("convertAndValidatePipeline", () => {
     });
   });
 
-  it.only("it returns next errors if the previous specs haven't any", () => {
+  it("it returns next errors if the previous specs haven't any", () => {
     const data = {
       value2:"25",
       value3:"27",
