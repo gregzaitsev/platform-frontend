@@ -1,7 +1,10 @@
 import { branch, compose, renderComponent } from "recompose";
 
 import { actions } from "../../modules/actions";
-import { selectNomineeTaskStep } from "../../modules/nominee-flow/selectors";
+import {
+  selectNomineeStateIsLoading,
+  selectNomineeTaskStep,
+} from "../../modules/nominee-flow/selectors";
 import { ENomineeTask } from "../../modules/nominee-flow/types";
 import { appConnect } from "../../store";
 import { RequiredByKeys } from "../../types";
@@ -12,6 +15,7 @@ import { LoadingIndicator } from "../shared/loading-indicator/LoadingIndicator";
 import { NomineeDashboardTasks } from "./NomineeDashboardTasks";
 
 interface IStateProps {
+  isLoading: boolean;
   nomineeTaskStep: ENomineeTask | undefined;
 }
 
@@ -19,6 +23,7 @@ export const NomineeDashboard = compose<RequiredByKeys<IStateProps, "nomineeTask
   withContainer(Layout),
   appConnect<IStateProps>({
     stateToProps: state => ({
+      isLoading: selectNomineeStateIsLoading(state),
       nomineeTaskStep: selectNomineeTaskStep(state),
     }),
   }),
@@ -27,8 +32,11 @@ export const NomineeDashboard = compose<RequiredByKeys<IStateProps, "nomineeTask
       dispatch(actions.nomineeFlow.loadNomineeTaskData());
     },
   }),
+  branch<IStateProps>(props => props.isLoading, renderComponent(LoadingIndicator)),
   branch<IStateProps>(
     props => props.nomineeTaskStep === undefined,
-    renderComponent(LoadingIndicator),
+    () => {
+      throw new Error("Nominee task step should be properly calculated at this point");
+    },
   ),
 )(NomineeDashboardTasks);

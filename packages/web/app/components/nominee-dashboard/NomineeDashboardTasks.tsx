@@ -10,6 +10,7 @@ interface IDashboardProps {
 }
 
 interface IExternalProps {
+  isLoading: boolean;
   nomineeTaskStep: ENomineeTask;
 }
 

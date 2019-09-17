@@ -130,18 +130,8 @@ export const selectNomineeTaskStep = createSelector(
   selectNomineeEtoWithCompanyAndContract,
   selectIsBankAccountVerified,
   selectNomineeEtoDocumentsStatus,
-  (verificationIsComplete, nomineeEto, isBankAccountVerified, documentsStatus) => {
-    if (documentsStatus !== undefined) {
-      return getNomineeTaskStep(
-        verificationIsComplete,
-        nomineeEto,
-        isBankAccountVerified,
-        documentsStatus,
-      );
-    }
-
-    return undefined;
-  },
+  (verificationIsComplete, nomineeEto, isBankAccountVerified, documentsStatus) =>
+    getNomineeTaskStep(verificationIsComplete, nomineeEto, isBankAccountVerified, documentsStatus),
 );
 
 export const selectActiveEtoPreviewCodeFromQueryString = createSelector(

@@ -104,14 +104,16 @@ export const getNomineeTaskStep = (
   verificationIsComplete: boolean,
   nomineeEto: TEtoWithCompanyAndContract | undefined,
   isBankAccountVerified: boolean,
-  documentsStatus: TOfferingAgreementsStatus,
-): ENomineeTask => {
+  documentsStatus: TOfferingAgreementsStatus | undefined,
+): ENomineeTask | undefined => {
   if (!verificationIsComplete) {
     return ENomineeTask.ACCOUNT_SETUP;
   } else if (nomineeEto === undefined) {
     return ENomineeTask.LINK_TO_ISSUER;
   } else if (!isBankAccountVerified) {
     return ENomineeTask.LINK_BANK_ACCOUNT;
+  } else if (documentsStatus === undefined) {
+    return undefined;
   } else if (
     documentsStatus[EAgreementType.THA] !== EEtoAgreementStatus.DONE &&
     nomineeIsEligibleToSignAgreement(nomineeEto)

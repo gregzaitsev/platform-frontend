@@ -20,6 +20,7 @@ import {
 import { IssuerIdInvalid, NomineeRequestExists } from "../../lib/api/eto/EtoNomineeApi";
 import { nonNullable } from "../../utils/nonNullable";
 import { actions, TActionFromCreator } from "../actions";
+import { selectIsUserFullyVerified } from "../auth/selectors";
 import { loadEtoContract } from "../eto/sagas";
 import { loadBankAccountDetails } from "../kyc/sagas";
 import { neuCall, neuTakeLatest, neuTakeUntil } from "../sagasUtils";
@@ -45,40 +46,48 @@ export function* loadNomineeTaskData({
   notificationCenter,
 }: TGlobalDependencies): Iterator<any> {
   try {
-    // load information that's needed to properly calculate nominee current task
-    yield all([neuCall(loadNomineeEtos), neuCall(loadBankAccountDetails)]);
-
-    // wait for active eto to be set
-    // even when eto is not yet linked `setActiveNomineeEto` get's dispatched
-    yield take(actions.nomineeFlow.setActiveNomineeEto);
-
-    const taskData = yield all({
-      nomineeRequests: apiEtoNomineeService.getNomineeRequests(),
-      etoAgreementsStatus: neuCall(loadNomineeAgreements),
-      // todo query here if data not in the store yet
-      // linkBankAccount:
-      // acceptTha:
-      // redeemShareholderCapital:
-      // uploadIsha:
-    });
-
-    const nomineeRequestsConverted: TNomineeRequestStorage = nomineeApiDataToNomineeRequests(
-      taskData.nomineeRequests,
+    const isVerified: ReturnType<typeof selectIsUserFullyVerified> = yield select(
+      selectIsUserFullyVerified,
     );
-    // todo convert data
-    // const linkBankAccountConverted = ...
-    // const acceptThaConverted = ...
-    // const redeemShareholderCapitalConverted = ...
-    // const uploadIshaConverted = ...
 
-    yield put(
-      actions.nomineeFlow.storeNomineeTaskData({
-        nomineeRequests: nomineeRequestsConverted,
-        linkBankAccount: ENomineeLinkBankAccountStatus.NOT_DONE,
-        redeemShareholderCapital: ENomineeRedeemShareholderCapitalStatus.NOT_DONE,
-        uploadIsha: ENomineeUploadIshaStatus.NOT_DONE,
-      }),
-    );
+    if (isVerified) {
+      // load information that's needed to properly calculate nominee current task
+      yield all([neuCall(loadNomineeEtos), neuCall(loadBankAccountDetails)]);
+
+      // wait for active eto to be set
+      // even when eto is not yet linked `setActiveNomineeEto` get's dispatched
+      yield take(actions.nomineeFlow.setActiveNomineeEto);
+
+      const taskData = yield all({
+        nomineeRequests: apiEtoNomineeService.getNomineeRequests(),
+        etoAgreementsStatus: neuCall(loadNomineeAgreements),
+        // todo query here if data not in the store yet
+        // linkBankAccount:
+        // acceptTha:
+        // redeemShareholderCapital:
+        // uploadIsha:
+      });
+
+      const nomineeRequestsConverted: TNomineeRequestStorage = nomineeApiDataToNomineeRequests(
+        taskData.nomineeRequests,
+      );
+      // todo convert data
+      // const linkBankAccountConverted = ...
+      // const acceptThaConverted = ...
+      // const redeemShareholderCapitalConverted = ...
+      // const uploadIshaConverted = ...
+
+      yield put(
+        actions.nomineeFlow.storeNomineeTaskData({
+          nomineeRequests: nomineeRequestsConverted,
+          linkBankAccount: ENomineeLinkBankAccountStatus.NOT_DONE,
+          redeemShareholderCapital: ENomineeRedeemShareholderCapitalStatus.NOT_DONE,
+          uploadIsha: ENomineeUploadIshaStatus.NOT_DONE,
+        }),
+      );
+    } else {
+      yield put(actions.nomineeFlow.loadingDone());
+    }
   } catch (e) {
     logger.error("Failed to load Nominee tasks", e);
     notificationCenter.error(
