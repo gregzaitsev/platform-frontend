@@ -20,21 +20,7 @@ export const applyDefaults = (data: any, defaults: any) => {
 };
 
 /**** DATA CONVERSION FUNCTIONS ****/
-export const convertLater = (conversionSpec: any) => (data: any)=> {
-  if (data) {
-    const dataCopy = cloneDeep(data);
-    Object.keys(conversionSpec).forEach(key => {
-      const fieldValue = get(dataCopy, key);
-      set(dataCopy, key, convertField(fieldValue, conversionSpec[key]));
-    });
-    return dataCopy;
-  } else {
-    return data;
-  }
-};
-
-
-export const convert = (data: any, conversionSpec: any) => {
+export const convert = (conversionSpec: any) => (data: any)=> {
   if (data) {
     const dataCopy = cloneDeep(data);
     Object.keys(conversionSpec).forEach(key => {
@@ -57,7 +43,7 @@ const convertField = (input: any, f: any) => {
 
 export const convertInArray = (conversionSpec: any) => (data: any[]) => {
   if (Array.isArray(data)) {
-    return data.map(element => convert(element, conversionSpec));
+    return data.map(element => convert(conversionSpec)(element));
   } else {
     return data;
   }

@@ -61,7 +61,7 @@ const EtoVotingRightsComponent: React.FunctionComponent<
   TExternalProps & TStateProps & TDispatchProps
 > = ({ readonly, savingData, currentNomineeName, stateValues, currentNomineeId, saveData }) => {
   const values = React.useMemo(() => {
-    const converted = convert(stateValues, toFormState);
+    const converted = convert(toFormState)(stateValues);
 
     converted.advisoryBoardSelector = converted.advisoryBoard && !!converted.advisoryBoard;
 

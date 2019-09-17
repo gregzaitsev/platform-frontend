@@ -29,8 +29,7 @@ import {
 import { EEtoFormTypes } from "../../../../../modules/eto-flow/types";
 import { appConnect } from "../../../../../store";
 import {
-  convert,
-  convertFractionToPercentage,
+  convertFractionToPercentage, convert,
   convertNumberToString,
   convertPercentageToFraction,
   parseStringToFloat,
@@ -95,7 +94,7 @@ export const connectEtoVotingRightsForm = (
       }),
       dispatchToProps: dispatch => ({
         saveData: (eto: TPartialEtoSpecData) => {
-          const convertedEto = convert(eto, fromFormState);
+          const convertedEto = convert(fromFormState)(eto);
           dispatch(actions.etoFlow.saveEtoStart(convertedEto, { patch: false }));
         },
       }),

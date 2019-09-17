@@ -26,8 +26,7 @@ import { FormTextArea } from "../../../shared/forms/fields/FormTextArea";
 import { FormHighlightGroup } from "../../../shared/forms/FormHighlightGroup";
 import { FUNDING_ROUNDS } from "../../constants";
 import {
-  convert,
-  convertInArray,
+  convertInArray, convert,
   convertNumberToString,
   parseStringToFloat,
   parseStringToInteger,
@@ -68,7 +67,7 @@ const EtoRegistrationLegalInformationComponent = ({ savingData, company, saveDat
     data-test-id="eto.form.legal-information"
     title="Legal Information"
     validationSchema={EtoLegalInformationType.toYup()}
-    initialValues={convert(company, toFormState)}
+    initialValues={convert(toFormState)(company)}
     onSubmit={saveData}
   >
     <Section>
@@ -179,7 +178,7 @@ const EtoRegistrationLegalInformation = compose<React.FunctionComponent<IExterna
     }),
     dispatchToProps: dispatch => ({
       saveData: (company: TPartialCompanyEtoData) => {
-        const convertedCompany = convert(company, fromFormState);
+        const convertedCompany = convert(fromFormState)(company);
         dispatch(actions.etoFlow.saveCompanyStart(convertedCompany));
       },
     }),

@@ -2,9 +2,8 @@ import { expect } from "chai";
 
 import {
   applyDefaults,
-  convert,
   convertFractionToPercentage,
-  convertInArray,
+  convertInArray, convert,
   convertNumberToString,
   convertPercentageToFraction,
   convertToPrecision,
@@ -55,7 +54,7 @@ describe("applyDefaults", () => {
   });
 });
 
-describe("convert", () => {
+describe("xconvert", () => {
   const bla2fufu = (input: any) => (input === "bla" ? "fufu" : input);
   const fufu2pfui = (input: any) => (input === "fufu" ? "pfui" : input);
 
@@ -80,7 +79,7 @@ describe("convert", () => {
         key2_2: "foobar",
       },
     };
-    expect(convert(data, spec)).to.deep.equal(expectedOutput);
+    expect(convert(spec)(data)).to.deep.equal(expectedOutput);
   });
   it("takes an array of functions and creates a pipeline", () => {
     const spec = {
@@ -95,7 +94,7 @@ describe("convert", () => {
         key2_2: "foobar",
       },
     };
-    expect(convert(data, spec)).to.deep.equal(expectedOutput);
+    expect(convert(spec)(data)).to.deep.equal(expectedOutput);
   });
 });
 
@@ -202,7 +201,7 @@ describe("removeEmptyField", () => {
       "6": 123,
     };
 
-    expect(convert(data, conversionSpec)).to.deep.equal(expectedOutput);
+    expect(convert(conversionSpec)(data)).to.deep.equal(expectedOutput);
   });
 });
 
@@ -246,6 +245,6 @@ describe("convertInArray", () => {
       key2: [{ elementKey1: "bla", elementKey2: 2500 }, { elementKey1: "wow", elementKey2: 27 }],
     };
 
-    expect(convert(data, conversionSpec)).to.be.deep.equal(expectedOutput);
+    expect(convert(conversionSpec)(data)).to.be.deep.equal(expectedOutput);
   });
 });

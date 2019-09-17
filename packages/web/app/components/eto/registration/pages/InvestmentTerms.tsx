@@ -44,8 +44,7 @@ import {
 import { FormFieldLayout, FormHighlightGroup, FormMaskedNumberInput } from "../../../shared/forms";
 import { FormField } from "../../../shared/forms/fields/FormField";
 import {
-  convert,
-  convertFractionToPercentage,
+  convertFractionToPercentage, convert,
   convertNumberToString,
   convertPercentageToFraction,
   parseStringToFloat,
@@ -268,7 +267,7 @@ const EtoInvestmentTermsComponent: React.FunctionComponent<IProps> = ({
     title={<FormattedMessage id="eto.form.investment-terms.title" />}
     progressOptions={etoInvestmentTermsProgressOptions}
     validationSchema={EtoInvestmentTermsType.toYup()}
-    initialValues={convert(eto, toFormState)}
+    initialValues={convert(toFormState)(eto)}
     onSubmit={saveData}
     validate={validate}
   >
@@ -439,7 +438,7 @@ const EtoInvestmentTerms = compose<React.FunctionComponent<IExternalProps>>(
     }),
     dispatchToProps: dispatch => ({
       saveData: (eto: TEtoSpecsData) => {
-        const convertedEto = convert(eto, fromFormState);
+        const convertedEto = convert(fromFormState)(eto);
         dispatch(actions.etoFlow.saveEtoStart(convertedEto));
       },
     }),

@@ -10,10 +10,9 @@ import {
 } from "../../../../../modules/eto-flow/selectors";
 import { TPartialCompanyEtoData } from "../../../../../lib/api/eto/EtoApi.interfaces.unsafe";
 import {
-  convert,
   convertFractionToPercentage,
   convertInArray,
-  convertLater, convertNumberToString, convertPercentageToFraction, parseStringToFloat,
+  convert, convertNumberToString, convertPercentageToFraction, parseStringToFloat,
   removeEmptyKeyValueFields, setEmptyKeyValueFieldsUndefined
 } from "../../../utils";
 import { actions } from "../../../../../modules/actions";
@@ -104,16 +103,16 @@ const connectEtoRegistrationPitch = (WrappedComponent: React.FunctionComponent<T
       }),
       dispatchToProps: dispatch => ({
         saveData: (company: TPartialCompanyEtoData) => {
-          const convertedCompany = convert(company, fromFormState);
+          const convertedCompany = convert(fromFormState)(company);
           dispatch(actions.etoFlow.saveCompanyStart(convertedCompany));
         },
       }),
     }),
     withProps<TWithProps, TStateProps & TDispatchProps>((p) => ({
-      initialValues: convert(p.stateValues, toFormState),
+      initialValues: convert(toFormState)(p.stateValues),
       validationSpecs: [
-        { validator, conversionFn: convertLater(validationConversionSpec) },
-        { validator, conversionFn: convertLater(finalValidationConversionSpec) }
+        { validator, conversionFn: convert(validationConversionSpec) },
+        { validator, conversionFn: convert(finalValidationConversionSpec) }
       ]
     }))
   )(WrappedComponent);
