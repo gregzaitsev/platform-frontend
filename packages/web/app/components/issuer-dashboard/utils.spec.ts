@@ -396,4 +396,80 @@ describe("selectEtoStep", () => {
       ),
     ).to.eq(EEtoStep.WAIT_FOR_NOMINEE_DOCUMENTS);
   });
+
+  it("should return step WAIT_FOR_NOMINEE_DOCUMENTS after contracts were deployed", () => {
+    expect(
+      selectEtoStep(
+        true,
+        EEtoState.ON_CHAIN,
+        EETOStateOnChain.Setup,
+        true,
+        EEtoMarketingDataVisibleInPreview.VISIBLE,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        undefined,
+      ),
+    ).to.eq(EEtoStep.WAIT_FOR_NOMINEE_DOCUMENTS);
+  });
+
+  it("should return step SETUP_START_DATE after nominee sign agreements", () => {
+    expect(
+      selectEtoStep(
+        true,
+        EEtoState.ON_CHAIN,
+        EETOStateOnChain.Setup,
+        true,
+        EEtoMarketingDataVisibleInPreview.VISIBLE,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        undefined,
+      ),
+    ).to.eq(EEtoStep.SETUP_START_DATE);
+  });
+
+  it("should return step WAITING_FOR_FUNDRAISING_TO_START after eto start date has been set", () => {
+    expect(
+      selectEtoStep(
+        true,
+        EEtoState.ON_CHAIN,
+        EETOStateOnChain.Setup,
+        true,
+        EEtoMarketingDataVisibleInPreview.VISIBLE,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        new Date("10/3/2019"),
+      ),
+    ).to.eq(EEtoStep.WAITING_FOR_FUNDRAISING_TO_START);
+  });
+
+  it("should return step FUNDRAISING_IS_LIVE eto start date has been set", () => {
+    expect(
+      selectEtoStep(
+        true,
+        EEtoState.ON_CHAIN,
+        EETOStateOnChain.Whitelist,
+        true,
+        EEtoMarketingDataVisibleInPreview.VISIBLE,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        new Date("10/3/2019"),
+      ),
+    ).to.eq(EEtoStep.FUNDRAISING_IS_LIVE);
+  });
 });
