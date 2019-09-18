@@ -31,7 +31,6 @@ export const convertAndValidatePipeline = <Data extends {}>(validationSpec: TCon
     }
   }
 
-  // reduceRight because the earlier validations have precedence over the later ones
   return validationResults.reduceRight((acc: object | undefined, result)=> {
     if(acc !== undefined){
       return {

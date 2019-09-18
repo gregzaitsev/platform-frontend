@@ -93,6 +93,7 @@ const EtoRegistrationPitchComponent = (props: TComponentProps & TDispatchProps) 
           name="useOfCapitalList"
           suggestions={distributionSuggestions}
           fieldNames={["description", "percent"]}
+          suffix="%"
         />
         <FormFieldError name={"useOfCapitalList"} />
       </FormHighlightGroup>
