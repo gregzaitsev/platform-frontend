@@ -17,7 +17,7 @@ import {
 } from "../../../utils";
 import { actions } from "../../../../../modules/actions";
 import { percentage } from "../../../../../lib/api/util/customSchemas.unsafe";
-import { convertAndValidatePipeline } from "../../../../shared/forms/utils";
+import { convertAndValidatePipeline, replaceValidatorWith, transformValidator } from "../../../../shared/forms/utils";
 import { FormikValues } from "formik";
 
 type TDispatchProps = {
@@ -68,7 +68,7 @@ const validator = Yup.object().shape({
   productVision: Yup.string().meta({ isWysiwyg: true }),
   inspiration: Yup.string().meta({ isWysiwyg: true }),
   roadmap: Yup.string().meta({ isWysiwyg: true }),
-  useOfCapital: Yup.string(),
+  useOfCapital: Yup.string().required(),
   useOfCapitalList: Yup.array().of(EtoCapitalListValidator).min(1, "please fill out at least one field").required("please fill out at least one field"),
   customerGroup: Yup.string().meta({ isWysiwyg: true }),
   sellingProposition: Yup.string().meta({ isWysiwyg: true }),
@@ -81,26 +81,26 @@ const validator = Yup.object().shape({
   businessModel: Yup.string().meta({ isWysiwyg: true }),
 });
 
-//TODO write a decent schema transformation/mutation fn
-const finalValidator = validator.clone();
-finalValidator.fields.useOfCapitalList = Yup.number().min(1,"please describe allocation of 100% of your funds").max(1,"that's too much"); //fixme translations, wording
-
 const percentConversionSpec = [parseStringToFloat({passThroughInvalidData:true}), convertPercentageToFraction({passThroughInvalidData:true})];
 
-const validationConversionSpec = {
+const validatorConversionSpec = {
+  useOfCapitalList: replaceValidatorWith(Yup.number().min(1,"please describe allocation of 100% of your funds").max(1,"that's too much")) //fixme translations, wording)
+};
+
+const validationConversionSpec0 = {
   useOfCapitalList: [setEmptyKeyValueFieldsUndefined(),
     convertInArray({ percent: percentConversionSpec })]
 };
 
-const finalValidationConversionSpec = {
+const validationConversionSpec1 = {
   useOfCapitalList: [removeEmptyKeyValueFields(),
     convertInArray({ percent: percentConversionSpec })]
 };
 
-const finalConversion = (data:TPartialCompanyEtoData) => {
-  const dataCopy = convert(finalValidationConversionSpec)(data);
+const conversion2 = (data:TPartialCompanyEtoData) => {
+  const dataCopy = convert(validationConversionSpec1)(data);
 
-  dataCopy.useOfCapitalList = dataCopy.useOfCapitalList!.reduce((acc:number, {percent})=> {
+  dataCopy.useOfCapitalList = dataCopy.useOfCapitalList!.reduce((acc:number, {percent}:{percent:number})=> {
     return acc += percent;
   },0);
   return dataCopy
@@ -125,9 +125,9 @@ const connectEtoRegistrationPitch = (WrappedComponent: React.FunctionComponent<T
     withProps<TWithProps, TStateProps & TDispatchProps>((p) => ({
       initialValues: convert(toFormState)(p.stateValues),
       validationFn: (values: FormikValues) => convertAndValidatePipeline([
-        { validator, conversionFn: convert(validationConversionSpec) },
-        { validator, conversionFn: convert(finalValidationConversionSpec) },
-        { validator: finalValidator, conversionFn: finalConversion }
+        { validator, conversionFn: convert(validationConversionSpec0) },
+        { validator, conversionFn: convert(validationConversionSpec1) },
+        { validator: transformValidator(validatorConversionSpec)(validator), conversionFn: conversion2 }
       ], values)
     }))
   )(WrappedComponent);
@@ -146,5 +146,4 @@ const fromFormState = {
 export { connectEtoRegistrationPitch }
 
 //TODO fix translations
-// add schema transformation fn
 // check

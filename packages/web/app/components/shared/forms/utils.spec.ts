@@ -1,7 +1,13 @@
 import { expect } from "chai";
 import * as Yup from "yup";
 
-import { convertAndValidatePipeline } from "./utils";
+import {
+  addValidator,
+  convertAndValidatePipeline,
+  deleteValidator, ObjectSchema,
+  replaceValidatorWith,
+  transformValidator
+} from "./utils";
 
 
 describe("convertAndValidatePipeline", () => {
@@ -22,7 +28,7 @@ describe("convertAndValidatePipeline", () => {
     expect(convertAndValidatePipeline(spec, data)).to.eq(undefined); /* e.g. no errors */
   });
 
-  it.only("it returns errors for the first invalid spec as formik errors object", () => {
+  it("it returns errors for the first invalid spec as formik errors object", () => {
     const data = {
       value2:"yyy",
       value3:"xxx",
@@ -102,5 +108,40 @@ describe("convertAndValidatePipeline", () => {
       value2: 'this string is too short!',
       value3: 'this string is too short!'
     });
+  })
+});
+
+describe.only("transformValidator", ()=> {
+  it("updates the given validator according to transformation spec", ()=> {
+    const baseValidator = Yup.object().shape({
+      useOfCapital: Yup.string().required(),
+      useOfCapitalList: Yup.array().of(Yup.boolean()),
+      customerGroup: Yup.string().meta({ isWysiwyg: true }),
+      sellingProposition: Yup.boolean(),
+      marketingApproach: Yup.number(),
+    });
+
+    const transformationSpec = {
+      useOfCapitalList: replaceValidatorWith(Yup.number()),
+      marketingApproach: deleteValidator(),
+      companyMission: addValidator(Yup.string())
+    };
+
+    const expectedResult = Yup.object().shape({
+      useOfCapital: Yup.string().required(),
+      useOfCapitalList: Yup.number(),
+      customerGroup: Yup.string().meta({ isWysiwyg: true }),
+      sellingProposition: Yup.boolean(),
+      companyMission:Yup.string()
+    }) as ObjectSchema<any>;
+
+
+
+    const result = transformValidator(transformationSpec)(baseValidator as ObjectSchema<any>) as ObjectSchema<any>;
+
+    expect(Object.keys((result).fields)).to.deep.eq(Object.keys(expectedResult.fields));
+    expect(result.fields["useOfCapitalList"]).to.be.instanceOf(Yup.number);
+    expect(result.fields["companyMission"]).to.be.instanceOf(Yup.string);
+    expect(result.fields).to.not.have.property("marketingApproach");
   })
 });
