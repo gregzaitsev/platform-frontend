@@ -17,7 +17,7 @@ export interface IWithdrawTxGenerator {
   valueUlps: string;
 }
 
-function* isERC223TransferIsSupported(
+export function* isERC223TransferIsSupported(
   { contractsService, web3Manager }: TGlobalDependencies,
   to: EthereumAddressWithChecksum,
 ): Iterator<any> {
