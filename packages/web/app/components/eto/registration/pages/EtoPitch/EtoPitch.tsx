@@ -30,6 +30,7 @@ const EtoRegistrationPitchComponent = (props: TComponentProps & TDispatchProps) 
         label={<FormattedMessage id="eto.form.product-vision.inspiration" />}
         placeholder="Describe"
         name="inspiration"
+        isWysiwyg={true}
       />
 
       <FormTextArea
@@ -37,6 +38,7 @@ const EtoRegistrationPitchComponent = (props: TComponentProps & TDispatchProps) 
         label={<FormattedMessage id="eto.form.product-vision.company-mission" />}
         placeholder="Describe"
         name="companyMission"
+        isWysiwyg={true}
       />
 
       <FormTextArea
@@ -44,6 +46,7 @@ const EtoRegistrationPitchComponent = (props: TComponentProps & TDispatchProps) 
         label={<FormattedMessage id="eto.form.product-vision.product-vision" />}
         placeholder="Describe"
         name="productVision"
+        isWysiwyg={true}
       />
 
       <FormTextArea
@@ -51,6 +54,7 @@ const EtoRegistrationPitchComponent = (props: TComponentProps & TDispatchProps) 
         label={<FormattedMessage id="eto.form.product-vision.problem-solved" />}
         placeholder="Describe"
         name="problemSolved"
+        isWysiwyg={true}
       />
 
       <FormTextArea
@@ -58,6 +62,7 @@ const EtoRegistrationPitchComponent = (props: TComponentProps & TDispatchProps) 
         label={<FormattedMessage id="eto.form.product-vision.customer-group" />}
         placeholder="Describe"
         name="customerGroup"
+        isWysiwyg={true}
       />
 
       <FormTextArea
@@ -65,6 +70,7 @@ const EtoRegistrationPitchComponent = (props: TComponentProps & TDispatchProps) 
         label={<FormattedMessage id="eto.form.product-vision.target-market-and-industry" />}
         placeholder="Describe"
         name="targetMarketAndIndustry"
+        isWysiwyg={true}
       />
 
       <FormTextArea
@@ -72,6 +78,7 @@ const EtoRegistrationPitchComponent = (props: TComponentProps & TDispatchProps) 
         label={<FormattedMessage id="eto.form.product-vision.key-competitors" />}
         placeholder="Describe"
         name="keyCompetitors"
+        isWysiwyg={true}
       />
 
       <FormTextArea
@@ -79,6 +86,7 @@ const EtoRegistrationPitchComponent = (props: TComponentProps & TDispatchProps) 
         label={<FormattedMessage id="eto.form.product-vision.selling-proposition" />}
         placeholder="Describe"
         name="sellingProposition"
+        isWysiwyg={true}
       />
 
       <FormTextArea
@@ -86,9 +94,15 @@ const EtoRegistrationPitchComponent = (props: TComponentProps & TDispatchProps) 
         label={<FormattedMessage id="eto.form.product-vision.key-benefits-for-investors" />}
         placeholder="Describe"
         name="keyBenefitsForInvestors"
+        isWysiwyg={true}
       />
       <FormHighlightGroup title={<FormattedMessage id="eto.form.product-vision.use-of-capital" />}>
-        <FormTextArea name="useOfCapital" placeholder="Detail" disabled={false} />
+        <FormTextArea
+          name="useOfCapital"
+          placeholder="Detail"
+          disabled={false}
+          isWysiwyg={true}
+        />
         <ArrayOfKeyValueFields
           name="useOfCapitalList"
           suggestions={distributionSuggestions}
@@ -103,6 +117,7 @@ const EtoRegistrationPitchComponent = (props: TComponentProps & TDispatchProps) 
         label={<FormattedMessage id="eto.form.product-vision.market-traction" />}
         placeholder="Describe"
         name="marketTraction"
+        isWysiwyg={true}
       />
 
       <FormTextArea
@@ -110,6 +125,7 @@ const EtoRegistrationPitchComponent = (props: TComponentProps & TDispatchProps) 
         label={<FormattedMessage id="eto.form.product-vision.roadmap" />}
         placeholder="Describe"
         name="roadmap"
+        isWysiwyg={true}
       />
 
       <FormTextArea
@@ -117,6 +133,7 @@ const EtoRegistrationPitchComponent = (props: TComponentProps & TDispatchProps) 
         label={<FormattedMessage id="eto.form.product-vision.business-model" />}
         placeholder="Describe"
         name="businessModel"
+        isWysiwyg={true}
       />
 
       <FormTextArea
@@ -124,6 +141,7 @@ const EtoRegistrationPitchComponent = (props: TComponentProps & TDispatchProps) 
         label={<FormattedMessage id="eto.form.product-vision.marketing-approach" />}
         placeholder="Describe"
         name="marketingApproach"
+        isWysiwyg={true}
       />
     </Section>
     <Section className={styles.buttonSection}>

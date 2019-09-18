@@ -64,21 +64,21 @@ const EtoCapitalListValidator = Yup.lazy((value: EEtoCapitalListSchema) => {
 });
 
 const validator = Yup.object().shape({
-  problemSolved: Yup.string().meta({ isWysiwyg: true }),
-  productVision: Yup.string().meta({ isWysiwyg: true }),
-  inspiration: Yup.string().meta({ isWysiwyg: true }),
-  roadmap: Yup.string().meta({ isWysiwyg: true }),
-  useOfCapital: Yup.string().required(),
+  problemSolved: Yup.string(),
+  productVision: Yup.string(),
+  inspiration: Yup.string(),
+  roadmap: Yup.string(),
+  useOfCapital: Yup.string(),
   useOfCapitalList: Yup.array().of(EtoCapitalListValidator).min(1, "please fill out at least one entry").required("please fill out at least one entry"),
-  customerGroup: Yup.string().meta({ isWysiwyg: true }),
-  sellingProposition: Yup.string().meta({ isWysiwyg: true }),
-  marketingApproach: Yup.string().meta({ isWysiwyg: true }),
-  companyMission: Yup.string().meta({ isWysiwyg: true }),
-  targetMarketAndIndustry: Yup.string().meta({ isWysiwyg: true }),
-  keyBenefitsForInvestors: Yup.string().meta({ isWysiwyg: true }),
-  keyCompetitors: Yup.string().meta({ isWysiwyg: true }),
-  marketTraction: Yup.string().meta({ isWysiwyg: true }),
-  businessModel: Yup.string().meta({ isWysiwyg: true }),
+  customerGroup: Yup.string(),
+  sellingProposition: Yup.string(),
+  marketingApproach: Yup.string(),
+  companyMission: Yup.string(),
+  targetMarketAndIndustry: Yup.string(),
+  keyBenefitsForInvestors: Yup.string(),
+  keyCompetitors: Yup.string(),
+  marketTraction: Yup.string(),
+  businessModel: Yup.string(),
 });
 
 const percentConversionSpec = [parseStringToFloat({passThroughInvalidData:true}), convertPercentageToFraction({passThroughInvalidData:true})];

@@ -79,7 +79,7 @@ export const EtoPitchType = YupTS.object({
   productVision: YupTS.wysiwygString().optional(),
   inspiration: YupTS.wysiwygString().optional(),
   roadmap: YupTS.wysiwygString().optional(),
-  useOfCapital: YupTS.string().optional(),
+  useOfCapital: YupTS.wysiwygString().optional(),
   useOfCapitalList: YupTS.array(EtoCapitalListType).optional(),
   customerGroup: YupTS.wysiwygString().optional(),
   sellingProposition: YupTS.wysiwygString().optional(),
