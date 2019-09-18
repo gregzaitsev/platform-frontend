@@ -65,7 +65,10 @@ export const addValidator = (newValidator: Yup.Schema<unknown>) => (validatorFie
 };
 
 export const transformValidator = <T>(transformationSpec: TTransformationSpec<T>) => (baseValidator: Yup.ObjectSchema<T>) => {
-  //fixme check input
+  if(!(baseValidator instanceof Yup.object)){
+    throw new Error("transformValidator() only works on object schema!")
+  }
+
   const validatorCopy = baseValidator.clone();
 
   Object.keys(transformationSpec).forEach(key => {

@@ -10,7 +10,7 @@ import {
 } from "./utils";
 
 
-describe.only("convertAndValidatePipeline", () => {
+describe("convertAndValidatePipeline", () => {
   it("it converts the data and runs validations step by step according to conversion/validation spec", async () => {
     const data = {value:"25.7"};
 
@@ -137,13 +137,18 @@ describe("transformValidator", ()=> {
       companyMission:Yup.string()
     }) as ObjectSchema<any>;
 
-
-
     const result = transformValidator(transformationSpec)(baseValidator as ObjectSchema<any>) as ObjectSchema<any>;
 
     expect(Object.keys((result).fields)).to.deep.eq(Object.keys(expectedResult.fields));
     expect(result.fields["useOfCapitalList"]).to.be.instanceOf(Yup.number);
     expect(result.fields["companyMission"]).to.be.instanceOf(Yup.string);
     expect(result.fields).to.not.have.property("marketingApproach");
+  });
+
+  it("throws an error if schema supplied to transformValidator is not an object schema", ()=> {
+    const schema = Yup.string();
+    const transformationSpec = {};
+
+    expect(()=> transformValidator(transformationSpec)(schema as any)).to.throw
   })
 });
