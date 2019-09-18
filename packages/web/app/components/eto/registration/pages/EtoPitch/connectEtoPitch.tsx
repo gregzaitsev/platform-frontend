@@ -69,7 +69,7 @@ const validator = Yup.object().shape({
   inspiration: Yup.string().meta({ isWysiwyg: true }),
   roadmap: Yup.string().meta({ isWysiwyg: true }),
   useOfCapital: Yup.string().required(),
-  useOfCapitalList: Yup.array().of(EtoCapitalListValidator).min(1, "please fill out at least one field").required("please fill out at least one field"),
+  useOfCapitalList: Yup.array().of(EtoCapitalListValidator).min(1, "please fill out at least one entry").required("please fill out at least one entry"),
   customerGroup: Yup.string().meta({ isWysiwyg: true }),
   sellingProposition: Yup.string().meta({ isWysiwyg: true }),
   marketingApproach: Yup.string().meta({ isWysiwyg: true }),
@@ -100,9 +100,11 @@ const validationConversionSpec1 = {
 const conversion2 = (data:TPartialCompanyEtoData) => {
   const dataCopy = convert(validationConversionSpec1)(data);
 
-  dataCopy.useOfCapitalList = dataCopy.useOfCapitalList!.reduce((acc:number, {percent}:{percent:number})=> {
-    return acc += percent;
-  },0);
+  if(dataCopy.useOfCapitalList) {
+    dataCopy.useOfCapitalList = dataCopy.useOfCapitalList!.reduce((acc: number, { percent }: { percent: number }) => {
+      return acc += percent;
+    }, 0);
+  }
   return dataCopy
 };
 
