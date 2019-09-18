@@ -19,6 +19,7 @@ describe("selectEtoStep", () => {
         false,
         false,
         false,
+        false,
       ),
     ).to.eq(EEtoStep.VERIFICATION);
 
@@ -34,6 +35,7 @@ describe("selectEtoStep", () => {
         true,
         false,
         false,
+        false,
       ),
     ).to.eq(EEtoStep.VERIFICATION);
   });
@@ -45,6 +47,7 @@ describe("selectEtoStep", () => {
         EEtoState.PREVIEW,
         false,
         EEtoMarketingDataVisibleInPreview.NOT_VISIBLE,
+        false,
         false,
         false,
         false,
@@ -66,6 +69,7 @@ describe("selectEtoStep", () => {
         false,
         false,
         false,
+        false,
       ),
     ).to.eq(EEtoStep.PUBLISH_LISTING_PAGE);
   });
@@ -77,6 +81,7 @@ describe("selectEtoStep", () => {
         EEtoState.PREVIEW,
         true,
         EEtoMarketingDataVisibleInPreview.VISIBILITY_PENDING,
+        false,
         false,
         false,
         false,
@@ -97,6 +102,7 @@ describe("selectEtoStep", () => {
         true,
         false,
         false,
+        false,
       ),
     ).to.eq(EEtoStep.LISTING_PAGE_IN_REVIEW);
   });
@@ -113,8 +119,26 @@ describe("selectEtoStep", () => {
         true,
         false,
         false,
+        false,
       ),
     ).to.eq(EEtoStep.LINK_NOMINEE);
+  });
+
+  it("should return FILL_INFORMATION_ABOUT_ETO if verification is done, state is PREVIEW, investment and eto terms are filled and nominee was linked", () => {
+    expect(
+      selectEtoStep(
+        true,
+        EEtoState.PREVIEW,
+        true,
+        EEtoMarketingDataVisibleInPreview.NOT_VISIBLE,
+        false,
+        false,
+        true,
+        false,
+        false,
+        true,
+      ),
+    ).to.eq(EEtoStep.FILL_INFORMATION_ABOUT_ETO);
   });
 
   it("should return UPLOAD_SIGNED_TERMSHEET step if verification is done, state is PREVIEW, eto data is filled (including nominee)", () => {
@@ -127,6 +151,7 @@ describe("selectEtoStep", () => {
         false,
         true,
         true,
+        false,
         false,
         false,
       ),
@@ -142,6 +167,7 @@ describe("selectEtoStep", () => {
         false,
         true,
         true,
+        false,
         false,
         false,
       ),
@@ -160,6 +186,7 @@ describe("selectEtoStep", () => {
         true,
         false,
         false,
+        false,
       ),
     ).to.eq(EEtoStep.PUBLISH_INVESTMENT_OFFER);
 
@@ -172,6 +199,7 @@ describe("selectEtoStep", () => {
         true,
         true,
         true,
+        false,
         false,
         false,
       ),
@@ -190,6 +218,7 @@ describe("selectEtoStep", () => {
         true,
         false,
         false,
+        false,
       ),
     ).to.eq(EEtoStep.INVESTMENT_OFFER_IN_REVIEW);
 
@@ -202,6 +231,7 @@ describe("selectEtoStep", () => {
         true,
         true,
         true,
+        false,
         false,
         false,
       ),
@@ -221,6 +251,7 @@ describe("selectEtoStep", () => {
         true,
         false,
         false,
+        false,
       ),
     ).to.eq(EEtoStep.UPLOAD_OFFERING_DOCUMENT);
 
@@ -234,6 +265,7 @@ describe("selectEtoStep", () => {
         true,
         true,
         true,
+        false,
         false,
         false,
       ),
@@ -253,6 +285,7 @@ describe("selectEtoStep", () => {
         true,
         true,
         false,
+        false,
       ),
     ).to.eq(EEtoStep.UPLOAD_ISHA);
 
@@ -267,6 +300,7 @@ describe("selectEtoStep", () => {
         true,
         true,
         true,
+        false,
         false,
       ),
     ).to.eq(EEtoStep.UPLOAD_ISHA);
@@ -285,6 +319,7 @@ describe("selectEtoStep", () => {
         true,
         true,
         true,
+        false,
       ),
     ).to.eq(EEtoStep.WAIT_FOR_SMART_CONTRACT);
 
@@ -300,6 +335,7 @@ describe("selectEtoStep", () => {
         true,
         true,
         true,
+        false,
       ),
     ).to.eq(EEtoStep.WAIT_FOR_SMART_CONTRACT);
   });
@@ -316,6 +352,7 @@ describe("selectEtoStep", () => {
         true,
         true,
         true,
+        false,
       ),
     ).to.eq(EEtoStep.REQUEST_THA_SIGN);
   });

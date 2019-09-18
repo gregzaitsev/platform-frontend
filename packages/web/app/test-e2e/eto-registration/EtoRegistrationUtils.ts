@@ -158,7 +158,7 @@ export const assertUploadSignedTermsheetStep = () => {
   // eto state should be still in preview
   cy.get(tid("eto-state-preview")).should("exist");
   // step should be moved to upload signed termsheet step
-  cy.get(tid("eto-dashboard-upload_signed_termsheet")).should("exist");
+  cy.get(tid("eto-dashboard-upload-signed-termsheet")).should("exist");
 
   cy.get(tid("dashboard-upload-termsheet-widget")).should("exist");
 };
@@ -181,6 +181,11 @@ export const assertLinkNomineeStepAwaitingApprovalState = () => {
   assertLinkNomineeStep();
 
   cy.get(tid("eto-dashboard-accept-nominee")).should("exist");
+};
+
+export const assertFillEtoInformationState = () => {
+  cy.get(tid("eto-state-preview")).should("exist");
+  cy.get(tid("eto-dashboard-fill-information-about-eto")).should("exist");
 };
 
 export const assertUploadMemorandumDocumentStep = () => {

@@ -3,7 +3,6 @@ import {
   EEtoState,
 } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
 
-// TODO: Replace state numbers by state names (like `LINK_NOMINEE`)
 export enum EEtoStep {
   VERIFICATION = "verification",
   FILL_INFORMATION_ABOUT_COMPANY = "fill_information_about_company",
@@ -17,6 +16,7 @@ export enum EEtoStep {
   WAIT_FOR_SMART_CONTRACT = "wait_for_smart_contract",
   REQUEST_THA_SIGN = "nine",
   LINK_NOMINEE = "link_nominee",
+  FILL_INFORMATION_ABOUT_ETO = "fill_information_about_eto",
 }
 
 // TODO: This can be moved fully to redux selector
@@ -36,6 +36,7 @@ export const selectEtoStep = (
   isInvestmentAndEtoTermsFilledWithAllRequired: boolean,
   isOfferingDocumentSubmitted: boolean | undefined,
   isISHASubmitted: boolean | undefined,
+  isNomineeLinked: boolean,
 ): EEtoStep => {
   if (!isVerificationSectionDone) {
     return EEtoStep.VERIFICATION;
@@ -62,12 +63,17 @@ export const selectEtoStep = (
     }
 
     /**
+     * When nominee was linked but still not all eto forms where filled correctly
+     */
+    if (!areEtoFormsFilledWithAllRequired && isNomineeLinked) {
+      return EEtoStep.FILL_INFORMATION_ABOUT_ETO;
+    }
+
+    /**
      * When both investment and eto terms forms are filled correctly
      * And when nominee is not linked yet
-     * (`shouldViewSubmissionSection` return true when all eto forms,
-     * including Token Holder Voting Right, are filled correctly)
      */
-    if (isInvestmentAndEtoTermsFilledWithAllRequired && !areEtoFormsFilledWithAllRequired) {
+    if (isInvestmentAndEtoTermsFilledWithAllRequired && !isNomineeLinked) {
       return EEtoStep.LINK_NOMINEE;
     }
 
