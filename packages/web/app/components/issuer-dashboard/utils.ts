@@ -17,6 +17,7 @@ export enum EEtoStep {
   WAIT_FOR_SMART_CONTRACT = "wait_for_smart_contract",
   REQUEST_THA_SIGN = "nine",
   LINK_NOMINEE = "link_nominee",
+  ETO_SUSPENDED_FROM_ON_CHAIN = "eto_suspended",
 }
 
 // TODO: This can be moved fully to redux selector
@@ -99,6 +100,10 @@ export const selectEtoStep = (
 
   if (etoState === EEtoState.ON_CHAIN) {
     return EEtoStep.REQUEST_THA_SIGN;
+  }
+
+  if (etoState === EEtoState.SUSPENDED) {
+    return EEtoStep.ETO_SUSPENDED_FROM_ON_CHAIN;
   }
 
   throw new Error("Eto step is not defined");

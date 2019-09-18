@@ -13,6 +13,7 @@ import { EtoVotingRightsComponent } from "./EtoVotingRights/EtoVotingRights";
 import { EtoRegistrationKeyIndividualsComponent } from "./KeyIndividuals";
 import { EtoRegistrationLegalInformationComponent } from "./LegalInformation/LegalInformation";
 import { EtoRegistrationRiskAssessmentComponent } from "./RiskAssessment";
+import { FormikValues } from "formik";
 
 const eto = {};
 const company = {};
@@ -21,8 +22,10 @@ const loadingState = {
   savingData: false,
   readonly: false,
   stateValues: eto,
+  initialValues: eto,
   company,
   saveData: action("saveData"),
+  validationFn: (_: FormikValues)=>{}
 };
 
 storiesOf("ETO-Flow/Registration-forms", module)

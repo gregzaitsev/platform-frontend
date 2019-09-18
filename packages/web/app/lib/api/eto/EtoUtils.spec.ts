@@ -47,7 +47,8 @@ describe("EtoUtils", () => {
       const sharePrice = 100;
       const { minInvestmentAmount } = calcInvestmentAmount(eto, sharePrice);
 
-      expect(minInvestmentAmount).to.equal(8950);
+      // discounts are not applied
+      expect(minInvestmentAmount).to.equal(10000);
     });
 
     it("should return minInvestmentAmount as 0 when minimumNewSharesToIssue is 0", () => {
@@ -84,7 +85,7 @@ describe("EtoUtils", () => {
       const { minInvestmentAmount, maxInvestmentAmount } = calcInvestmentAmount(eto, sharePrice);
 
       expect(Math.round(maxInvestmentAmount)).to.equal(6182236);
-      expect(Math.round(minInvestmentAmount)).to.equal(1223721);
+      expect(Math.round(minInvestmentAmount)).to.equal(Math.round((125000000 * 1000) / 40859));
     });
 
     it("should calculate correctly investment amount without whitelist", () => {
@@ -104,7 +105,7 @@ describe("EtoUtils", () => {
       const { minInvestmentAmount, maxInvestmentAmount } = calcInvestmentAmount(eto, sharePrice);
 
       expect(Math.round(maxInvestmentAmount)).to.equal(4897330);
-      expect(Math.round(minInvestmentAmount)).to.equal(1223721);
+      expect(Math.round(minInvestmentAmount)).to.equal(Math.round((125000000 * 1000) / 40859));
     });
     it("should calculate correctly investment amount with no discounts", () => {
       const eto = {
@@ -144,7 +145,7 @@ describe("EtoUtils", () => {
       expect(Math.round(maxInvestmentAmount)).to.equal(
         Math.round(2755818.79 + 1284906.63 + 1713208.84),
       );
-      expect(Math.round(minInvestmentAmount)).to.equal(1223721);
+      expect(Math.round(minInvestmentAmount)).to.equal(Math.round((125000000 * 1000) / 40859));
     });
 
     it("should return maxInvestmentAmount as 0 when newSharesToIssue is 0", () => {

@@ -226,6 +226,7 @@ export enum EEtoState {
   LISTED = "listed",
   PROSPECTUS_APPROVED = "prospectus_approved",
   ON_CHAIN = "on_chain",
+  SUSPENDED = "suspended",
 }
 
 export enum EEtoMarketingDataVisibleInPreview {
@@ -240,6 +241,7 @@ export enum EtoStateToCamelcase {
   "listed" = "listed",
   "prospectus_approved" = "prospectusApproved",
   "on_chain" = "onChain",
+  "suspended" = "suspended",
 }
 
 // Since only keys are transformed from snake case to camel case we have to manually map states

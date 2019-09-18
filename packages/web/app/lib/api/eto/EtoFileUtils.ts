@@ -1,6 +1,13 @@
 // Templates to not be presented
 export const ignoredTemplates: string[] = ["pamphletTemplate", "prospectusTemplate"];
 
+export const ignoredTemplatesPublicView: string[] = [
+  ...ignoredTemplates,
+  "termsheetTemplate",
+  "investmentMemorandumTemplate",
+  "investmentSummaryTemplate",
+];
+
 // Templates to not be presented to nominee
 export const nomineeIgnoredTemplates: string[] = [
   "pamphletTemplate",

@@ -11,9 +11,9 @@ import {
 import { TDataTestId, TFormikConnect, TTranslatedString } from "../../../types";
 import { pickSchemaValues } from "../../../utils/yupUtils";
 import { Form, TFormProps } from "../../shared/forms/index";
+import { validateForm } from "../../shared/forms/utils";
 import { PercentageIndicatorBar } from "../../shared/PercentageIndicatorBar";
 import { Section } from "./Shared";
-import { validateForm } from "../../shared/forms/utils";
 
 import * as styles from "./EtoFormBase.module.scss";
 

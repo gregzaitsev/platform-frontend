@@ -46,6 +46,7 @@ export const generalStateToName: Dictionary<
     <FormattedMessage id="shared-component.eto-overview.status-prospectus-approved" />
   ),
   [EEtoState.ON_CHAIN]: <FormattedMessage id="shared-component.eto-overview.status-on-chain" />,
+  [EEtoState.SUSPENDED]: <FormattedMessage id="shared-component.eto-overview.status-suspended" />,
 
   // on chain state mappings
   [EETOStateOnChain.Setup]: <FormattedMessage id="eto.status.onchain.setup" />,
@@ -80,6 +81,7 @@ const stateToClassName: Partial<Record<EEtoState | EETOStateOnChain | EEtoSubSta
   [EEtoState.PREVIEW]: styles.blue,
   [EEtoState.PENDING]: styles.orange,
   [EEtoState.LISTED]: styles.green,
+  [EEtoState.SUSPENDED]: styles.red,
   // eto on chain states
   [EETOStateOnChain.Whitelist]: styles.green,
   [EETOStateOnChain.Public]: styles.green,
@@ -90,11 +92,11 @@ const stateToClassName: Partial<Record<EEtoState | EETOStateOnChain | EEtoSubSta
 
   // eto sub states
   [EEtoSubState.MARKETING_LISTING_IN_REVIEW]: styles.orange,
-  [EEtoSubState.CAMPAIGNING]: styles.blue,
-  [EEtoSubState.WHITELISTING_LIMIT_REACHED]: styles.blue,
+  [EEtoSubState.CAMPAIGNING]: styles.green,
+  [EEtoSubState.WHITELISTING_LIMIT_REACHED]: styles.green,
   [EEtoSubState.WHITELISTING]: styles.green,
-  [EEtoSubState.COUNTDOWN_TO_PUBLIC_SALE]: styles.blue,
-  [EEtoSubState.COUNTDOWN_TO_PRESALE]: styles.blue,
+  [EEtoSubState.COUNTDOWN_TO_PUBLIC_SALE]: styles.green,
+  [EEtoSubState.COUNTDOWN_TO_PRESALE]: styles.green,
 };
 
 const getState = (eto: TEtoWithCompanyAndContract): EETOStateOnChain | EEtoState | EEtoSubState => {

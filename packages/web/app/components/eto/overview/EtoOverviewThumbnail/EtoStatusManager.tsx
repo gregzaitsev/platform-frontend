@@ -139,6 +139,9 @@ const EtoStatusManager = ({ eto }: IExternalProps) => {
       );
     }
 
+    case EEtoState.SUSPENDED:
+      return <></>;
+
     default:
       throw new Error(`State (${state}) is not known. Please provide implementation.`);
   }

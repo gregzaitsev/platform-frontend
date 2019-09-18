@@ -2,11 +2,7 @@ import { TEtoWithCompanyAndContract } from "../../../modules/eto/types";
 import { TEtoSpecsData, TPartialEtoSpecData } from "./EtoApi.interfaces.unsafe";
 
 export const calcInvestmentAmount = (eto: TPartialEtoSpecData, sharePrice: number | undefined) => ({
-  minInvestmentAmount: calcMaxInvestmentAmountWithDiscount(
-    eto,
-    sharePrice,
-    eto.minimumNewSharesToIssue,
-  ),
+  minInvestmentAmount: calcMaxInvestmentAmount(sharePrice, eto.minimumNewSharesToIssue),
   maxInvestmentAmount: calcMaxInvestmentAmountWithDiscount(eto, sharePrice, eto.newSharesToIssue),
 });
 
@@ -19,15 +15,14 @@ export const calcNumberOfTokens = ({
   computedMinNumberOfTokens: minimumNewSharesToIssue * equityTokensPerShare,
 });
 
-export const calcCapPercent = ({
+export const calcCapFraction = ({
   newSharesToIssue = 1,
   minimumNewSharesToIssue = 0,
   existingShareCapital = 1,
   newShareNominalValue = 1,
 }: TPartialEtoSpecData) => ({
-  computedMaxCapPercent: ((newSharesToIssue * newShareNominalValue) / existingShareCapital) * 100,
-  computedMinCapPercent:
-    ((minimumNewSharesToIssue * newShareNominalValue) / existingShareCapital) * 100,
+  computedMaxCapPercent: (newSharesToIssue * newShareNominalValue) / existingShareCapital,
+  computedMinCapPercent: (minimumNewSharesToIssue * newShareNominalValue) / existingShareCapital,
 });
 
 export const calcShareAndTokenPrice = ({
@@ -92,6 +87,13 @@ const calcMaxInvestmentAmountWithDiscount = (
   }
 
   return amount;
+};
+
+const calcMaxInvestmentAmount = (sharePrice = 0, shares = 0) => {
+  if (sharePrice === 0 || shares === 0) {
+    return 0;
+  }
+  return shares * sharePrice;
 };
 
 export const getInvestmentCalculatedPercentage = (eto: TEtoSpecsData) =>

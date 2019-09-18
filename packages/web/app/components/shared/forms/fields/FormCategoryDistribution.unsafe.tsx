@@ -40,11 +40,10 @@ interface IExternalProps {
 class KeyValueCompoundFieldBase extends React.Component<IProps & IInternalProps & TFormikConnect> {
   name = this.props.name;
 
-  setAllFieldsTouched = () => {
-      return this.props.formFieldKeys.map(key => {
+  setAllFieldsTouched = () =>
+      this.props.formFieldKeys.map(key => {
         this.props.formik.setFieldTouched(`${this.name}.${key}`, true);
       });
-  };
 
   render = () => {
     const {

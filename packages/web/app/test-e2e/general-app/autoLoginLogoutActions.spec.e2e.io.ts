@@ -54,6 +54,7 @@ export declare type UserActivityChannelMessage = {
 
 const channel: BroadcastChannel<UserActivityChannelMessage> = new BroadcastChannel(
   symbols.userActivityChannel.toString(),
+  { webWorkerSupport: false },
 );
 
 const pushTimeThenPostMessage = (clock: any) =>

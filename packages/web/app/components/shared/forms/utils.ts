@@ -1,5 +1,5 @@
-import * as Yup from "yup";
 import { yupToFormErrors } from 'formik'
+import * as Yup from "yup";
 import { Schema } from "yup";
 
 export type TConversionAndValidationSpec<Data> = {

@@ -71,7 +71,7 @@ export const removeEmptyKeyValueFields = () => (data: ICompoundField[] | undefin
 
 export const setEmptyKeyValueFieldsUndefined = () => (data: ICompoundField[] | undefined) => {
   if (data !== undefined && data !== null) {
-    const cleanData = data.map(field => {return findNonEmptyKeyValueField(field) ? field : undefined});
+    const cleanData = data.map(field =>findNonEmptyKeyValueField(field) ? field : undefined);
     return cleanData.length ? cleanData : undefined;
   } else {
     return undefined;
@@ -107,13 +107,14 @@ export const convertFractionToPercentage = () => (data: number | undefined) => {
 
 export const parseStringToFloat = (options?:{passThroughInvalidData:boolean}) => (data: string | number | undefined) => {
   const result = typeof data === "string" ? parseFloat(data) : data;
-  if(!(options && options.passThroughInvalidData)){
-    return !Number.isFinite(result!)
-      ? undefined
-      : result; //need to assert here to be able to test `undefined` too
-  } else {
+  if(options && options.passThroughInvalidData){
     return !Number.isFinite(result!)
       ? data
+      : result;
+
+  } else {
+    return !Number.isFinite(result!)//need to assert here to be able to test `undefined` too
+      ? undefined
       : result;
   }
 };

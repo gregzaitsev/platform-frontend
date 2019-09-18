@@ -2,8 +2,8 @@ import { expect } from "chai";
 
 import {
   applyDefaults,
-  convertFractionToPercentage,
-  convertInArray, convert,
+  convert,
+  convertFractionToPercentage, convertInArray,
   convertNumberToString,
   convertPercentageToFraction,
   convertToPrecision,
