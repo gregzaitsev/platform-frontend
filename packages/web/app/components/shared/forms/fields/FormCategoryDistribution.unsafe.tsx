@@ -44,33 +44,28 @@ class KeyValueCompoundFieldBase extends React.Component<IProps & IInternalProps 
   name = this.props.name;
 
   setAllFieldsTouched = () => {
-    // if (this.props.validationSchema) {
       return this.props.formFieldKeys.map(key => {
-      console.log("setAllFieldsTouched",`${this.name}.${key}`)
         this.props.formik.setFieldTouched(`${this.name}.${key}`, true);
       });
-    // }
-
-    // return undefined;
   };
 
-  compoundFieldValidation = (fieldName: string, neighborName: string) => {
-    const schema = this.props.validationSchema && this.props.validationSchema.fields[fieldName];
-    return (value: any) => {
-      const neighborValue = getIn(this.props.formik.values, neighborName);
-      if (neighborValue !== undefined && value === undefined) {
-        return <FormattedMessage id="form.field.error.both-fields-required" />;
-      } else {
-        try {
-          if (schema) {
-            schema.validateSync(value);
-          }
-        } catch (e) {
-          return e.errors;
-        }
-      }
-    };
-  };
+  // compoundFieldValidation = (fieldName: string, neighborName: string) => {
+  //   const schema = this.props.validationSchema && this.props.validationSchema.fields[fieldName];
+  //   return (value: any) => {
+  //     const neighborValue = getIn(this.props.formik.values, neighborName);
+  //     if (neighborValue !== undefined && value === undefined) {
+  //       return <FormattedMessage id="form.field.error.both-fields-required" />;
+  //     } else {
+  //       try {
+  //         if (schema) {
+  //           schema.validateSync(value);
+  //         }
+  //       } catch (e) {
+  //         return e.errors;
+  //       }
+  //     }
+  //   };
+  // };
 
   render = () => {
     const {
@@ -99,10 +94,10 @@ class KeyValueCompoundFieldBase extends React.Component<IProps & IInternalProps 
             name={`${name}.${formFieldKeys[0]}`}
             placeholder={keyPlaceholder}
             onBlur={this.setAllFieldsTouched}
-            customValidation={this.compoundFieldValidation(
-              formFieldKeys[0],
-              `${name}.${formFieldKeys[1]}`,
-            )}
+            // customValidation={this.compoundFieldValidation(
+            //   formFieldKeys[0],
+            //   `${name}.${formFieldKeys[1]}`,
+            // )}
           />
           {transformRatio ? (
             <NumberTransformingField
@@ -113,10 +108,10 @@ class KeyValueCompoundFieldBase extends React.Component<IProps & IInternalProps 
               ratio={transformRatio}
               customOnBlur={this.setAllFieldsTouched}
               placeholder={valuePlaceholder}
-              customValidation={this.compoundFieldValidation(
-                formFieldKeys[1],
-                `${name}.${formFieldKeys[0]}`,
-              )}
+              // customValidation={this.compoundFieldValidation(
+              //   formFieldKeys[1],
+              //   `${name}.${formFieldKeys[0]}`,
+              // )}
             />
           ) : (
             <FormInput
@@ -126,10 +121,10 @@ class KeyValueCompoundFieldBase extends React.Component<IProps & IInternalProps 
               name={`${name}.${formFieldKeys[1]}`}
               onBlur={this.setAllFieldsTouched}
               placeholder={valuePlaceholder}
-              customValidation={this.compoundFieldValidation(
-                formFieldKeys[1],
-                `${name}.${formFieldKeys[0]}`,
-              )}
+              // customValidation={this.compoundFieldValidation(
+              //   formFieldKeys[1],
+              //   `${name}.${formFieldKeys[0]}`,
+              // )}
             />
           )}
         </div>
