@@ -11,7 +11,7 @@ import { EtoRegistrationMediaComponent } from "./EtoMedia";
 import { EtoRegistrationPitchComponent } from "./EtoPitch/EtoPitch";
 import { EtoVotingRightsComponent } from "./EtoVotingRights/EtoVotingRights";
 import { EtoRegistrationKeyIndividualsComponent } from "./KeyIndividuals";
-import { EtoRegistrationLegalInformationComponent } from "./LegalInformation";
+import { EtoRegistrationLegalInformationComponent } from "./LegalInformation/LegalInformation";
 import { EtoRegistrationRiskAssessmentComponent } from "./RiskAssessment";
 
 const eto = {};

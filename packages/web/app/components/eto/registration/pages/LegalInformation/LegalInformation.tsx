@@ -1,55 +1,29 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
-import { setDisplayName } from "recompose";
-import { compose } from "redux";
 
 import {
   EtoLegalInformationType,
-  TPartialCompanyEtoData,
-} from "../../../../lib/api/eto/EtoApi.interfaces.unsafe";
-import { actions } from "../../../../modules/actions";
-import { selectIssuerCompany } from "../../../../modules/eto-flow/selectors";
-import { EEtoFormTypes } from "../../../../modules/eto-flow/types";
-import { appConnect } from "../../../../store";
-import { Button, EButtonLayout } from "../../../shared/buttons";
+} from "../../../../../lib/api/eto/EtoApi.interfaces.unsafe";
+import { Button, EButtonLayout } from "../../../../shared/buttons/index";
 import {
   ECurrency,
   ENumberInputFormat,
   ENumberOutputFormat,
-} from "../../../shared/formatters/utils";
-import { ArrayOfKeyValueFields } from "../../../shared/forms/fields/FormCategoryDistribution.unsafe";
-import { FormField } from "../../../shared/forms/fields/FormField";
-import { FormFieldDate } from "../../../shared/forms/fields/FormFieldDate";
-import { FormMaskedNumberInput } from "../../../shared/forms/fields/FormMaskedNumberInput";
-import { FormSelectField } from "../../../shared/forms/fields/FormSelectField";
-import { FormTextArea } from "../../../shared/forms/fields/FormTextArea";
-import { FormHighlightGroup } from "../../../shared/forms/FormHighlightGroup";
-import { FUNDING_ROUNDS } from "../../constants";
-import {
-  convertInArray, convert,
-  convertNumberToString,
-  parseStringToFloat,
-  parseStringToInteger,
-  removeEmptyKeyValueFields,
-} from "../../utils";
-import { EtoFormBase } from "../EtoFormBase";
-import { Section } from "../Shared";
+} from "../../../../shared/formatters/utils";
+import { ArrayOfKeyValueFields } from "../../../../shared/forms/fields/FormCategoryDistribution.unsafe";
+import { FormField } from "../../../../shared/forms/fields/FormField";
+import { FormFieldDate } from "../../../../shared/forms/fields/FormFieldDate";
+import { FormMaskedNumberInput } from "../../../../shared/forms/fields/FormMaskedNumberInput";
+import { FormSelectField } from "../../../../shared/forms/fields/FormSelectField";
+import { FormTextArea } from "../../../../shared/forms/fields/FormTextArea";
+import { FormHighlightGroup } from "../../../../shared/forms/FormHighlightGroup";
+import { FUNDING_ROUNDS } from "../../../constants";
+import { EtoFormBase } from "../../EtoFormBase";
+import { Section } from "../../Shared";
+import { connectEtoRegistrationLegalInformation, TComponentProps } from "./connectLegalInformation";
+import { FormFieldError } from "../../../../shared/forms/fields/FormFieldError";
 
-import * as styles from "../Shared.module.scss";
-
-interface IStateProps {
-  loadingData: boolean;
-  savingData: boolean;
-  company: TPartialCompanyEtoData;
-}
-
-interface IExternalProps {
-  readonly: boolean;
-}
-
-interface IDispatchProps {
-  saveData: (values: TPartialCompanyEtoData) => void;
-}
+import * as styles from "../../Shared.module.scss";
 
 const NUMBER_OF_EMPLOYEES = {
   NONE_KEY: <FormattedMessage id="form.select.please-select" />,
@@ -59,15 +33,14 @@ const NUMBER_OF_EMPLOYEES = {
   ">1000": ">1000",
 };
 
-type IProps = IExternalProps & IStateProps & IDispatchProps;
-
 // Some fields in LegalInformation are always readonly because data are set during KYC process
-const EtoRegistrationLegalInformationComponent = ({ savingData, company, saveData }: IProps) => (
+const EtoRegistrationLegalInformationComponent:React.FunctionComponent<TComponentProps> = ({ savingData, initialValues, saveData,validationFn }) => (
   <EtoFormBase
     data-test-id="eto.form.legal-information"
     title="Legal Information"
     validationSchema={EtoLegalInformationType.toYup()}
-    initialValues={convert(toFormState)(company)}
+    validate={validationFn}
+    initialValues={initialValues}
     onSubmit={saveData}
   >
     <Section>
@@ -153,6 +126,7 @@ const EtoRegistrationLegalInformationComponent = ({ savingData, company, saveDat
           suggestions={["Full Name"]}
           fieldNames={["fullName", "shareCapital"]}
         />
+        <FormFieldError name={"shareholders"} />
       </FormHighlightGroup>
     </Section>
     <Section className={styles.buttonSection}>
@@ -168,37 +142,6 @@ const EtoRegistrationLegalInformationComponent = ({ savingData, company, saveDat
   </EtoFormBase>
 );
 
-const EtoRegistrationLegalInformation = compose<React.FunctionComponent<IExternalProps>>(
-  setDisplayName(EEtoFormTypes.LegalInformation),
-  appConnect<IStateProps, IDispatchProps>({
-    stateToProps: state => ({
-      loadingData: state.etoIssuer.loading,
-      savingData: state.etoIssuer.saving,
-      company: selectIssuerCompany(state) as TPartialCompanyEtoData,
-    }),
-    dispatchToProps: dispatch => ({
-      saveData: (company: TPartialCompanyEtoData) => {
-        const convertedCompany = convert(fromFormState)(company);
-        dispatch(actions.etoFlow.saveCompanyStart(convertedCompany));
-      },
-    }),
-  }),
-)(EtoRegistrationLegalInformationComponent);
-
-const toFormState = {
-  companyShareCapital: convertNumberToString(),
-  numberOfFounders: convertNumberToString(),
-  lastFundingSizeEur: convertNumberToString(),
-};
-
-const fromFormState = {
-  shareholders: [
-    removeEmptyKeyValueFields(),
-    convertInArray({ shareCapital: parseStringToInteger() }),
-  ],
-  companyShareCapital: parseStringToInteger(),
-  lastFundingSizeEur: parseStringToFloat(),
-  numberOfFounders: parseStringToInteger(),
-};
+const EtoRegistrationLegalInformation = connectEtoRegistrationLegalInformation(EtoRegistrationLegalInformationComponent);
 
 export { EtoRegistrationLegalInformation, EtoRegistrationLegalInformationComponent };

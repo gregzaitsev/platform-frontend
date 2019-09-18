@@ -40,7 +40,7 @@ type TStateProps = {
   stateValues: TPartialCompanyEtoData;
 }
 
-type EEtoCapitalListSchema = {
+type TEtoCapitalListSchema = {
   percent: Yup.NumberSchema,
   description: Yup.StringSchema
 }
@@ -55,11 +55,11 @@ const EtoCapitalListNotRequired = Yup.object().shape({
   description: Yup.string().notRequired()
 });
 
-const EtoCapitalListValidator = Yup.lazy((value: EEtoCapitalListSchema) => {
+const EtoCapitalListValidator = Yup.lazy((value: TEtoCapitalListSchema) => {
   if (value && (value['percent'] !== undefined || value['description'] !== undefined)) {
-    return EtoCapitalListRequired as Yup.ObjectSchema<EEtoCapitalListSchema>;
+    return EtoCapitalListRequired as Yup.ObjectSchema<TEtoCapitalListSchema>;
   } else {
-    return EtoCapitalListNotRequired as Yup.ObjectSchema<EEtoCapitalListSchema>;
+    return EtoCapitalListNotRequired as Yup.ObjectSchema<TEtoCapitalListSchema>;
   }
 });
 
@@ -87,18 +87,22 @@ const validatorConversionSpec = {
   useOfCapitalList: replaceValidatorWith(Yup.number().min(1,"please describe allocation of 100% of your funds").max(1,"that's too much")) //fixme translations, wording)
 };
 
-const validationConversionSpec0 = {
-  useOfCapitalList: [setEmptyKeyValueFieldsUndefined(),
-    convertInArray({ percent: percentConversionSpec })]
+const conversionSpec0 = {
+  useOfCapitalList: [
+    setEmptyKeyValueFieldsUndefined(),
+    convertInArray({ percent: percentConversionSpec })
+  ]
 };
 
-const validationConversionSpec1 = {
-  useOfCapitalList: [removeEmptyKeyValueFields(),
-    convertInArray({ percent: percentConversionSpec })]
+const conversionSpec1 = {
+  useOfCapitalList: [
+    removeEmptyKeyValueFields(),
+    convertInArray({ percent: percentConversionSpec })
+  ]
 };
 
 const conversion2 = (data:TPartialCompanyEtoData) => {
-  const dataCopy = convert(validationConversionSpec1)(data);
+  const dataCopy = convert(conversionSpec1)(data);
 
   if(dataCopy.useOfCapitalList) {
     dataCopy.useOfCapitalList = dataCopy.useOfCapitalList!.reduce((acc: number, { percent }: { percent: number }) => {
@@ -124,11 +128,11 @@ const connectEtoRegistrationPitch = (WrappedComponent: React.FunctionComponent<T
         },
       }),
     }),
-    withProps<TWithProps, TStateProps & TDispatchProps>((p) => ({
-      initialValues: convert(toFormState)(p.stateValues),
+    withProps<TWithProps, TStateProps & TDispatchProps>(({stateValues}) => ({
+      initialValues: convert(toFormState)(stateValues),
       validationFn: (values: FormikValues) => convertAndValidatePipeline([
-        { validator, conversionFn: convert(validationConversionSpec0) },
-        { validator, conversionFn: convert(validationConversionSpec1) },
+        { validator, conversionFn: convert(conversionSpec0) },
+        { validator, conversionFn: convert(conversionSpec1) },
         { validator: transformValidator(validatorConversionSpec)(validator), conversionFn: conversion2 }
       ], values)
     }))
@@ -148,4 +152,3 @@ const fromFormState = {
 export { connectEtoRegistrationPitch }
 
 //TODO fix translations
-// check

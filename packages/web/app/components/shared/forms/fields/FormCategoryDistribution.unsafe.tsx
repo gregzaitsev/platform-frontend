@@ -69,7 +69,6 @@ class KeyValueCompoundFieldBase extends React.Component<IProps & IInternalProps 
           <ButtonIconPlaceholder />
         )}
         <div className={styles.field}>
-          {console.log('--suffix',suffix)}
           <FormInput
             disabled={disabled}
             name={`${name}.${formFieldKeys[0]}`}
