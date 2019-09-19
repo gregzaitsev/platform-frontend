@@ -62,7 +62,7 @@ const selectStepComponent = (props: IEtoStep) => {
       return (
         <>
           <DashboardHeading
-            title={<FormattedMessage id="eto-dashboard.upload_signed_termsheet" />}
+            title={<FormattedMessage id="eto-dashboard.upload-signed-termsheet" />}
             data-test-id="eto-dashboard-upload-signed-termsheet"
           />
           <FormattedMessage id="eto-dashboard.upload-signed-termsheet.description" />
