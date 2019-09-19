@@ -18,15 +18,13 @@ describe("Eto Nominee accepts agreements", function(): void {
 
     assertWaitForNomineeAgreementsStep();
 
+    cy.saveLocalStorage("ISSUER_SETUP_NO_ST");
+
     logout();
 
     assertNomineeAgreementsSigningFlow();
 
-    loginFixtureAccount("ISSUER_SETUP_NO_ST", {
-      kyc: "business",
-      signTosAgreement: true,
-      clearPendingTransactions: true,
-    });
+    cy.restoreLocalStorage("ISSUER_SETUP_NO_ST");
 
     goToIssuerDashboard();
 

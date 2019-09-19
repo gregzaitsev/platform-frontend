@@ -110,7 +110,7 @@ type PickProperties<T, R> = Pick<T, SelectPropertyNames<T, R>>;
 /**
  * Make all properties in T required and non nullable
  */
-export type Required<T> = { [P in keyof T]-?: NonNullable<T[P]> };
+export type RequiredNonNullable<T> = { [P in keyof T]-?: NonNullable<T[P]> };
 
 /**
  * In T, mark as required and non nullable properties from K
@@ -118,7 +118,7 @@ export type Required<T> = { [P in keyof T]-?: NonNullable<T[P]> };
  * @example
  * RequiredByKeys<{ foo?: boolean | null, bar?: string }, "foo"> // { foo: boolean, bar?: string }
  */
-export type RequiredByKeys<T, K extends keyof T> = Required<Pick<T, K>> & OmitKeys<T, K>;
+export type RequiredByKeys<T, K extends keyof T> = RequiredNonNullable<Pick<T, K>> & OmitKeys<T, K>;
 
 /**
  * Overwrites properties from T1 with one from T2

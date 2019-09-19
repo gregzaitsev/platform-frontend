@@ -70,7 +70,6 @@ describe("selectEtoStep", () => {
         true,
         EEtoState.PREVIEW,
         undefined,
-
         true,
         EEtoMarketingDataVisibleInPreview.NOT_VISIBLE,
         false,
@@ -90,7 +89,6 @@ describe("selectEtoStep", () => {
         true,
         EEtoState.PREVIEW,
         undefined,
-
         true,
         EEtoMarketingDataVisibleInPreview.VISIBILITY_PENDING,
         false,
@@ -109,7 +107,6 @@ describe("selectEtoStep", () => {
         true,
         EEtoState.PREVIEW,
         undefined,
-
         true,
         EEtoMarketingDataVisibleInPreview.VISIBILITY_PENDING,
         false,
@@ -129,7 +126,6 @@ describe("selectEtoStep", () => {
         true,
         EEtoState.PREVIEW,
         undefined,
-
         true,
         EEtoMarketingDataVisibleInPreview.NOT_VISIBLE,
         false,
@@ -149,7 +145,6 @@ describe("selectEtoStep", () => {
         true,
         EEtoState.PREVIEW,
         undefined,
-
         true,
         EEtoMarketingDataVisibleInPreview.VISIBLE,
         false,
@@ -168,7 +163,6 @@ describe("selectEtoStep", () => {
         true,
         EEtoState.PREVIEW,
         undefined,
-
         true,
         EEtoMarketingDataVisibleInPreview.VISIBLE,
         false,
@@ -188,7 +182,6 @@ describe("selectEtoStep", () => {
         true,
         EEtoState.PREVIEW,
         undefined,
-
         true,
         EEtoMarketingDataVisibleInPreview.VISIBLE,
         true,
@@ -206,7 +199,6 @@ describe("selectEtoStep", () => {
         true,
         EEtoState.PREVIEW,
         undefined,
-
         true,
         EEtoMarketingDataVisibleInPreview.NOT_VISIBLE,
         true,
@@ -226,7 +218,6 @@ describe("selectEtoStep", () => {
         true,
         EEtoState.PENDING,
         undefined,
-
         true,
         EEtoMarketingDataVisibleInPreview.VISIBLE,
         true,
@@ -244,7 +235,6 @@ describe("selectEtoStep", () => {
         true,
         EEtoState.PENDING,
         undefined,
-
         true,
         EEtoMarketingDataVisibleInPreview.NOT_VISIBLE,
         true,
@@ -265,7 +255,6 @@ describe("selectEtoStep", () => {
         true,
         EEtoState.LISTED,
         undefined,
-
         true,
         EEtoMarketingDataVisibleInPreview.VISIBLE,
         true,
@@ -284,7 +273,6 @@ describe("selectEtoStep", () => {
         true,
         EEtoState.PROSPECTUS_APPROVED,
         undefined,
-
         true,
         EEtoMarketingDataVisibleInPreview.VISIBLE,
         true,
@@ -305,7 +293,6 @@ describe("selectEtoStep", () => {
         true,
         EEtoState.LISTED,
         undefined,
-
         true,
         EEtoMarketingDataVisibleInPreview.VISIBLE,
         true,
@@ -324,7 +311,6 @@ describe("selectEtoStep", () => {
         true,
         EEtoState.PROSPECTUS_APPROVED,
         undefined,
-
         true,
         EEtoMarketingDataVisibleInPreview.VISIBLE,
         true,
@@ -345,7 +331,6 @@ describe("selectEtoStep", () => {
         true,
         EEtoState.LISTED,
         undefined,
-
         true,
         EEtoMarketingDataVisibleInPreview.VISIBLE,
         true,
@@ -364,7 +349,6 @@ describe("selectEtoStep", () => {
         true,
         EEtoState.PROSPECTUS_APPROVED,
         undefined,
-
         true,
         EEtoMarketingDataVisibleInPreview.VISIBLE,
         true,
