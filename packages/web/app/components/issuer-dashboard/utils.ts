@@ -20,6 +20,7 @@ export enum EEtoStep {
   WAITING_FOR_FUNDRAISING_TO_START = "waiting_for_fundraising_to_start",
   FUNDRAISING_IS_LIVE = "fundraising_is_live",
   LINK_NOMINEE = "link_nominee",
+  ETO_SUSPENDED_FROM_ON_CHAIN = "eto_suspended",
 }
 
 // TODO: This can be moved fully to redux selector
@@ -122,6 +123,10 @@ export const selectEtoStep = (
     }
 
     return EEtoStep.FUNDRAISING_IS_LIVE;
+  }
+
+  if (etoState === EEtoState.SUSPENDED) {
+    return EEtoStep.ETO_SUSPENDED_FROM_ON_CHAIN;
   }
 
   throw new Error("Eto step is not defined");

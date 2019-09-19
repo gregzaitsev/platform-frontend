@@ -139,6 +139,16 @@ const selectStepComponent = (props: IEtoStep) => {
 
     case EEtoStep.FUNDRAISING_IS_LIVE:
       return <DashboardHeading title={<FormattedMessage id="eto-dashboard.fundraising-live" />} />;
+    case EEtoStep.ETO_SUSPENDED_FROM_ON_CHAIN:
+      return (
+        <>
+          <DashboardHeading
+            title={<FormattedMessage id="eto-dashboard.suspended" />}
+            data-test-id="eto-dashboard-suspended"
+          />
+          <FormattedMessage id="eto-dashboard.eto-contracts-suspended" />
+        </>
+      );
     default:
       return assertNever(props.etoStep);
   }

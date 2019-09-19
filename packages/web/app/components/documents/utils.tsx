@@ -161,6 +161,7 @@ export const uploadAllowed = (
 ) =>
   documentsStateInfo &&
   etoState &&
+  EtoStateToCamelcase[etoState] in documentsStateInfo.canUploadInStates &&
   documentsStateInfo.canUploadInStates[EtoStateToCamelcase[etoState]].some(
     (fileName: string) => fileName === documentKey,
   ) &&

@@ -91,13 +91,13 @@ export const selectDecimalPlaces = (
       case EPriceFormat.SHARE_PRICE:
       case ECurrency.EUR:
       case ECurrency.EUR_TOKEN:
+      case ENumberFormat.PERCENTAGE:
         return 2;
       case EPriceFormat.EQUITY_TOKEN_PRICE_ETH:
       case EPriceFormat.EQUITY_TOKEN_PRICE_EURO:
       case EPriceFormat.EQUITY_TOKEN_PRICE_EUR_TOKEN:
       case ECurrency.ETH:
       case ECurrency.NEU:
-      case ENumberFormat.PERCENTAGE:
       default:
         return DEFAULT_DECIMAL_PLACES;
     }

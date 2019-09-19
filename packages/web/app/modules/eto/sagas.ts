@@ -398,7 +398,7 @@ function* loadTokensData({ contractsService }: TGlobalDependencies): any {
     // obtain nominal value of a share from IEquityToken
     let shareNominalValueUlps;
     try {
-      shareNominalValueUlps = yield equityToken.shareNominalValueUlps();
+      shareNominalValueUlps = yield equityToken.shareNominalValueUlps;
     } catch (e) {
       // make it backward compatible with FF ETO, which is always and forever Q18 and does not provide method above
       shareNominalValueUlps = Q18;

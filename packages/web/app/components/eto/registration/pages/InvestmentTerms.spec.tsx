@@ -41,8 +41,8 @@ describe("<InvestmentCalculator />", () => {
   ).eq("4 897 329.84");
   expect(
     component
-      .find('[name="equityTokenPrice"]')
+      .find('[name="minInvestmentAmount"]')
       .last()
       .prop("value"),
-  ).eq("1 223 720.61");
+  ).eq("3 059 301.50");
 });

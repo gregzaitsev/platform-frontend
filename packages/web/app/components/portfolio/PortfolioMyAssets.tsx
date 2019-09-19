@@ -16,7 +16,12 @@ import { Container } from "../layouts/Container";
 import { Button, ButtonLink, ButtonSize, EButtonLayout, EIconPosition } from "../shared/buttons";
 import { FormatNumber } from "../shared/formatters/FormatNumber";
 import { Money } from "../shared/formatters/Money";
-import { ECurrency, ENumberInputFormat, ENumberOutputFormat } from "../shared/formatters/utils";
+import {
+  ECurrency,
+  ENumberInputFormat,
+  ENumberOutputFormat,
+  EPriceFormat,
+} from "../shared/formatters/utils";
 import { ENewTableCellLayout, NewTable, NewTableRow } from "../shared/table";
 
 import * as arrowRight from "../../assets/img/inline_icons/arrow_right.svg";
@@ -91,7 +96,7 @@ const PortfolioMyAssetsComponent: React.FunctionComponent<TComponentProps> = ({
           <Money
             value={neuPrice}
             inputFormat={ENumberInputFormat.FLOAT}
-            valueType={ECurrency.EUR}
+            valueType={EPriceFormat.EQUITY_TOKEN_PRICE_EURO}
             outputFormat={ENumberOutputFormat.FULL}
           />
           <ButtonLink
@@ -139,7 +144,7 @@ const PortfolioMyAssetsComponent: React.FunctionComponent<TComponentProps> = ({
               <Money
                 value={tokenData.tokenPrice}
                 inputFormat={ENumberInputFormat.ULPS}
-                valueType={ECurrency.EUR}
+                valueType={EPriceFormat.EQUITY_TOKEN_PRICE_EURO}
                 outputFormat={ENumberOutputFormat.FULL}
               />
               <Button
