@@ -250,7 +250,7 @@ describe("MyPortfolioWidget", () => {
     expect(component.find(tid("my-portfolio-widget-incoming-payout-waiting")).length).to.eq(1);
   });
 
-  it("switches from pending payouts component to available payouts state", async () => {
+  it.skip("switches from pending payouts component to available payouts state", async () => {
     clock.fakeClock.setSystemTime(NOT_ACTUAL_DATE);
 
     const { store, container } = createIntegrationTestsSetup({
