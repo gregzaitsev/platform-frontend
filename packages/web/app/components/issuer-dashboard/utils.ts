@@ -21,6 +21,7 @@ export enum EEtoStep {
   FUNDRAISING_IS_LIVE = "fundraising_is_live",
   LINK_NOMINEE = "link_nominee",
   ETO_SUSPENDED_FROM_ON_CHAIN = "eto_suspended",
+  FILL_INFORMATION_ABOUT_ETO = "fill_information_about_eto",
 }
 
 // TODO: This can be moved fully to redux selector
@@ -41,6 +42,7 @@ export const selectEtoStep = (
   isInvestmentAndEtoTermsFilledWithAllRequired: boolean,
   isOfferingDocumentSubmitted: boolean | undefined,
   isISHASubmitted: boolean | undefined,
+  isNomineeLinked: boolean,
   areAgreementsSignedByNominee: boolean | undefined,
   preEtoStartDate: Date | undefined,
 ): EEtoStep | undefined => {
@@ -69,12 +71,17 @@ export const selectEtoStep = (
     }
 
     /**
+     * When nominee was linked but still not all eto forms where filled correctly
+     */
+    if (!areEtoFormsFilledWithAllRequired && isNomineeLinked) {
+      return EEtoStep.FILL_INFORMATION_ABOUT_ETO;
+    }
+
+    /**
      * When both investment and eto terms forms are filled correctly
      * And when nominee is not linked yet
-     * (`shouldViewSubmissionSection` return true when all eto forms,
-     * including Token Holder Voting Right, are filled correctly)
      */
-    if (isInvestmentAndEtoTermsFilledWithAllRequired && !areEtoFormsFilledWithAllRequired) {
+    if (isInvestmentAndEtoTermsFilledWithAllRequired && !isNomineeLinked) {
       return EEtoStep.LINK_NOMINEE;
     }
 

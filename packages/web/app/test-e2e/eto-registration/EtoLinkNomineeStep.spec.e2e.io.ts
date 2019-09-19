@@ -6,6 +6,7 @@ import { tid } from "../utils/selectors";
 import { createAndLoginNewUser } from "../utils/userHelpers";
 import {
   acceptNominee,
+  assertFillEtoInformationState,
   assertLinkNomineeStep,
   assertLinkNomineeStepAwaitingApprovalState,
   assertLinkNomineeStepAwaitingRequestState,
@@ -57,8 +58,12 @@ describe("Eto Forms link nominee", () => {
             assertLinkNomineeStepAwaitingApprovalState();
 
             acceptNominee(nomineeAddress);
+
             // should move to setup eto state after nominee was accepted
             goToIssuerDashboard();
+
+            assertFillEtoInformationState();
+
             fillAndAssert("eto-progress-widget-voting-right", votingRights);
 
             goToIssuerDashboard();

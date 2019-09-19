@@ -22,6 +22,7 @@ describe("selectEtoStep", () => {
         false,
         false,
         false,
+        false,
         undefined,
       ),
     ).to.eq(EEtoStep.VERIFICATION);
@@ -40,6 +41,7 @@ describe("selectEtoStep", () => {
         false,
         false,
         false,
+        false,
         undefined,
       ),
     ).to.eq(EEtoStep.VERIFICATION);
@@ -53,6 +55,7 @@ describe("selectEtoStep", () => {
         undefined,
         false,
         EEtoMarketingDataVisibleInPreview.NOT_VISIBLE,
+        false,
         false,
         false,
         false,
@@ -78,6 +81,7 @@ describe("selectEtoStep", () => {
         false,
         false,
         false,
+        false,
         undefined,
       ),
     ).to.eq(EEtoStep.PUBLISH_LISTING_PAGE);
@@ -91,6 +95,7 @@ describe("selectEtoStep", () => {
         undefined,
         true,
         EEtoMarketingDataVisibleInPreview.VISIBILITY_PENDING,
+        false,
         false,
         false,
         false,
@@ -115,6 +120,7 @@ describe("selectEtoStep", () => {
         false,
         false,
         false,
+        false,
         undefined,
       ),
     ).to.eq(EEtoStep.LISTING_PAGE_IN_REVIEW);
@@ -134,9 +140,30 @@ describe("selectEtoStep", () => {
         false,
         false,
         false,
+        false,
         undefined,
       ),
     ).to.eq(EEtoStep.LINK_NOMINEE);
+  });
+
+  it("should return FILL_INFORMATION_ABOUT_ETO if verification is done, state is PREVIEW, investment and eto terms are filled and nominee was linked", () => {
+    expect(
+      selectEtoStep(
+        true,
+        EEtoState.PREVIEW,
+        undefined,
+        true,
+        EEtoMarketingDataVisibleInPreview.NOT_VISIBLE,
+        false,
+        false,
+        true,
+        false,
+        false,
+        true,
+        false,
+        undefined,
+      ),
+    ).to.eq(EEtoStep.FILL_INFORMATION_ABOUT_ETO);
   });
 
   it("should return UPLOAD_SIGNED_TERMSHEET step if verification is done, state is PREVIEW, eto data is filled (including nominee)", () => {
@@ -150,6 +177,7 @@ describe("selectEtoStep", () => {
         false,
         true,
         true,
+        false,
         false,
         false,
         false,
@@ -168,6 +196,7 @@ describe("selectEtoStep", () => {
         false,
         true,
         true,
+        false,
         false,
         false,
         false,
@@ -190,6 +219,7 @@ describe("selectEtoStep", () => {
         false,
         false,
         false,
+        false,
         undefined,
       ),
     ).to.eq(EEtoStep.PUBLISH_INVESTMENT_OFFER);
@@ -204,6 +234,7 @@ describe("selectEtoStep", () => {
         true,
         true,
         true,
+        false,
         false,
         false,
         false,
@@ -226,6 +257,7 @@ describe("selectEtoStep", () => {
         false,
         false,
         false,
+        false,
         undefined,
       ),
     ).to.eq(EEtoStep.INVESTMENT_OFFER_IN_REVIEW);
@@ -240,6 +272,7 @@ describe("selectEtoStep", () => {
         true,
         true,
         true,
+        false,
         false,
         false,
         false,
@@ -263,6 +296,7 @@ describe("selectEtoStep", () => {
         false,
         false,
         false,
+        false,
         undefined,
       ),
     ).to.eq(EEtoStep.UPLOAD_OFFERING_DOCUMENT);
@@ -278,6 +312,7 @@ describe("selectEtoStep", () => {
         true,
         true,
         true,
+        false,
         false,
         false,
         false,
@@ -301,6 +336,7 @@ describe("selectEtoStep", () => {
         true,
         false,
         false,
+        false,
         undefined,
       ),
     ).to.eq(EEtoStep.UPLOAD_ISHA);
@@ -317,6 +353,7 @@ describe("selectEtoStep", () => {
         true,
         true,
         true,
+        false,
         false,
         false,
         undefined,
@@ -339,6 +376,7 @@ describe("selectEtoStep", () => {
         true,
         true,
         false,
+        false,
         undefined,
       ),
     ).to.eq(EEtoStep.WAIT_FOR_SMART_CONTRACT);
@@ -357,6 +395,7 @@ describe("selectEtoStep", () => {
         true,
         true,
         false,
+        false,
         undefined,
       ),
     ).to.eq(EEtoStep.WAIT_FOR_SMART_CONTRACT);
@@ -370,6 +409,7 @@ describe("selectEtoStep", () => {
         EETOStateOnChain.Setup,
         true,
         EEtoMarketingDataVisibleInPreview.VISIBLE,
+        true,
         true,
         true,
         true,
@@ -389,6 +429,7 @@ describe("selectEtoStep", () => {
         EETOStateOnChain.Setup,
         true,
         EEtoMarketingDataVisibleInPreview.VISIBLE,
+        true,
         true,
         true,
         true,
@@ -414,6 +455,7 @@ describe("selectEtoStep", () => {
         true,
         true,
         true,
+        true,
         undefined,
       ),
     ).to.eq(EEtoStep.SETUP_START_DATE);
@@ -432,6 +474,7 @@ describe("selectEtoStep", () => {
         true,
         true,
         true,
+        false,
         true,
         new Date("10/3/2019"),
       ),
@@ -446,6 +489,7 @@ describe("selectEtoStep", () => {
         EETOStateOnChain.Whitelist,
         true,
         EEtoMarketingDataVisibleInPreview.VISIBLE,
+        true,
         true,
         true,
         true,

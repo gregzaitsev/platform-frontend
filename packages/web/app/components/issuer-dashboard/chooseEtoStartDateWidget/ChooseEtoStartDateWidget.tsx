@@ -140,7 +140,7 @@ const DateChooserOpen = ({
           onTestInputChange={onTestInputChange}
           dataTestId="eto-settings-start-date-input"
           isValidDate={(currentDate: moment.Moment) =>
-            currentDate.isAfter(moment.utc().add(minOffsetPeriodInMinutes, "minutes"))
+            currentDate.isSameOrAfter(moment.utc().add(minOffsetPeriodInMinutes, "minutes"), "days")
           }
         />
         {newDateIsSet && !newDateIsValid(newEtoDate) && (
