@@ -89,17 +89,15 @@ describe("Eto widget page", () => {
     const ETO_ID = etoFixtureAddressByName("ETOInPublicState");
     getEto(ETO_ID).then((eto: TEtoSpecsData) => {
       cy.visit(withParams(e2eRoutes.embeddedWidget, { previewCode: eto.previewCode }));
-      getEto(ETO_ID).then((eto: TEtoSpecsData) => {
-        cy.iframe("iframe")
-          .find(tid("eto-widget-invest-now-button"))
-          .click();
+      cy.iframe("iframe")
+        .find(tid("eto-widget-invest-now-button"))
+        .click();
 
-        cy.get("@windowOpen").should(
-          "be.calledWithMatch",
-          etoPreviewLink(eto.previewCode, eto.product.jurisdiction),
-          "_blank",
-        );
-      });
+      cy.get("@windowOpen").should(
+        "be.calledWithMatch",
+        etoPreviewLink(eto.previewCode, eto.product.jurisdiction),
+        "_blank",
+      );
     });
   });
 

@@ -87,20 +87,16 @@ function createCustomTooltip(style: string): (this: IChart, tooltipModel: IToolt
       });
     };
 
-    const updateTooltip = (
-      tooltipEl: HTMLElement,
-      canvas: HTMLElement,
-      tooltipModel: ITooltipModel,
-    ) => {
+    const updateTooltip = (tooltipEl: HTMLElement, canvas: HTMLElement, model: ITooltipModel) => {
       const position = canvas.getBoundingClientRect();
       clearTooltip(tooltipEl);
 
-      appendTexts(tooltipEl, tooltipModel.title);
-      appendTexts(tooltipEl, getBodyLines(tooltipModel.body));
+      appendTexts(tooltipEl, model.title);
+      appendTexts(tooltipEl, getBodyLines(model.body));
 
-      tooltipEl.style.left = `${position.left + window.pageXOffset + tooltipModel.caretX}px`;
-      tooltipEl.style.top = `${position.top + window.pageYOffset + tooltipModel.caretY}px`;
-      tooltipEl.style.opacity = tooltipModel.opacity.toString();
+      tooltipEl.style.left = `${position.left + window.pageXOffset + model.caretX}px`;
+      tooltipEl.style.top = `${position.top + window.pageYOffset + model.caretY}px`;
+      tooltipEl.style.opacity = model.opacity.toString();
     };
 
     const tooltipEl =
