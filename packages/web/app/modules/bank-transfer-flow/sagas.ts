@@ -2,12 +2,14 @@ import BigNumber from "bignumber.js";
 import { takeEvery } from "redux-saga";
 import { all, fork, put, select, take } from "redux-saga/effects";
 
-import { getPossibleMaxUlps } from "../../components/modals/tx-sender/redeem/utils";
+import {
+  getPossibleMaxUlps,
+  toFixedBankingPrecision,
+} from "../../components/modals/tx-sender/redeem/utils";
 import {
   ENumberInputFormat,
   isEmptyValue,
   isValidNumber,
-  toFixedPrecision,
 } from "../../components/shared/formatters/utils";
 import { BankTransferFlowMessage } from "../../components/translatedMessages/messages";
 import { createMessage } from "../../components/translatedMessages/utils";
@@ -126,21 +128,10 @@ export function* calculateRedeemData(amount: string): Iterator<any> {
   // by default use BANKING_AMOUNT_SCALE as decimal precision
   const providedAmountUlps = getPossibleMaxUlps(walletBalanceUlps, amount);
   // use all decimal places without rounding
-  const providedAmountDec = toFixedPrecision({
-    value: providedAmountUlps,
-    decimalPlaces: undefined,
-  });
+  const providedAmountDec = toFixedBankingPrecision(providedAmountUlps, ENumberInputFormat.ULPS);
 
-  const bankFee = calculateBankFee(
-    providedAmountUlps,
-    bankFeeFractionUlps,
-    ENumberInputFormat.ULPS,
-  );
-  const totalRedeemed = subtractBankFee(
-    providedAmountUlps,
-    bankFeeFractionUlps,
-    ENumberInputFormat.ULPS,
-  );
+  const bankFee = calculateBankFee(providedAmountUlps, bankFeeFractionUlps);
+  const totalRedeemed = subtractBankFee(providedAmountUlps, bankFeeFractionUlps);
 
   return {
     amount: providedAmountDec,

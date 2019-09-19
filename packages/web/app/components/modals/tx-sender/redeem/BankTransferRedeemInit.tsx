@@ -216,7 +216,7 @@ const BankTransferRedeemLayout: React.FunctionComponent<IProps> = ({
                     value={calculatedData.bankFee}
                     inputFormat={ENumberInputFormat.FLOAT}
                     valueType={ECurrency.EUR}
-                    outputFormat={ENumberOutputFormat.FULL}
+                    outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
                   />
                 )}
               </span>

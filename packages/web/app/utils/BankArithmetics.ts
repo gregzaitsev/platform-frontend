@@ -6,7 +6,7 @@ import {
   ERoundingMode,
   toFixedPrecision,
 } from "../components/shared/formatters/utils";
-import { BANKING_AMOUNT_SCALE, ISO2022_AMOUNT_SCALE } from "../config/constants";
+import { ISO2022_AMOUNT_SCALE } from "../config/constants";
 import { multiplyBigNumbers, subtractBigNumbers } from "./BigNumberUtils";
 import { convertToBigInt } from "./Number.utils";
 
@@ -44,28 +44,19 @@ export const bankQuantize = (
 export const subtractBankFee = (
   amount: number | BigNumber | string,
   feeFraction: number | BigNumber | string,
-  inputFormat: ENumberInputFormat,
 ): string => {
-  if (inputFormat === ENumberInputFormat.FLOAT) {
-    if (Number(feeFraction) > 1 || isNaN(Number(feeFraction))) {
-      throw new Error("FeeFraction must be fraction number");
-    }
-  } else {
-    if (new BigNumber(feeFraction).comparedTo(convertToBigInt(1)) === 1) {
-      throw new Error("FeeFraction must be fraction number");
-    }
+  if (new BigNumber(feeFraction).comparedTo(convertToBigInt(1)) === 1) {
+    throw new Error("FeeFraction must be fraction number");
   }
 
-  const fee =
-    inputFormat === ENumberInputFormat.ULPS
-      ? toFixedPrecision({
-          value: feeFraction,
-          decimalPlaces: ISO2022_AMOUNT_SCALE,
-        })
-      : feeFraction;
+  const feeDec = toFixedPrecision({
+    value: feeFraction,
+    decimalPlaces: ISO2022_AMOUNT_SCALE,
+    roundingMode: ERoundingMode.UP,
+  });
 
-  const iso2002Amount = iso2002Quantize(amount, inputFormat);
-  const feeBn = multiplyBigNumbers([iso2002Amount, fee]);
+  const iso2002Amount = iso2002Quantize(amount, ENumberInputFormat.ULPS);
+  const feeBn = multiplyBigNumbers([iso2002Amount, feeDec]);
   const totalBn = subtractBigNumbers([iso2002Amount, feeBn]);
 
   // Calculation result is always FLOAT
@@ -75,16 +66,9 @@ export const subtractBankFee = (
 export const calculateBankFee = (
   amount: number | BigNumber | string,
   feeFraction: number | BigNumber | string,
-  inputFormat: ENumberInputFormat,
 ): string => {
-  const amountVal =
-    inputFormat === ENumberInputFormat.ULPS
-      ? toFixedPrecision({
-          value: amount,
-          decimalPlaces: BANKING_AMOUNT_SCALE,
-        })
-      : amount;
+  const amountDec = toFixedBankingPrecision(amount, ENumberInputFormat.ULPS);
 
-  const totalDec = subtractBankFee(amount, feeFraction, inputFormat);
-  return subtractBigNumbers([amountVal, totalDec]);
+  const totalDec = subtractBankFee(amount, feeFraction);
+  return subtractBigNumbers([amountDec, totalDec]);
 };
