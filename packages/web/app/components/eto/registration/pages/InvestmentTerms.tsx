@@ -12,7 +12,7 @@ import {
 } from "../../../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { etoFormIsReadonly } from "../../../../lib/api/eto/EtoApiUtils";
 import {
-  calcCapPercent,
+  calcCapFraction,
   calcInvestmentAmount,
   calcNumberOfTokens,
   calcShareAndTokenPrice,
@@ -139,7 +139,7 @@ const InvestmentCalculator: React.FunctionComponent<ICalculatorProps> = ({
       const { computedMaxNumberOfTokens, computedMinNumberOfTokens } = calcNumberOfTokens(
         calculatorValues,
       );
-      const { computedMaxCapPercent, computedMinCapPercent } = calcCapPercent(calculatorValues);
+      const { computedMaxCapPercent, computedMinCapPercent } = calcCapFraction(calculatorValues);
       const { sharePrice, tokenPrice } = calcShareAndTokenPrice(calculatorValues);
       const { minInvestmentAmount, maxInvestmentAmount } = calcInvestmentAmount(
         calculatorValues,
@@ -166,10 +166,10 @@ const InvestmentCalculator: React.FunctionComponent<ICalculatorProps> = ({
             <Col sm={12} md={6}>
               <CalculatorField
                 value={minInvestmentAmount}
-                name="equityTokenPrice"
+                name="minInvestmentAmount"
                 label={<FormattedMessage id="eto.form.section.investment-terms.minimum-amount" />}
                 valueType={ECurrency.EUR}
-                outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS_ROUND_UP}
+                outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
               />
             </Col>
             <Col sm={12} md={6}>
@@ -182,10 +182,18 @@ const InvestmentCalculator: React.FunctionComponent<ICalculatorProps> = ({
               />
             </Col>
             {etoProductMaxInvestmentAmount !== 0 &&
+              etoProductMaxInvestmentAmount < minInvestmentAmount && (
+                <Col sm={12}>
+                  <p className="text-error">
+                    <FormattedMessage id="eto.form.investment-terms.min-investment-amount-warning" />
+                  </p>
+                </Col>
+              )}
+            {etoProductMaxInvestmentAmount !== 0 &&
               etoProductMaxInvestmentAmount < maxInvestmentAmount && (
                 <Col sm={12}>
                   <p className="text-warning">
-                    <FormattedMessage id="eto.form.investment-terms.investment-amount-warning" />
+                    <FormattedMessage id="eto.form.investment-terms.max-investment-amount-warning" />
                   </p>
                 </Col>
               )}
@@ -219,7 +227,7 @@ const InvestmentCalculator: React.FunctionComponent<ICalculatorProps> = ({
                   <FormattedMessage id="eto.form.section.investment-terms.minimum-shares-generated" />
                 }
                 valueType={ENumberFormat.PERCENTAGE}
-                outputFormat={ENumberOutputFormat.FULL_ROUND_UP}
+                outputFormat={ENumberOutputFormat.FULL}
               />
             </Col>
             <Col sm={12} md={6}>

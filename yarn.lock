@@ -5070,7 +5070,7 @@ cypress-plugin-retries@^1.2.1:
   resolved "https://registry.yarnpkg.com/cypress-plugin-retries/-/cypress-plugin-retries-1.2.1.tgz#0ae296e41c00c1aa1c2da83750e84c8a684e1c6b"
   integrity sha512-iZ00NmeVfHleZ6fcDvzoUr2vPpCm+fzqzHpUF5ceY0PEJRs8BzdmIN/4AVUwLTDYdb3F1B8qK+s3GSoGe2WPQQ==
 
-cypress@^3.3.2:
+cypress@^3.4.1:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/cypress/-/cypress-3.4.1.tgz#ca2e4e9864679da686c6a6189603efd409664c30"
   integrity sha512-1HBS7t9XXzkt6QHbwfirWYty8vzxNMawGj1yI+Fu6C3/VZJ8UtUngMW6layqwYZzLTZV8tiDpdCNBypn78V4Dg==

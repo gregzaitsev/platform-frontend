@@ -128,6 +128,7 @@ export const getEtoSubState = ({
       return undefined;
     }
 
+    case EEtoState.SUSPENDED:
     case EEtoState.PENDING:
       return undefined;
 

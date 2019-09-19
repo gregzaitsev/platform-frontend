@@ -952,6 +952,7 @@ export const etoFilesData: IEtoFilesInfo = {
       pending: [EEtoDocumentType.SIGNED_TERMSHEET],
       preview: [EEtoDocumentType.SIGNED_TERMSHEET],
       prospectusApproved: [],
+      suspended: [],
     },
     canUploadInStates: {
       listed: [EEtoDocumentType.APPROVED_INVESTOR_OFFERING_DOCUMENT],
@@ -959,6 +960,7 @@ export const etoFilesData: IEtoFilesInfo = {
       pending: [EEtoDocumentType.SIGNED_TERMSHEET],
       preview: [EEtoDocumentType.SIGNED_TERMSHEET],
       prospectusApproved: [],
+      suspended: [],
     },
     uploadableTypes: [
       "signed_termsheet",
