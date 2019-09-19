@@ -5,12 +5,12 @@ import {
   EtoPitchType,
 } from "../../../../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { Button, EButtonLayout } from "../../../../shared/buttons/index";
-import { ArrayOfKeyValueFields, FormFieldError, FormTextArea } from "../../../../shared/forms/index";
 import { FormHighlightGroup } from "../../../../shared/forms/FormHighlightGroup";
+import { ArrayOfKeyValueFields, FormFieldError, FormTextArea } from "../../../../shared/forms/index";
 import { EtoFormBase } from "../../EtoFormBase";
 import { Section } from "../../Shared";
-import { connectEtoRegistrationPitch, TComponentProps } from "./connectEtoPitch";
 import { TDispatchProps } from "../EtoVotingRights/EtoVotingRights";
+import { connectEtoRegistrationPitch, TComponentProps } from "./connectEtoPitch";
 
 import * as styles from "../../Shared.module.scss";
 

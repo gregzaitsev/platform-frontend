@@ -20,7 +20,7 @@ export const applyDefaults = (data: any, defaults: any) => {
 };
 
 /**** DATA CONVERSION FUNCTIONS ****/
-export const convert = (conversionSpec: any) => (data: any)=> {
+export const convert = (conversionSpec: any) => (data: any) => {
   if (data) {
     const dataCopy = cloneDeep(data);
     Object.keys(conversionSpec).forEach(key => {
@@ -71,7 +71,7 @@ export const removeEmptyKeyValueFields = () => (data: ICompoundField[] | undefin
 
 export const setEmptyKeyValueFieldsUndefined = () => (data: ICompoundField[] | undefined) => {
   if (data !== undefined && data !== null) {
-    const cleanData = data.map(field =>findNonEmptyKeyValueField(field) ? field : undefined);
+    const cleanData = data.map(field => findNonEmptyKeyValueField(field) ? field : undefined);
     return cleanData.length ? cleanData : undefined;
   } else {
     return undefined;
@@ -82,20 +82,18 @@ export const setEmptyKeyValueFieldsUndefined = () => (data: ICompoundField[] | u
 export const removeEmptyKeyValueField = () => (data: ICompoundField | undefined) =>
   findNonEmptyKeyValueField(data) ? data : undefined;
 
-export const convertPercentageToFraction = (options?:{passThroughInvalidData:boolean}) => (data: number | undefined) => {
-  if(!(options && options.passThroughInvalidData)){
-    invariant(
-      data === undefined || Number.isFinite(data),
-      "convertPercentageToFraction: cannot convert non-number",
-    );
-
-    return data !== undefined ? parseFloat((data / 100).toPrecision(4)) : data;
-  } else {
-    return (typeof data === 'number' && Number.isFinite(data))
-      ? parseFloat((data / 100).toPrecision(4))
-      : data;
-  }
+export const convertPercentageToFraction = () => (data: number | undefined) => {
+  invariant(
+    data === undefined || Number.isFinite(data),
+    "convertPercentageToFraction: cannot convert non-number",
+  );
+  return data !== undefined ? parseFloat((data / 100).toPrecision(4)) : data;
 };
+
+export const convertPercentageToFractionNonStrict = () => (data: number | undefined) =>
+  (typeof data === 'number' && Number.isFinite(data))
+    ? parseFloat((data / 100).toPrecision(4))
+    : data;
 
 export const convertFractionToPercentage = () => (data: number | undefined) => {
   invariant(
@@ -105,18 +103,14 @@ export const convertFractionToPercentage = () => (data: number | undefined) => {
   return data !== undefined ? parseFloat((data * 100).toFixed(2)) : data;
 };
 
-export const parseStringToFloat = (options?:{passThroughInvalidData:boolean}) => (data: string | number | undefined) => {
+export const parseStringToFloat = () => (data: string | number | undefined) => {
   const result = typeof data === "string" ? parseFloat(data) : data;
-  if(options && options.passThroughInvalidData){
-    return !Number.isFinite(result!)
-      ? data
-      : result;
+  return !Number.isFinite(result!) ? undefined : result; //need to assert here to be able to test `undefined` too
+};
 
-  } else {
-    return !Number.isFinite(result!)//need to assert here to be able to test `undefined` too
-      ? undefined
-      : result;
-  }
+export const parseStringToFloatNonStrict = () => (data: string | number | undefined) => {
+  const result = typeof data === "string" ? parseFloat(data) : data; //todo replace parseFloat with something more sensible
+  return Number.isFinite(result!) ? result : data
 };
 
 export const parseStringToInteger = () => (data: string | number | undefined) => {

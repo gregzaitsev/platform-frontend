@@ -1,24 +1,30 @@
-import * as Yup from "yup";
+import { FormikValues } from "formik";
 import { compose, setDisplayName, withProps } from "recompose";
+import * as Yup from "yup";
 
-import { EEtoFormTypes } from "../../../../../modules/eto-flow/types";
-import { appConnect } from "../../../../../store";
+import { TPartialCompanyEtoData } from "../../../../../lib/api/eto/EtoApi.interfaces.unsafe";
+import { percentage } from "../../../../../lib/api/util/customSchemas.unsafe";
+import { actions } from "../../../../../modules/actions";
 import {
   selectIssuerCompany,
   selectIssuerEtoLoading,
   selectIssuerEtoSaving
 } from "../../../../../modules/eto-flow/selectors";
-import { TPartialCompanyEtoData } from "../../../../../lib/api/eto/EtoApi.interfaces.unsafe";
+import { EEtoFormTypes } from "../../../../../modules/eto-flow/types";
+import { appConnect } from "../../../../../store";
+import { convertAndValidatePipeline, replaceValidatorWith, transformValidator } from "../../../../shared/forms/utils";
 import {
+  convert,
   convertFractionToPercentage,
   convertInArray,
-  convert, convertNumberToString, convertPercentageToFraction, parseStringToFloat,
-  removeEmptyKeyValueFields, setEmptyKeyValueFieldsUndefined
+  convertNumberToString,
+  convertPercentageToFraction,
+  convertPercentageToFractionNonStrict,
+  parseStringToFloat,
+  parseStringToFloatNonStrict,
+  removeEmptyKeyValueFields,
+  setEmptyKeyValueFieldsUndefined
 } from "../../../utils";
-import { actions } from "../../../../../modules/actions";
-import { percentage } from "../../../../../lib/api/util/customSchemas.unsafe";
-import { convertAndValidatePipeline, replaceValidatorWith, transformValidator } from "../../../../shared/forms/utils";
-import { FormikValues } from "formik";
 
 type TDispatchProps = {
   saveData: (values: TPartialCompanyEtoData) => void;
@@ -81,7 +87,7 @@ const validator = Yup.object().shape({
   businessModel: Yup.string(),
 });
 
-const percentConversionSpec = [parseStringToFloat({passThroughInvalidData:true}), convertPercentageToFraction({passThroughInvalidData:true})];
+const percentConversionSpec = [parseStringToFloatNonStrict(), convertPercentageToFractionNonStrict()];
 
 const validatorConversionSpec = {
   useOfCapitalList: replaceValidatorWith(Yup.number().min(1,"please describe allocation of 100% of your funds").max(1,"that's too much")) //fixme translations, wording)
@@ -105,9 +111,8 @@ const conversion2 = (data:TPartialCompanyEtoData) => {
   const dataCopy = convert(conversionSpec1)(data);
 
   if(dataCopy.useOfCapitalList) {
-    dataCopy.useOfCapitalList = dataCopy.useOfCapitalList!.reduce((acc: number, { percent }: { percent: number }) => {
-      return acc += percent;
-    }, 0);
+    dataCopy.useOfCapitalList = dataCopy.useOfCapitalList!.reduce((acc: number, { percent }: { percent: number }) =>
+      acc += percent, 0);
   }
   return dataCopy
 };

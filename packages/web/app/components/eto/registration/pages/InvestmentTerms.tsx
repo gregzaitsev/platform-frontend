@@ -44,7 +44,7 @@ import {
 import { FormFieldLayout, FormHighlightGroup, FormMaskedNumberInput } from "../../../shared/forms";
 import { FormField } from "../../../shared/forms/fields/FormField";
 import {
-  convertFractionToPercentage, convert,
+  convert, convertFractionToPercentage,
   convertNumberToString,
   convertPercentageToFraction,
   parseStringToFloat,
@@ -487,3 +487,6 @@ const fromFormState = {
 };
 
 export { EtoInvestmentTerms, EtoInvestmentTermsComponent, InvestmentCalculator };
+
+
+//TODO fix translations, typings

@@ -1,26 +1,26 @@
-import { compose } from "recompose";
+import { FormikValues } from "formik";
 import * as React from "react";
+import { compose } from "recompose";
 import { setDisplayName, withProps } from "recompose";
 import * as Yup from "yup";
 
+import { MIN_COMPANY_SHARE_CAPITAL } from "../../../../../config/constants";
+import { TPartialCompanyEtoData } from "../../../../../lib/api/eto/EtoApi.interfaces.unsafe";
+import { currencyCodeSchema, dateSchema } from "../../../../../lib/api/util/customSchemas.unsafe";
+import { actions } from "../../../../../modules/actions";
+import { selectIssuerCompany } from "../../../../../modules/eto-flow/selectors";
 import { EEtoFormTypes } from "../../../../../modules/eto-flow/types";
 import { appConnect } from "../../../../../store";
-import { selectIssuerCompany } from "../../../../../modules/eto-flow/selectors";
-import { TPartialCompanyEtoData } from "../../../../../lib/api/eto/EtoApi.interfaces.unsafe";
+import { convertAndValidatePipeline } from "../../../../shared/forms/utils";
 import {
   convert,
   convertInArray,
   convertNumberToString,
-  parseStringToFloat,
+  parseStringToFloat, parseStringToFloatNonStrict,
   parseStringToInteger,
   removeEmptyKeyValueFields,
   setEmptyKeyValueFieldsUndefined
 } from "../../../utils";
-import { actions } from "../../../../../modules/actions";
-import { currencyCodeSchema, dateSchema } from "../../../../../lib/api/util/customSchemas.unsafe";
-import { MIN_COMPANY_SHARE_CAPITAL } from "../../../../../config/constants";
-import { FormikValues } from "formik";
-import { convertAndValidatePipeline } from "../../../../shared/forms/utils";
 
 type TStateProps = {
   loadingData: boolean;
@@ -87,14 +87,14 @@ const validator = Yup.object().shape({
 const conversionSpec0 = {
   shareholders: [
     setEmptyKeyValueFieldsUndefined(),
-    convertInArray({shareCapital:parseStringToFloat({passThroughInvalidData:true})})
+    convertInArray({shareCapital:parseStringToFloatNonStrict()})
   ]
 };
 
 const conversionSpec1 = {
   shareholders: [
     removeEmptyKeyValueFields(),
-    convertInArray({shareCapital:parseStringToFloat({passThroughInvalidData:true})})
+    convertInArray({shareCapital:parseStringToFloatNonStrict()})
   ]
 };
 
