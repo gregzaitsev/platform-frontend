@@ -2,6 +2,7 @@ import {
   EEtoMarketingDataVisibleInPreview,
   EEtoState,
 } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
+import { EETOStateOnChain } from "../../modules/eto/types";
 
 export enum EEtoStep {
   VERIFICATION = "verification",
@@ -14,7 +15,10 @@ export enum EEtoStep {
   UPLOAD_OFFERING_DOCUMENT = "upload_offering_document",
   UPLOAD_ISHA = "upload_isha",
   WAIT_FOR_SMART_CONTRACT = "wait_for_smart_contract",
-  REQUEST_THA_SIGN = "nine",
+  WAIT_FOR_NOMINEE_AGREEMENTS = "wait_for_nominee_agreements",
+  SETUP_START_DATE = "setup_start_date",
+  WAITING_FOR_FUNDRAISING_TO_START = "waiting_for_fundraising_to_start",
+  FUNDRAISING_IS_LIVE = "fundraising_is_live",
   LINK_NOMINEE = "link_nominee",
   ETO_SUSPENDED_FROM_ON_CHAIN = "eto_suspended",
   FILL_INFORMATION_ABOUT_ETO = "fill_information_about_eto",
@@ -30,6 +34,7 @@ export enum EEtoStep {
 export const selectEtoStep = (
   isVerificationSectionDone: boolean,
   etoState: EEtoState,
+  etoOnChainState: EETOStateOnChain | undefined,
   shouldViewEtoSettings: boolean,
   isMarketingDataVisibleInPreview: EEtoMarketingDataVisibleInPreview | undefined,
   isTermSheetSubmitted: boolean | undefined,
@@ -38,7 +43,9 @@ export const selectEtoStep = (
   isOfferingDocumentSubmitted: boolean | undefined,
   isISHASubmitted: boolean | undefined,
   isNomineeLinked: boolean,
-): EEtoStep => {
+  areAgreementsSignedByNominee: boolean | undefined,
+  preEtoStartDate: Date | undefined,
+): EEtoStep | undefined => {
   if (!isVerificationSectionDone) {
     return EEtoStep.VERIFICATION;
   }
@@ -105,7 +112,24 @@ export const selectEtoStep = (
   }
 
   if (etoState === EEtoState.ON_CHAIN) {
-    return EEtoStep.REQUEST_THA_SIGN;
+    if (etoOnChainState === EETOStateOnChain.Setup) {
+      if (preEtoStartDate !== undefined) {
+        return EEtoStep.WAITING_FOR_FUNDRAISING_TO_START;
+      }
+
+      if (areAgreementsSignedByNominee === undefined) {
+        return undefined;
+        /**
+         * When nominee sign THA and RAA agreements we can set start date
+         */
+      } else if (areAgreementsSignedByNominee) {
+        return EEtoStep.SETUP_START_DATE;
+      }
+
+      return EEtoStep.WAIT_FOR_NOMINEE_AGREEMENTS;
+    }
+
+    return EEtoStep.FUNDRAISING_IS_LIVE;
   }
 
   if (etoState === EEtoState.SUSPENDED) {

@@ -1,3 +1,4 @@
+import { isEmpty } from "lodash/fp";
 import { createSelector } from "reselect";
 
 import { TEtoSpecsData } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
@@ -7,15 +8,16 @@ import { IAppState } from "../../store";
 import { nonNullable } from "../../utils/nonNullable";
 import { objectToFilteredArray } from "../../utils/objectToFilteredArray";
 import { selectIsBankAccountVerified } from "../bank-transfer-flow/selectors";
-import { selectEtoContract, selectEtoSubState } from "../eto/selectors";
-import { TEtoWithCompanyAndContract } from "../eto/types";
+import { selectAgreementsStatus, selectEtoContract, selectEtoSubState } from "../eto/selectors";
+import {
+  EEtoAgreementStatus,
+  TEtoWithCompanyAndContract,
+  TOfferingAgreementsStatus,
+} from "../eto/types";
 import { selectRouter } from "../routing/selectors";
 import { selectIsVerificationFullyDone } from "../selectors";
-import {
-  ENomineeAcceptAgreementStatus,
-  ENomineeRequestStatus,
-  TNomineeRequestStorage,
-} from "./types";
+import { EAgreementType } from "../tx/transactions/nominee/sign-agreement/types";
+import { ENomineeRequestStatus, TNomineeRequestStorage } from "./types";
 import { getActiveEtoPreviewCodeFromQueryString, getNomineeTaskStep } from "./utils";
 
 export const selectNomineeFlow = (state: IAppState) => state.nomineeFlow;
@@ -34,15 +36,10 @@ export const selectLinkedNomineeEtoId = (state: IAppState): string | undefined =
       state.nomineeFlow.nomineeRequests[requestId].state === ENomineeRequestStatus.APPROVED,
   );
 
-export const selectNomineeTHAState = (state: IAppState): ENomineeAcceptAgreementStatus =>
-  state.nomineeFlow.acceptTha;
-
-export const selectNomineeRAAAState = (state: IAppState): ENomineeAcceptAgreementStatus =>
-  state.nomineeFlow.acceptRaaa;
-
 export const selectNomineeEtos = (
   state: IAppState,
-): { [previewCode: string]: TEtoSpecsData | undefined } => state.nomineeFlow.nomineeEtos;
+): { [previewCode: string]: TEtoSpecsData | undefined } | undefined =>
+  state.nomineeFlow.nomineeEtos;
 
 export const selectNomineeActiveEtoPreviewCode = (state: IAppState) =>
   state.nomineeFlow.activeNomineeEtoPreviewCode;
@@ -51,7 +48,7 @@ export const selectActiveNomineeEto = createSelector(
   selectNomineeEtos,
   selectNomineeActiveEtoPreviewCode,
   (etos, etoPreviewCode) => {
-    if (etoPreviewCode) {
+    if (etoPreviewCode && etos) {
       return etos[etoPreviewCode];
     }
 
@@ -105,26 +102,36 @@ export const selectNomineeEtoTemplatesArray = (state: IAppState): IEtoDocument[]
   return eto !== undefined ? objectToFilteredArray(filterFunction, eto.templates) : [];
 };
 
+export const selectNomineeEtoDocumentsStatus = (
+  state: IAppState,
+): TOfferingAgreementsStatus | undefined => {
+  const etos = selectNomineeEtos(state);
+
+  if (etos !== undefined) {
+    // if nominee has no etos linked yet return `NOT_DONE` for all agreements
+    if (isEmpty(etos)) {
+      return {
+        [EAgreementType.RAAA]: EEtoAgreementStatus.NOT_DONE,
+        [EAgreementType.THA]: EEtoAgreementStatus.NOT_DONE,
+      };
+    }
+
+    const eto = selectNomineeEtoWithCompanyAndContract(state);
+    if (eto !== undefined) {
+      return selectAgreementsStatus(state, eto.previewCode);
+    }
+  }
+
+  return undefined;
+};
+
 export const selectNomineeTaskStep = createSelector(
   selectIsVerificationFullyDone,
   selectNomineeEtoWithCompanyAndContract,
   selectIsBankAccountVerified,
-  selectNomineeTHAState,
-  selectNomineeRAAAState,
-  (
-    verificationIsComplete,
-    nomineeEto,
-    isBankAccountVerified,
-    nomineeTHAStatus,
-    nomineeRAAAStatus,
-  ) =>
-    getNomineeTaskStep(
-      verificationIsComplete,
-      nomineeEto,
-      isBankAccountVerified,
-      nomineeTHAStatus,
-      nomineeRAAAStatus,
-    ),
+  selectNomineeEtoDocumentsStatus,
+  (verificationIsComplete, nomineeEto, isBankAccountVerified, documentsStatus) =>
+    getNomineeTaskStep(verificationIsComplete, nomineeEto, isBankAccountVerified, documentsStatus),
 );
 
 export const selectActiveEtoPreviewCodeFromQueryString = createSelector(

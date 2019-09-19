@@ -11,6 +11,7 @@ import { appConnect } from "../../../../store";
 import { CommonHtmlProps, XOR } from "../../../../types";
 import { appRoutes } from "../../../appRoutes";
 import { etoPublicViewLink } from "../../../appRouteUtils";
+import { VALUES } from "../../../shared/forms/fields/FormSelectCountryField.unsafe";
 import { EHeadingSize, Heading } from "../../../shared/Heading";
 import { FUNDING_ROUNDS } from "../../constants";
 import { ComingSoonEtoState, ETOInvestorState, SuccessEtoState } from "../../shared/ETOState";
@@ -37,6 +38,14 @@ interface IDispatchProps {
 }
 
 const defaultEmpty = "-";
+
+const getCompanyHeadquarters = (eto: TEtoWithCompanyAndContract) => {
+  if (eto.company.city && eto.company.country) {
+    return `${eto.company.city}, ${VALUES[eto.company.country]}`;
+  }
+
+  return undefined;
+};
 
 const getNextFundingRound = ({ company }: TEtoWithCompanyAndContract) => {
   if (company.companyStage) {
@@ -135,7 +144,7 @@ const EtoOverviewLayoutBase: React.FunctionComponent<TEtoProps> = ({ eto }) => (
               <span className={styles.label}>
                 <FormattedMessage id="eto-overview-thumbnail.headquarters" />
               </span>
-              <span className={styles.value}>{eto.company.city || defaultEmpty}</span>
+              <span className={styles.value}>{getCompanyHeadquarters(eto) || defaultEmpty}</span>
             </div>
           </div>
 

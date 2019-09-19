@@ -122,8 +122,33 @@ const selectStepComponent = (props: IEtoStep) => {
           <FormattedMessage id="eto-dashboard.waiting-for-smart-contracts.description" />
         </>
       );
-    case EEtoStep.REQUEST_THA_SIGN:
-      return <DashboardHeading title={<FormattedMessage id="eto-dashboard.start-fundraising" />} />;
+    case EEtoStep.WAIT_FOR_NOMINEE_AGREEMENTS:
+      return (
+        <>
+          <DashboardHeading
+            title={<FormattedMessage id="eto-dashboard.waiting-for-nominee-documents" />}
+            data-test-id="eto-dashboard-waiting-for-nominee-agreements"
+          />
+          <FormattedMessage id="eto-dashboard.waiting-for-nominee-documents.description" />
+        </>
+      );
+    case EEtoStep.SETUP_START_DATE:
+      return (
+        <DashboardHeading
+          title={<FormattedMessage id="eto-dashboard.setup-start-date" />}
+          data-test-id="eto-dashboard-set-start-date"
+        />
+      );
+
+    case EEtoStep.WAITING_FOR_FUNDRAISING_TO_START:
+      return (
+        <DashboardHeading
+          title={<FormattedMessage id="eto-dashboard.waiting-for-fundraising-start" />}
+        />
+      );
+
+    case EEtoStep.FUNDRAISING_IS_LIVE:
+      return <DashboardHeading title={<FormattedMessage id="eto-dashboard.fundraising-live" />} />;
     case EEtoStep.ETO_SUSPENDED_FROM_ON_CHAIN:
       return (
         <>

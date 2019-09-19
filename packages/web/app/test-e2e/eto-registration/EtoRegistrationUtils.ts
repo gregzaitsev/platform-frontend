@@ -171,6 +171,22 @@ export const assertLinkNomineeStep = () => {
   cy.get(tid("dashboard-upload-termsheet-widget")).should("not.exist");
 };
 
+export const assertWaitForNomineeAgreementsStep = () => {
+  cy.get(tid("eto-state-whitelisting")).should("exist");
+  cy.get(tid("eto-dashboard-waiting-for-nominee-agreements")).should("exist");
+
+  // start date widget should not exist until agreements are signed by nomiee
+  cy.get(tid("eto-settings-set-start-date")).should("not.exist");
+};
+
+export const assertSetEtoStartDateStep = () => {
+  cy.get(tid("eto-state-whitelisting")).should("exist");
+  cy.get(tid("eto-dashboard-set-start-date")).should("exist");
+
+  cy.get(tid("eto-settings-set-start-date")).should("exist");
+  cy.get(tid("eto-settings-start-date-open-date-picker")).should("exist");
+};
+
 export const assertLinkNomineeStepAwaitingRequestState = (issuerAddress: string) => {
   assertLinkNomineeStep();
 

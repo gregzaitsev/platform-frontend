@@ -748,7 +748,6 @@ export const testContract = {
     [EETOStateOnChain.Payout]: new Date("2018-12-31T05:03:56.000Z"),
     [EETOStateOnChain.Refund]: undefined,
   },
-  etoCommitmentAddress: "0x234234234234",
   equityTokenAddress: "0xbAb1B125ba8b4A3161b7543a4cAA38De7f9c9b2D",
   etoTermsAddress: "0x948f07847e19E7dBb98DdfFdCA4b2eDF71f3E3B5",
 };

@@ -2,10 +2,13 @@ import { put, select } from "redux-saga/effects";
 
 import { ipfsLinkFromHash } from "../../../../../components/documents/utils";
 import { TGlobalDependencies } from "../../../../../di/setupBindings";
+import { EEtoState } from "../../../../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { ETOCommitment } from "../../../../../lib/contracts/ETOCommitment";
 import { ITxData } from "../../../../../lib/web3/types";
 import { EthereumAddressWithChecksum } from "../../../../../types";
+import { assertNever } from "../../../../../utils/assertNever";
 import { actions } from "../../../../actions";
+import { InvalidETOStateError } from "../../../../eto/errors";
 import { TEtoWithCompanyAndContract } from "../../../../eto/types";
 import { isOnChain } from "../../../../eto/utils";
 import { selectStandardGasPriceWithOverHead } from "../../../../gas/selectors";
@@ -16,38 +19,37 @@ import { selectTxType } from "../../../sender/selectors";
 import { ETxSenderType } from "../../../types";
 import { EAgreementType, IAgreementContractAndHash } from "./types";
 
-export function* selectAgreementContractAndHash(
+export function* getAgreementContractAndHash(
   { contractsService }: TGlobalDependencies,
   agreementType: EAgreementType,
-  nomineeEto: TEtoWithCompanyAndContract,
+  eto: TEtoWithCompanyAndContract,
 ): Iterator<any> {
-  if (!isOnChain(nomineeEto)) {
-    throw new Error(
-      `ETO should be on_chain to get agreement details but the status is ${nomineeEto.state}`,
-    );
+  if (!isOnChain(eto)) {
+    throw new InvalidETOStateError(eto.state, EEtoState.ON_CHAIN);
   }
 
-  if (agreementType === EAgreementType.RAAA) {
-    const contract = yield contractsService.getETOCommitmentContract(
-      nomineeEto.contract.etoCommitmentAddress,
-    );
-    return {
-      contract,
-      currentAgreementHash: nomineeEto.templates.reservationAndAcquisitionAgreement.ipfsHash,
-    };
-  } else if (agreementType === EAgreementType.THA) {
-    const etoCommitmentContract: ETOCommitment = yield contractsService.getETOCommitmentContract(
-      nomineeEto.contract.etoCommitmentAddress,
-    );
-    const equityTokenAddress: string = yield etoCommitmentContract.equityToken;
+  switch (agreementType) {
+    case EAgreementType.RAAA: {
+      const contract = yield contractsService.getETOCommitmentContract(eto.etoId);
+      return {
+        contract,
+        currentAgreementHash: eto.templates.reservationAndAcquisitionAgreement.ipfsHash,
+      };
+    }
+    case EAgreementType.THA: {
+      const etoCommitmentContract: ETOCommitment = yield contractsService.getETOCommitmentContract(
+        eto.etoId,
+      );
+      const equityTokenAddress: string = yield etoCommitmentContract.equityToken;
 
-    const contract = yield contractsService.getEquityToken(equityTokenAddress);
-    return {
-      contract,
-      currentAgreementHash: nomineeEto.templates.companyTokenHolderAgreement.ipfsHash,
-    };
-  } else {
-    throw new Error("Unexpected agreement type");
+      const contract = yield contractsService.getEquityToken(equityTokenAddress);
+      return {
+        contract,
+        currentAgreementHash: eto.templates.companyTokenHolderAgreement.ipfsHash,
+      };
+    }
+    default:
+      return assertNever(agreementType, `Unexpected agreement type (${agreementType})`);
   }
 }
 
@@ -62,7 +64,7 @@ export function* generateNomineeSignAgreementTx(
   );
 
   const { contract, currentAgreementHash }: IAgreementContractAndHash = yield neuCall(
-    selectAgreementContractAndHash,
+    getAgreementContractAndHash,
     agreementType,
     nomineeEto,
   );
