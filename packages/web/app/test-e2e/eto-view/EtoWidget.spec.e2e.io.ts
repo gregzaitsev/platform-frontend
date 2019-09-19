@@ -85,7 +85,7 @@ describe("Eto widget page", () => {
     });
   });
 
-  it("ETOInPublicState", () => {
+  it.skip("ETOInPublicState", () => {
     const ETO_ID = etoFixtureAddressByName("ETOInPublicState");
     getEto(ETO_ID).then((eto: TEtoSpecsData) => {
       cy.visit(withParams(e2eRoutes.embeddedWidget, { previewCode: eto.previewCode }));
