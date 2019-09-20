@@ -161,11 +161,13 @@ const ActionButton = ({
   if (requestStatus === EKycRequestStatus.DRAFT) {
     return (
       <Button
+        id="start-kyc-process"
         layout={EButtonLayout.SECONDARY}
         iconPosition={EIconPosition.ICON_AFTER}
         svgIcon={arrowRight}
         onClick={onGoToKycHome}
         disabled={!isUserEmailVerified || !backupCodesVerified}
+        data-test-id="settings.kyc-status-widget.start-kyc-process"
       >
         <FormattedMessage id="settings.kyc-status-widget.start-kyc-process" />
       </Button>

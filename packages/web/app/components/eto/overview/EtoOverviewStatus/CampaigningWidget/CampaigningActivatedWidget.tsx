@@ -1,8 +1,10 @@
+import * as cn from "classnames";
 import * as React from "react";
 import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 import { setDisplayName, withProps } from "recompose";
 import { compose } from "redux";
 
+import { TEtoInvestmentCalculatedValues } from "../../../../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { IPledge } from "../../../../../lib/api/eto/EtoPledgeApi.interfaces.unsafe";
 import { actions } from "../../../../../modules/actions";
 import { selectIsInvestor, selectIsVerifiedInvestor } from "../../../../../modules/auth/selectors";
@@ -32,7 +34,7 @@ export interface IExternalProps {
   etoId: string;
   investorsLimit: number;
   minPledge: number;
-  maxPledge?: number;
+  investmentCalculatedValues?: TEtoInvestmentCalculatedValues;
   nextState: EETOStateOnChain;
   nextStateStartDate?: Date;
   isActive: boolean;
@@ -61,7 +63,7 @@ const CampaigningActivatedWidgetComponent: React.FunctionComponent<IProps> = ({
   isInvestor,
   etoId,
   minPledge,
-  maxPledge,
+  investmentCalculatedValues,
   isInvestorsLimitReached,
   nextState,
   nextStateStartDate,
@@ -71,11 +73,11 @@ const CampaigningActivatedWidgetComponent: React.FunctionComponent<IProps> = ({
   pledge,
   isVerifiedInvestor,
 }) => {
-  if (isActive && !isInvestorsLimitReached) {
+  if (isActive && !isInvestorsLimitReached && investmentCalculatedValues) {
     return (
       <>
         <div className={styles.groupWrapper}>
-          <div className={styles.group}>
+          <div className={cn(styles.group, styles.groupNoPadding)}>
             <span className={styles.label}>
               <FormattedMessage id="eto-overview.campaigning.whitelist-status" />
             </span>
@@ -97,7 +99,7 @@ const CampaigningActivatedWidgetComponent: React.FunctionComponent<IProps> = ({
               )}
             </span>
           </div>
-          <div className={styles.group}>
+          <div className={cn(styles.group, styles.groupNoPadding)}>
             <span className={styles.label}>
               <FormattedMessage id="shared-component.eto-overview.amount-backed" />
             </span>
@@ -110,7 +112,7 @@ const CampaigningActivatedWidgetComponent: React.FunctionComponent<IProps> = ({
               />
             </span>
           </div>
-          <div className={styles.group}>
+          <div className={cn(styles.group, styles.groupNoPadding)}>
             <span className={styles.label}>
               <FormattedMessage id="shared-component.eto-overview.investors-backed" />
             </span>
@@ -126,7 +128,7 @@ const CampaigningActivatedWidgetComponent: React.FunctionComponent<IProps> = ({
             <CampaigningActivatedInvestorApprovedWidget
               etoId={etoId}
               minPledge={minPledge}
-              maxPledge={maxPledge}
+              maxPledge={investmentCalculatedValues.effectiveMaxTicket}
               pledge={pledge}
             />
           )}

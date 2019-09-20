@@ -647,7 +647,7 @@ const getMessageTranslation = ({ messageType, messageData }: TMessage): TTransla
                 value={messageData as number}
                 inputFormat={ENumberInputFormat.FLOAT}
                 valueType={ECurrency.EUR}
-                outputFormat={ENumberOutputFormat.FULL_ROUND_UP}
+                outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS_ROUND_UP}
               />
             ),
           }}
@@ -663,7 +663,7 @@ const getMessageTranslation = ({ messageType, messageData }: TMessage): TTransla
                 value={messageData as number}
                 inputFormat={ENumberInputFormat.FLOAT}
                 valueType={ECurrency.EUR}
-                outputFormat={ENumberOutputFormat.FULL}
+                outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
               />
             ),
           }}

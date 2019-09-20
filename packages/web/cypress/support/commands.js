@@ -115,37 +115,16 @@ Cypress.Commands.add("dropFile", { prevSubject: "element" }, (subject, file) => 
     .then(event => subject[0].dispatchEvent(event));
 });
 
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
 // based on https://github.com/cypress-io/cypress/issues/136#issuecomment-342391119
 Cypress.Commands.add("iframe", selector => {
   return cy.get(selector).then($iframe => {
-    return new Cypress.Promise(resolve => {
-      const observer = new MutationObserver(() => {
-        setTimeout(() => {
-          if (
-            !$iframe
-              .contents()
-              .find(tid("loading-indicator-pulse"))
-              .get(0)
-          ) {
-            resolve($iframe.contents().find("body"));
-          }
-        }, 1000);
-      });
-
+    return new Promise(resolve => {
       $iframe.on("load", ({ currentTarget }) => {
         currentTarget.contentWindow.open = cy.stub().as("windowOpen");
-        observer.observe(
-          $iframe
-            .contents()
-            .find("body")
-            .get(0),
-          {
-            attributes: true,
-            childList: true,
-            characterData: true,
-            subtree: true,
-          },
-        );
+
+        resolve($iframe.contents().find("body"));
       });
     });
   });

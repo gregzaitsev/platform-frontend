@@ -511,7 +511,7 @@ export type TEtoSpecsData = TEtoTermsType &
   TEtoEquityTokenInfoType &
   TEtoVotingRightsType &
   TEtoInvestmentTermsType & {
-    investmentCalculatedValues: TEtoInvestmentCalculatedValues;
+    investmentCalculatedValues?: TEtoInvestmentCalculatedValues;
   } & IAdditionalEtoType;
 
 /*General Interfaces */
