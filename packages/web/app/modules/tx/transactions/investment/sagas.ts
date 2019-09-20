@@ -2,7 +2,6 @@ import { BigNumber } from "bignumber.js";
 import { put, select, take } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../../../../di/setupBindings";
-import { ContractsService } from "../../../../lib/web3/ContractsService";
 import { ITxData } from "../../../../lib/web3/types";
 import { IAppState } from "../../../../store";
 import { compareBigNumbers } from "../../../../utils/BigNumberUtils";
@@ -21,82 +20,23 @@ import {
   selectEquityTokenCountByEtoId,
   selectNeuRewardUlpsByEtoId,
 } from "../../../investor-portfolio/selectors";
+import { neuCall } from "../../../sagasUtils";
 import { selectEtherPriceEur } from "../../../shared/tokenPrice/selectors";
 import { selectEtherTokenBalance } from "../../../wallet/selectors";
 import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
 import { selectTxGasCostEthUlps } from "../../sender/selectors";
 import { ETxSenderType } from "../../types";
-import { calculateGasLimitWithOverhead } from "../../utils";
 import { selectMaximumInvestment } from "./selectors";
 
 export const INVESTMENT_GAS_AMOUNT = "600000";
 
-const createInvestmentTxData = (
-  state: IAppState,
-  txData: string,
-  contractAddress: string,
-  value = "0",
-) => ({
-  to: contractAddress,
-  from: selectEthereumAddressWithChecksum(state),
-  data: txData,
-  value: value,
-  gasPrice: selectStandardGasPriceWithOverHead(state),
-  gas: calculateGasLimitWithOverhead(INVESTMENT_GAS_AMOUNT),
-});
-
-const getEtherLockTransaction = (
-  state: IAppState,
-  contractsService: ContractsService,
+function* getEtherTokenTransaction(
+  { contractsService }: TGlobalDependencies,
   etoId: string,
-) => {
-  const investAmountUlps = selectMaximumInvestment(state);
-
-  const txData = contractsService.etherLock
-    .transferTx(etoId, new BigNumber(investAmountUlps), [""])
-    .getData();
-  return createInvestmentTxData(state, txData, contractsService.etherLock.address);
-};
-
-const getEuroLockTransaction = (
-  state: IAppState,
-  contractsService: ContractsService,
-  etoId: string,
-) => {
-  const investAmountUlps = selectMaximumInvestment(state);
-
-  const txData = contractsService.euroLock
-    .transferTx(etoId, new BigNumber(investAmountUlps), [""])
-    .getData();
-  return createInvestmentTxData(state, txData, contractsService.euroLock.address);
-};
-
-const getEuroTokenTransaction = (
-  state: IAppState,
-  contractsService: ContractsService,
-  etoId: string,
-) => {
-  const investAmountUlps = selectMaximumInvestment(state);
-
-  // Call IERC223 compliant transfer function
-  // otherwise ETOCommitment is not aware of any investment
-  // TODO: Fix when TypeChain support overloads
-  const txData = contractsService.euroToken.rawWeb3Contract.transfer[
-    "address,uint256,bytes"
-  ].getData(etoId, investAmountUlps, "");
-
-  return createInvestmentTxData(state, txData, contractsService.euroToken.address);
-};
-
-function getEtherTokenTransaction(
-  state: IAppState,
-  contractsService: ContractsService,
-  etoId: string,
-): ITxData {
-  const etherTokenBalance = selectEtherTokenBalance(state);
-  const investAmount = state.investmentFlow.ethValueUlps || "0";
-
-  const investAmountUlps = selectMaximumInvestment(state);
+): Iterator<any> {
+  const etherTokenBalance = yield select(selectEtherTokenBalance);
+  const investAmount = yield select((state: IAppState) => state.investmentFlow.ethValueUlps || "0");
+  const investAmountUlps = yield select(selectMaximumInvestment);
 
   if (!etherTokenBalance) {
     throw new Error("No ether Token Balance");
@@ -111,37 +51,63 @@ function getEtherTokenTransaction(
     const txInput = contractsService.etherToken.rawWeb3Contract.transfer[
       "address,uint256,bytes"
     ].getData(etoId, investAmountUlps, "");
-    return createInvestmentTxData(state, txInput, contractsService.etherToken.address);
+    return { data: txInput, to: contractsService.etherToken.address };
   } else {
     // fill up etherToken with ether from wallet
     const ethVal = new BigNumber(investAmount);
     const value = ethVal.sub(etherTokenBalance);
     const txCall = contractsService.etherToken.depositAndTransferTx(etoId, ethVal, [""]).getData();
 
-    return createInvestmentTxData(
-      state,
-      txCall,
-      contractsService.etherToken.address,
-      value.toString(),
-    );
+    return { value: value.toString(), data: txCall, to: contractsService.etherToken.address };
   }
 }
 
-export function* generateInvestmentTransaction({ contractsService }: TGlobalDependencies): any {
-  const state: IAppState = yield select();
-  const investmentState = state.investmentFlow;
-  const eto = selectEtoById(state, investmentState.etoId)!;
+export function* generateInvestmentTransaction({
+  contractsService,
+  web3Manager,
+}: TGlobalDependencies): any {
+  const from: string = yield select(selectEthereumAddressWithChecksum);
+  const gasPrice: string = yield select(selectStandardGasPriceWithOverHead);
+
+  const investmentState = yield select((state: IAppState) => state.investmentFlow);
+  const { etoId } = yield select((state: IAppState) => selectEtoById(state, investmentState.etoId));
+
+  let data;
+  let to;
+  let value;
+  const investAmountUlps = yield select(selectMaximumInvestment);
 
   switch (investmentState.investmentType) {
     case EInvestmentType.Eth:
-      return yield getEtherTokenTransaction(state, contractsService, eto.etoId);
+      ({ value, data } = yield neuCall(getEtherTokenTransaction, etoId));
+      to = contractsService.etherToken.address;
+      break;
     case EInvestmentType.NEur:
-      return yield getEuroTokenTransaction(state, contractsService, eto.etoId);
+      data = yield contractsService.euroToken.rawWeb3Contract.transfer[
+        "address,uint256,bytes"
+      ].getData(etoId, investAmountUlps, "");
+      to = contractsService.euroToken.address;
+      break;
     case EInvestmentType.ICBMEth:
-      return yield getEtherLockTransaction(state, contractsService, eto.etoId);
+      data = yield contractsService.etherLock.transferTx(etoId, investAmountUlps, [""]).getData();
+      to = contractsService.etherLock.address;
+      break;
     case EInvestmentType.ICBMnEuro:
-      return yield getEuroLockTransaction(state, contractsService, eto.etoId);
+      data = yield contractsService.euroLock.transferTx(etoId, investAmountUlps, [""]).getData();
+      to = contractsService.euroLock.address;
+      break;
   }
+  const transaction: Partial<ITxData> = {
+    to,
+    from,
+    data,
+    value: value || "0",
+    gasPrice,
+  };
+
+  const gas = yield web3Manager.estimateGasWithOverhead(transaction);
+
+  return { ...transaction, gas };
 }
 
 export function* investmentFlowGenerator(_: TGlobalDependencies): any {

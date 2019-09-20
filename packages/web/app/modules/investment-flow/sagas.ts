@@ -22,11 +22,10 @@ import {
 import { neuCall } from "../sagasUtils";
 import { selectEtherPriceEur, selectEurPriceEther } from "../shared/tokenPrice/selectors";
 import { selectTxGasCostEthUlps, selectTxSenderModalOpened } from "../tx/sender/selectors";
-import { generateInvestmentTransaction } from "../tx/transactions/investment/sagas";
 import { ETxSenderType } from "../tx/types";
 import { txValidateSaga } from "../tx/validator/sagas";
 import {
-  selectLiquidEtherBalance,
+  selectEtherBalance,
   selectLiquidEuroTokenBalance,
   selectLockedEtherBalance,
   selectLockedEuroTokenBalance,
@@ -110,7 +109,7 @@ function* investEntireBalance(): any {
 
     case EInvestmentType.Eth:
       const gasCostEth = selectTxGasCostEthUlps(state);
-      balance = selectLiquidEtherBalance(state);
+      balance = selectEtherBalance(state);
       balance = subtractBigNumbers([balance, gasCostEth]);
       yield computeAndSetCurrencies(balance, ECurrency.ETH);
       break;
@@ -136,10 +135,8 @@ function validateInvestment(state: IAppState): EInvestmentErrorState | undefined
 
   if (investmentFlow.investmentType === EInvestmentType.Eth) {
     const gasPrice = selectTxGasCostEthUlps(state);
-
-    if (
-      compareBigNumbers(addBigNumbers([etherValue, gasPrice]), selectLiquidEtherBalance(state)) > 0
-    ) {
+    debugger;
+    if (compareBigNumbers(addBigNumbers([etherValue, gasPrice]), selectEtherBalance(state)) > 0) {
       return EInvestmentErrorState.ExceedsWalletBalance;
     }
   }
@@ -278,8 +275,7 @@ function* recalculateCurrencies(): any {
 
 function* resetTxDataAndValidations(): any {
   yield put(actions.txValidator.clearValidationState());
-  const initialTxData = yield neuCall(generateInvestmentTransaction);
-  yield put(actions.txSender.setTransactionData(initialTxData));
+  yield put(actions.txSender.txSenderClearTransactionData());
 }
 
 function* stop(): any {
