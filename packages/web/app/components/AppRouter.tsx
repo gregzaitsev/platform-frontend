@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Redirect, Route } from "react-router-dom";
 
+import { EJurisdiction } from "../lib/api/eto/EtoProductsApi.interfaces";
 import { SwitchConnected } from "../utils/connectedRouting";
 import { appRoutes } from "./appRoutes";
 import { Dashboard } from "./dashboard/Dashboard";
@@ -37,8 +38,30 @@ import { WalletRecoverMain } from "./wallet-selector/wallet-recover/WalletRecove
 import { WalletSelector } from "./wallet-selector/WalletSelector";
 import { Wallet } from "./wallet/Wallet";
 
+// TEMPORARY CONSTANTS -------->
+const GREYP_URL = "/greyp";
+const GREYP_WITH_JURISDICTION = "/:jurisdiction/greyp";
+const GREYP_JURISDICTION = EJurisdiction.LIECHTENSTEIN;
+const GREYP_PREVIEW_CODE = "1eb004fd-c44d-4bed-9e76-0e0858649587";
+// <---------------------------
+
 export const AppRouter: React.FunctionComponent = () => (
   <SwitchConnected>
+    {/* HARDCODED TEMP ROUTES! ------> */}
+    <Route
+      path={GREYP_URL}
+      render={() => <Redirect to={`/${GREYP_JURISDICTION}${GREYP_URL}`} />}
+      exact
+    />
+
+    <Route
+      path={GREYP_WITH_JURISDICTION}
+      render={({ match }) => (
+        <EtoPublicView previewCode={GREYP_PREVIEW_CODE} jurisdiction={match.params.jurisdiction} />
+      )}
+      exact
+    />
+    {/*<------------------------------- */}
     {/* routes that are available for all users */}
 
     <Route
