@@ -3,6 +3,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { branch, compose, renderComponent } from "recompose";
 
 import { TMockEto } from "../../../../data/etoCompanies";
+import { NEXT_FUNDING_ROUNDS } from "../../../../lib/api/eto/EtoApiUtils";
 import { TEtoWithCompanyAndContract } from "../../../../modules/eto/types";
 import { isComingSoon } from "../../../../modules/eto/utils";
 import { routingActions } from "../../../../modules/routing/actions";
@@ -41,6 +42,16 @@ const defaultEmpty = "-";
 const getCompanyHeadquarters = (eto: TEtoWithCompanyAndContract) => {
   if (eto.company.city && eto.company.country) {
     return `${eto.company.city}, ${VALUES[eto.company.country]}`;
+  }
+
+  return undefined;
+};
+
+const getNextFundingRound = ({ company }: TEtoWithCompanyAndContract) => {
+  if (company.companyStage) {
+    const nextFundingRound = NEXT_FUNDING_ROUNDS[company.companyStage];
+
+    return nextFundingRound ? FUNDING_ROUNDS[nextFundingRound] : undefined;
   }
 
   return undefined;
@@ -126,9 +137,7 @@ const EtoOverviewLayoutBase: React.FunctionComponent<TEtoProps> = ({ eto }) => (
               <span className={styles.label}>
                 <FormattedMessage id="eto-overview-thumbnail.funding-round" />
               </span>
-              <span className={styles.value}>
-                {eto.company.companyStage ? FUNDING_ROUNDS[eto.company.companyStage] : defaultEmpty}
-              </span>
+              <span className={styles.value}>{getNextFundingRound(eto) || defaultEmpty}</span>
             </div>
 
             <div className={styles.group}>

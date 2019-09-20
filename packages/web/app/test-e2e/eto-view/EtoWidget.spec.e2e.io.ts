@@ -89,6 +89,7 @@ describe("Eto widget page", () => {
     const ETO_ID = etoFixtureAddressByName("ETOInPublicState");
     getEto(ETO_ID).then((eto: TEtoSpecsData) => {
       cy.visit(withParams(e2eRoutes.embeddedWidget, { previewCode: eto.previewCode }));
+
       cy.iframe("iframe")
         .find(tid("eto-widget-invest-now-button"))
         .click();

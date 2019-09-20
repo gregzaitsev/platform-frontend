@@ -17,7 +17,7 @@ import {
   toFixedPrecision,
   TValueFormat,
 } from "./formatters/utils";
-import { InputLayout } from "./forms/index";
+import { EInputSize, InputLayout } from "./forms/index";
 import { EInputTheme } from "./forms/layouts/InputLayout";
 
 interface IProps {
@@ -41,11 +41,12 @@ interface IProps {
   reverseMetaInfo?: boolean;
   prefix?: TTranslatedString;
   suffix?: TTranslatedString;
+  size?: EInputSize;
 }
 
 export class MaskedNumberInput extends React.Component<IProps> {
   decimals = this.props.valueType
-    ? selectDecimalPlaces(this.props.valueType)
+    ? selectDecimalPlaces(this.props.valueType, this.props.outputFormat)
     : DEFAULT_DECIMAL_PLACES;
 
   formatValue = (value: string): string => {
@@ -173,6 +174,7 @@ export class MaskedNumberInput extends React.Component<IProps> {
         theme={this.props.theme}
         icon={this.props.icon}
         reverseMetaInfo={this.props.reverseMetaInfo}
+        size={this.props.size}
       />
     );
   }

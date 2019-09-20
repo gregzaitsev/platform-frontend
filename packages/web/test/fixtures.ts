@@ -5,6 +5,7 @@ import { IConfig } from "../app/config/getConfig";
 import {
   EEtoMarketingDataVisibleInPreview,
   EEtoState,
+  EFundingRound,
   ETagAlongVotingRule,
   TCompanyEtoData,
 } from "../app/lib/api/eto/EtoApi.interfaces.unsafe";
@@ -54,7 +55,7 @@ export const testCompany: TCompanyEtoData = {
   companyPreviewCardBanner,
   companyLegalDescription: "Est castus ionicis tormento, cesaris.",
   companyPitchdeckUrl: { title: "", url: "http://neufund.org" },
-  companyStage: "a_round",
+  companyStage: EFundingRound.A_ROUND,
   city: "Berlin",
   businessModel: undefined,
   companyMission: undefined,

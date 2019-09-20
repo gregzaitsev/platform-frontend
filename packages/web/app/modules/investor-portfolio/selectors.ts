@@ -141,6 +141,13 @@ export const selectCalculatedEtoTicketSizesUlpsById = (state: IAppState, etoId: 
 
   if (min && max) {
     if (eto && investorTicket) {
+      if (!eto.investmentCalculatedValues) {
+        return {
+          minTicketEurUlps: zero,
+          maxTicketEurUlps: zero,
+        };
+      }
+
       const tokenPrice = eto.investmentCalculatedValues.sharePrice / eto.equityTokensPerShare;
       min = BigNumber.max(min.sub(investorTicket.equivEurUlps), Q18.mul(tokenPrice.toString()));
       max = BigNumber.max(max.sub(investorTicket.equivEurUlps), 0);
