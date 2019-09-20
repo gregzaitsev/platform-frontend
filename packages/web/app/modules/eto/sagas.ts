@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
 import { LOCATION_CHANGE } from "connected-react-router";
-import { camelCase } from "lodash";
+import { camelCase, defaultTo } from "lodash";
 import { compose, keyBy, map, omit } from "lodash/fp";
 import { delay } from "redux-saga";
 import { all, fork, put, race, select, take } from "redux-saga/effects";
@@ -23,6 +23,7 @@ import { ECountries } from "../../lib/api/util/countries.enum";
 import { EtherToken } from "../../lib/contracts/EtherToken";
 import { ETOCommitment } from "../../lib/contracts/ETOCommitment";
 import { EuroToken } from "../../lib/contracts/EuroToken";
+import { IEquityToken } from "../../lib/contracts/IEquityToken";
 import { IAppState } from "../../store";
 import { Dictionary } from "../../types";
 import { divideBigNumbers, multiplyBigNumbers } from "../../utils/BigNumberUtils";
@@ -362,7 +363,7 @@ function* downloadTemplateByType(
   }
 }
 
-function* loadTokensData({ contractsService }: TGlobalDependencies): any {
+function* loadTokensData({ contractsService }: TGlobalDependencies): Iterator<any> {
   const myAssets = yield select(selectMyAssets);
   const walletAddress = yield select(selectEthereumAddressWithChecksum);
 
@@ -373,7 +374,7 @@ function* loadTokensData({ contractsService }: TGlobalDependencies): any {
   for (const eto of myAssets) {
     const equityTokenAddress = eto.contract.equityTokenAddress;
 
-    const equityToken = yield contractsService.getEquityToken(equityTokenAddress);
+    const equityToken: IEquityToken = yield contractsService.getEquityToken(equityTokenAddress);
 
     const { balance, tokensPerShare, tokenController } = yield all({
       balance: equityToken.balanceOf(walletAddress),
@@ -386,7 +387,6 @@ function* loadTokensData({ contractsService }: TGlobalDependencies): any {
     let [
       shareCapital,
       companyValuationEurUlps,
-      ,
     ] = yield controllerGovernance.shareholderInformation();
 
     // backward compatibility with FF Token Controller - may be removed after controller migration
@@ -396,13 +396,8 @@ function* loadTokensData({ contractsService }: TGlobalDependencies): any {
     }
 
     // obtain nominal value of a share from IEquityToken
-    let shareNominalValueUlps;
-    try {
-      shareNominalValueUlps = yield equityToken.shareNominalValueUlps;
-    } catch (e) {
-      // make it backward compatible with FF ETO, which is always and forever Q18 and does not provide method above
-      shareNominalValueUlps = Q18;
-    }
+    // make it backward compatible with FF ETO, which is always and forever Q18 and does not provide method above
+    const shareNominalValueUlps = yield defaultTo(equityToken.shareNominalValueUlps, Q18);
 
     // todo: use standard calcSharePrice util from calculator, after converting from wei scale
     const tokenPrice = divideBigNumbers(

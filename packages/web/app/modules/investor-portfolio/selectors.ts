@@ -222,9 +222,10 @@ export const selectPayoutAvailable = (state: IAppState) => {
 };
 
 export const selectMyAssetsWithTokenData = (state: IAppState): TETOWithTokenData[] | undefined => {
-  const myAsssets = selectMyAssets(state);
-  if (myAsssets) {
-    return myAsssets.map((asset: TEtoWithCompanyAndContract) => ({
+  const myAssets = selectMyAssets(state);
+
+  if (myAssets) {
+    return myAssets.map((asset: TEtoWithCompanyAndContract) => ({
       ...asset,
       tokenData: selectTokenData(state.eto, asset.previewCode)!,
     }));
