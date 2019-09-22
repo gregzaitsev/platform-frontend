@@ -49,6 +49,24 @@ type TShareholdersListSchema = {
   shareCapital: number;
 };
 
+const toFormState = {
+  useOfCapitalList: [convertInArray({ shareCapital: convertNumberToString() })],
+
+  companyShareCapital: convertNumberToString(),
+  numberOfFounders: convertNumberToString(),
+  lastFundingSizeEur: convertNumberToString(),
+};
+
+const fromFormState = {
+  shareholders: [
+    removeEmptyKeyValueFields(),
+    convertInArray({ shareCapital: parseStringToInteger() }),
+  ],
+  companyShareCapital: parseStringToInteger(),
+  lastFundingSizeEur: parseStringToFloat(),
+  numberOfFounders: parseStringToInteger(),
+};
+
 const ShareholdersListRequired = Yup.object().shape({
   fullName: Yup.string().required(),
   shareCapital: Yup.number().required(),
@@ -91,7 +109,7 @@ const validator = Yup.object().shape({
 });
 
 const conversionSpec0 = {
-  companyShareCapital: parseStringToInteger(),
+  ...fromFormState,
   shareholders: [
     setEmptyKeyValueFieldsUndefined(),
     convertInArray({ shareCapital: parseStringToFloatNonStrict() }),
@@ -99,7 +117,7 @@ const conversionSpec0 = {
 };
 
 const conversionSpec1 = {
-  companyShareCapital: parseStringToInteger(),
+  ...fromFormState,
   shareholders: [
     removeEmptyKeyValueFields(),
     convertInArray({ shareCapital: parseStringToFloatNonStrict() }),
@@ -136,23 +154,5 @@ const connectEtoRegistrationLegalInformation = (
         ),
     })),
   )(WrappedComponent);
-
-const toFormState = {
-  useOfCapitalList: [convertInArray({ shareCapital: convertNumberToString() })],
-
-  companyShareCapital: convertNumberToString(),
-  numberOfFounders: convertNumberToString(),
-  lastFundingSizeEur: convertNumberToString(),
-};
-
-const fromFormState = {
-  shareholders: [
-    removeEmptyKeyValueFields(),
-    convertInArray({ shareCapital: parseStringToInteger() }),
-  ],
-  companyShareCapital: parseStringToInteger(),
-  lastFundingSizeEur: parseStringToFloat(),
-  numberOfFounders: parseStringToInteger(),
-};
 
 export { connectEtoRegistrationLegalInformation };
