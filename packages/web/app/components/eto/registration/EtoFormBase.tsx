@@ -83,13 +83,7 @@ export const EtoFormBase = <Values extends {}>({
     <Form<Values>
       className={styles.form}
       initialValues={values}
-      validate={
-        validate
-          ? validate
-          : values => {
-              validateForm(validationSchema, values);
-            }
-      }
+      validate={validate ? validate : values => validateForm(validationSchema, values)}
       {...formProps}
     >
       <h4 className={styles.header}>{title}</h4>
