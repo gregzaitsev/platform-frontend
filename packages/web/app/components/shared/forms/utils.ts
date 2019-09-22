@@ -6,9 +6,9 @@ export type TConversionAndValidationSpec<Data> = {
   conversionFn: (data: Data) => unknown;
 };
 
-export const validateForm = (validator: Yup.Schema<any>, data: any) => {
+export const validateForm = (validator: Yup.Schema<any>, data: any, strict: boolean) => {
   try {
-    validator.validateSync(data, { abortEarly: false, strict: true });
+    validator.validateSync(data, { abortEarly: false, strict });
   } catch (e) {
     if (e instanceof Yup.ValidationError) {
       return yupToFormErrors(e);
@@ -26,12 +26,11 @@ export const convertAndValidatePipeline = <Data extends {}>(
   let validationResults = [];
   for (let { conversionFn, validator } of validationSpec) {
     const converted = conversionFn(data);
-    const currentValidationResult = validateForm(validator, converted);
+    const currentValidationResult = validateForm(validator, converted, true);
     if (currentValidationResult !== undefined) {
       validationResults.push(currentValidationResult);
     }
   }
-  // console.log("convertAndValidatePipeline",data,validationResults)
   return validationResults.reduceRight((acc: object | undefined, result) => {
     if (acc !== undefined) {
       return {

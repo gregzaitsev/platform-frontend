@@ -11,7 +11,6 @@ import {
 import { TDataTestId, TFormikConnect, TTranslatedString } from "../../../types";
 import { pickSchemaValues } from "../../../utils/yupUtils";
 import { Form, TFormProps } from "../../shared/forms/index";
-import { validateForm } from "../../shared/forms/utils";
 import { PercentageIndicatorBar } from "../../shared/PercentageIndicatorBar";
 import { Section } from "./Shared";
 
@@ -83,7 +82,8 @@ export const EtoFormBase = <Values extends {}>({
     <Form<Values>
       className={styles.form}
       initialValues={values}
-      validate={validate ? validate : values => validateForm(validationSchema, values)}
+      validationSchema={validate ? undefined : validationSchema}
+      validate={validate}
       {...formProps}
     >
       <h4 className={styles.header}>{title}</h4>
