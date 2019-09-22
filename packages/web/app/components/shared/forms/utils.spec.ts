@@ -25,7 +25,7 @@ describe("convertAndValidatePipeline", () => {
       },
     ];
 
-    expect(convertAndValidatePipeline(spec, data)).to.eq(undefined); /* e.g. no errors */
+    expect(convertAndValidatePipeline(spec)(data)).to.eq(undefined); /* e.g. no errors */
   });
 
   it("it runs all specs and returns errors as formik errors object", () => {
@@ -59,7 +59,7 @@ describe("convertAndValidatePipeline", () => {
       },
     ];
 
-    expect(convertAndValidatePipeline(spec, data)).to.deep.eq({
+    expect(convertAndValidatePipeline(spec)(data)).to.deep.eq({
       value2: "this is not a number!",
     });
   });
@@ -110,7 +110,7 @@ describe("convertAndValidatePipeline", () => {
       },
     ];
 
-    expect(convertAndValidatePipeline(spec, data)).to.deep.eq({
+    expect(convertAndValidatePipeline(spec)(data)).to.deep.eq({
       value2: "I am the first validator. This is not a number!",
       value3: "I am the second validator. This is not a string!",
     });

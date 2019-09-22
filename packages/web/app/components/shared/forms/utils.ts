@@ -19,8 +19,7 @@ export const validateForm = (validator: Yup.Schema<any>, data: any) => {
 
 export const convertAndValidatePipeline = <Data extends {}>(
   validationSpec: TConversionAndValidationSpec<Data>[],
-  data: Data,
-) => {
+) => (data: Data) => {
   /* we run all validations and collect their results in an array, */
   /* then create and return a single errors object. Flattening of array goes from  */
   /* right to left (reduceRight) because the earlier validations have precedence over the later ones  */
