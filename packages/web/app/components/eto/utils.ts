@@ -71,7 +71,7 @@ export const removeEmptyKeyValueFields = () => (data: ICompoundField[] | undefin
 
 export const setEmptyKeyValueFieldsUndefined = () => (data: ICompoundField[] | undefined) => {
   if (data !== undefined && data !== null) {
-    const cleanData = data.map(field => findNonEmptyKeyValueField(field) ? field : undefined);
+    const cleanData = data.map(field => (findNonEmptyKeyValueField(field) ? field : undefined));
     return cleanData.length ? cleanData : undefined;
   } else {
     return undefined;
@@ -91,7 +91,7 @@ export const convertPercentageToFraction = () => (data: number | undefined) => {
 };
 
 export const convertPercentageToFractionNonStrict = () => (data: number | undefined) =>
-  (typeof data === 'number' && Number.isFinite(data))
+  typeof data === "number" && Number.isFinite(data)
     ? parseFloat((data / 100).toPrecision(4))
     : data;
 
@@ -110,7 +110,7 @@ export const parseStringToFloat = () => (data: string | number | undefined) => {
 
 export const parseStringToFloatNonStrict = () => (data: string | number | undefined) => {
   const result = typeof data === "string" ? parseFloat(data) : data; //todo replace parseFloat with something more sensible
-  return Number.isFinite(result!) ? result : data
+  return Number.isFinite(result!) ? result : data;
 };
 
 export const parseStringToInteger = () => (data: string | number | undefined) => {

@@ -97,7 +97,12 @@ const Form = <Values extends {}>({
         initialValues={initialValues}
       />
     )}
-    <Formik<Values> {...props} validate={validate} validationSchema={validationSchema} initialValues={initialValues}>
+    <Formik<Values>
+      {...props}
+      validate={validate}
+      validationSchema={validationSchema}
+      initialValues={initialValues}
+    >
       {formikProps => (
         <FormLayout {...formikProps} className={className} data-test-id={dataTestId}>
           {children}

@@ -24,10 +24,10 @@ interface IProps {
 type TFormPercentageDoneProps = {
   validationSchema: Yup.Schema<unknown>;
   progressOptions?: IProgressOptions;
-}
+};
 
 type TValidatorProps<Values> = {
-  validate?: (x:Values, y: unknown) => void
+  validate?: (x: Values, y: unknown) => void;
 };
 
 type TProps = TFormPercentageDoneProps & TFormikConnect;
@@ -62,7 +62,7 @@ type TExternalProps<Values extends {}> = IProps &
   TDataTestId &
   TFormPercentageDoneProps &
   TFormProps<Values> &
-  TValidatorProps<Values>
+  TValidatorProps<Values>;
 
 export const EtoFormBase = <Values extends {}>({
   children,
@@ -83,9 +83,13 @@ export const EtoFormBase = <Values extends {}>({
     <Form<Values>
       className={styles.form}
       initialValues={values}
-      validate={validate ? validate : (values) => {
-        validateForm(validationSchema, values)
-      }}
+      validate={
+        validate
+          ? validate
+          : values => {
+              validateForm(validationSchema, values);
+            }
+      }
       {...formProps}
     >
       <h4 className={styles.header}>{title}</h4>

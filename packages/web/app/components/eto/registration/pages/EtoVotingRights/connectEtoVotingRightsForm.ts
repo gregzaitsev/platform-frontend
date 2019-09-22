@@ -29,7 +29,8 @@ import {
 import { EEtoFormTypes } from "../../../../../modules/eto-flow/types";
 import { appConnect } from "../../../../../store";
 import {
-  convert, convertFractionToPercentage,
+  convert,
+  convertFractionToPercentage,
   convertNumberToString,
   convertPercentageToFraction,
   parseStringToFloat,

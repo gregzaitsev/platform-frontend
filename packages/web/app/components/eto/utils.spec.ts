@@ -3,11 +3,14 @@ import { expect } from "chai";
 import {
   applyDefaults,
   convert,
-  convertFractionToPercentage, convertInArray,
+  convertFractionToPercentage,
+  convertInArray,
   convertNumberToString,
-  convertPercentageToFraction, convertPercentageToFractionNonStrict,
+  convertPercentageToFraction,
+  convertPercentageToFractionNonStrict,
   convertToPrecision,
-  parseStringToFloat, parseStringToFloatNonStrict,
+  parseStringToFloat,
+  parseStringToFloatNonStrict,
   removeEmptyField,
   removeEmptyKeyValueField,
   removeEmptyKeyValueFields,
@@ -98,7 +101,7 @@ describe("xconvert", () => {
   });
 });
 
-describe.only("convertPercentageToFraction", () => {
+describe("convertPercentageToFraction", () => {
   it("converts float representing percentage to a fractional representation with max precision of 4 (for our backend)", () => {
     const percentage = 12.345978;
     const expectedOutput = 0.1235;
@@ -114,7 +117,7 @@ describe.only("convertPercentageToFraction", () => {
   });
 });
 
-describe.only("convertPercentageToFractionNonStrict", () => {
+describe("convertPercentageToFractionNonStrict", () => {
   it("converts float representing percentage to a fractional representation with max precision of 4 (for our backend)", () => {
     const percentage = 12.345978;
     const expectedOutput = 0.1235;
@@ -123,11 +126,10 @@ describe.only("convertPercentageToFractionNonStrict", () => {
   });
 
   it("passes through any unparseable value", () => {
-
     expect(convertPercentageToFractionNonStrict()(undefined)).to.be.equal(undefined);
-    expect(convertPercentageToFractionNonStrict()("bla" as unknown as number)).to.be.equal("bla");
+    expect(convertPercentageToFractionNonStrict()(("bla" as unknown) as number)).to.be.equal("bla");
     expect(convertPercentageToFractionNonStrict()(NaN)).to.be.NaN;
-    expect(convertPercentageToFractionNonStrict()(null as unknown as number)).to.be.null;
+    expect(convertPercentageToFractionNonStrict()((null as unknown) as number)).to.be.null;
   });
 });
 
@@ -148,7 +150,6 @@ describe("convertFractionToPercentage", () => {
     expect(() => convertFractionToPercentage()(NaN)).to.throw;
   });
 });
-
 
 describe("parseStringToFloat", () => {
   it("tries to parse string to float and returns a float", () => {
@@ -176,12 +177,14 @@ describe("parseStringToFloat", () => {
 
 describe("parseStringToFloatNonStrict", () => {
   /* this fn is the same as parseStringToFloat but returns original data
-  * instead of undefined if it's not parseable to number.
-  * this is necessary e.g. for data processing during form validation */
+   * instead of undefined if it's not parseable to number.
+   * this is necessary e.g. for data processing during form validation */
   it("tries to parse string to float and returns a float", () => {
     const goodString = "2.56";
 
-    expect((parseStringToFloatNonStrict()(goodString) as number).toString()).to.be.equal(goodString);
+    expect((parseStringToFloatNonStrict()(goodString) as number).toString()).to.be.equal(
+      goodString,
+    );
   });
 
   it("passes through a number", () => {

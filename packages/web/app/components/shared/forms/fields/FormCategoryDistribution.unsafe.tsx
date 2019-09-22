@@ -41,9 +41,9 @@ class KeyValueCompoundFieldBase extends React.Component<IProps & IInternalProps 
   name = this.props.name;
 
   setAllFieldsTouched = () =>
-      this.props.formFieldKeys.map(key => {
-        this.props.formik.setFieldTouched(`${this.name}.${key}`, true);
-      });
+    this.props.formFieldKeys.map(key => {
+      this.props.formik.setFieldTouched(`${this.name}.${key}`, true);
+    });
 
   render = () => {
     const {
@@ -127,13 +127,15 @@ class ArrayOfKeyValueFieldsBase extends React.Component<
     }
   }
 
-  addField = (arrayHelpers: ArrayHelpers) =>
-    arrayHelpers.push(this.blankField);
+  addField = (arrayHelpers: ArrayHelpers) => arrayHelpers.push(this.blankField);
 
-  removeField = (e: React.MouseEvent<HTMLButtonElement>, arrayHelpers: ArrayHelpers, index:number) => {
+  removeField = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    arrayHelpers: ArrayHelpers,
+    index: number,
+  ) => {
     e.preventDefault();
     arrayHelpers.remove(index);
-    // this.suggestions.splice(index, 1);
   };
 
   render(): React.ReactNode {
@@ -141,7 +143,6 @@ class ArrayOfKeyValueFieldsBase extends React.Component<
 
     const categoryDistribution = getIn(formik.values, name) || [];
     const formFieldKeys = this.props.fieldNames;
-    console.log("render",this.props.formik.values,this.props.formik.touched,this.props.formik.errors)
     return (
       <FieldArray
         name={name}
@@ -160,7 +161,9 @@ class ArrayOfKeyValueFieldsBase extends React.Component<
                     prefix={prefix}
                     suffix={suffix}
                     name={`${name}.${index}`}
-                    removeField={(e: React.MouseEvent<HTMLButtonElement>) => this.removeField(e, arrayHelpers, index)}
+                    removeField={(e: React.MouseEvent<HTMLButtonElement>) =>
+                      this.removeField(e, arrayHelpers, index)
+                    }
                     valuePlaceholder={valuePlaceholder}
                     keyPlaceholder={this.suggestions[index] || "Other"}
                     addField={() => this.addField(arrayHelpers)}

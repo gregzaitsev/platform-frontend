@@ -1,9 +1,7 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
-import {
-  EtoLegalInformationType,
-} from "../../../../../lib/api/eto/EtoApi.interfaces.unsafe";
+import { EtoLegalInformationType } from "../../../../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { Button, EButtonLayout } from "../../../../shared/buttons/index";
 import {
   ECurrency,
@@ -34,7 +32,12 @@ const NUMBER_OF_EMPLOYEES = {
 };
 
 // Some fields in LegalInformation are always readonly because data are set during KYC process
-const EtoRegistrationLegalInformationComponent:React.FunctionComponent<TComponentProps> = ({ savingData, initialValues, saveData,validationFn }) => (
+const EtoRegistrationLegalInformationComponent: React.FunctionComponent<TComponentProps> = ({
+  savingData,
+  initialValues,
+  saveData,
+  validationFn,
+}) => (
   <EtoFormBase
     data-test-id="eto.form.legal-information"
     title="Legal Information"
@@ -142,6 +145,8 @@ const EtoRegistrationLegalInformationComponent:React.FunctionComponent<TComponen
   </EtoFormBase>
 );
 
-const EtoRegistrationLegalInformation = connectEtoRegistrationLegalInformation(EtoRegistrationLegalInformationComponent);
+const EtoRegistrationLegalInformation = connectEtoRegistrationLegalInformation(
+  EtoRegistrationLegalInformationComponent,
+);
 
 export { EtoRegistrationLegalInformation, EtoRegistrationLegalInformationComponent };

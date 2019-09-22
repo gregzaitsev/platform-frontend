@@ -1,12 +1,14 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
-import {
-  EtoPitchType,
-} from "../../../../../lib/api/eto/EtoApi.interfaces.unsafe";
+import { EtoPitchType } from "../../../../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { Button, EButtonLayout } from "../../../../shared/buttons/index";
 import { FormHighlightGroup } from "../../../../shared/forms/FormHighlightGroup";
-import { ArrayOfKeyValueFields, FormFieldError, FormTextArea } from "../../../../shared/forms/index";
+import {
+  ArrayOfKeyValueFields,
+  FormFieldError,
+  FormTextArea,
+} from "../../../../shared/forms/index";
 import { EtoFormBase } from "../../EtoFormBase";
 import { Section } from "../../Shared";
 import { TDispatchProps } from "../EtoVotingRights/EtoVotingRights";
@@ -97,12 +99,7 @@ const EtoRegistrationPitchComponent = (props: TComponentProps & TDispatchProps) 
         isWysiwyg={true}
       />
       <FormHighlightGroup title={<FormattedMessage id="eto.form.product-vision.use-of-capital" />}>
-        <FormTextArea
-          name="useOfCapital"
-          placeholder="Detail"
-          disabled={false}
-          isWysiwyg={true}
-        />
+        <FormTextArea name="useOfCapital" placeholder="Detail" disabled={false} isWysiwyg={true} />
         <ArrayOfKeyValueFields
           name="useOfCapitalList"
           suggestions={distributionSuggestions}

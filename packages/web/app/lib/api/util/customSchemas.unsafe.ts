@@ -16,7 +16,7 @@ const DATE_SCHEME = "YYYY-M-D";
 const parse = (s: string) => moment(s, DATE_SCHEME, true);
 
 export const currencyCodeSchema = (v: Yup.StringSchema) =>
-    v.matches(/^[A-Z]{3}$/, {
+  v.matches(/^[A-Z]{3}$/, {
     message: getMessageTranslation(
       createMessage(ValidationMessage.VALIDATION_CURRENCY_CODE),
     ) as string,

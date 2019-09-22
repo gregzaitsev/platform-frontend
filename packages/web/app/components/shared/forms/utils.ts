@@ -1,11 +1,10 @@
-import { yupToFormErrors } from 'formik'
+import { yupToFormErrors } from "formik";
 import * as Yup from "yup";
-import { Schema } from "yup";
 
 export type TConversionAndValidationSpec<Data> = {
-  validator: Yup.Schema<unknown>,
-  conversionFn: (data: Data) => unknown
-}
+  validator: Yup.Schema<unknown>;
+  conversionFn: (data: Data) => unknown;
+};
 
 export const validateForm = (validator: Yup.Schema<any>, data: any) => {
   try {
@@ -18,7 +17,10 @@ export const validateForm = (validator: Yup.Schema<any>, data: any) => {
   return undefined;
 };
 
-export const convertAndValidatePipeline = <Data extends {}>(validationSpec: TConversionAndValidationSpec<Data>[], data: Data) => {
+export const convertAndValidatePipeline = <Data extends {}>(
+  validationSpec: TConversionAndValidationSpec<Data>[],
+  data: Data,
+) => {
   /* we run all validations and collect their results in an array, */
   /* then create and return a single errors object. Flattening of array goes from  */
   /* right to left (reduceRight) because the earlier validations have precedence over the later ones  */
@@ -31,49 +33,68 @@ export const convertAndValidatePipeline = <Data extends {}>(validationSpec: TCon
     }
   }
   // console.log("convertAndValidatePipeline",data,validationResults)
-  return validationResults.reduceRight((acc: object | undefined, result)=> {
-    if(acc !== undefined){
+  return validationResults.reduceRight((acc: object | undefined, result) => {
+    if (acc !== undefined) {
       return {
         ...acc,
-        ...result
-      }
+        ...result,
+      };
     } else {
-      return result
+      return result;
     }
   }, undefined);
 };
 
-type TTransformationSpec<T> = { [key:string]: (validatorFields: { [field in keyof T]: Schema<any> },key: string) => { [field in keyof T]: Schema<any> } }
+type TTransformationSpec<T> = {
+  [key: string]: (
+    validatorFields: { [field in keyof T]: Yup.Schema<any> },
+    key: string,
+  ) => { [field in keyof T]: Yup.Schema<any> };
+};
 
 export type ObjectSchema<T> = Yup.ObjectSchema<T> & {
-  fields: { [field in keyof T]: Schema<T[field]> }
-}
+  fields: { [field in keyof T]: Yup.Schema<T[field]> };
+};
 
-export const replaceValidatorWith = (newValidator: Yup.Schema<unknown>) => <T>(validatorFields: { [field in keyof T]: Schema<T[field]> }, key: keyof T) => {
+export const replaceValidatorWith = (newValidator: Yup.Schema<unknown>) => <T>(
+  validatorFields: { [field in keyof T]: Yup.Schema<T[field]> },
+  key: keyof T,
+) => {
   (validatorFields[key] as any) = newValidator;
-  return validatorFields
+  return validatorFields;
 };
 
-export const deleteValidator = () => <T>(validatorFields: { [field in keyof T]: Schema<T[field]> }, key: keyof T) => {
+export const deleteValidator = () => <T>(
+  validatorFields: { [field in keyof T]: Yup.Schema<T[field]> },
+  key: keyof T,
+) => {
   delete validatorFields[key];
-  return validatorFields
+  return validatorFields;
 };
 
-export const addValidator = (newValidator: Yup.Schema<unknown>) => (validatorFields: { [field:string]:Schema<unknown> }, key: string) => {
+export const addValidator = (newValidator: Yup.Schema<unknown>) => (
+  validatorFields: { [field: string]: Yup.Schema<unknown> },
+  key: string,
+) => {
   validatorFields[key] = newValidator;
-  return validatorFields
+  return validatorFields;
 };
 
-export const transformValidator = <T>(transformationSpec: TTransformationSpec<T>) => (baseValidator: Yup.ObjectSchema<T>) => {
-  if(!(baseValidator instanceof Yup.object)){
-    throw new Error("transformValidator() only works on object schema!")
+export const transformValidator = <T>(transformationSpec: TTransformationSpec<T>) => (
+  baseValidator: Yup.ObjectSchema<T>,
+) => {
+  if (!(baseValidator instanceof Yup.object)) {
+    throw new Error("transformValidator() only works on object schema!");
   }
 
   const validatorCopy = baseValidator.clone();
 
   Object.keys(transformationSpec).forEach(key => {
-    (validatorCopy as ObjectSchema<unknown>).fields = transformationSpec[key]((validatorCopy as ObjectSchema<T>).fields, key)
+    (validatorCopy as ObjectSchema<unknown>).fields = transformationSpec[key](
+      (validatorCopy as ObjectSchema<T>).fields,
+      key,
+    );
   });
 
-  return validatorCopy as Yup.ObjectSchema<unknown>
+  return validatorCopy as Yup.ObjectSchema<unknown>;
 };

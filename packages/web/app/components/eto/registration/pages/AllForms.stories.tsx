@@ -1,5 +1,6 @@
 import { action } from "@storybook/addon-actions";
 import { storiesOf } from "@storybook/react";
+import { FormikValues } from "formik";
 import * as React from "react";
 import { Provider } from "react-redux";
 import { createStore } from "redux";
@@ -13,7 +14,6 @@ import { EtoVotingRightsComponent } from "./EtoVotingRights/EtoVotingRights";
 import { EtoRegistrationKeyIndividualsComponent } from "./KeyIndividuals";
 import { EtoRegistrationLegalInformationComponent } from "./LegalInformation/LegalInformation";
 import { EtoRegistrationRiskAssessmentComponent } from "./RiskAssessment";
-import { FormikValues } from "formik";
 
 const eto = {};
 const company = {};
@@ -25,7 +25,7 @@ const loadingState = {
   initialValues: eto,
   company,
   saveData: action("saveData"),
-  validationFn: (_: FormikValues)=>{}
+  validationFn: (_: FormikValues) => {},
 };
 
 storiesOf("ETO-Flow/Registration-forms", module)

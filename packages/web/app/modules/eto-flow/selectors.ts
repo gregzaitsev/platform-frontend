@@ -3,7 +3,11 @@ import { find, some } from "lodash";
 import { createSelector } from "reselect";
 
 import { DEFAULT_DATE_TO_WHITELIST_MIN_DURATION } from "../../config/constants";
-import { EEtoState, TEtoSpecsData } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
+import {
+  EEtoState,
+  TCompanyEtoData,
+  TEtoSpecsData,
+} from "../../lib/api/eto/EtoApi.interfaces.unsafe";
 import {
   EEtoDocumentType,
   IEtoDocument,
@@ -163,7 +167,10 @@ export const selectNewEtoDateSaving = (state: IAppState): boolean => state.etoIs
 export const selectCombinedEtoCompanyData = createSelector(
   selectIssuerCompany,
   selectIssuerEto,
-  (company, eto) => ({ ...company, ...eto }),
+  (company: TCompanyEtoData | undefined, eto: TEtoSpecsData | undefined) => ({
+    ...company,
+    ...eto,
+  }),
 );
 
 export const selectIssuerEtoTemplates = (state: IAppState): TEtoDocumentTemplates | undefined => {
