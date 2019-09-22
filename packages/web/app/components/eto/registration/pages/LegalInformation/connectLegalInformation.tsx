@@ -3,6 +3,7 @@ import * as React from "react";
 import { compose } from "recompose";
 import { setDisplayName, withProps } from "recompose";
 import * as Yup from "yup";
+import { FormattedMessage } from "react-intl-phraseapp";
 
 import { MIN_COMPANY_SHARE_CAPITAL } from "../../../../../config/constants";
 import { TPartialCompanyEtoData } from "../../../../../lib/api/eto/EtoApi.interfaces.unsafe";
@@ -80,11 +81,14 @@ const validator = Yup.object().shape({
   numberOfFounders: Yup.number(),
   lastFundingSizeEur: Yup.number(),
   companyShareCapital: Yup.number().min(MIN_COMPANY_SHARE_CAPITAL).required(),
-  shareCapitalCurrencyCode: currencyCodeSchema(Yup.string()),//todo write a normal extension method with Yup.addMethod
-  shareholders: Yup.array().of(ShareholdersListValidator).min(1, "please fill out at least one entry").required("please fill out at least one entry"),
+  shareCapitalCurrencyCode: currencyCodeSchema(Yup.string()),//todo write an extension method with Yup.addMethod
+  shareholders: Yup.array().of(ShareholdersListValidator)
+    .min(1, <FormattedMessage id="form.field.error.array.at-least-one-entry-required"/>)
+    .required(<FormattedMessage id="form.field.error.array.at-least-one-entry-required"/>),
 });
 
 const conversionSpec0 = {
+  companyShareCapital: parseStringToInteger(),
   shareholders: [
     setEmptyKeyValueFieldsUndefined(),
     convertInArray({shareCapital:parseStringToFloatNonStrict()})
@@ -92,6 +96,7 @@ const conversionSpec0 = {
 };
 
 const conversionSpec1 = {
+  companyShareCapital: parseStringToInteger(),
   shareholders: [
     removeEmptyKeyValueFields(),
     convertInArray({shareCapital:parseStringToFloatNonStrict()})

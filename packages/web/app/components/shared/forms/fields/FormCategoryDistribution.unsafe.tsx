@@ -127,13 +127,13 @@ class ArrayOfKeyValueFieldsBase extends React.Component<
     }
   }
 
-  addField = (index:number) =>
-    this.setFieldValue(`${name}.${index + 1}`, this.blankField);
+  addField = (arrayHelpers: ArrayHelpers) =>
+    arrayHelpers.push(this.blankField);
 
   removeField = (e: React.MouseEvent<HTMLButtonElement>, arrayHelpers: ArrayHelpers, index:number) => {
     e.preventDefault();
     arrayHelpers.remove(index);
-    this.suggestions.splice(index, 1);
+    // this.suggestions.splice(index, 1);
   };
 
   render(): React.ReactNode {
@@ -141,7 +141,7 @@ class ArrayOfKeyValueFieldsBase extends React.Component<
 
     const categoryDistribution = getIn(formik.values, name) || [];
     const formFieldKeys = this.props.fieldNames;
-
+    console.log("render",this.props.formik.values,this.props.formik.touched,this.props.formik.errors)
     return (
       <FieldArray
         name={name}
@@ -163,7 +163,7 @@ class ArrayOfKeyValueFieldsBase extends React.Component<
                     removeField={(e: React.MouseEvent<HTMLButtonElement>) => this.removeField(e, arrayHelpers, index)}
                     valuePlaceholder={valuePlaceholder}
                     keyPlaceholder={this.suggestions[index] || "Other"}
-                    addField={() => this.addField(index)}
+                    addField={() => this.addField(arrayHelpers)}
                     isFirstElement={isFirstElement}
                     isLastElement={isLastElement}
                     transformRatio={transformRatio}

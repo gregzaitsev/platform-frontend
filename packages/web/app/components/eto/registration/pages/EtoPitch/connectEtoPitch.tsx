@@ -1,6 +1,8 @@
 import { FormikValues } from "formik";
 import { compose, setDisplayName, withProps } from "recompose";
 import * as Yup from "yup";
+import * as React from "react";
+import { FormattedMessage } from "react-intl-phraseapp";
 
 import { TPartialCompanyEtoData } from "../../../../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { percentage } from "../../../../../lib/api/util/customSchemas.unsafe";
@@ -75,7 +77,9 @@ const validator = Yup.object().shape({
   inspiration: Yup.string(),
   roadmap: Yup.string(),
   useOfCapital: Yup.string(),
-  useOfCapitalList: Yup.array().of(EtoCapitalListValidator).min(1, "please fill out at least one entry").required("please fill out at least one entry"),
+  useOfCapitalList: Yup.array().of(EtoCapitalListValidator)
+    .min(1, <FormattedMessage id="form.field.error.array.at-least-one-entry-required"/>)
+    .required(<FormattedMessage id="form.field.error.array.at-least-one-entry-required"/>),
   customerGroup: Yup.string(),
   sellingProposition: Yup.string(),
   marketingApproach: Yup.string(),
@@ -88,9 +92,13 @@ const validator = Yup.object().shape({
 });
 
 const percentConversionSpec = [parseStringToFloatNonStrict(), convertPercentageToFractionNonStrict()];
+const amountOfCapitalListValidator = Yup.number()
+  .min(1,<FormattedMessage id="form.field.error.allocation-of-100-percents-of-funds"/>)
+  .required(<FormattedMessage id="form.field.error.allocation-of-100-percents-of-funds"/>)
+  .max(1,<FormattedMessage id="form.field.error.cannot-be-more-than-100-percent" />)
 
 const validatorConversionSpec = {
-  useOfCapitalList: replaceValidatorWith(Yup.number().min(1,"please describe allocation of 100% of your funds").max(1,"that's too much")) //fixme translations, wording)
+  useOfCapitalList: replaceValidatorWith(amountOfCapitalListValidator)
 };
 
 const conversionSpec0 = {
@@ -155,5 +163,3 @@ const fromFormState = {
 };
 
 export { connectEtoRegistrationPitch }
-
-//TODO fix translations
