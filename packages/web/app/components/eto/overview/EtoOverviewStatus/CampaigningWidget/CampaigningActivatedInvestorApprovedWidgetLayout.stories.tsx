@@ -10,7 +10,7 @@ import {
 storiesOf("ETO/CampaigningActivatedInvestorApprovedWidgetLayout", module)
   .add("default", () => (
     <CampaigningActivatedInvestorApprovedWidgetLayout
-      pledgedAmount={10}
+      pledgedAmount={"10"}
       consentToRevealEmail={true}
       backNow={action("back now")}
       formState={CampaigningFormState.VIEW}
@@ -23,7 +23,7 @@ storiesOf("ETO/CampaigningActivatedInvestorApprovedWidgetLayout", module)
   ))
   .add("editing", () => (
     <CampaigningActivatedInvestorApprovedWidgetLayout
-      pledgedAmount={10}
+      pledgedAmount={"10"}
       consentToRevealEmail={true}
       backNow={action("back now")}
       formState={CampaigningFormState.EDIT}

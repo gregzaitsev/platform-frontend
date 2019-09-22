@@ -26,10 +26,16 @@ import { nonNullable } from "../../utils/nonNullable";
 import { objectToFilteredArray } from "../../utils/objectToFilteredArray";
 import { selectIsUserEmailVerified } from "../auth/selectors";
 import { selectEtoDocumentsLoading } from "../eto-documents/selectors";
-import { selectEtoContract, selectEtoSubState } from "../eto/selectors";
-import { EETOStateOnChain, TEtoWithCompanyAndContract } from "../eto/types";
+import { selectAgreementsStatus, selectEtoContract, selectEtoSubState } from "../eto/selectors";
+import {
+  EEtoAgreementStatus,
+  EETOStateOnChain,
+  TEtoWithCompanyAndContract,
+  TOfferingAgreementsStatus,
+} from "../eto/types";
 import { isOnChain } from "../eto/utils";
 import { selectKycRequestStatus } from "../kyc/selectors";
+import { EAgreementType } from "../tx/transactions/nominee/sign-agreement/types";
 import { IEtoFlowState } from "./types";
 import { isValidEtoStartDate, sortProducts } from "./utils";
 
@@ -324,4 +330,30 @@ export const selectIssuerEtoSaving = createSelector(
 export const selectIsMarketingDataVisibleInPreview = createSelector(
   selectIssuerEto,
   state => state && state.isMarketingDataVisibleInPreview,
+);
+
+export const selectIssuerEtoAgreementsStatus = (
+  state: IAppState,
+): TOfferingAgreementsStatus | undefined => {
+  const previewCode = selectIssuerEtoPreviewCode(state);
+
+  if (previewCode !== undefined) {
+    return selectAgreementsStatus(state, previewCode);
+  }
+
+  return undefined;
+};
+
+export const selectAreAgreementsSignedByNominee = createSelector(
+  selectIssuerEtoAgreementsStatus,
+  documents => {
+    if (documents) {
+      return (
+        documents[EAgreementType.THA] === EEtoAgreementStatus.DONE &&
+        documents[EAgreementType.RAAA] === EEtoAgreementStatus.DONE
+      );
+    }
+
+    return undefined;
+  },
 );

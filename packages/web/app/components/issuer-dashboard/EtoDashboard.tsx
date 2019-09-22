@@ -1,6 +1,6 @@
 import * as React from "react";
 import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
-import { lifecycle, withProps } from "recompose";
+import { branch, lifecycle, renderComponent, withProps } from "recompose";
 import { compose } from "redux";
 
 import {
@@ -12,6 +12,7 @@ import { EKycRequestStatus } from "../../lib/api/kyc/KycApi.interfaces";
 import { actions } from "../../modules/actions";
 import { selectBackupCodesVerified, selectVerifiedUserEmail } from "../../modules/auth/selectors";
 import {
+  selectAreAgreementsSignedByNominee,
   selectCanEnableBookBuilding,
   selectCombinedEtoCompanyData,
   selectIsISHAPreviewSubmitted,
@@ -20,6 +21,7 @@ import {
   selectIssuerEtoOfferingDocumentType,
   selectIssuerEtoWithCompanyAndContract,
   selectIsTermSheetSubmitted,
+  selectPreEtoStartDateFromContract,
   userHasKycAndEmailVerified,
 } from "../../modules/eto-flow/selectors";
 import {
@@ -28,9 +30,11 @@ import {
   calculateVotingRightsEtoData,
 } from "../../modules/eto-flow/utils";
 import { TEtoWithCompanyAndContract } from "../../modules/eto/types";
+import { isOnChain } from "../../modules/eto/utils";
 import { selectKycRequestStatus } from "../../modules/kyc/selectors";
 import { selectIsLightWallet } from "../../modules/web3/selectors";
 import { appConnect } from "../../store";
+import { RequiredByKeys } from "../../types";
 import { onEnterAction } from "../../utils/OnEnterAction";
 import { withContainer } from "../../utils/withContainer.unsafe";
 import { DashboardHeading } from "../eto/shared/DashboardHeading";
@@ -74,7 +78,9 @@ interface IStateProps {
   isOfferingDocumentSubmitted: boolean | undefined;
   isISHASubmitted: boolean | undefined;
   offeringDocumentType: EOfferingDocumentType | undefined;
-  isMarketingDataVisibleInPreview?: EEtoMarketingDataVisibleInPreview;
+  isMarketingDataVisibleInPreview: EEtoMarketingDataVisibleInPreview | undefined;
+  areAgreementsSignedByNominee: ReturnType<typeof selectAreAgreementsSignedByNominee>;
+  preEtoStartDate: ReturnType<typeof selectPreEtoStartDateFromContract>;
 }
 
 interface IComputedProps {
@@ -82,11 +88,17 @@ interface IComputedProps {
   shouldViewEtoSettings: boolean;
   shouldViewSubmissionSection: boolean;
   shouldViewMarketingSubmissionSection: boolean;
-  etoStep: EEtoStep;
+  etoStep: EEtoStep | undefined;
 }
 
-type TVerificationSection = Omit<IStateProps, "combinedEtoCompanyData"> &
-  Omit<IComputedProps, "isVerificationSectionDone">;
+type TVerificationSection = Omit<
+  IStateProps,
+  | "combinedEtoCompanyData"
+  | "isMarketingDataVisibleInPreview"
+  | "areAgreementsSignedByNominee"
+  | "preEtoStartDate"
+> &
+  Omit<RequiredByKeys<IComputedProps, "etoStep">, "isVerificationSectionDone">;
 
 interface IDispatchProps {
   initEtoView: () => void;
@@ -228,7 +240,7 @@ const VerifiedUserSection: React.FunctionComponent<TVerificationSection> = ({
   etoStep,
   ...rest
 }) => {
-  if (eto) {
+  if (eto && etoStep) {
     return (
       <>
         <Container columnSpan={EColumnSpan.THREE_COL} className="mb-5">
@@ -269,7 +281,14 @@ const VerifiedUserSection: React.FunctionComponent<TVerificationSection> = ({
 };
 
 const EtoDashboardLayout: React.FunctionComponent<
-  Omit<IStateProps, "combinedEtoCompanyData"> & IComputedProps
+  Omit<
+    IStateProps,
+    | "combinedEtoCompanyData"
+    | "isMarketingDataVisibleInPreview"
+    | "areAgreementsSignedByNominee"
+    | "preEtoStartDate"
+  > &
+    RequiredByKeys<IComputedProps, "etoStep">
 > = props => {
   const { isVerificationSectionDone, ...rest } = props;
 
@@ -301,14 +320,30 @@ const EtoDashboard = compose<React.FunctionComponent>(
       combinedEtoCompanyData: selectCombinedEtoCompanyData(s),
       offeringDocumentType: selectIssuerEtoOfferingDocumentType(s),
       isMarketingDataVisibleInPreview: selectIsMarketingDataVisibleInPreview(s),
+      areAgreementsSignedByNominee: selectAreAgreementsSignedByNominee(s),
+      preEtoStartDate: selectPreEtoStartDateFromContract(s),
     }),
     dispatchToProps: dispatch => ({
       initEtoView: () => {
-        dispatch(actions.etoFlow.loadIssuerEto());
-        dispatch(actions.kyc.kycLoadIndividualDocumentList());
+        dispatch(actions.etoFlow.loadIssuerStep());
       },
     }),
   }),
+  onEnterAction<IStateProps & IDispatchProps>({
+    actionCreator: (_, props) => {
+      if (props.userHasKycAndEmailVerified) {
+        props.initEtoView();
+      }
+    },
+  }),
+  lifecycle<IStateProps & IDispatchProps, {}>({
+    componentDidUpdate(nextProps: IStateProps & IDispatchProps): void {
+      if (this.props.userHasKycAndEmailVerified !== nextProps.userHasKycAndEmailVerified) {
+        this.props.initEtoView();
+      }
+    },
+  }),
+  withContainer(Layout),
   withProps<IComputedProps, IStateProps>(props => {
     const marketingFormsProgress = calculateMarketingEtoData(props.combinedEtoCompanyData);
     const etoInvestmentAndEtoTermsFormsProgress = calculateInvestmentAndEtoTermsEtoData(
@@ -343,6 +378,7 @@ const EtoDashboard = compose<React.FunctionComponent>(
         ? selectEtoStep(
             isVerificationSectionDone,
             props.eto.state,
+            isOnChain(props.eto) ? props.eto.contract.timedState : undefined,
             shouldViewEtoSettings,
             props.isMarketingDataVisibleInPreview,
             props.isTermSheetSubmitted,
@@ -350,25 +386,14 @@ const EtoDashboard = compose<React.FunctionComponent>(
             isInvestmentAndEtoTermsFilledWithAllRequired,
             props.isOfferingDocumentSubmitted,
             props.isISHASubmitted,
+            !!props.eto.nominee,
+            props.areAgreementsSignedByNominee,
+            props.preEtoStartDate,
           )
         : EEtoStep.VERIFICATION,
     };
   }),
-  onEnterAction<IStateProps & IDispatchProps>({
-    actionCreator: (_, props) => {
-      if (props.userHasKycAndEmailVerified) {
-        props.initEtoView();
-      }
-    },
-  }),
-  lifecycle<IStateProps & IDispatchProps, {}>({
-    componentDidUpdate(nextProps: IStateProps & IDispatchProps): void {
-      if (this.props.userHasKycAndEmailVerified !== nextProps.userHasKycAndEmailVerified) {
-        this.props.initEtoView();
-      }
-    },
-  }),
-  withContainer(Layout),
+  branch<IComputedProps>(props => props.etoStep === undefined, renderComponent(LoadingIndicator)),
 )(EtoDashboardLayout);
 
 export { EtoDashboard, EtoDashboardLayout, EtoDashboardStateViewComponent };

@@ -163,6 +163,7 @@ export function* getIncomingPayouts({
     const etherTokenIncomingPayoutValue = addBigNumbers(
       etherTokenIncomingPayout.map((v: BigNumber[]) => v[1]),
     );
+
     if (euroTokenIncomingPayoutValue || etherTokenIncomingPayoutValue) {
       yield put(
         actions.investorEtoTicket.setIncomingPayouts({

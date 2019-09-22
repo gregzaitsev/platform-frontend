@@ -9,6 +9,7 @@ import { TEtoSpecsData } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { IAppState } from "../../store";
 import { compareBigNumbers } from "../../utils/BigNumberUtils";
 import { isZero } from "../../utils/Number.utils";
+import { selectMyPledge } from "../bookbuilding-flow/selectors";
 import {
   selectEtoById,
   selectEtoOnChainStateById,
@@ -140,6 +141,13 @@ export const selectCalculatedEtoTicketSizesUlpsById = (state: IAppState, etoId: 
 
   if (min && max) {
     if (eto && investorTicket) {
+      if (!eto.investmentCalculatedValues) {
+        return {
+          minTicketEurUlps: zero,
+          maxTicketEurUlps: zero,
+        };
+      }
+
       const tokenPrice = eto.investmentCalculatedValues.sharePrice / eto.equityTokensPerShare;
       min = BigNumber.max(min.sub(investorTicket.equivEurUlps), Q18.mul(tokenPrice.toString()));
       max = BigNumber.max(max.sub(investorTicket.equivEurUlps), 0);
@@ -167,13 +175,16 @@ export const selectIsWhitelisted = (state: IAppState, etoId: string) => {
 
 export const selectIsEligibleToPreEto = (state: IAppState, etoId: string) => {
   const isLockedWalletConnected = selectLockedWalletConnected(state);
-  const isWhitelisted = selectIsWhitelisted(state, etoId);
+  // pre-sale eligibility depends on bookbuilding participation which will eventually be committed to smart contract
+  const isOnBookbuildingWhitelist = selectMyPledge(state, etoId) !== undefined;
 
-  return isLockedWalletConnected || isWhitelisted;
+  return isLockedWalletConnected || isOnBookbuildingWhitelist;
 };
 
 export const selectShouldShowWhitelistDiscount = (state: IAppState, eto: TEtoSpecsData) => {
-  const isPreEto = selectEtoOnChainStateById(state, eto.etoId) === EETOStateOnChain.Whitelist;
+  const isPreEto =
+    (selectEtoOnChainStateById(state, eto.etoId) || EETOStateOnChain.Setup) <=
+    EETOStateOnChain.Whitelist;
   const isEligibleToPreEto = selectIsEligibleToPreEto(state, eto.etoId);
   return Boolean(eto.whitelistDiscountFraction && isEligibleToPreEto && isPreEto);
 };

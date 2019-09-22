@@ -59,6 +59,11 @@
   letter-spacing: px-to-rem(-.3px);
 }
 
+@mixin font-headline-small-roboto {
+  font-family: $font-family-roboto;
+  font-size: px-to-rem(16px);
+}
+
 @mixin font-headline-condensed {
   font-family: $headings-font-family;
   font-size: .875rem;

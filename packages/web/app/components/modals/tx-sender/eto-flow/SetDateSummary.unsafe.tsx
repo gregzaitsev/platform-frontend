@@ -143,7 +143,7 @@ const SetEtoDateSummary = compose<IProps, {}>(
       return {
         etoTermsAddress: eto.contract!.etoTermsAddress,
         equityTokenAddress: eto.contract!.equityTokenAddress,
-        etoCommitmentAddress: eto.contract!.etoCommitmentAddress,
+        etoCommitmentAddress: eto.etoId,
         additionalData,
         offeringAgreementIPFSLink,
         termsAgreementIPFSLink,

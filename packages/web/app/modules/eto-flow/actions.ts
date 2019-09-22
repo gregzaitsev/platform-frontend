@@ -12,6 +12,7 @@ export const etoFlowActions = {
   loadIssuerEto: createActionFactory("ETO_FLOW_LOAD_ISSUER_ETO"),
   loadDataStop: createActionFactory("ETO_FLOW_LOAD_DATA_STOP"),
   loadProducts: createActionFactory("ETO_FLOW_LOAD_PRODUCTS"),
+  loadIssuerStep: createActionFactory("ETO_FLOW_LOAD_ISSUER_STEP"),
   setProducts: createActionFactory("ETO_FLOW_SET_PRODUCTS", (products: TEtoProducts) => ({
     products,
   })),

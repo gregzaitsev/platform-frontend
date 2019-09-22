@@ -51,7 +51,7 @@ export class AsyncIntervalScheduler {
 }
 
 export type AsyncIntervalSchedulerFactoryType = (
-  cb: Function,
+  cb: () => void,
   interval: number,
 ) => AsyncIntervalScheduler;
 

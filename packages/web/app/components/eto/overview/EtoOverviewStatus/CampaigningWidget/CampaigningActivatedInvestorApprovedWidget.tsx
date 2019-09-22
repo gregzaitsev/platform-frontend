@@ -36,7 +36,7 @@ interface IHandlersProps {
 }
 
 interface IWithProps {
-  pledgedAmount: number | "";
+  pledgedAmount: string;
 }
 
 type TLocalStateProps = {
@@ -93,7 +93,7 @@ const CampaigningActivatedInvestorApprovedWidget = compose<
     },
   }),
   withProps<IWithProps, IExternalProps>(({ pledge }) => ({
-    pledgedAmount: pledge ? pledge.amountEur : "",
+    pledgedAmount: pledge ? pledge.amountEur.toString() : "",
   })),
   withHandlers<
     IExternalProps &

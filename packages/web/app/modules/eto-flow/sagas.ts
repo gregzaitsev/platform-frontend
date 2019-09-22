@@ -18,11 +18,13 @@ import { actions, TActionFromCreator } from "../actions";
 import { ensurePermissionsArePresentAndRunEffect } from "../auth/jwt/sagas";
 import { InvalidETOStateError } from "../eto/errors";
 import { loadEtoContract } from "../eto/sagas";
+import { selectNomineeEtoWithCompanyAndContract } from "../nominee-flow/selectors";
 import { neuCall, neuTakeEvery, neuTakeLatest } from "../sagasUtils";
 import { etoFlowActions } from "./actions";
 import {
   selectIsNewPreEtoStartDateValid,
   selectIssuerEto,
+  selectIssuerEtoWithCompanyAndContract,
   selectNewPreEtoStartDate,
   selectPreEtoStartDateFromContract,
 } from "./selectors";
@@ -286,6 +288,22 @@ export function* publishEtoData({
   }
 }
 
+export function* loadIssuerStep(): Iterator<any> {
+  yield neuCall(loadIssuerEto);
+
+  const issuerEto: ReturnType<typeof selectNomineeEtoWithCompanyAndContract> = yield select(
+    selectIssuerEtoWithCompanyAndContract,
+  );
+
+  if (issuerEto === undefined) {
+    throw new Error("Issuer eto should be defined before loading eto agreements");
+  }
+
+  yield put(actions.eto.loadEtoAgreementsStatus(issuerEto));
+
+  yield put(actions.kyc.kycLoadIndividualDocumentList());
+}
+
 export function* etoFlowSagas(): any {
   yield fork(neuTakeEvery, etoFlowActions.loadIssuerEto, loadIssuerEto);
   yield fork(neuTakeEvery, etoFlowActions.saveCompanyStart, saveCompany);
@@ -297,6 +315,7 @@ export function* etoFlowSagas(): any {
   yield fork(neuTakeLatest, etoFlowActions.cleanupStartDate, cleanupSetDateTX);
   yield fork(neuTakeLatest, etoFlowActions.loadSignedInvestmentAgreement, loadInvestmentAgreement);
   yield fork(neuTakeLatest, etoFlowActions.loadProducts, loadProducts);
+  yield fork(neuTakeLatest, etoFlowActions.loadIssuerStep, loadIssuerStep);
   yield fork(neuTakeLatest, etoFlowActions.changeProductType, changeProductType);
   yield fork(neuTakeLatest, etoFlowActions.publishDataStart, publishEtoData);
 }
