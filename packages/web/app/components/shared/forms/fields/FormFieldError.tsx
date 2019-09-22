@@ -50,8 +50,8 @@ const FormFieldError: React.FunctionComponent<IProps> = ({
 }) => (
   <FormikConsumer>
     {({ touched, errors, submitCount }) => {
-      const res = getIn(errors, name);
-      if (typeof res === "string" || React.isValidElement(res)) {
+      const error = getIn(errors, name);
+      if (!error || typeof error === "string" || React.isValidElement(error)) {
         return (
           (isNonValid(touched, errors, name, submitCount, ignoreTouched) || invalid) && (
             <FormError
