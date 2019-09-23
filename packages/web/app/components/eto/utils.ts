@@ -2,7 +2,6 @@ import { cloneDeep, flow, get, set } from "lodash";
 
 import {
   TCompanyEtoData,
-  TEtoLegalShareholderType,
 } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { invariant } from "../../utils/invariant";
 import { formatFlexiPrecision } from "../../utils/Number.utils";
@@ -161,6 +160,24 @@ export const removeKeys = () => (data: { key: string }[]) =>
     return arrayElement;
   });
 
+type TEtoLegalShareholderTypeNarrowed = {
+  fullName: string,
+  shareCapital: number,
+}
+
+type TChartDataGeneratorInternal = {
+  totalPercentage: number,
+  shareholders: TShareholder[]
+}
+
+const shareholderSortingFunction = (a:TShareholder,b:TShareholder) => {
+  if(a.percentageOfShares === b.percentageOfShares) {
+    return 0
+  }else {
+    return a.percentageOfShares < b.percentageOfShares ? 1 : -1
+  }
+};
+
 export const generateShareholders = (
   shareholders: TCompanyEtoData["shareholders"],
   companyShares: number,
@@ -168,34 +185,48 @@ export const generateShareholders = (
   if (shareholders === undefined) {
     return [];
   } else {
-    // Filter out any possible empty elements for type safety
-    // This is temporary fix
-    // TODO: rewrite types to get rid of optional
-    // https://github.com/Neufund/platform-frontend/issues/3054
-    const shareholdersData = shareholders
-      .filter(
-        (shareholder): shareholder is TEtoLegalShareholderType =>
-          !!shareholder || !!shareholder!.fullName || !!shareholder!.shares,
-      )
-      .map((shareholder: TEtoLegalShareholderType) => ({
-        fullName: shareholder.fullName!,
-        percentageOfShares: Math.round((shareholder.shares! * 100) / companyShares),
-      }));
+    const shareholdersData = shareholders.filter(
+      (shareholder): shareholder is TEtoLegalShareholderTypeNarrowed =>
+        !!(shareholder && shareholder.fullName && shareholder.shareCapital),
+    );
 
     const assignedShares = shareholdersData.reduce(
-      (acc, shareholder) => (acc += shareholder.percentageOfShares),
+      (acc, shareholder) => (acc += shareholder.shareCapital),
       0,
     );
 
-    if (assignedShares < 100) {
-      return [
-        ...shareholdersData,
-        {
-          fullName: "Others",
-          percentageOfShares: 100 - assignedShares,
-        },
-      ];
+    if (assignedShares < companyShares) {
+      shareholdersData.push({
+        fullName: "Others",
+        shareCapital: companyShares - assignedShares,
+      },)
     }
-    return shareholdersData;
+
+    const chartData = shareholdersData.reduce(
+      (acc: TChartDataGeneratorInternal, shareholder: TEtoLegalShareholderTypeNarrowed, index: number) => {
+        if (acc.totalPercentage < 100) {
+          const shareCapitalPercentage = Math.round((shareholder.shareCapital * 100) / companyShares);
+          const totalPercentage = acc.totalPercentage + shareCapitalPercentage;
+
+          // the last member of array that makes totalPercentage <= 100
+          // gets the rest of (100% - shares) to account for the rounding errors,
+          // all the following members are not included in the result
+          const shareCapitalPercentageCorrected = (index !== shareholdersData.length - 1 && totalPercentage <= 100)
+            ? shareCapitalPercentage
+            : 100 - acc.totalPercentage;
+
+          if (shareCapitalPercentageCorrected > 0) {
+            acc.shareholders.push({
+              fullName: shareholder.fullName,
+              percentageOfShares: shareCapitalPercentageCorrected,
+            });
+          }
+
+          acc.totalPercentage = totalPercentage
+        }
+        return acc
+      }, { totalPercentage: 0, shareholders: [] });
+
+    return chartData.shareholders.sort(shareholderSortingFunction);
   }
 };

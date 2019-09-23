@@ -21,38 +21,7 @@ interface IProps {
   columnSpan?: EColumnSpan;
 }
 
-const generateShareholders = (
-  shareholders: TCompanyEtoData["shareholders"],
-  companyShareCapital: number,
-): ReadonlyArray<TEtoLegalShareholderType> => {
-  if (shareholders === undefined) {
-    return [];
-  } else {
-    const assignedCapital = shareholders.reduce(
-      (acc, shareholder) =>
-        shareholder && shareholder.shareCapital ? (acc += shareholder.shareCapital) : acc,
-      0,
-    );
-
-    // Filter out any possible empty elements for type safety
-    // This is temporary fix
-    // TODO: rewrite types to get rid of optional
-    // https://github.com/Neufund/platform-frontend/issues/3054
-    const shrholders = shareholders.filter((v): v is TEtoLegalShareholderType => !!v);
-
-    if (assignedCapital < companyShareCapital) {
-      return [
-        ...shrholders,
-        {
-          fullName: "Others",
-          shareCapital: companyShareCapital - assignedCapital,
-        },
-      ];
-    }
-    return shrholders;
-  }
-
-  export type TShareholder = {
+export type TShareholder = {
   fullName: string;
   percentageOfShares: number;
 };
@@ -170,8 +139,7 @@ export const LegalInformationWidget: React.FunctionComponent<IProps> = ({
             data={{
               datasets: [
                 {
-                  data: shareholdersData.map(d => d && d.shareCapital),
-                  // data: shareholdersData.map(d => d && d.percentageOfShares),
+                  data: shareholdersData.map(d => d && d.percentageOfShares),
                   backgroundColor: shareholdersData.map(
                     (shareholder: TShareholder, i: number) =>
                       // Use predefined colors first, then use generated colors

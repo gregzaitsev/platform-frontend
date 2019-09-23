@@ -258,23 +258,19 @@ describe("generate shareholders", () => {
     const expectedOutput: TShareholder[] = [];
     expect(generateShareholders(undefined, companyShares)).to.deep.eq(expectedOutput);
   });
-  it("converts shareholder shares to percentage from company shares", () => {
+  it("converts shareholder shares to percentage from company shares and sorts array", () => {
     const companyShares = 500;
     const data = [
       {
-        fullName: "shareholder1",
-        shares: 123,
+        fullName: "shareholder2",
+        shareCapital: 200,
       },
       {
-        fullName: "shareholder2",
-        shares: 200,
+        fullName: "shareholder1",
+        shareCapital: 123,
       },
     ];
     const expectedOutput: TShareholder[] = [
-      {
-        fullName: "shareholder1",
-        percentageOfShares: 25,
-      },
       {
         fullName: "shareholder2",
         percentageOfShares: 40,
@@ -283,6 +279,68 @@ describe("generate shareholders", () => {
         fullName: "Others",
         percentageOfShares: 35,
       },
+      {
+        fullName: "shareholder1",
+        percentageOfShares: 25,
+      },
+    ];
+    expect(generateShareholders(data, companyShares)).to.deep.eq(expectedOutput);
+  });
+  it("rounds the percentage and distributes shareholder shares ", () => {
+    const companyShares = 100;
+    const data = [
+      {
+        fullName: "shareholder2",
+        shareCapital: 80.45,
+      },
+      {
+        fullName: "shareholder1",
+        shareCapital: 19.45,
+      },
+
+    ];
+    const expectedOutput: TShareholder[] = [
+      {
+        fullName: "shareholder2",
+        percentageOfShares: 80,
+      },
+      {
+        fullName: "shareholder1",
+        percentageOfShares: 19,
+      },
+      {
+        fullName: "Others",
+        percentageOfShares: 1,
+      },
+    ];
+    expect(generateShareholders(data, companyShares)).to.deep.eq(expectedOutput);
+  });
+  it("removes the last entry if the percentage is less than 0 due to rounding and assigns the rest to the previous entry", () => {
+    const companyShares = 100;
+    const data = [
+      {
+        fullName: "shareholder1",
+        shareCapital: 19.54,
+      },
+      {
+        fullName: "shareholder2",
+        shareCapital: 79.54,
+      },
+      {
+        fullName: "shareholder3",
+        shareCapital: 0.92,
+      }
+    ];
+    const expectedOutput: TShareholder[] = [
+      {
+        fullName: "shareholder2",
+        percentageOfShares: 80,
+      },
+      {
+        fullName: "shareholder1",
+        percentageOfShares: 20,
+      },
+
     ];
     expect(generateShareholders(data, companyShares)).to.deep.eq(expectedOutput);
   });
