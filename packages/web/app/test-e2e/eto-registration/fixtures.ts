@@ -296,8 +296,22 @@ export const etoKeyIndividualsForm: TFormFixture = {
   ...etoKeyIndividualsFormSubmit,
 };
 
+export const productVisionRequiredForm: TFormFixture = {
+  useOfCapital: "Cash is all around me",
+
+  "useOfCapitalList.0.description": "Food",
+  "useOfCapitalList.0.percent": "35",
+  "useOfCapitalList.1.description": "Yoga",
+  "useOfCapitalList.1.percent": "65",
+
+  "eto-registration-product-vision-submit": {
+    type: "submit",
+  },
+};
+
 // product vision form
 export const productVisionForm: TFormFixture = {
+  ...productVisionRequiredForm,
   inspiration: {
     type: "rich-text",
     value: "Something about inspiration",
@@ -334,11 +348,7 @@ export const productVisionForm: TFormFixture = {
     type: "rich-text",
     value: "Benefits for our investors",
   },
-  useOfCapital: "Cash is all around me",
-  "useOfCapitalList.0.description": "Food",
-  "useOfCapitalList.0.percent": "30",
-  "useOfCapitalList.1.description": "Yoga",
-  "useOfCapitalList.1.percent": "65",
+
   marketTraction: {
     type: "rich-text",
     value: "Something about the market traction",
@@ -355,7 +365,6 @@ export const productVisionForm: TFormFixture = {
     type: "rich-text",
     value: "Our Marketing",
   },
-
   "eto-registration-product-vision-submit": {
     type: "submit",
   },
