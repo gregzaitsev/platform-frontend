@@ -230,7 +230,7 @@
   "eto-overview-thumbnail.whitelist.amount-signed-up": "{amount} SIGNED UP",
   "eto-overview-thumbnail.whitelist.is-closed": "WHITELIST CLOSED - LIMIT REACHED",
   "eto-overview-thumbnail.whitelist.is-not-started": "WHITELIST NOT YET STARTED",
-  "eto-overview-thumbnail.whitelist.is-open": "WHITELIST OPEN - SIGN UP NOW",
+  "eto-overview-thumbnail.whitelist.is-open": "WHITELIST NOW OPEN",
   "eto-overview-thumbnail.whitelist.slots-left": "{left} out of {limit} slots left",
   "eto-overview.campaigning.indicate-commitment": "indicate your commitment",
   "eto-overview.campaigning.whitelist-status": "Whitelist status",
