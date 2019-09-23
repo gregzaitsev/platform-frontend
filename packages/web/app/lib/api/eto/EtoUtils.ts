@@ -21,8 +21,8 @@ export const calcCapFraction = ({
   existingShareCapital = 1,
   newShareNominalValue = 1,
 }: TPartialEtoSpecData) => ({
-  computedMaxCapPercent: (newSharesToIssue * newShareNominalValue) / existingShareCapital,
-  computedMinCapPercent: (minimumNewSharesToIssue * newShareNominalValue) / existingShareCapital,
+  computedMaxCapPercent: (newSharesToIssue * newShareNominalValue) / existingShareCapital * 100,
+  computedMinCapPercent: (minimumNewSharesToIssue * newShareNominalValue) / existingShareCapital * 100,
 });
 
 export const calcShareAndTokenPrice = ({
