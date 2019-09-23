@@ -19,9 +19,12 @@
     "no-extra-boolean-cast": true,
     "no-extra-semi": true,
     "no-invalid-regexp": true,
-    "no-shadowed-variable": [true, {
-      "temporalDeadZone": false
-    }],
+    "no-shadowed-variable": [
+      true,
+      {
+        "temporalDeadZone": false
+      }
+    ],
     "no-any-on-steroid": [
       true,
       {
