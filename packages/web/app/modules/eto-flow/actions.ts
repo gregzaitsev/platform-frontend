@@ -1,14 +1,18 @@
 import { createActionFactory } from "@neufund/shared";
 
-import { TCompanyEtoData, TEtoSpecsData } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
+import {
+  TCompanyEtoData,
+  TEtoSpecsData,
+  TPartialCompanyEtoData,
+  TPartialEtoSpecData,
+} from "../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { TEtoProducts } from "../../lib/api/eto/EtoProductsApi.interfaces";
-import { TGeneralEtoData } from "./types";
 
 export const etoFlowActions = {
   loadIssuerEto: createActionFactory("ETO_FLOW_LOAD_ISSUER_ETO"),
-  loadDataStart: createActionFactory("ETO_FLOW_LOAD_DATA_START"),
   loadDataStop: createActionFactory("ETO_FLOW_LOAD_DATA_STOP"),
   loadProducts: createActionFactory("ETO_FLOW_LOAD_PRODUCTS"),
+  loadIssuerStep: createActionFactory("ETO_FLOW_LOAD_ISSUER_STEP"),
   setProducts: createActionFactory("ETO_FLOW_SET_PRODUCTS", (products: TEtoProducts) => ({
     products,
   })),
@@ -23,9 +27,16 @@ export const etoFlowActions = {
     "ETO_FLOW_SET_ETO",
     ({ eto, company }: { eto: TEtoSpecsData; company?: TCompanyEtoData }) => ({ eto, company }),
   ),
-  saveDataStart: createActionFactory(
-    "ETO_FLOW_SAVE_DATA_START",
-    (data: Partial<TGeneralEtoData>) => ({ data }),
+  saveCompanyStart: createActionFactory(
+    "ETO_FLOW_SAVE_COMPANY_START",
+    (company: TPartialCompanyEtoData) => ({ company }),
+  ),
+  saveEtoStart: createActionFactory(
+    "ETO_FLOW_SAVE_ETO_START",
+    (eto: TPartialEtoSpecData, options: { patch: boolean } = { patch: true }) => ({
+      eto,
+      options,
+    }),
   ),
   changeBookBuildingStatus: createActionFactory(
     "ETO_FLOW_CHANGE_BOOK_BUILDING_STATES",

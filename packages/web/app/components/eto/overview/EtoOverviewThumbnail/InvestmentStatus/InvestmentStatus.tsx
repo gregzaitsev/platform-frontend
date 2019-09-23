@@ -6,7 +6,7 @@ import { selectEtoOnChainNextStateStartDate } from "../../../../../modules/eto/s
 import { EETOStateOnChain, TEtoWithCompanyAndContract } from "../../../../../modules/eto/types";
 import { appConnect } from "../../../../../store";
 import { FormatNumber } from "../../../../shared/formatters/FormatNumber";
-import { MoneyNew } from "../../../../shared/formatters/Money";
+import { Money } from "../../../../shared/formatters/Money";
 import {
   ECurrency,
   ENumberInputFormat,
@@ -34,14 +34,14 @@ const InvestmentLayout: React.FunctionComponent<TInvestWidgetProps> = ({ eto }) 
       <div className={styles.header}>
         {eto.contract!.timedState !== EETOStateOnChain.Payout && (
           <div>
-            <MoneyNew
+            <Money
               value={eto.contract!.totalInvestment.etherTokenBalance}
               inputFormat={ENumberInputFormat.ULPS}
               valueType={ECurrency.ETH}
               outputFormat={ENumberOutputFormat.FULL}
             />
             <br />
-            <MoneyNew
+            <Money
               value={eto.contract!.totalInvestment.euroTokenBalance}
               inputFormat={ENumberInputFormat.ULPS}
               valueType={ECurrency.EUR_TOKEN}

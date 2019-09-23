@@ -18,6 +18,10 @@ export const investorEtoTicketActions = {
   claim: (etoId: string) => createAction("INVESTOR_TICKET_CLAIM", { etoId }),
   loadClaimables: createActionFactory("INVESTOR_CLAIMABLES_LOAD"),
   getIncomingPayouts: createActionFactory("INVESTOR_TICKET_GET_INCOMING_PAYOUTS"),
+  loadClaimablesInBackground: createActionFactory("INVESTOR_CLAIMABLES_LOAD_IN_BACKGROUND"),
+  getIncomingPayoutsInBackground: createActionFactory(
+    "INVESTOR_TICKET_GET_INCOMING_PAYOUTS_IN_BACKGROUND",
+  ),
 
   // state mutations
   setEtoInvestorTicket: (etoId: string, ticket: IInvestorTicket) =>
@@ -30,11 +34,13 @@ export const investorEtoTicketActions = {
     "SET_TOKENS_DISBURSAL",
     (tokensDisbursal: ITokenDisbursal[]) => ({ tokensDisbursal }),
   ),
+  setTokensDisbursalError: createActionFactory("SET_TOKENS_DISBURSAL_ERROR"),
   setIncomingPayouts: createActionFactory(
     "INVESTOR_TICKET_SET_INCOMING_PAYOUTS",
     (incomingPayouts: IIncomingPayoutsData) => ({
       incomingPayouts,
     }),
   ),
-  setIncomingPayoutDone: createActionFactory("INVESTOR_TICKET_SET_INCOMING_PAYOUTS_DONE"),
+  setIncomingPayoutsError: createActionFactory("INVESTOR_TICKET_SET_INCOMING_PAYOUTS_ERROR"),
+  resetIncomingPayouts: createActionFactory("INVESTOR_TICKET_RESET_INCOMING_PAYOUTS"),
 };

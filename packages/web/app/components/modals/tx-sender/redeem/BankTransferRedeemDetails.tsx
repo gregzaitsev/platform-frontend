@@ -2,7 +2,7 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
 import { ETxSenderType } from "../../../../modules/tx/types";
-import { MoneyNew } from "../../../shared/formatters/Money";
+import { Money } from "../../../shared/formatters/Money";
 import {
   ECurrency,
   ENumberInputFormat,
@@ -34,7 +34,7 @@ const BankTransferRedeemDetails: TransactionDetailsComponent<ETxSenderType.NEUR_
     <InfoRow
       caption={<FormattedMessage id="bank-transfer.redeem.summary.return-amount" />}
       value={
-        <MoneyNew
+        <Money
           inputFormat={ENumberInputFormat.FLOAT}
           value={additionalData.amount}
           valueType={ECurrency.EUR}

@@ -3,17 +3,18 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { compose } from "recompose";
 
-import { getShareAndTokenPrice } from "../../../../lib/api/eto/EtoUtils";
+import { calcCapFraction } from "../../../../lib/api/eto/EtoUtils";
 import { TEtoWithCompanyAndContract } from "../../../../modules/eto/types";
 import {
   selectShouldShowPublicDiscount,
   selectShouldShowWhitelistDiscount,
 } from "../../../../modules/investor-portfolio/selectors";
 import { appConnect } from "../../../../store";
-import { FormatNumber } from "../../../shared/formatters/FormatNumber";
-import { MoneyNew } from "../../../shared/formatters/Money";
+import { Money } from "../../../shared/formatters/Money";
+import { MoneyRange } from "../../../shared/formatters/MoneyRange";
 import {
   ECurrency,
+  ENumberFormat,
   ENumberInputFormat,
   ENumberOutputFormat,
   EPriceFormat,
@@ -23,18 +24,12 @@ import { ToBeAnnounced, ToBeAnnouncedTooltip } from "../../shared/ToBeAnnouncedT
 
 import * as styles from "./EtoOverviewStatus.module.scss";
 
-function applyDiscountToPrice(price: number, discountFraction: number): number {
-  if (discountFraction > 1) {
-    throw new Error("discount more than 100% is not allowed");
-  } else {
-    return price * (1 - discountFraction);
-  }
-}
-
 interface IStateProps {
-  tokenPrice: number;
+  tokenPrice: number | undefined;
   showWhitelistDiscount: boolean;
   showPublicDiscount: boolean;
+  computedMaxCapPercent: number;
+  computedMinCapPercent: number;
 }
 
 interface IExternalProps {
@@ -46,6 +41,8 @@ const EtoStatsLayout: React.FunctionComponent<IStateProps & IExternalProps> = ({
   tokenPrice,
   showWhitelistDiscount,
   showPublicDiscount,
+  computedMaxCapPercent,
+  computedMinCapPercent,
 }) => (
   <div className={cn(styles.etoStatsWrapper, styles.groupWrapper)}>
     <div className={styles.group}>
@@ -59,7 +56,7 @@ const EtoStatsLayout: React.FunctionComponent<IStateProps & IExternalProps> = ({
         <FormattedMessage id="shared-component.eto-overview-status.pre-money-valuation" />
       </span>
       <span className={styles.value}>
-        <MoneyNew
+        <Money
           className={styles.value}
           value={eto.preMoneyValuationEur}
           inputFormat={ENumberInputFormat.FLOAT}
@@ -82,10 +79,12 @@ const EtoStatsLayout: React.FunctionComponent<IStateProps & IExternalProps> = ({
         <FormattedMessage id="shared-component.eto-overview-status.new-shares-generated" />
       </span>
       <span className={styles.value}>
-        <FormatNumber
-          value={eto.newSharesToIssue}
+        <MoneyRange
+          valueFrom={computedMinCapPercent}
+          valueUpto={computedMaxCapPercent}
           inputFormat={ENumberInputFormat.FLOAT}
-          outputFormat={ENumberOutputFormat.INTEGER}
+          outputFormat={ENumberOutputFormat.FULL}
+          valueType={ENumberFormat.PERCENTAGE}
           defaultValue={<ToBeAnnounced />}
         />
       </span>
@@ -95,7 +94,7 @@ const EtoStatsLayout: React.FunctionComponent<IStateProps & IExternalProps> = ({
         <FormattedMessage id="shared-component.eto-overview-status.equity-token-price" />
       </span>
       <span className={styles.value}>
-        <MoneyNew
+        <Money
           value={tokenPrice}
           inputFormat={ENumberInputFormat.FLOAT}
           valueType={EPriceFormat.EQUITY_TOKEN_PRICE_EURO}
@@ -130,22 +129,27 @@ const EtoStatsLayout: React.FunctionComponent<IStateProps & IExternalProps> = ({
 export const EtoStats = compose<IStateProps & IExternalProps, IExternalProps>(
   appConnect<IStateProps, {}, IExternalProps>({
     stateToProps: (state, props) => {
-      let { tokenPrice } = getShareAndTokenPrice(props.eto);
+      const etoData = props.eto;
 
-      const showWhitelistDiscount = selectShouldShowWhitelistDiscount(state, props.eto);
-      const showPublicDiscount = selectShouldShowPublicDiscount(state, props.eto);
+      const showWhitelistDiscount = selectShouldShowWhitelistDiscount(state, etoData);
+      const showPublicDiscount = selectShouldShowPublicDiscount(state, etoData);
 
-      if (showWhitelistDiscount) {
-        tokenPrice = applyDiscountToPrice(tokenPrice, props.eto.whitelistDiscountFraction!);
-      }
-
-      if (showPublicDiscount) {
-        tokenPrice = applyDiscountToPrice(tokenPrice, props.eto.publicDiscountFraction!);
+      let tokenPrice;
+      if (etoData.investmentCalculatedValues) {
+        tokenPrice = etoData.investmentCalculatedValues.sharePrice;
+        if (showWhitelistDiscount) {
+          tokenPrice = etoData.investmentCalculatedValues.discountedSharePrice;
+        }
+        if (showPublicDiscount) {
+          tokenPrice = etoData.investmentCalculatedValues.publicSharePrice;
+        }
+        tokenPrice = tokenPrice / etoData.equityTokensPerShare;
       }
       return {
         tokenPrice,
         showWhitelistDiscount,
         showPublicDiscount,
+        ...calcCapFraction(props.eto),
       };
     },
   }),

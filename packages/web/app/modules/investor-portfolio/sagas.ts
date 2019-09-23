@@ -20,6 +20,7 @@ import { addBigNumbers } from "../../utils/BigNumberUtils";
 import { convertToBigInt } from "../../utils/Number.utils";
 import { actions, TAction } from "../actions";
 import { selectUser } from "../auth/selectors";
+import { calculateSnapshotDate } from "../contracts/utils";
 import { neuCall, neuTakeEvery } from "../sagasUtils";
 import { selectEthereumAddressWithChecksum } from "../web3/selectors";
 import { ITokenDisbursal } from "./types";
@@ -109,29 +110,26 @@ export function* loadClaimables({
   notificationCenter,
 }: TGlobalDependencies): any {
   const user: IUser = yield select((state: IAppState) => selectUser(state.auth));
-
   const { feeDisbursal, euroToken, etherToken, neumark } = contractsService;
 
   const tokens: [ECurrency, EthereumAddress][] = [
     [ECurrency.EUR_TOKEN, euroToken.address as EthereumAddress],
     [ECurrency.ETH, etherToken.address as EthereumAddress],
   ];
-
   try {
     const tokensDisbursalRaw = yield feeDisbursal.claimableMutipleByToken(
       tokens.map(([, address]) => address),
       neumark.address,
       user.userId,
     );
-
-    const tokensDisbursal: ITokenDisbursal[] = tokens.map(([token], i) =>
+    const tokensDisbursal: ITokenDisbursal[] = yield tokens.map(([token], i) =>
       // claimableMultipeByToken preserves tokens order so it's safe to get exact response by index
       convertToTokenDisbursal(token, tokensDisbursalRaw[i]),
     );
 
     yield put(actions.investorEtoTicket.setTokensDisbursal(tokensDisbursal));
   } catch (error) {
-    yield put(actions.investorEtoTicket.setTokensDisbursal([]));
+    yield put(actions.investorEtoTicket.setTokensDisbursalError());
 
     logger.error("Failed to load claimables", error);
     notificationCenter.error(
@@ -158,7 +156,7 @@ export function* getIncomingPayouts({
         neumark.address,
       ),
     });
-
+    const snapshotDate = calculateSnapshotDate(yield neumark.currentSnapshotId);
     const euroTokenIncomingPayoutValue = addBigNumbers(
       euroTokenIncomingPayout.map((v: BigNumber[]) => v[1]),
     );
@@ -166,15 +164,20 @@ export function* getIncomingPayouts({
       etherTokenIncomingPayout.map((v: BigNumber[]) => v[1]),
     );
 
-    yield put(
-      actions.investorEtoTicket.setIncomingPayouts({
-        euroTokenIncomingPayoutValue,
-        etherTokenIncomingPayoutValue,
-      }),
-    );
+    if (euroTokenIncomingPayoutValue || etherTokenIncomingPayoutValue) {
+      yield put(
+        actions.investorEtoTicket.setIncomingPayouts({
+          euroTokenIncomingPayoutValue,
+          etherTokenIncomingPayoutValue,
+          snapshotDate,
+        }),
+      );
+    } else {
+      yield put(actions.investorEtoTicket.resetIncomingPayouts());
+    }
   } catch (error) {
     logger.error("Failed to load incoming payouts", error);
-
+    yield put(actions.investorEtoTicket.setIncomingPayoutsError());
     notificationCenter.error(
       createMessage(InvestorPortfolioMessage.INVESTOR_PORTFOLIO_FAILED_TO_LOAD_INCOMING_PAYOUTS),
     );
@@ -184,6 +187,20 @@ export function* getIncomingPayouts({
 export function* investorTicketsSagas(): any {
   yield fork(neuTakeEvery, "INVESTOR_TICKET_ETOS_LOAD", loadInvestorTickets);
   yield fork(neuTakeEvery, "INVESTOR_TICKET_LOAD", loadInvestorTicket);
-  yield fork(neuTakeEvery, actions.investorEtoTicket.loadClaimables, loadClaimables);
-  yield fork(neuTakeEvery, actions.investorEtoTicket.getIncomingPayouts, getIncomingPayouts);
+  yield fork(
+    neuTakeEvery,
+    [
+      actions.investorEtoTicket.loadClaimables,
+      actions.investorEtoTicket.loadClaimablesInBackground,
+    ],
+    loadClaimables,
+  );
+  yield fork(
+    neuTakeEvery,
+    [
+      actions.investorEtoTicket.getIncomingPayouts,
+      actions.investorEtoTicket.getIncomingPayoutsInBackground,
+    ],
+    getIncomingPayouts,
+  );
 }

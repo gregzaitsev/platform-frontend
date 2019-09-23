@@ -11,7 +11,7 @@ import { EWalletType } from "../../../modules/web3/types";
 import { appConnect } from "../../../store";
 import { assertNever } from "../../../utils/assertNever";
 import { appRoutes } from "../../appRoutes";
-import { loginWalletRoutes } from "../../wallet-selector/walletRoutes";
+import { walletLoginRoutes } from "../../wallet-selector/walletRoutes";
 
 interface IStateProps {
   isAuthorized: boolean;
@@ -46,11 +46,11 @@ type TProps = IExternalProps & IStateProps;
 const selectRouteBasedOnWalletType = (walletType: EWalletType): string => {
   switch (walletType) {
     case EWalletType.LEDGER:
-      return loginWalletRoutes.ledger;
+      return walletLoginRoutes.ledger;
     case EWalletType.BROWSER:
-      return loginWalletRoutes.browser;
+      return walletLoginRoutes.browser;
     default:
-      return loginWalletRoutes.light;
+      return walletLoginRoutes.light;
   }
 };
 

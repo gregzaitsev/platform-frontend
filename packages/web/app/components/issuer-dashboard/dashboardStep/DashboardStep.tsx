@@ -48,14 +48,24 @@ const selectStepComponent = (props: IEtoStep) => {
       );
     case EEtoStep.LINK_NOMINEE:
       return <LinkNomineeStep />;
+    case EEtoStep.FILL_INFORMATION_ABOUT_ETO:
+      return (
+        <>
+          <DashboardHeading
+            title={<FormattedMessage id="eto-dashboard.fill-information-about-eto" />}
+            data-test-id="eto-dashboard-fill-information-about-eto"
+          />
+          <FormattedMessage id="eto-dashboard.fill-information-about-eto.description" />
+        </>
+      );
     case EEtoStep.UPLOAD_SIGNED_TERMSHEET:
       return (
         <>
           <DashboardHeading
-            title={<FormattedMessage id="eto-dashboard.upload_signed_termsheet" />}
-            data-test-id="eto-dashboard-upload_signed_termsheet"
+            title={<FormattedMessage id="eto-dashboard.upload-signed-termsheet" />}
+            data-test-id="eto-dashboard-upload-signed-termsheet"
           />
-          <FormattedMessage id="eto-dashboard.upload_signed_termsheet.description" />
+          <FormattedMessage id="eto-dashboard.upload-signed-termsheet.description" />
         </>
       );
     case EEtoStep.PUBLISH_INVESTMENT_OFFER:
@@ -112,8 +122,43 @@ const selectStepComponent = (props: IEtoStep) => {
           <FormattedMessage id="eto-dashboard.waiting-for-smart-contracts.description" />
         </>
       );
-    case EEtoStep.REQUEST_THA_SIGN:
-      return <DashboardHeading title={<FormattedMessage id="eto-dashboard.start-fundraising" />} />;
+    case EEtoStep.WAIT_FOR_NOMINEE_AGREEMENTS:
+      return (
+        <>
+          <DashboardHeading
+            title={<FormattedMessage id="eto-dashboard.waiting-for-nominee-documents" />}
+            data-test-id="eto-dashboard-waiting-for-nominee-agreements"
+          />
+          <FormattedMessage id="eto-dashboard.waiting-for-nominee-documents.description" />
+        </>
+      );
+    case EEtoStep.SETUP_START_DATE:
+      return (
+        <DashboardHeading
+          title={<FormattedMessage id="eto-dashboard.setup-start-date" />}
+          data-test-id="eto-dashboard-set-start-date"
+        />
+      );
+
+    case EEtoStep.WAITING_FOR_FUNDRAISING_TO_START:
+      return (
+        <DashboardHeading
+          title={<FormattedMessage id="eto-dashboard.waiting-for-fundraising-start" />}
+        />
+      );
+
+    case EEtoStep.FUNDRAISING_IS_LIVE:
+      return <DashboardHeading title={<FormattedMessage id="eto-dashboard.fundraising-live" />} />;
+    case EEtoStep.ETO_SUSPENDED_FROM_ON_CHAIN:
+      return (
+        <>
+          <DashboardHeading
+            title={<FormattedMessage id="eto-dashboard.suspended" />}
+            data-test-id="eto-dashboard-suspended"
+          />
+          <FormattedMessage id="eto-dashboard.eto-contracts-suspended" />
+        </>
+      );
     default:
       return assertNever(props.etoStep);
   }

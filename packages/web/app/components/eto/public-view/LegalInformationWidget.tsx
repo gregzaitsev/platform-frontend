@@ -6,7 +6,7 @@ import { Container, EColumnSpan } from "../../layouts/Container";
 import { ChartDoughnutLazy } from "../../shared/charts/ChartDoughnutLazy";
 import { generateColor } from "../../shared/charts/utils";
 import { FormatNumber } from "../../shared/formatters/FormatNumber";
-import { MoneyNew } from "../../shared/formatters/Money";
+import { Money } from "../../shared/formatters/Money";
 import { ECurrency, ENumberInputFormat, ENumberOutputFormat } from "../../shared/formatters/utils";
 import { Panel } from "../../shared/Panel";
 import { FUNDING_ROUNDS } from "../constants";
@@ -21,7 +21,38 @@ interface IProps {
   columnSpan?: EColumnSpan;
 }
 
-export type TShareholder = {
+const generateShareholders = (
+  shareholders: TCompanyEtoData["shareholders"],
+  companyShareCapital: number,
+): ReadonlyArray<TEtoLegalShareholderType> => {
+  if (shareholders === undefined) {
+    return [];
+  } else {
+    const assignedCapital = shareholders.reduce(
+      (acc, shareholder) =>
+        shareholder && shareholder.shareCapital ? (acc += shareholder.shareCapital) : acc,
+      0,
+    );
+
+    // Filter out any possible empty elements for type safety
+    // This is temporary fix
+    // TODO: rewrite types to get rid of optional
+    // https://github.com/Neufund/platform-frontend/issues/3054
+    const shrholders = shareholders.filter((v): v is TEtoLegalShareholderType => !!v);
+
+    if (assignedCapital < companyShareCapital) {
+      return [
+        ...shrholders,
+        {
+          fullName: "Others",
+          shareCapital: companyShareCapital - assignedCapital,
+        },
+      ];
+    }
+    return shrholders;
+  }
+
+  export type TShareholder = {
   fullName: string;
   percentageOfShares: number;
 };
@@ -32,7 +63,7 @@ export const LegalInformationWidget: React.FunctionComponent<IProps> = ({
 }) => {
   const shareholdersData = generateShareholders(
     companyData.shareholders,
-    companyData.companyShares,
+    companyData.companyShareCapital,
   );
 
   return (
@@ -108,7 +139,7 @@ export const LegalInformationWidget: React.FunctionComponent<IProps> = ({
                 <FormattedMessage id="eto.public-view.legal-information.last-funding-amount" />
               </span>
               <span className={styles.value}>
-                <MoneyNew
+                <Money
                   value={companyData.lastFundingSizeEur}
                   inputFormat={ENumberInputFormat.FLOAT}
                   valueType={ECurrency.EUR}
@@ -117,17 +148,18 @@ export const LegalInformationWidget: React.FunctionComponent<IProps> = ({
               </span>
             </div>
           )}
-          {companyData.companyShares && (
+          {companyData.companyShareCapital && (
             <div className={styles.entry}>
               <span className={styles.label}>
-                <FormattedMessage id="eto.public-view.legal-information.existing-shares" />
+                <FormattedMessage id="eto.public-view.legal-information.existing-share-capital" />
               </span>
               <span className={styles.value}>
                 <FormatNumber
-                  value={companyData.companyShares}
+                  value={companyData.companyShareCapital}
                   outputFormat={ENumberOutputFormat.INTEGER}
                   inputFormat={ENumberInputFormat.FLOAT}
                 />
+                {` ${companyData.shareCapitalCurrencyCode}`}
               </span>
             </div>
           )}
@@ -138,7 +170,8 @@ export const LegalInformationWidget: React.FunctionComponent<IProps> = ({
             data={{
               datasets: [
                 {
-                  data: shareholdersData.map(d => d && d.percentageOfShares),
+                  data: shareholdersData.map(d => d && d.shareCapital),
+                  // data: shareholdersData.map(d => d && d.percentageOfShares),
                   backgroundColor: shareholdersData.map(
                     (shareholder: TShareholder, i: number) =>
                       // Use predefined colors first, then use generated colors

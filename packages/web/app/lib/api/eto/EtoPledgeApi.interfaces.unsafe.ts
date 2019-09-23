@@ -6,6 +6,10 @@ import {
   ValidationMessage,
 } from "../../../components/translatedMessages/messages";
 import { createMessage } from "../../../components/translatedMessages/utils";
+import {
+  isPledgeAboveMinimum,
+  isPledgeNotAboveMaximum,
+} from "../../../modules/bookbuilding-flow/utils";
 
 export interface IPledge {
   amountEur: number;
@@ -18,22 +22,13 @@ export interface IBookBuildingStats {
   pledgedAmount: number;
 }
 
-export const generateCampaigningValidation = (minPledge: number, maxPledge?: number) => {
-  const amount = Yup.number()
-    .typeError(getMessageTranslation(createMessage(ValidationMessage.VALIDATION_INTEGER)))
-    .min(
-      minPledge,
-      getMessageTranslation(createMessage(ValidationMessage.VALIDATION_MIN_PLEDGE, minPledge)),
-    )
-    .integer()
-    .required();
-
-  return Yup.object({
-    amount: maxPledge
-      ? amount.max(
-          maxPledge,
-          getMessageTranslation(createMessage(ValidationMessage.VALIDATION_MAX_PLEDGE, maxPledge)),
-        )
-      : amount,
+export const generateCampaigningValidation = (minPledge: number, maxPledge?: number) =>
+  Yup.object({
+    amount: Yup.string()
+      .required()
+      .matches(/^[0-9]*$/, getMessageTranslation(
+        createMessage(ValidationMessage.VALIDATION_INTEGER),
+      ) as any)
+      .test(isPledgeAboveMinimum(minPledge))
+      .test(isPledgeNotAboveMaximum(maxPledge)),
   });
-};

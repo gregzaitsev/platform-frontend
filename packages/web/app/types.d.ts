@@ -108,12 +108,17 @@ type SelectPropertyNames<T, R> = { [K in keyof T]: T[K] extends R ? K : never }[
 type PickProperties<T, R> = Pick<T, SelectPropertyNames<T, R>>;
 
 /**
- * In T, mark as required properties from K
+ * Make all properties in T required and non nullable
+ */
+export type RequiredNonNullable<T> = { [P in keyof T]-?: NonNullable<T[P]> };
+
+/**
+ * In T, mark as required and non nullable properties from K
  * Useful for types narrowing after recompose `branch` method
  * @example
- * RequiredByKeys<{ foo?: boolean, bar?: string }, "foo"> // { foo: boolean, bar?: string }
+ * RequiredByKeys<{ foo?: boolean | null, bar?: string }, "foo"> // { foo: boolean, bar?: string }
  */
-export type RequiredByKeys<T, K extends keyof T> = Required<Pick<T, K>> & OmitKeys<T, K>;
+export type RequiredByKeys<T, K extends keyof T> = RequiredNonNullable<Pick<T, K>> & OmitKeys<T, K>;
 
 /**
  * Overwrites properties from T1 with one from T2
@@ -136,8 +141,9 @@ export type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
  */
 export type XOR<T extends object, U extends object> = (Without<T, U> & U) | (Without<U, T> & T);
 
-export type TFormikConnect = {
-  formik: FormikContext<any>;
+// TODO: Remove `any` and provide correct types everywhere
+export type TFormikConnect<Values = any> = {
+  formik: FormikContext<Values>;
 };
 
 export type TElementRef<T> = null | T;

@@ -6,7 +6,7 @@ import { IAppState } from "../../store";
 import { isJwtExpiringLateEnough } from "../../utils/JWTUtils";
 import { actions, TActionFromCreator } from "../actions";
 import { loadJwt, setJwt } from "../auth/jwt/sagas";
-import { loadUser } from "../auth/user/sagas";
+import { loadUser } from "../auth/user/external/sagas";
 import { initializeContracts, populatePlatformTermsConstants } from "../contracts/sagas";
 import { neuCall, neuTakeEvery, neuTakeOnly } from "../sagasUtils";
 import { detectUserAgent } from "../user-agent/sagas";
@@ -55,7 +55,7 @@ function* initApp({ logger }: TGlobalDependencies): any {
           yield waitUntilSmartContractsAreInitialized();
 
           yield neuCall(setJwt, jwt);
-          yield loadUser();
+          yield neuCall(loadUser);
         } catch (e) {
           yield put(actions.auth.logout());
           logger.error(

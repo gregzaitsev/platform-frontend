@@ -8,7 +8,7 @@ import { ETxSenderType } from "../../../../modules/tx/types";
 import { getUnlockedWalletEtherAmountAfterFee } from "../../../../modules/wallet/utils";
 import { multiplyBigNumbers } from "../../../../utils/BigNumberUtils";
 import { getCurrentUTCTimestamp } from "../../../../utils/Date.utils";
-import { MoneyNew } from "../../../shared/formatters/Money";
+import { Money } from "../../../shared/formatters/Money";
 import {
   ECurrency,
   ENumberInputFormat,
@@ -37,7 +37,7 @@ const UnlockWalletTransactionDetailsLayout: React.FunctionComponent<
     <InfoRow
       caption={<FormattedMessage id="unlock-funds-flow.eth-committed" />}
       value={
-        <MoneyNew
+        <Money
           value={additionalData.lockedEtherBalance}
           inputFormat={ENumberInputFormat.ULPS}
           valueType={ECurrency.ETH}
@@ -48,7 +48,7 @@ const UnlockWalletTransactionDetailsLayout: React.FunctionComponent<
     <InfoRow
       caption={<FormattedMessage id="unlock-funds-flow.neumarks-due" />}
       value={
-        <MoneyNew
+        <Money
           value={additionalData.etherNeumarksDue}
           inputFormat={ENumberInputFormat.ULPS}
           valueType={ECurrency.NEU}
@@ -70,7 +70,7 @@ const UnlockWalletTransactionDetailsLayout: React.FunctionComponent<
     <InfoRow
       caption={<FormattedMessage id="unlock-funds-flow.amount-returned" />}
       value={
-        <MoneyNew
+        <Money
           value={returnedEther}
           inputFormat={ENumberInputFormat.ULPS}
           valueType={ECurrency.ETH}
@@ -81,7 +81,7 @@ const UnlockWalletTransactionDetailsLayout: React.FunctionComponent<
     <InfoRow
       caption={<FormattedMessage id="unlock-funds-flow.transaction-cost" />}
       value={
-        <MoneyNew
+        <Money
           value={multiplyBigNumbers([txData!.gasPrice, txData!.gas])}
           inputFormat={ENumberInputFormat.ULPS}
           valueType={ECurrency.ETH}

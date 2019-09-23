@@ -61,10 +61,17 @@ const POINTER_WIDTH = 26;
 const POINTER_CAMPAIGNING_POSITION = 20;
 const MAX_POINTER_POSITION = TIMELINE_WIDTH - 15;
 
+const MINIMUM_VALID_TIME_EPOCH = 1;
+
+const isValidDate = (date: Date | undefined): boolean =>
+  !!(date && date.getTime() >= MINIMUM_VALID_TIME_EPOCH);
+
 const getStartOfState = (state: EETOStateOnChain, startOfStates: TEtoStartOfStates | undefined) => {
   const startDate = startOfStates && startOfStates[state];
 
-  return startDate ? startDate.getTime() : NaN;
+  const preEtoStartDate = startOfStates && startOfStates[EETOStateOnChain.Whitelist];
+  // If `preEtoStartDate` is invalid all other dates are invalid
+  return startDate && isValidDate(preEtoStartDate) ? startDate.getTime() : NaN;
 };
 
 const getSetupTitle = (state: EEtoState, subState: EEtoSubState | undefined) => {

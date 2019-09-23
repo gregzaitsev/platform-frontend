@@ -2,7 +2,7 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
 import { ETxSenderType } from "../../../../modules/tx/types";
-import { MoneyNew } from "../../../shared/formatters/Money";
+import { Money } from "../../../shared/formatters/Money";
 import { ENumberInputFormat, ENumberOutputFormat } from "../../../shared/formatters/utils";
 import { InfoList } from "../shared/InfoList";
 import { InfoRow } from "../shared/InfoRow";
@@ -20,7 +20,7 @@ const RedistributeTransactionDetails: TransactionDetailsComponent<
         key={tokenDisbursal.token}
         caption={<FormattedMessage id="investor-payout.redistribute.summary.total-redistributed" />}
         value={
-          <MoneyNew
+          <Money
             value={tokenDisbursal.amountToBeClaimed}
             inputFormat={ENumberInputFormat.ULPS}
             outputFormat={ENumberOutputFormat.FULL}

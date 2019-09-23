@@ -5,7 +5,7 @@ import { branch, compose, renderComponent, StateHandler, withStateHandlers } fro
 import { selectBankTransferMinAmount } from "../../../../modules/bank-transfer-flow/selectors";
 import { appConnect } from "../../../../store";
 import { ButtonArrowRight } from "../../../shared/buttons";
-import { MoneyNew } from "../../../shared/formatters/Money";
+import { Money } from "../../../shared/formatters/Money";
 import {
   ECurrency,
   ENumberInputFormat,
@@ -48,7 +48,7 @@ const BankTransferVerifyInfoLayout: React.FunctionComponent<IProps> = ({
         id="bank-verification.info.text"
         values={{
           min: (
-            <MoneyNew
+            <Money
               value={minEuroUlps}
               inputFormat={ENumberInputFormat.ULPS}
               valueType={ECurrency.EUR}

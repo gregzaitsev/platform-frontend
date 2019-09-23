@@ -39,7 +39,8 @@ export const etoFlowReducer: AppReducer<IEtoFlowState> = (
         loading: false,
         saving: false,
       };
-    case actions.etoFlow.saveDataStart.getType():
+    case actions.etoFlow.saveCompanyStart.getType():
+    case actions.etoFlow.saveEtoStart.getType():
     case actions.etoFlow.submitDataStart.getType():
       return {
         ...state,

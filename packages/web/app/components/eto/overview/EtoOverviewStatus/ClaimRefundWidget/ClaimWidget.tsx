@@ -2,7 +2,7 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
 import { Button } from "../../../../shared/buttons";
-import { MoneyNew } from "../../../../shared/formatters/Money";
+import { Money } from "../../../../shared/formatters/Money";
 import {
   ECurrency,
   ENumberInputFormat,
@@ -37,7 +37,7 @@ const ClaimWidgetLayout: React.FunctionComponent<IExternalProps> = ({
             id="shared-component.eto-overview.success.summary"
             values={{
               totalAmount: (
-                <MoneyNew
+                <Money
                   value={totalEquivEurUlps}
                   inputFormat={ENumberInputFormat.ULPS}
                   valueType={ECurrency.EUR}
@@ -52,7 +52,7 @@ const ClaimWidgetLayout: React.FunctionComponent<IExternalProps> = ({
             id="shared-component.eto-overview.success.summary-no-investors-count"
             values={{
               totalAmount: (
-                <MoneyNew
+                <Money
                   value={totalEquivEurUlps}
                   inputFormat={ENumberInputFormat.ULPS}
                   valueType={ECurrency.EUR}

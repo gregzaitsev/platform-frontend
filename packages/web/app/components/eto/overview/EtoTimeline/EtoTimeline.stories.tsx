@@ -37,6 +37,26 @@ storiesOf("ETO/EtoTimeline", module)
       />
     )),
   )
+  .add("setup (whitelisting) InvalidDates", () =>
+    withMockedDate(new Date(2017, 11, 20))(() => (
+      <EtoTimeline
+        startOfStates={{ ...startOfStates, [EETOStateOnChain.Whitelist]: undefined }}
+        currentState={EETOStateOnChain.Setup}
+        subState={EEtoSubState.WHITELISTING}
+        state={EEtoState.ON_CHAIN}
+      />
+    )),
+  )
+  .add("setup (whitelisting) Very Early Timestamp", () =>
+    withMockedDate(new Date(2017, 11, 20))(() => (
+      <EtoTimeline
+        startOfStates={{ ...startOfStates, [EETOStateOnChain.Whitelist]: new Date(0) }}
+        currentState={EETOStateOnChain.Setup}
+        subState={EEtoSubState.WHITELISTING}
+        state={EEtoState.ON_CHAIN}
+      />
+    )),
+  )
   .add("setup (campaigning)", () =>
     withMockedDate(new Date(2017, 11, 20))(() => (
       <EtoTimeline

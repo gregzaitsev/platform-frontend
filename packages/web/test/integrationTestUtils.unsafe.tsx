@@ -18,6 +18,7 @@ import {
 import { symbols } from "../app/di/symbols";
 import { SignatureAuthApi } from "../app/lib/api/auth/SignatureAuthApi";
 import { UsersApi } from "../app/lib/api/users/UsersApi";
+import { BroadcastChannelMock } from "../app/lib/dependencies/broadcast-channel/BroadcastChannel.mock";
 import { noopLogger } from "../app/lib/dependencies/logger";
 import { IntlWrapper } from "../app/lib/intl/IntlWrapper";
 import { Storage } from "../app/lib/persistence/Storage";
@@ -87,6 +88,7 @@ export function createIntegrationTestsSetup(
 
   const container = setupBindings(dummyConfig);
 
+  container.rebind(symbols.userActivityChannel).toConstantValue(new BroadcastChannelMock());
   container.rebind(symbols.ledgerWalletConnector).toConstantValue(ledgerWalletMock);
   container.rebind(symbols.browserWalletConnector).toConstantValue(browserWalletMock);
   container
@@ -145,7 +147,7 @@ export function clickFirstTid(component: ReactWrapper, id: string): void {
 
 export async function waitForTid(component: ReactWrapper, id: string): Promise<void> {
   // wait until event queue is empty :/ currently we don't have a better way to solve it
-  let waitTime = 20;
+  let waitTime = 50;
   while (--waitTime > 0 && component.find(tid(id)).length === 0) {
     await Promise.resolve();
     component.update();

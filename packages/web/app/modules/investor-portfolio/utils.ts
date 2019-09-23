@@ -146,3 +146,18 @@ export const getRefundStatus = (
     return EUserRefundStatus.CANNOT_CLAIM;
   }
 };
+
+export const snapshotIsActual = (snapshotDate: number, now: Date) => {
+  const snapshotInMilliseconds = snapshotDate * 1000;
+
+  const dates: [number, number][] = [
+    [new Date(snapshotInMilliseconds).getUTCFullYear(), now.getUTCFullYear()],
+    [new Date(snapshotInMilliseconds).getUTCMonth(), now.getUTCMonth()],
+    [new Date(snapshotInMilliseconds).getUTCDate(), now.getUTCDate()],
+  ];
+
+  return dates.reduce(
+    (acc: boolean, pair: [number, number]): boolean => acc && pair[0] === pair[1],
+    true,
+  );
+};

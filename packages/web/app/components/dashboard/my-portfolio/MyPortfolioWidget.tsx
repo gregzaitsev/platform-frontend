@@ -1,115 +1,15 @@
-import * as cn from "classnames";
 import * as React from "react";
-import { FormattedMessage } from "react-intl-phraseapp";
-import { branch, compose, renderComponent } from "recompose";
 
-import { actions } from "../../../modules/actions";
-import {
-  selectIsIncomingPayoutAvailable,
-  selectIsIncomingPayoutLoading,
-} from "../../../modules/investor-portfolio/selectors";
-import { selectNeuBalance, selectNeuBalanceEuroAmount } from "../../../modules/wallet/selectors";
-import { appConnect } from "../../../store";
-import { CommonHtmlProps } from "../../../types";
-import { onEnterAction } from "../../../utils/OnEnterAction";
 import { EColumnSpan } from "../../layouts/Container";
-import { LoadingIndicator } from "../../shared/loading-indicator";
 import { Panel } from "../../shared/Panel";
-import { WarningAlert } from "../../shared/WarningAlert";
-import { IncomingPayoutWidget } from "../incoming-payout/IncomingPayoutWidget";
-import { MyNeuWidget } from "./MyNeuWidget";
+import { MyNeuWidget } from "./my-neu-widget/MyNeuWidget";
+import { PayoutWidget } from "./my-portfolio-widget/PayoutWidget";
 
 import * as styles from "./MyPortfolioWidget.module.scss";
 
-type TOwnProps = CommonHtmlProps;
-
-interface IBodyProps {
-  error?: string;
-  balanceNeu: string;
-  balanceEur: string;
-  isIncomingPayoutAvailable: boolean;
-}
-
-interface IStateProps {
-  isLoading: boolean;
-  balanceNeu?: string;
-  balanceEur?: string;
-  error?: string;
-  isIncomingPayoutLoading: boolean;
-  isIncomingPayoutAvailable: boolean;
-}
-
-type IProps = TOwnProps & IStateProps;
-
-const Welcome: React.FunctionComponent<{}> = () => (
-  <div className={styles.main}>
-    <h3 className={styles.welcome}>
-      <FormattedMessage id="dashboard.my-portfolio-widget.welcome" />
-    </h3>
-    <p>
-      <FormattedMessage id="dashboard.my-portfolio-widget.explanation" />
-    </p>
-  </div>
-);
-
-export const MyPortfolioWidgetComponentBody: React.FunctionComponent<IBodyProps> = ({
-  error,
-  balanceEur,
-  balanceNeu,
-  isIncomingPayoutAvailable,
-}) => {
-  if (error) {
-    return <WarningAlert>{error}</WarningAlert>;
-  }
-
-  return (
-    <div className={styles.contentWrapper}>
-      {isIncomingPayoutAvailable ? <IncomingPayoutWidget /> : <Welcome />}
-      <MyNeuWidget balanceNeu={balanceNeu} balanceEur={balanceEur} />
-    </div>
-  );
-};
-
-export const MyPortfolioWidgetComponent: React.FunctionComponent<IProps> = ({
-  className,
-  style,
-  error,
-  balanceEur,
-  balanceNeu,
-  isIncomingPayoutAvailable,
-}) => (
-  <Panel className={cn(className, styles.panelFix)} style={style} columnSpan={EColumnSpan.TWO_COL}>
-    <MyPortfolioWidgetComponentBody
-      balanceEur={balanceEur!}
-      balanceNeu={balanceNeu!}
-      error={error}
-      isIncomingPayoutAvailable={isIncomingPayoutAvailable}
-      test-data-id="dashboard-my-portfolio-widget"
-    />
+export const MyPortfolioWidget: React.FunctionComponent = () => (
+  <Panel className={styles.panelFix} columnSpan={EColumnSpan.TWO_COL}>
+    <PayoutWidget />
+    <MyNeuWidget />
   </Panel>
 );
-
-export const LoadingComponent: React.FunctionComponent<IProps> = ({ className, style }) => (
-  <Panel className={className} style={style} columnSpan={EColumnSpan.TWO_COL}>
-    <LoadingIndicator />
-  </Panel>
-);
-
-export const MyPortfolioWidget = compose<IStateProps, TOwnProps>(
-  onEnterAction({
-    actionCreator: d => {
-      d(actions.investorEtoTicket.getIncomingPayouts());
-    },
-  }),
-  appConnect<IStateProps, {}, TOwnProps>({
-    stateToProps: s => ({
-      isLoading: s.wallet.loading,
-      error: s.wallet.error,
-      balanceNeu: selectNeuBalance(s),
-      balanceEur: selectNeuBalanceEuroAmount(s),
-      isIncomingPayoutLoading: selectIsIncomingPayoutLoading(s),
-      isIncomingPayoutAvailable: selectIsIncomingPayoutAvailable(s),
-    }),
-  }),
-  branch((props: IStateProps) => props.isLoading, renderComponent(LoadingComponent)),
-)(MyPortfolioWidgetComponent);

@@ -1,9 +1,12 @@
-import { call, put, select } from "redux-saga/effects";
+import { call, Effect, fork, put, race, select, take } from "redux-saga/effects";
 
+import { SignInUserErrorMessage } from "../../../components/translatedMessages/messages";
+import { createMessage } from "../../../components/translatedMessages/utils";
 import { EJwtPermissions } from "../../../config/constants";
 import { TGlobalDependencies } from "../../../di/setupBindings";
-import { EUserType, IUser, IUserInput } from "../../../lib/api/users/interfaces";
+import { EUserType, IUser } from "../../../lib/api/users/interfaces";
 import { UserNotExisting } from "../../../lib/api/users/UsersApi";
+import { EUserActivityMessage } from "../../../lib/dependencies/broadcast-channel/types";
 import { REGISTRATION_LOGIN_DONE } from "../../../lib/persistence/UserStorage";
 import { TStoredWalletMetadata } from "../../../lib/persistence/WalletMetadataObjectStorage";
 import {
@@ -12,15 +15,52 @@ import {
   SignerUnknownError,
 } from "../../../lib/web3/Web3Manager/Web3Manager";
 import { IAppState } from "../../../store";
+import { assertNever } from "../../../utils/assertNever";
+import { safeDelay } from "../../../utils/safeTimers";
 import { actions, TActionFromCreator } from "../../actions";
+import { EInitType } from "../../init/reducer";
 import { loadKycRequestData } from "../../kyc/sagas";
 import { selectRedirectURLFromQueryString } from "../../routing/selectors";
-import { neuCall } from "../../sagasUtils";
+import { neuCall, neuTakeEvery, neuTakeLatest, neuTakeUntil } from "../../sagasUtils";
 import { selectUrlUserType } from "../../wallet-selector/selectors";
-import { loadPreviousWallet } from "../../web3/sagas";
 import { EWalletSubType, EWalletType } from "../../web3/types";
+import { AUTH_INACTIVITY_THRESHOLD } from "../constants";
 import { createJwt } from "../jwt/sagas";
 import { selectUserType } from "../selectors";
+import { ELogoutReason } from "../types";
+import { logoutUser } from "./external/sagas";
+
+/**
+ * Waits for user to conduct activity before a
+ * preset time limit if the time runs out, log
+ * out the user.
+ *
+ * This saga also takes into account actions
+ * done by other tabs
+ */
+export function* waitForUserActiveOrLogout({
+  logger,
+  userActivityChannel,
+}: TGlobalDependencies): Iterator<any> {
+  while (true) {
+    const { logout, active } = yield race({
+      logout: safeDelay(AUTH_INACTIVITY_THRESHOLD),
+      active: take(actions.auth.userActive.getType()),
+      refresh: take(actions.auth.refreshTimer.getType()),
+    });
+    // safeDelay sometimes returns 0 or 1
+    if (logout !== undefined) {
+      logger.info("User is inactive logging out");
+
+      yield put(actions.auth.userActivityTimeout());
+    }
+    if (active) {
+      yield userActivityChannel.postMessage({
+        status: EUserActivityMessage.USER_ACTIVE,
+      });
+    }
+  }
+}
 
 export function* signInUser({
   walletStorage,
@@ -62,50 +102,12 @@ export function* signInUser({
   }
 }
 
-export function* loadUser(): Iterator<any> {
-  const user: IUser = yield neuCall(loadUserPromise);
-  yield neuCall(loadPreviousWallet);
-  yield put(actions.auth.setUser(user));
-  yield neuCall(loadKycRequestData);
-}
-
-export async function loadUserPromise({ apiUserService }: TGlobalDependencies): Promise<IUser> {
-  return await apiUserService.me();
-}
-
-export async function createUserPromise(
-  { apiUserService }: TGlobalDependencies,
-  user: IUserInput,
-): Promise<IUser> {
-  return apiUserService.createAccount(user);
-}
-
-export function* createUser(newUser: IUserInput): Iterator<any> {
-  const user: IUser = yield neuCall(createUserPromise, newUser);
-  yield put(actions.auth.setUser(user));
-
-  yield neuCall(loadKycRequestData);
-}
-
-export async function updateUserPromise(
-  { apiUserService }: TGlobalDependencies,
-  user: IUserInput,
-): Promise<IUser> {
-  return apiUserService.updateUser(user);
-}
-// TODO: Remove updateUserPromise
-
 export function* loadOrCreateUser(userType: EUserType): Iterator<any> {
   const user: IUser = yield neuCall(loadOrCreateUserPromise, userType);
 
   yield put(actions.auth.setUser(user));
 
   yield neuCall(loadKycRequestData);
-}
-
-export function* updateUser(updatedUser: IUserInput): Iterator<any> {
-  const user: IUser = yield neuCall(updateUserPromise, updatedUser);
-  yield put(actions.auth.setUser(user));
 }
 
 export async function loadOrCreateUserPromise(
@@ -163,4 +165,73 @@ export function* setUser(
 ): Iterator<any> {
   const user = action.payload.user;
   logger.setUser({ id: user.userId, type: user.type, walletType: user.walletType });
+}
+
+function* handleLogOutUser(
+  { logger }: TGlobalDependencies,
+  action: TActionFromCreator<typeof actions.auth.logout>,
+): Iterator<any> {
+  const { logoutType = ELogoutReason.USER_REQUESTED } = action.payload;
+
+  yield neuCall(logoutUser);
+
+  switch (logoutType) {
+    case ELogoutReason.USER_REQUESTED:
+      {
+        yield put(actions.routing.goHome());
+      }
+      break;
+    case ELogoutReason.SESSION_TIMEOUT:
+      yield put(actions.routing.goToLogin({ logoutReason: ELogoutReason.SESSION_TIMEOUT }));
+      break;
+    case ELogoutReason.ALREADY_LOGGED_IN:
+      logger.warn(
+        new Error(
+          "Seems like there is already active session. Please check the reason as this may be a potential bug.",
+        ),
+      );
+      // no action is required
+      break;
+    default:
+      assertNever(logoutType);
+  }
+
+  yield put(actions.init.start(EInitType.APP_INIT));
+
+  logger.setUser(null);
+}
+
+function* handleSignInUser({ logger }: TGlobalDependencies): Iterator<any> {
+  try {
+    yield neuCall(signInUser);
+  } catch (e) {
+    logger.error("User Sign in error", e);
+
+    if (e instanceof SignerRejectConfirmationError) {
+      yield put(
+        actions.walletSelector.messageSigningError(
+          createMessage(SignInUserErrorMessage.MESSAGE_SIGNING_REJECTED),
+        ),
+      );
+    } else if (e instanceof SignerTimeoutError) {
+      yield put(
+        actions.walletSelector.messageSigningError(
+          createMessage(SignInUserErrorMessage.MESSAGE_SIGNING_TIMEOUT),
+        ),
+      );
+    } else {
+      yield put(
+        actions.walletSelector.messageSigningError(
+          createMessage(SignInUserErrorMessage.MESSAGE_SIGNING_SERVER_CONNECTION_FAILURE),
+        ),
+      );
+    }
+  }
+}
+
+export function* authUserSagas(): Iterator<Effect> {
+  yield fork(neuTakeLatest, actions.auth.logout, handleLogOutUser);
+  yield fork(neuTakeEvery, actions.auth.setUser, setUser);
+  yield fork(neuTakeEvery, actions.walletSelector.connected, handleSignInUser);
+  yield fork(neuTakeUntil, actions.auth.setUser, actions.auth.logout, waitForUserActiveOrLogout);
 }

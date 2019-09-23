@@ -3,7 +3,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { Col, Row } from "reactstrap";
 
 import { ChartBars, IChartBarsData } from "../../shared/charts/ChartBars";
-import { EThemeNew, MoneyNew } from "../../shared/formatters/Money";
+import { ETheme, Money } from "../../shared/formatters/Money";
 import { ECurrency, ENumberInputFormat, ENumberOutputFormat } from "../../shared/formatters/utils";
 import { HorizontalLine } from "../../shared/HorizontalLine";
 import { MoneySuiteWidget } from "../../shared/MoneySuiteWidget/MoneySuiteWidget";
@@ -51,12 +51,12 @@ export const EtoRaisedAmount: React.FunctionComponent<IProps> = ({
             <div className={styles.overviewMoney}>
               <div className={stylesCommon.header}>
                 <FormattedMessage id="eto.overview.raised-amount.total" />{" "}
-                <MoneyNew
+                <Money
                   value={"1234567" + "0".repeat(16)}
                   valueType={ECurrency.EUR}
                   inputFormat={ENumberInputFormat.ULPS}
                   outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
-                  theme={EThemeNew.GREEN}
+                  theme={ETheme.GREEN}
                 />
               </div>
               <MoneySuiteWidget
@@ -77,7 +77,7 @@ export const EtoRaisedAmount: React.FunctionComponent<IProps> = ({
 
             <div className={styles.overviewProgress}>
               <PercentageIndicatorBar percent={76} />
-              <MoneyNew
+              <Money
                 value={"1234567" + "0".repeat(14)}
                 inputFormat={ENumberInputFormat.ULPS}
                 outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}

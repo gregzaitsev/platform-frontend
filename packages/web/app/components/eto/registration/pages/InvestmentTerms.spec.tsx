@@ -9,7 +9,8 @@ import { InvestmentCalculator } from "./InvestmentTerms";
 describe("<InvestmentCalculator />", () => {
   const eto = {
     preMoneyValuationEur: "125000000",
-    existingCompanyShares: "40859",
+    existingShareCapital: "40859",
+    newShareNominalValue: "1",
     newSharesToIssue: "2952",
     minimumNewSharesToIssue: "1000",
     newSharesToIssueInFixedSlots: "2252",
@@ -40,8 +41,8 @@ describe("<InvestmentCalculator />", () => {
   ).eq("4 897 329.84");
   expect(
     component
-      .find('[name="equityTokenPrice"]')
+      .find('[name="minInvestmentAmount"]')
       .last()
       .prop("value"),
-  ).eq("1 223 720.61");
+  ).eq("3 059 301.50");
 });

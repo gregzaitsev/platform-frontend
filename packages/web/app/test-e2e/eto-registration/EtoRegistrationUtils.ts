@@ -1,11 +1,13 @@
 import { isFunction } from "lodash/fp";
 
-import { toCamelCase } from "../../utils/transformObjectKeys";
+import { etoRegisterRoutes } from "../../components/eto/registration/routes";
+import { TPartialCompanyEtoData } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
+import { toCamelCase, toSnakeCase } from "../../utils/transformObjectKeys";
 import { withParams } from "../../utils/withParams";
 import { acceptWallet } from "../utils";
 import { assertIssuerDashboard } from "../utils/assertions";
 import { cyPromise } from "../utils/cyPromise";
-import { fillForm, TFormFixture } from "../utils/forms";
+import { checkForm, fillForm, TFormFixture, TFormFixtureExpectedValues } from "../utils/forms";
 import { confirmAccessModal } from "../utils/index";
 import { goToIssuerDashboard } from "../utils/navigation";
 import { tid } from "../utils/selectors";
@@ -37,27 +39,24 @@ export const submitPreview = () => {
   cy.get(tid("eto-dashboard-publish-eto")).should("not.exist");
 };
 
-export const fillAndAssertFull = (section: string, sideEffect: TFormFixture | (() => void)) => {
+export const goToSection = (section: string) => {
   cy.get(`${tid(section)} button`).click();
+};
+
+export const fillAndAssertFull = (section: string, sideEffect: TFormFixture | (() => void)) => {
+  fillAndAssert(section, sideEffect);
+
+  cy.get(`${tid(section)} ${tid("chart-circle.progress")}`).should("contain", "100%");
+};
+
+export const fillAndAssert = (section: string, sideEffect: TFormFixture | (() => void)) => {
+  goToSection(section);
 
   if (isFunction(sideEffect)) {
     sideEffect();
   } else {
     fillForm(sideEffect);
   }
-
-  assertIssuerDashboard();
-  cy.get(`${tid(section)} ${tid("chart-circle.progress")}`).should("contain", "100%");
-};
-
-export const goToSection = (section: string) => {
-  cy.get(`${tid(section)} button`).click();
-};
-
-export const fillAndAssert = (section: string, sectionForm: TFormFixture) => {
-  goToSection(section);
-
-  fillForm(sectionForm);
 
   assertIssuerDashboard();
 };
@@ -84,6 +83,17 @@ export const getIssuerEtoId = (): Promise<string> =>
   makeAuthenticatedCall(ETO_ME_PATH)
     .then(toCamelCase)
     .then(response => response.etoId);
+
+const COMPANIES_ME_PATH = "/api/eto-listing/companies/me";
+
+/**
+ * Send a patch request to issuer company
+ */
+export const patchIssuerCompany = (company: TPartialCompanyEtoData): Promise<string> =>
+  makeAuthenticatedCall(COMPANIES_ME_PATH, {
+    method: "PATCH",
+    body: JSON.stringify(toSnakeCase(company)),
+  }).then(toCamelCase);
 
 const SET_ETO_NOMINEE_PATH =
   "/api/external-services-mock/e2e-tests/etos/:etoId/nominees/:nomineeId";
@@ -148,7 +158,7 @@ export const assertUploadSignedTermsheetStep = () => {
   // eto state should be still in preview
   cy.get(tid("eto-state-preview")).should("exist");
   // step should be moved to upload signed termsheet step
-  cy.get(tid("eto-dashboard-upload_signed_termsheet")).should("exist");
+  cy.get(tid("eto-dashboard-upload-signed-termsheet")).should("exist");
 
   cy.get(tid("dashboard-upload-termsheet-widget")).should("exist");
 };
@@ -161,6 +171,22 @@ export const assertLinkNomineeStep = () => {
   cy.get(tid("dashboard-upload-termsheet-widget")).should("not.exist");
 };
 
+export const assertWaitForNomineeAgreementsStep = () => {
+  cy.get(tid("eto-state-whitelisting")).should("exist");
+  cy.get(tid("eto-dashboard-waiting-for-nominee-agreements")).should("exist");
+
+  // start date widget should not exist until agreements are signed by nomiee
+  cy.get(tid("eto-settings-set-start-date")).should("not.exist");
+};
+
+export const assertSetEtoStartDateStep = () => {
+  cy.get(tid("eto-state-whitelisting")).should("exist");
+  cy.get(tid("eto-dashboard-set-start-date")).should("exist");
+
+  cy.get(tid("eto-settings-set-start-date")).should("exist");
+  cy.get(tid("eto-settings-start-date-open-date-picker")).should("exist");
+};
+
 export const assertLinkNomineeStepAwaitingRequestState = (issuerAddress: string) => {
   assertLinkNomineeStep();
 
@@ -171,6 +197,11 @@ export const assertLinkNomineeStepAwaitingApprovalState = () => {
   assertLinkNomineeStep();
 
   cy.get(tid("eto-dashboard-accept-nominee")).should("exist");
+};
+
+export const assertFillEtoInformationState = () => {
+  cy.get(tid("eto-state-preview")).should("exist");
+  cy.get(tid("eto-dashboard-fill-information-about-eto")).should("exist");
 };
 
 export const assertUploadMemorandumDocumentStep = () => {
@@ -196,4 +227,26 @@ export const assertWaitingForSmartContractsStep = () => {
 
   // isha upload should not be longer available
   cy.get(tid("dashboard-upload-isha-widget")).should("not.exist");
+};
+
+export const openAndCheckValues = (
+  section: string,
+  sectionForm: TFormFixture,
+  expectedValues: TFormFixtureExpectedValues,
+) => {
+  goToIssuerDashboard();
+
+  goToSection(section);
+
+  checkForm(sectionForm, expectedValues);
+};
+
+export const goToCompanyInformation = () => {
+  cy.visit(etoRegisterRoutes.companyInformation);
+  cy.get(tid("eto.form.company-information")).should("exist");
+};
+
+export const goToLegalInformation = () => {
+  cy.visit(etoRegisterRoutes.legalInformation);
+  cy.get(tid("eto.form.legal-information")).should("exist");
 };

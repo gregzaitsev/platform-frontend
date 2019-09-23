@@ -114,9 +114,9 @@ const RichTextAreaLayout = compose<
   fromRenderProps<TRenderPropsProp, TExternalProps, NonNullable<TContainerContext>>(
     ContainerContext.Consumer,
     container => ({
-      uploadAdapterFactory: container.get<TRichTextEditorUploadAdapterFactoryType>(
-        symbols.richTextEditorUploadAdapter,
-      ),
+      uploadAdapterFactory:
+        container &&
+        container.get<TRichTextEditorUploadAdapterFactoryType>(symbols.richTextEditorUploadAdapter),
     }),
   ),
 )(RichTextAreaLayoutComponent);

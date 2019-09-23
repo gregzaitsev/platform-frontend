@@ -32,13 +32,13 @@ import { isAddressValid } from "../../../../../modules/web3/utils";
 import { appConnect } from "../../../../../store";
 import { OmitKeys } from "../../../../../types";
 import { Button } from "../../../../shared/buttons";
-import { MoneyNew } from "../../../../shared/formatters/Money";
+import { Money } from "../../../../shared/formatters/Money";
 import {
   ECurrency,
   ENumberInputFormat,
   ENumberOutputFormat,
 } from "../../../../shared/formatters/utils";
-import { Form } from "../../../../shared/forms";
+import { FormDeprecated } from "../../../../shared/forms";
 import { EHeadingSize, Heading } from "../../../../shared/Heading";
 import { DataRow } from "../../shared/DataRow";
 import {
@@ -93,7 +93,7 @@ const AvailableEthBalance: React.FunctionComponent<{ ethAmount: string }> = ({ e
     className={cn(styles.noSpacing, styles.withTopSpacing)}
     caption={<FormattedMessage id="modal.sent-eth.available-balance" />}
     value={
-      <MoneyNew
+      <Money
         data-test-id="modals.tx-sender.withdraw-flow.summary.balance"
         className={styles.money}
         value={ethAmount}
@@ -151,7 +151,7 @@ const WithdrawLayout: React.FunctionComponent<TProps> = ({
         errors,
         touched,
       }: FormikProps<IWithdrawData>) => (
-        <Form>
+        <FormDeprecated>
           <EtherAddressFormRow errors={errors} values={values} />
           <ShowAdditionalNotifications errors={errors} notifications={notifications} />
           <AvailableEthBalance ethAmount={ethAmount} />
@@ -225,7 +225,7 @@ const WithdrawLayout: React.FunctionComponent<TProps> = ({
               )}
             </Button>
           </section>
-        </Form>
+        </FormDeprecated>
       )}
     </Formik>
   </section>

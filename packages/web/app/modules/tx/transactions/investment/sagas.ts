@@ -144,7 +144,7 @@ export function* generateInvestmentTransaction({ contractsService }: TGlobalDepe
   }
 }
 
-export function* investmentFlowGenerator(_: TGlobalDependencies): any {
+export function* investmentFlowGenerator({ logger }: TGlobalDependencies): any {
   yield take(actions.txSender.txSenderAcceptDraft);
 
   const etoId: string = yield select(selectInvestmentEtoId);
@@ -165,13 +165,19 @@ export function* investmentFlowGenerator(_: TGlobalDependencies): any {
   const etherPriceEur: string = yield select(selectEtherPriceEur);
   const isIcbm: boolean = yield select(selectIsICBMInvestment);
 
+  if (!eto.investmentCalculatedValues) {
+    logger.error("ETO investment calculated values are empty");
+    throw new Error("ETO investment calculated values are empty");
+  }
+
   const additionalData = {
     eto: {
       etoId,
       companyName: eto.company.name,
-      existingCompanyShares: eto.existingCompanyShares,
+      existingShareCapital: eto.existingShareCapital,
       equityTokensPerShare: eto.equityTokensPerShare,
       preMoneyValuationEur: eto.preMoneyValuationEur,
+      investmentCalculatedValues: eto.investmentCalculatedValues,
     },
     investmentEth,
     investmentEur,

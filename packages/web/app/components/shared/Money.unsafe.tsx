@@ -34,7 +34,7 @@ function getFormatDecimals(format: ENumberInputFormat): number {
 }
 /*
  * @deprecated
- * Use app/components/shared/formatters/MoneyNew or app/components/shared/formatters/FormatNumber
+ * Use app/components/shared/formatters/Money or app/components/shared/formatters/FormatNumber
  * */
 export function getFormattedMoney(
   value: string | number | BigNumber,

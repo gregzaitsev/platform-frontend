@@ -1,4 +1,3 @@
-import { FormikProps, withFormik } from "formik";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { setDisplayName } from "recompose";
@@ -34,7 +33,7 @@ import {
   parseStringToInteger,
   removeEmptyKeyValueFields,
 } from "../../utils";
-import { EtoFormBase } from "../EtoFormBase.unsafe";
+import { EtoFormBase } from "../EtoFormBase";
 import { Section } from "../Shared";
 
 import * as styles from "../Shared.module.scss";
@@ -61,11 +60,17 @@ const NUMBER_OF_EMPLOYEES = {
   ">1000": ">1000",
 };
 
-type IProps = IExternalProps & IStateProps & IDispatchProps & FormikProps<TPartialCompanyEtoData>;
+type IProps = IExternalProps & IStateProps & IDispatchProps;
 
 // Some fields in LegalInformation are always readonly because data are set during KYC process
-const EtoRegistrationLegalInformationComponent = ({ savingData }: IProps) => (
-  <EtoFormBase title="Legal Information" validator={EtoLegalInformationType.toYup()}>
+const EtoRegistrationLegalInformationComponent = ({ savingData, company, saveData }: IProps) => (
+  <EtoFormBase
+    data-test-id="eto.form.legal-information"
+    title="Legal Information"
+    validationSchema={EtoLegalInformationType.toYup()}
+    initialValues={convert(company, toFormState)}
+    onSubmit={saveData}
+  >
     <Section>
       <FormField
         label={<FormattedMessage id="eto.form.legal-information.legal-company-name" />}
@@ -130,20 +135,24 @@ const EtoRegistrationLegalInformationComponent = ({ savingData }: IProps) => (
         label={<FormattedMessage id="eto.form.legal-information.last-funding-amount" />}
       />
       <FormMaskedNumberInput
-        name="companyShares"
+        name="companyShareCapital"
         storageFormat={ENumberInputFormat.FLOAT}
         outputFormat={ENumberOutputFormat.INTEGER}
         valueType={undefined}
-        label={<FormattedMessage id="eto.form.legal-information.number-of-existing-shares" />}
+        label={<FormattedMessage id="eto.form.legal-information.amount-of-share-capital" />}
+      />
+      <FormField
+        label={<FormattedMessage id="eto.form.legal-information.share-capital-currency-code" />}
+        name="shareCapitalCurrencyCode"
       />
       <FormHighlightGroup
         title={<FormattedMessage id="eto.form.legal-information.shareholder-structure" />}
       >
         <ArrayOfKeyValueFields
           name="shareholders"
-          valuePlaceholder={"Amount of shares"}
+          valuePlaceholder={"Share capital"}
           suggestions={["Full Name"]}
-          fieldNames={["fullName", "shares"]}
+          fieldNames={["fullName", "shareCapital"]}
         />
       </FormHighlightGroup>
     </Section>
@@ -164,33 +173,31 @@ const EtoRegistrationLegalInformation = compose<React.FunctionComponent<IExterna
   setDisplayName(EEtoFormTypes.LegalInformation),
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: state => ({
-      loadingData: state.etoFlow.loading,
-      savingData: state.etoFlow.saving,
+      loadingData: state.etoIssuer.loading,
+      savingData: state.etoIssuer.saving,
       company: selectIssuerCompany(state) as TPartialCompanyEtoData,
     }),
     dispatchToProps: dispatch => ({
-      saveData: (data: TPartialCompanyEtoData) => {
-        const convertedData = convert(data, fromFormState);
-        dispatch(actions.etoFlow.saveDataStart({ companyData: convertedData, etoData: {} }));
+      saveData: (company: TPartialCompanyEtoData) => {
+        const convertedCompany = convert(company, fromFormState);
+        dispatch(actions.etoFlow.saveCompanyStart(convertedCompany));
       },
     }),
-  }),
-  withFormik<IStateProps & IDispatchProps, TPartialCompanyEtoData>({
-    validationSchema: EtoLegalInformationType.toYup(),
-    mapPropsToValues: props => convert(props.company, toFormState),
-    handleSubmit: (values, { props }) => props.saveData(values),
   }),
 )(EtoRegistrationLegalInformationComponent);
 
 const toFormState = {
-  companyShares: convertNumberToString(),
+  companyShareCapital: convertNumberToString(),
   numberOfFounders: convertNumberToString(),
   lastFundingSizeEur: convertNumberToString(),
 };
 
 const fromFormState = {
-  shareholders: [removeEmptyKeyValueFields(), convertInArray({ shares: parseStringToInteger() })],
-  companyShares: parseStringToInteger(),
+  shareholders: [
+    removeEmptyKeyValueFields(),
+    convertInArray({ shareCapital: parseStringToInteger() }),
+  ],
+  companyShareCapital: parseStringToInteger(),
   lastFundingSizeEur: parseStringToFloat(),
   numberOfFounders: parseStringToInteger(),
 };

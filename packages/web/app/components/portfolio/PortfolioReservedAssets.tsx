@@ -12,7 +12,7 @@ import { DashboardHeading } from "../eto/shared/DashboardHeading";
 import { EProjectStatusSize, ETOInvestorState } from "../eto/shared/ETOState";
 import { Container } from "../layouts/Container";
 import { FormatNumber } from "../shared/formatters/FormatNumber";
-import { MoneyNew } from "../shared/formatters/Money";
+import { Money } from "../shared/formatters/Money";
 import {
   ECurrency,
   ENumberInputFormat,
@@ -92,7 +92,7 @@ const PortfolioReservedAssets: React.FunctionComponent<IExternalProps> = ({ pend
               data-test-id="portfolio-reserved-asset-token-balance"
             />
 
-            <MoneyNew
+            <Money
               value={investorTicket.equivEurUlps}
               inputFormat={ENumberInputFormat.ULPS}
               valueType={ECurrency.EUR}
@@ -100,7 +100,7 @@ const PortfolioReservedAssets: React.FunctionComponent<IExternalProps> = ({ pend
               data-test-id="portfolio-reserved-asset-invested-amount"
             />
 
-            <MoneyNew
+            <Money
               value={getTokenPrice(investorTicket.equityTokenInt, investorTicket.equivEurUlps)}
               inputFormat={ENumberInputFormat.FLOAT}
               valueType={EPriceFormat.EQUITY_TOKEN_PRICE_EURO}
@@ -108,7 +108,7 @@ const PortfolioReservedAssets: React.FunctionComponent<IExternalProps> = ({ pend
               data-test-id="portfolio-reserved-token-price"
             />
 
-            <MoneyNew
+            <Money
               value={investorTicket.rewardNmkUlps.toString()}
               inputFormat={ENumberInputFormat.ULPS}
               valueType={ECurrency.NEU}

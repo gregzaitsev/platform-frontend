@@ -1,9 +1,9 @@
 import { pick } from "lodash/fp";
 
-import { etoRegisterRoutes } from "../../components/eto/registration/routes";
 import { fillForm, getFieldError } from "../utils/forms";
 import { formField, tid } from "../utils/selectors";
 import { createAndLoginNewUser } from "../utils/userHelpers";
+import { goToCompanyInformation } from "./EtoRegistrationUtils";
 import { aboutFormRequired, aboutFormSubmit } from "./fixtures";
 
 describe("Eto Company Information Field Validation", function(): void {
@@ -19,8 +19,7 @@ describe("Eto Company Information Field Validation", function(): void {
   });
 
   it("should focus first invalid input field", () => {
-    cy.visit(etoRegisterRoutes.companyInformation);
-    cy.get(tid("eto.form.company-information")).should("exist");
+    goToCompanyInformation();
 
     fillForm({
       ...aboutFormSubmit,
@@ -30,8 +29,7 @@ describe("Eto Company Information Field Validation", function(): void {
   });
 
   it("should focus first invalid textarea field", () => {
-    cy.visit(etoRegisterRoutes.companyInformation);
-    cy.get(tid("eto.form.company-information")).should("exist");
+    goToCompanyInformation();
 
     const requiredInputFields = pick(
       ["brandName", "companyWebsite", "companyOneliner", "companyDescription"],
@@ -47,8 +45,7 @@ describe("Eto Company Information Field Validation", function(): void {
   });
 
   it("should focus first invalid rich text field", () => {
-    cy.visit(etoRegisterRoutes.companyInformation);
-    cy.get(tid("eto.form.company-information")).should("exist");
+    goToCompanyInformation();
 
     const requiredInputFields = pick(
       ["brandName", "companyWebsite", "companyOneliner"],
@@ -64,8 +61,7 @@ describe("Eto Company Information Field Validation", function(): void {
   });
 
   it("should correctly validate required fields", () => {
-    cy.visit(etoRegisterRoutes.companyInformation);
-    cy.get(tid("eto.form.company-information")).should("exist");
+    goToCompanyInformation();
 
     const requiredFields = Object.keys(aboutFormRequired);
 

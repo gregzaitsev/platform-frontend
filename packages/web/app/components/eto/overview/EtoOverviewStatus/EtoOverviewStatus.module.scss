@@ -183,6 +183,11 @@
       width: 50%;
       display: table-cell;
       vertical-align: middle;
+
+      &--full {
+        display: table-row;
+        width: 100%;
+      }
     }
 
     .back-now {
@@ -210,6 +215,19 @@
       @include font-label;
 
       text-transform: none;
+    }
+
+    &--no-padding {
+      .label,
+      .value {
+        vertical-align: text-top;
+      }
+
+      .label {
+        padding-top: 2px;
+        padding-bottom: 2px;
+        padding-right: px-to-rem(6px);
+      }
     }
   }
 }

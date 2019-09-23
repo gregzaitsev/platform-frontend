@@ -1,15 +1,18 @@
 import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
-import { withMockedDate } from "../../utils/storybookHelpers.unsafe";
-import { Counter } from "./Counter.unsafe";
-
-const hour = 3600000;
-const day = 24 * hour;
-
-const dummyNow = new Date("2021-12-31T05:03:56.000Z");
-const futureDate = new Date(dummyNow.valueOf() + 87 * day + 13.5 * hour);
+import { CounterLayout } from "./Counter.unsafe";
 
 storiesOf("Counter", module)
-  .addDecorator(withMockedDate(dummyNow))
-  .add("default", () => <Counter endDate={futureDate} />);
+  .add("default", () => (
+    <CounterLayout computedSeconds={25} computedMinutes={35} computedHours={10} computedDays={88} />
+  ))
+  .add("blink", () => (
+    <CounterLayout
+      blink={true}
+      computedSeconds={25}
+      computedMinutes={35}
+      computedHours={10}
+      computedDays={88}
+    />
+  ));

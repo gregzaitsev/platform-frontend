@@ -130,7 +130,7 @@ describe("Wallet selector integration", () => {
       },
       initialRoute: walletRegisterRoutes.light,
     });
-    // need to manually initialize, since contract setup is ommitted
+    // need to manually initialize, since contract setup is omitted
     sagaMiddleware.run(function*(): any {
       yield neuCall(initWeb3ManagerEvents);
     });

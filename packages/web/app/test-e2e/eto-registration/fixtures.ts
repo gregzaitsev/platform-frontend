@@ -43,9 +43,10 @@ export const legalInfoRequiredForm: TFormFixture = {
     value: "22/02/1999",
     type: "date",
   },
-  companyShares: "5000",
+  companyShareCapital: "5000",
+  shareCapitalCurrencyCode: "EUR",
   "shareholders.0.fullName": "Marcin Rudolf",
-  "shareholders.0.shares": "90",
+  "shareholders.0.shareCapital": "90",
   "eto-registration-legal-information-submit": {
     type: "submit",
   },
@@ -71,9 +72,11 @@ export const legalInfoForm: TFormFixture = {
 
 // investment terms
 export const investmentTermsRequiredForm: TFormFixture = {
-  shareNominalValueEur: "321",
+  shareCapitalCurrencyCode: "EUR",
+  newShareNominalValue: "150",
+  newShareNominalValueEur: "150",
   preMoneyValuationEur: "1000000",
-  existingCompanyShares: "1253862",
+  existingShareCapital: "1253862",
   minimumNewSharesToIssue: "10000",
   newSharesToIssue: "20000",
   "eto-registration-investment-terms-submit": {
@@ -83,9 +86,8 @@ export const investmentTermsRequiredForm: TFormFixture = {
 
 export const investmentTermsForm: TFormFixture = {
   ...investmentTermsRequiredForm,
-  authorizedCapitalShares: "100",
+  authorizedCapital: "100",
   newSharesToIssueInWhitelist: "5000",
-  publicDiscountFraction: "40",
   whitelistDiscountFraction: "50",
   newSharesToIssueInFixedSlots: "1000",
   fixedSlotsMaximumDiscountFraction: "60",
@@ -96,16 +98,18 @@ export const investmentTermsForm: TFormFixture = {
 
 // investment terms expected values
 export const investmentTermsRequiredFormExpectedResult: TFormFixtureExpectedValues = {
-  shareNominalValueEur: "321.00",
+  shareCapitalCurrencyCode: "EUR",
+  newShareNominalValue: "150.00",
+  newShareNominalValueEur: "150.00",
   preMoneyValuationEur: "1 000 000.00",
-  existingCompanyShares: "1 253 862",
+  existingShareCapital: "1 253 862",
   minimumNewSharesToIssue: "10 000",
   newSharesToIssue: "20 000",
 };
 
 export const investmentTermsFormExpectedResult: TFormFixtureExpectedValues = {
   ...investmentTermsRequiredFormExpectedResult,
-  authorizedCapitalShares: "100",
+  authorizedCapital: "100",
   newSharesToIssueInWhitelist: "5 000",
   publicDiscountFraction: "40",
   whitelistDiscountFraction: "50",
@@ -430,6 +434,7 @@ export const votingRights: TFormFixture = {
   generalVotingDurationDays: "11",
   restrictedActVotingDurationDays: "15",
   votingFinalizationDurationDays: "12",
+  shareholdersVotingQuorum: "45",
   advisoryBoardSelector: { value: "true", type: "radio" },
   advisoryBoard: "asdfasdf",
   liquidationPreferenceMultiplier: {
@@ -446,6 +451,7 @@ export const votingRightsExpectedValues: TFormFixtureExpectedValues = {
   generalVotingDurationDays: "11",
   restrictedActVotingDurationDays: "15",
   votingFinalizationDurationDays: "12",
+  shareholdersVotingQuorum: "45",
   advisoryBoard: "asdfasdf",
   liquidationPreferenceMultiplier: "2",
   hasFoundersVesting: "false",

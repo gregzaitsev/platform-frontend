@@ -3,7 +3,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 
 import { ETxSenderType } from "../../../../modules/tx/types";
 import { multiplyBigNumbers } from "../../../../utils/BigNumberUtils";
-import { MoneyNew } from "../../../shared/formatters/Money";
+import { Money } from "../../../shared/formatters/Money";
 import {
   ECurrency,
   ENumberInputFormat,
@@ -25,7 +25,7 @@ const UpgradeTransactionDetails: TransactionDetailsComponent<ETxSenderType.UPGRA
     <InfoRow
       caption={<FormattedMessage id="upgrade-flow.value" />}
       value={
-        <MoneyNew
+        <Money
           value={txData!.value}
           inputFormat={ENumberInputFormat.ULPS}
           valueType={ECurrency.ETH}
@@ -37,7 +37,7 @@ const UpgradeTransactionDetails: TransactionDetailsComponent<ETxSenderType.UPGRA
     <InfoRow
       caption={<FormattedMessage id="upgrade-flow.transaction-cost" />}
       value={
-        <MoneyNew
+        <Money
           value={multiplyBigNumbers([txData!.gasPrice, txData!.gas])}
           inputFormat={ENumberInputFormat.ULPS}
           valueType={ECurrency.ETH}

@@ -30,7 +30,7 @@ import {
   toFixedPrecision,
 } from "../../../shared/formatters/utils";
 import { FormLabel } from "../../../shared/forms/fields/FormFieldLabel";
-import { Form } from "../../../shared/forms/Form";
+import { FormDeprecated } from "../../../shared/forms/FormDeprecated";
 import { EHeadingSize, Heading } from "../../../shared/Heading";
 import { MaskedNumberInput } from "../../../shared/MaskedNumberInput";
 import { ETheme, MoneySuiteWidget } from "../../../shared/MoneySuiteWidget/MoneySuiteWidget";
@@ -164,7 +164,7 @@ const BankTransferRedeemLayout: React.FunctionComponent<IProps> = ({
             </Button>
           </section>
 
-          <Form>
+          <FormDeprecated>
             <MaskedNumberInput
               storageFormat={ENumberInputFormat.FLOAT}
               valueType={ECurrency.EUR}
@@ -229,7 +229,7 @@ const BankTransferRedeemLayout: React.FunctionComponent<IProps> = ({
                 <FormattedMessage id="bank-transfer.redeem.init.continue" />
               </ButtonArrowRight>
             </section>
-          </Form>
+          </FormDeprecated>
         </>
       )}
     </FormikConsumer>

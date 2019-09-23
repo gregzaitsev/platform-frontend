@@ -8,7 +8,7 @@ export const walletRegisterRoutes = {
 };
 
 const parentLoginRoutePath = appRoutes.login;
-export const loginWalletRoutes = {
+export const walletLoginRoutes = {
   light: parentLoginRoutePath + "/light",
   browser: parentLoginRoutePath + "/browser",
   ledger: parentLoginRoutePath + "/ledger",

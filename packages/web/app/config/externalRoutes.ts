@@ -4,6 +4,7 @@ const neufundOrg = "https://neufund.org";
 export const externalRoutes = {
   neufundSupport,
   neufundSupportHome: `${neufundSupport}/home`,
+  neufundSupportWhatIsNeu: `${neufundSupport}/solutions/articles/36000060355-what-is-neumark-`,
   neufundInvest: `${neufundOrg}/invest`,
   issueEto: `${neufundOrg}/issue`,
   commitmentStatus: "https://commit.neufund.org/commit/status?address=:walletAddress",

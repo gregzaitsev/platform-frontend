@@ -10,7 +10,7 @@ import {
   EEtoSubState,
   TEtoWithCompanyAndContract,
 } from "../../../../modules/eto/types";
-import { MoneyNew } from "../../../shared/formatters/Money";
+import { Money } from "../../../shared/formatters/Money";
 import {
   EAbbreviatedNumberOutputFormat,
   ECurrency,
@@ -37,7 +37,7 @@ const SuccessfulInfo: React.FunctionComponent<{ totalAmount: string }> = ({ tota
         id="eto-overview-thumbnail.success.raised-amount"
         values={{
           totalAmount: (
-            <MoneyNew
+            <Money
               value={totalAmount}
               inputFormat={ENumberInputFormat.ULPS}
               valueType={ECurrency.EUR}
@@ -109,7 +109,7 @@ const EtoStatusManager = ({ eto }: IExternalProps) => {
               id="eto-overview-thumbnail.signing.raised-amount"
               values={{
                 totalAmount: (
-                  <MoneyNew
+                  <Money
                     value={eto.contract!.totalInvestment.totalEquivEurUlps}
                     inputFormat={ENumberInputFormat.ULPS}
                     valueType={ECurrency.EUR}
@@ -138,6 +138,9 @@ const EtoStatusManager = ({ eto }: IExternalProps) => {
         </>
       );
     }
+
+    case EEtoState.SUSPENDED:
+      return <></>;
 
     default:
       throw new Error(`State (${state}) is not known. Please provide implementation.`);
