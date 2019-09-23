@@ -1,5 +1,8 @@
 import * as React from "react";
 
+import { Money } from "../formatters/Money";
+import { ENumberFormat, ENumberInputFormat, ENumberOutputFormat } from "../formatters/utils";
+
 import * as styles from "./ChartLegend.module.scss";
 
 interface IDataset {
@@ -25,7 +28,15 @@ export const ChartLegend: React.FunctionComponent<IProps> = ({ data }) => (
             className={styles.indicator}
             style={{ backgroundColor: dataset.backgroundColor[index] }}
           />
-          <div>{`${data.labels[index]} ${value}%`}</div>
+          <div>
+            {`${data.labels[index]} `}
+            <Money
+              value={value}
+              inputFormat={ENumberInputFormat.FLOAT}
+              outputFormat={ENumberOutputFormat.FULL}
+              valueType={ENumberFormat.PERCENTAGE}
+            />
+          </div>
         </div>
       )),
     )}

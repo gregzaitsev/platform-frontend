@@ -1,8 +1,7 @@
+import BigNumber from "bignumber.js";
 import { cloneDeep, flow, get, set } from "lodash";
 
-import {
-  TCompanyEtoData,
-} from "../../lib/api/eto/EtoApi.interfaces.unsafe";
+import { TCompanyEtoData } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { invariant } from "../../utils/invariant";
 import { formatFlexiPrecision } from "../../utils/Number.utils";
 import { TShareholder } from "./public-view/LegalInformationWidget";
@@ -161,20 +160,23 @@ export const removeKeys = () => (data: { key: string }[]) =>
   });
 
 type TEtoLegalShareholderTypeNarrowed = {
-  fullName: string,
-  shareCapital: number,
-}
+  fullName: string;
+  shareCapital: number;
+};
 
 type TChartDataGeneratorInternal = {
-  totalPercentage: number,
-  shareholders: TShareholder[]
-}
+  totalPercentage: BigNumber;
+  shareholders: TShareholder[];
+};
 
-const shareholderSortingFunction = (a:TShareholder,b:TShareholder) => {
-  if(a.percentageOfShares === b.percentageOfShares) {
-    return 0
-  }else {
-    return a.percentageOfShares < b.percentageOfShares ? 1 : -1
+const shareholderSortingFunction = (
+  a: TEtoLegalShareholderTypeNarrowed,
+  b: TEtoLegalShareholderTypeNarrowed,
+) => {
+  if (a.shareCapital === b.shareCapital) {
+    return 0;
+  } else {
+    return a.shareCapital < b.shareCapital ? 1 : -1;
   }
 };
 
@@ -199,34 +201,44 @@ export const generateShareholders = (
       shareholdersData.push({
         fullName: "Others",
         shareCapital: companyShares - assignedShares,
-      },)
+      });
     }
 
-    const chartData = shareholdersData.reduce(
-      (acc: TChartDataGeneratorInternal, shareholder: TEtoLegalShareholderTypeNarrowed, index: number) => {
-        if (acc.totalPercentage < 100) {
-          const shareCapitalPercentage = Math.round((shareholder.shareCapital * 100) / companyShares);
-          const totalPercentage = acc.totalPercentage + shareCapitalPercentage;
+    const chartData = shareholdersData.sort(shareholderSortingFunction).reduce(
+      (
+        acc: TChartDataGeneratorInternal,
+        shareholder: TEtoLegalShareholderTypeNarrowed,
+        index: number,
+      ) => {
+        if (acc.totalPercentage.lessThan(100)) {
+          const shareCapitalPercentage = new BigNumber(
+            ((shareholder.shareCapital * 100) / companyShares).toString(),
+          ).round(2, 4);
+
+          const totalPercentage = acc.totalPercentage.add(shareCapitalPercentage);
 
           // the last member of array that makes totalPercentage <= 100
           // gets the rest of (100% - shares) to account for the rounding errors,
           // all the following members are not included in the result
-          const shareCapitalPercentageCorrected = (index !== shareholdersData.length - 1 && totalPercentage <= 100)
-            ? shareCapitalPercentage
-            : 100 - acc.totalPercentage;
+          const shareCapitalPercentageCorrected =
+            index !== shareholdersData.length - 1 && totalPercentage.lessThanOrEqualTo(100)
+              ? shareCapitalPercentage
+              : new BigNumber(100).sub(acc.totalPercentage);
 
-          if (shareCapitalPercentageCorrected > 0) {
+          if (shareCapitalPercentageCorrected.greaterThan(0)) {
             acc.shareholders.push({
               fullName: shareholder.fullName,
-              percentageOfShares: shareCapitalPercentageCorrected,
+              percentageOfShares: shareCapitalPercentageCorrected.toNumber(),
             });
           }
 
-          acc.totalPercentage = totalPercentage
+          acc.totalPercentage = totalPercentage;
         }
-        return acc
-      }, { totalPercentage: 0, shareholders: [] });
+        return acc;
+      },
+      { totalPercentage: new BigNumber(0), shareholders: [] },
+    );
 
-    return chartData.shareholders.sort(shareholderSortingFunction);
+    return chartData.shareholders;
   }
 };

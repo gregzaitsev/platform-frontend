@@ -277,16 +277,16 @@ describe("generate shareholders", () => {
       },
       {
         fullName: "Others",
-        percentageOfShares: 35,
+        percentageOfShares: 35.4,
       },
       {
         fullName: "shareholder1",
-        percentageOfShares: 25,
+        percentageOfShares: 24.6,
       },
     ];
     expect(generateShareholders(data, companyShares)).to.deep.eq(expectedOutput);
   });
-  it("rounds the percentage and distributes shareholder shares ", () => {
+  it("rounds the percentages and assigns the rest of the 100% shares to an 'other' entry ", () => {
     const companyShares = 100;
     const data = [
       {
@@ -297,50 +297,56 @@ describe("generate shareholders", () => {
         fullName: "shareholder1",
         shareCapital: 19.45,
       },
-
     ];
     const expectedOutput: TShareholder[] = [
       {
         fullName: "shareholder2",
-        percentageOfShares: 80,
+        percentageOfShares: 80.45,
       },
       {
         fullName: "shareholder1",
-        percentageOfShares: 19,
+        percentageOfShares: 19.45,
       },
       {
         fullName: "Others",
-        percentageOfShares: 1,
+        percentageOfShares: 0.1,
       },
     ];
     expect(generateShareholders(data, companyShares)).to.deep.eq(expectedOutput);
   });
-  it("removes the last entry if the percentage is less than 0 due to rounding and assigns the rest to the previous entry", () => {
+  it("removes the last entry if the percentage is less than 0 due to rounding errors", () => {
     const companyShares = 100;
     const data = [
       {
         fullName: "shareholder1",
-        shareCapital: 19.54,
+        shareCapital: 19.554,
       },
       {
         fullName: "shareholder2",
-        shareCapital: 79.54,
+        shareCapital: 79.5544,
       },
       {
         fullName: "shareholder3",
         shareCapital: 0.92,
-      }
+      },
+      {
+        fullName: "others",
+        shareCapital: 0.021,
+      },
     ];
     const expectedOutput: TShareholder[] = [
       {
         fullName: "shareholder2",
-        percentageOfShares: 80,
+        percentageOfShares: 79.55,
       },
       {
         fullName: "shareholder1",
-        percentageOfShares: 20,
+        percentageOfShares: 19.55,
       },
-
+      {
+        fullName: "shareholder3",
+        percentageOfShares: 0.9,
+      },
     ];
     expect(generateShareholders(data, companyShares)).to.deep.eq(expectedOutput);
   });
