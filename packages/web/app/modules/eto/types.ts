@@ -1,5 +1,6 @@
 import { TCompanyEtoData, TEtoSpecsData } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
-import { DeepReadonly } from "../../types";
+import { DeepReadonly, Dictionary } from "../../types";
+import { EAgreementType } from "../tx/transactions/nominee/sign-agreement/types";
 
 export interface IEtoTotalInvestment {
   totalEquivEurUlps: string;
@@ -28,7 +29,6 @@ export interface IEtoContractData {
   startOfStates: TEtoStartOfStates;
   equityTokenAddress: string;
   etoTermsAddress: string;
-  etoCommitmentAddress: string;
 }
 
 export type TEtoWithCompanyAndContract = DeepReadonly<
@@ -56,3 +56,11 @@ export enum EEtoSubState {
   COUNTDOWN_TO_PRESALE = "countdown_to_presale",
   COUNTDOWN_TO_PUBLIC_SALE = "countdown_to_public_sale",
 }
+
+export enum EEtoAgreementStatus {
+  NOT_DONE = "not_done",
+  DONE = "done",
+  ERROR = "error",
+}
+
+export type TOfferingAgreementsStatus = Dictionary<EEtoAgreementStatus, EAgreementType>;

@@ -152,6 +152,18 @@ const EtoLegalShareholderType = YupTS.object({
 
 export type TEtoLegalShareholderType = YupTS.TypeOf<typeof EtoLegalShareholderType>;
 
+export enum EFundingRound {
+  PRE_SEED = "pre_seed",
+  SEED = "seed",
+  A_ROUND = "a_round",
+  B_ROUND = "b_round",
+  C_ROUND = "c_round",
+  D_ROUND = "d_round",
+  E_ROUND = "e_round",
+  PRE_IPO = "pre_ipo",
+  PUBLIC = "public",
+}
+
 export const EtoLegalInformationType = YupTS.object({
   name: YupTS.string(),
   legalForm: YupTS.string(),
@@ -163,7 +175,7 @@ export const EtoLegalInformationType = YupTS.object({
   foundingDate: YupTS.string().enhance((v: StringSchema) => dateSchema(v)),
 
   numberOfEmployees: YupTS.string().optional(),
-  companyStage: YupTS.string().optional(),
+  companyStage: YupTS.string<EFundingRound>().optional(),
   numberOfFounders: YupTS.number().optional(),
   lastFundingSizeEur: YupTS.number().optional(),
   companyShareCapital: YupTS.number().enhance(v => v.min(MIN_COMPANY_SHARE_CAPITAL)),
@@ -233,6 +245,7 @@ export enum EEtoState {
   LISTED = "listed",
   PROSPECTUS_APPROVED = "prospectus_approved",
   ON_CHAIN = "on_chain",
+  SUSPENDED = "suspended",
 }
 
 export enum EEtoMarketingDataVisibleInPreview {
@@ -247,6 +260,7 @@ export enum EtoStateToCamelcase {
   "listed" = "listed",
   "prospectus_approved" = "prospectusApproved",
   "on_chain" = "onChain",
+  "suspended" = "suspended",
 }
 
 // Since only keys are transformed from snake case to camel case we have to manually map states
@@ -497,7 +511,7 @@ export type TEtoSpecsData = TEtoTermsType &
   TEtoEquityTokenInfoType &
   TEtoVotingRightsType &
   TEtoInvestmentTermsType & {
-    investmentCalculatedValues: TEtoInvestmentCalculatedValues;
+    investmentCalculatedValues?: TEtoInvestmentCalculatedValues;
   } & IAdditionalEtoType;
 
 /*General Interfaces */

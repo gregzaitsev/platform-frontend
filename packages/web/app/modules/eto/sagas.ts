@@ -1,9 +1,11 @@
+import BigNumber from "bignumber.js";
 import { LOCATION_CHANGE } from "connected-react-router";
 import { camelCase } from "lodash";
 import { compose, keyBy, map, omit } from "lodash/fp";
 import { delay } from "redux-saga";
 import { all, fork, put, race, select, take } from "redux-saga/effects";
 
+import { hashFromIpfsLink } from "../../components/documents/utils";
 import { JurisdictionDisclaimerModal } from "../../components/eto/public-view/JurisdictionDisclaimerModal";
 import { EtoMessage } from "../../components/translatedMessages/messages";
 import { createMessage } from "../../components/translatedMessages/utils";
@@ -30,6 +32,11 @@ import { selectMyAssets } from "../investor-portfolio/selectors";
 import { waitForKycStatus } from "../kyc/sagas";
 import { selectClientJurisdiction } from "../kyc/selectors";
 import { neuCall, neuFork, neuTakeEvery, neuTakeLatest, neuTakeUntil } from "../sagasUtils";
+import { getAgreementContractAndHash } from "../tx/transactions/nominee/sign-agreement/saga";
+import {
+  EAgreementType,
+  IAgreementContractAndHash,
+} from "../tx/transactions/nominee/sign-agreement/types";
 import { selectEthereumAddressWithChecksum } from "../web3/selectors";
 import { etoInProgressPollingDelay, etoNormalPollingDelay } from "./constants";
 import { InvalidETOStateError } from "./errors";
@@ -40,8 +47,13 @@ import {
   selectFilteredEtosByRestrictedJurisdictions,
   selectIsEtoAnOffer,
 } from "./selectors";
-import { EETOStateOnChain, TEtoWithCompanyAndContract } from "./types";
-import { convertToEtoTotalInvestment, convertToStateStartDate, isRestrictedEto } from "./utils";
+import { EEtoAgreementStatus, EETOStateOnChain, TEtoWithCompanyAndContract } from "./types";
+import {
+  convertToEtoTotalInvestment,
+  convertToStateStartDate,
+  isOnChain,
+  isRestrictedEto,
+} from "./utils";
 
 function* loadEtoPreview(
   { apiEtoService, notificationCenter, logger }: TGlobalDependencies,
@@ -146,7 +158,6 @@ export function* loadEtoContract(
       startOfStatesRaw,
       equityTokenAddress,
       etoTermsAddress,
-      etoCommitmentAddress,
     ] = yield all([
       etherTokenContract.balanceOf(etoContract.address),
       euroTokenContract.balanceOf(etoContract.address),
@@ -155,14 +166,12 @@ export function* loadEtoContract(
       etoContract.startOfStates,
       etoContract.equityToken,
       etoContract.etoTerms,
-      etoContract.address,
     ]);
 
     yield put(
       actions.eto.setEtoDataFromContract(eto.previewCode, {
         equityTokenAddress,
         etoTermsAddress,
-        etoCommitmentAddress,
         timedState: timedStateRaw.toNumber(),
         totalInvestment: convertToEtoTotalInvestment(
           totalInvestmentRaw,
@@ -389,7 +398,7 @@ function* loadTokensData({ contractsService }: TGlobalDependencies): any {
     // obtain nominal value of a share from IEquityToken
     let shareNominalValueUlps;
     try {
-      shareNominalValueUlps = yield equityToken.shareNominalValueUlps();
+      shareNominalValueUlps = yield equityToken.shareNominalValueUlps;
     } catch (e) {
       // make it backward compatible with FF ETO, which is always and forever Q18 and does not provide method above
       shareNominalValueUlps = Q18;
@@ -492,11 +501,65 @@ function* verifyEtoAccess(
   }
 }
 
+// TODO: Move to generic eto module (the one that's not specific to investor/issuer/nominee eto)
+function* loadAgreementStatus(
+  { logger }: TGlobalDependencies,
+  agreementType: EAgreementType,
+  eto: TEtoWithCompanyAndContract,
+): Iterator<any> {
+  try {
+    if (!isOnChain(eto)) {
+      return EEtoAgreementStatus.NOT_DONE;
+    }
+
+    const { contract, currentAgreementHash }: IAgreementContractAndHash = yield neuCall(
+      getAgreementContractAndHash,
+      agreementType,
+      eto,
+    );
+
+    const amendmentsCount: BigNumber | undefined = yield contract.amendmentsCount;
+
+    // if amendments counts equals 0 or undefined we can skip hash check
+    if (amendmentsCount === undefined || amendmentsCount.isZero()) {
+      return EEtoAgreementStatus.NOT_DONE;
+    }
+
+    // agreement indexing starts from 0 so we have to subtract 1 from amendments count
+    const currentAgreementIndex = amendmentsCount.sub(1);
+
+    const pastAgreement = yield contract.pastAgreement(currentAgreementIndex);
+    const pastAgreementHash = hashFromIpfsLink(pastAgreement[2]);
+
+    if (pastAgreementHash === currentAgreementHash) {
+      return EEtoAgreementStatus.DONE;
+    }
+
+    return EEtoAgreementStatus.NOT_DONE;
+  } catch (e) {
+    logger.error(`Could not fetch ${agreementType} document status`, e);
+    return EEtoAgreementStatus.ERROR;
+  }
+}
+
+function* loadAgreementsStatus(
+  _: TGlobalDependencies,
+  { payload }: TActionFromCreator<typeof actions.eto.loadEtoAgreementsStatus>,
+): Iterator<any> {
+  const statuses: Dictionary<EEtoAgreementStatus, EAgreementType> = yield all({
+    [EAgreementType.THA]: neuCall(loadAgreementStatus, EAgreementType.THA, payload.eto),
+    [EAgreementType.RAAA]: neuCall(loadAgreementStatus, EAgreementType.RAAA, payload.eto),
+  });
+
+  yield put(actions.eto.setAgreementsStatus(payload.eto.previewCode, statuses));
+}
+
 export function* etoSagas(): Iterator<any> {
   yield fork(neuTakeEvery, actions.eto.loadEtoPreview, loadEtoPreview);
   yield fork(neuTakeEvery, actions.eto.loadEto, loadEto);
   yield fork(neuTakeEvery, actions.eto.loadEtos, loadEtos);
   yield fork(neuTakeEvery, actions.eto.loadTokensData, loadTokensData);
+  yield fork(neuTakeEvery, actions.eto.loadEtoAgreementsStatus, loadAgreementsStatus);
 
   yield fork(neuTakeEvery, actions.eto.downloadEtoDocument, downloadDocument);
   yield fork(neuTakeEvery, actions.eto.downloadEtoTemplateByType, downloadTemplateByType);

@@ -2,18 +2,9 @@ import BigNumber from "bignumber.js";
 import { takeEvery } from "redux-saga";
 import { all, fork, put, select, take } from "redux-saga/effects";
 
-import {
-  getPossibleMaxUlps,
-  toFixedBankingPrecision,
-} from "../../components/modals/tx-sender/redeem/utils";
-import {
-  ENumberInputFormat,
-  isEmptyValue,
-  isValidNumber,
-} from "../../components/shared/formatters/utils";
+import { hashFromIpfsLink } from "../../components/documents/utils";
 import { BankTransferFlowMessage } from "../../components/translatedMessages/messages";
 import { createMessage } from "../../components/translatedMessages/utils";
-import { IPFS_PROTOCOL } from "../../config/constants";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { TKycBankTransferPurpose } from "../../lib/api/kyc/KycApi.interfaces";
 import { calculateBankFee, subtractBankFee } from "../../utils/BankArithmetics";
@@ -85,7 +76,7 @@ function* stop(): any {
 function* downloadNEurTokenAgreement({ contractsService, intlWrapper }: TGlobalDependencies): any {
   const [, , agreementHashWithIpfs] = yield contractsService.euroToken.currentAgreement();
 
-  const agreementHash = agreementHashWithIpfs.replace(`${IPFS_PROTOCOL}:`, "");
+  const agreementHash = hashFromIpfsLink(agreementHashWithIpfs);
 
   yield put(
     actions.immutableStorage.downloadImmutableFile(

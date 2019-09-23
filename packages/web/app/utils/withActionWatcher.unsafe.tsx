@@ -10,7 +10,7 @@ import {
 import { ContainerContext } from "./InversifyProvider";
 
 interface IActionWatcherDispatchProps {
-  watchAction: Function;
+  watchAction: () => void;
 }
 
 interface IWatchActionOptions {
@@ -50,17 +50,17 @@ export const withActionWatcher: (
         );
       }
 
-      public componentDidMount(): void {
+      componentDidMount(): void {
         // initial run
         this.props.watchAction();
         this.asyncIntervalScheduler.start();
       }
 
-      public componentWillUnmount(): void {
+      componentWillUnmount(): void {
         this.asyncIntervalScheduler.stop();
       }
 
-      public render(): React.ReactNode {
+      render(): React.ReactNode {
         const { watchAction, ...componentProps } = this.props;
         return <WrappedComponent {...componentProps} />;
       }

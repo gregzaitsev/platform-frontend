@@ -1,6 +1,6 @@
 import { tid } from "../utils";
 import { fillForm } from "../utils/forms";
-import { acceptWallet } from "../utils/index";
+import { acceptWallet, loginFixtureAccount, logout } from "../utils/index";
 import { goToNomineeDashboard } from "../utils/navigation";
 
 export const linkEtoToNominee = (address: string) => {
@@ -52,4 +52,20 @@ export const signRAAA = signAgreement(
 
 export const assertNoTasks = () => {
   cy.get(tid("nominee-flow-no-tasks")).should("exist");
+};
+
+export const assertNomineeAgreementsSigningFlow = () => {
+  loginFixtureAccount("NOMINEE_SETUP_NO_ST", {
+    kyc: "business",
+    signTosAgreement: true,
+    clearPendingTransactions: true,
+  });
+  goToNomineeDashboard();
+
+  signTHA();
+  signRAAA();
+
+  assertNoTasks();
+
+  logout();
 };

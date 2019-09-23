@@ -9,6 +9,8 @@ import { branch, compose, lifecycle, renderComponent, renderNothing } from "reco
 import { DAY } from "../../../config/constants";
 import { actions } from "../../../modules/actions";
 import {
+  selectAreAgreementsSignedByNominee,
+  selectCanChangePreEtoStartDate,
   selectIssuerEtoDateToWhitelistMinDuration,
   selectIssuerEtoLoading,
   selectNewEtoDateSaving,
@@ -45,11 +47,14 @@ interface IStateProps {
   newDateSaving: boolean;
   transactionMining: boolean;
   issuerEtoLoading: boolean;
+  areAgreementsSignedByNominee: boolean | undefined;
+  canChangeEtoStartDate: boolean;
 }
 
 interface IChangeDateStateProps {
   etoDate: Date;
   minOffsetPeriod: BigNumber;
+  canChangeEtoStartDate: boolean;
 }
 
 interface IExternalProps {
@@ -65,6 +70,7 @@ interface IDateChooserProps {
   etoDate?: Date;
   minOffsetPeriod: BigNumber;
   uploadDate: (time: moment.Moment) => void;
+  canChangeEtoStartDate: boolean;
 }
 
 interface IDateChooserState {
@@ -134,7 +140,7 @@ const DateChooserOpen = ({
           onTestInputChange={onTestInputChange}
           dataTestId="eto-settings-start-date-input"
           isValidDate={(currentDate: moment.Moment) =>
-            currentDate.isAfter(moment.utc().add(minOffsetPeriodInMinutes, "minutes"))
+            currentDate.isSameOrAfter(moment.utc().add(minOffsetPeriodInMinutes, "minutes"), "days")
           }
         />
         {newDateIsSet && !newDateIsValid(newEtoDate) && (
@@ -252,20 +258,16 @@ class DateChooser extends React.PureComponent<IDateChooserProps, IDateChooserSta
   };
 
   render(): React.ReactNode {
-    const { etoDate } = this.props;
-    const canChangeDate =
-      !etoDate ||
-      this.props.minOffsetPeriod.lessThanOrEqualTo(
-        moment.utc(etoDate).diff(moment().utc(), "seconds"),
-      );
+    const { etoDate, canChangeEtoStartDate } = this.props;
+
     {
-      if (!canChangeDate) {
+      if (!canChangeEtoStartDate) {
         return (
           <p className={cn(styles.text)}>
             <FormattedMessage id="eto.settings.changing-eto-start-date-not-possible" />
           </p>
         );
-      } else if (canChangeDate && this.state.isOpen) {
+      } else if (canChangeEtoStartDate && this.state.isOpen) {
         return (
           <DateChooserOpen
             etoDate={etoDate}
@@ -324,18 +326,11 @@ const ChangeDate: React.ComponentType<IChangeDateStateProps & IDispatchProps> = 
   );
 };
 
-const SetNewDate: React.ComponentType<IStateProps & IDispatchProps> = props => (
-  <>
-    <FormattedHTMLMessage tagName="span" id="eto.settings.choose-eto-start-date" />
-    <DateChooser {...props} />
-  </>
-);
-
 const EtoStartDateWidgetComponent: React.ComponentType<
   IStateProps & IDispatchProps & IExternalProps
 > = ({ etoDate, ...props }) => (
   <WidgetPanel columnSpan={props.columnSpan}>
-    <div className={styles.content}>
+    <div className={styles.content} data-test-id="eto-settings-set-start-date">
       <p className={styles.text}>
         <FormattedHTMLMessage
           tagName="span"
@@ -346,7 +341,7 @@ const EtoStartDateWidgetComponent: React.ComponentType<
       {etoDate ? (
         <ChangeDate etoDate={etoDate} {...props} />
       ) : (
-        <SetNewDate etoDate={etoDate} {...props} />
+        <DateChooser etoDate={etoDate} {...props} />
       )}
     </div>
   </WidgetPanel>
@@ -376,11 +371,14 @@ const ChooseEtoStartDateWidget = compose<
         !!pendingTransaction &&
         pendingTransaction.transactionType === ETxSenderType.ETO_SET_DATE &&
         pendingTransaction.transactionStatus === ETxSenderState.MINING;
+
       return {
         etoDate: selectPreEtoStartDateFromContract(state),
         minOffsetPeriod: selectIssuerEtoDateToWhitelistMinDuration(state),
         issuerEtoLoading: selectIssuerEtoLoading(state),
         newDateSaving: selectNewEtoDateSaving(state),
+        areAgreementsSignedByNominee: selectAreAgreementsSignedByNominee(state),
+        canChangeEtoStartDate: selectCanChangePreEtoStartDate(state),
         transactionMining,
       };
     },
@@ -405,7 +403,9 @@ const ChooseEtoStartDateWidget = compose<
     },
   }),
   branch<IStateProps>(
-    props => !(props.etoDate && calculateTimeLeft(props.etoDate, true) > 0),
+    props =>
+      !props.areAgreementsSignedByNominee &&
+      !(props.etoDate && calculateTimeLeft(props.etoDate, true) > 0),
     renderNothing,
   ),
   branch<IStateProps>(

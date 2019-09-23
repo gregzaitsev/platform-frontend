@@ -209,3 +209,10 @@ export const selectFilteredEtosByRestrictedJurisdictions = (
         );
       })
     : etos;
+
+export const selectAgreementsStatus = createSelector(
+  selectEtoState,
+  (_: IAppState, previewCode: string) => previewCode,
+  (etoState: DeepReadonly<IEtoState>, previewCode: string) =>
+    etoState.offeringAgreementsStatus[previewCode],
+);

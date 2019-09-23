@@ -3,16 +3,18 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { compose } from "recompose";
 
+import { calcCapFraction } from "../../../../lib/api/eto/EtoUtils";
 import { TEtoWithCompanyAndContract } from "../../../../modules/eto/types";
 import {
   selectShouldShowPublicDiscount,
   selectShouldShowWhitelistDiscount,
 } from "../../../../modules/investor-portfolio/selectors";
 import { appConnect } from "../../../../store";
-import { FormatNumber } from "../../../shared/formatters/FormatNumber";
 import { Money } from "../../../shared/formatters/Money";
+import { MoneyRange } from "../../../shared/formatters/MoneyRange";
 import {
   ECurrency,
+  ENumberFormat,
   ENumberInputFormat,
   ENumberOutputFormat,
   EPriceFormat,
@@ -26,6 +28,8 @@ interface IStateProps {
   tokenPrice: number | undefined;
   showWhitelistDiscount: boolean;
   showPublicDiscount: boolean;
+  computedMaxCapPercent: number;
+  computedMinCapPercent: number;
 }
 
 interface IExternalProps {
@@ -37,6 +41,8 @@ const EtoStatsLayout: React.FunctionComponent<IStateProps & IExternalProps> = ({
   tokenPrice,
   showWhitelistDiscount,
   showPublicDiscount,
+  computedMaxCapPercent,
+  computedMinCapPercent,
 }) => (
   <div className={cn(styles.etoStatsWrapper, styles.groupWrapper)}>
     <div className={styles.group}>
@@ -73,10 +79,12 @@ const EtoStatsLayout: React.FunctionComponent<IStateProps & IExternalProps> = ({
         <FormattedMessage id="shared-component.eto-overview-status.new-shares-generated" />
       </span>
       <span className={styles.value}>
-        <FormatNumber
-          value={eto.newSharesToIssue}
+        <MoneyRange
+          valueFrom={computedMinCapPercent}
+          valueUpto={computedMaxCapPercent}
           inputFormat={ENumberInputFormat.FLOAT}
-          outputFormat={ENumberOutputFormat.INTEGER}
+          outputFormat={ENumberOutputFormat.FULL}
+          valueType={ENumberFormat.PERCENTAGE}
           defaultValue={<ToBeAnnounced />}
         />
       </span>
@@ -141,6 +149,7 @@ export const EtoStats = compose<IStateProps & IExternalProps, IExternalProps>(
         tokenPrice,
         showWhitelistDiscount,
         showPublicDiscount,
+        ...calcCapFraction(props.eto),
       };
     },
   }),

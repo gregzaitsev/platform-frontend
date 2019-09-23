@@ -5,7 +5,7 @@ import { compose } from "recompose";
 
 import { TCompanyEtoData } from "../../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { IEtoDocument, TEtoDocumentTemplates } from "../../../lib/api/eto/EtoFileApi.interfaces";
-import { ignoredDocuments, ignoredTemplates } from "../../../lib/api/eto/EtoFileUtils";
+import { ignoredDocuments, ignoredTemplatesPublicView } from "../../../lib/api/eto/EtoFileUtils";
 import { EOfferingDocumentType } from "../../../lib/api/eto/EtoProductsApi.interfaces";
 import { actions } from "../../../modules/actions";
 import { appConnect } from "../../../store";
@@ -51,7 +51,7 @@ const DocumentsWidgetLayout: React.FunctionComponent<
         <section className={styles.group}>
           <Row>
             {Object.keys(etoTemplates)
-              .filter(key => !ignoredTemplates.some(template => template === key))
+              .filter(key => !ignoredTemplatesPublicView.some(template => template === key))
               .map((key, i) => (
                 <Col sm="6" md="12" lg="6" key={i} className={styles.document}>
                   <DocumentTemplateButton

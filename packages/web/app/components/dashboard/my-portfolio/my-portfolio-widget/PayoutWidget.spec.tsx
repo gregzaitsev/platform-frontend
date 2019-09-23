@@ -132,7 +132,7 @@ const contractsMock = createMock(ContractsService, {
 
 const rootReducer = generateRootReducer(history);
 
-describe("MyPortfolioWidget", () => {
+describe("PayoutWidget", () => {
   const clock = setupFakeClock();
 
   it("shows the loading indicator", () => {
@@ -271,6 +271,7 @@ describe("MyPortfolioWidget", () => {
     await waitForTid(component, "my-portfolio-widget-incoming-payout-available");
     expect(component.find(tid("my-portfolio-widget-incoming-payout-available")).length).to.eq(1);
   });
+
   it("switches from pending payouts component to to waiting state and then to available payouts state", async () => {
     clock.fakeClock.setSystemTime(NOT_ACTUAL_DATE);
     feeDisbursalMock.reMock({

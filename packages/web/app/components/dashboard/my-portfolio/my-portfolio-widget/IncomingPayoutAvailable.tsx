@@ -5,7 +5,7 @@ import { compose } from "recompose";
 import { selectTokensDisbursal } from "../../../../modules/investor-portfolio/selectors";
 import { ITokenDisbursal } from "../../../../modules/investor-portfolio/types";
 import { appConnect } from "../../../../store";
-import { DataUnavailableError } from "../../../../utils/errors";
+import { nonNullable } from "../../../../utils/nonNullable";
 import { appRoutes } from "../../../appRoutes";
 import { EButtonLayout, EIconPosition } from "../../../shared/buttons/Button";
 import { ButtonLink } from "../../../shared/buttons/ButtonLink";
@@ -69,15 +69,8 @@ export const IncomingPayoutAvailableBase: React.FunctionComponent<
 
 export const IncomingPayoutAvailable = compose<TIncomingPayoutAvailableProps, {}>(
   appConnect({
-    stateToProps: s => {
-      const tokensDisbursal = selectTokensDisbursal(s);
-      if (tokensDisbursal) {
-        return {
-          tokensDisbursal: selectTokensDisbursal(s),
-        };
-      } else {
-        throw new DataUnavailableError("token disbursal is not available");
-      }
-    },
+    stateToProps: s => ({
+      tokensDisbursal: nonNullable(selectTokensDisbursal(s), "Token disbursal is not available"),
+    }),
   }),
 )(IncomingPayoutAvailableBase);
