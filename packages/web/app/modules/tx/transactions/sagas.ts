@@ -80,6 +80,7 @@ export function* userClaimSaga({ logger }: TGlobalDependencies, action: TAction)
     logger.info("User claim cancelled", e);
   } finally {
     yield put(actions.eto.loadEto(etoId));
+    yield put(actions.eto.loadTokensData());
   }
 }
 
