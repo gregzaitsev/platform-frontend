@@ -5,19 +5,26 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { Container } from "reactstrap";
 import { compose, setDisplayName } from "recompose";
 
+import { externalRoutes } from "../../../../config/externalRoutes";
+import { EEtoState } from "../../../../lib/api/eto/EtoApi.interfaces.unsafe";
 import {
   EEtoDocumentType,
   immutableDocumentName,
+  TEtoDocumentTemplates,
 } from "../../../../lib/api/eto/EtoFileApi.interfaces";
 import { actions } from "../../../../modules/actions";
 import {
   selectIssuerEtoDateToWhitelistMinDuration,
   selectIssuerEtoWithCompanyAndContract,
 } from "../../../../modules/eto-flow/selectors";
+import { InvalidETOStateError } from "../../../../modules/eto/errors";
+import { isOnChain } from "../../../../modules/eto/utils";
 import { selectTxAdditionalData } from "../../../../modules/tx/sender/selectors";
 import { TEtoSetDateAdditionalData } from "../../../../modules/tx/transactions/eto-flow/types";
 import { ETxSenderType } from "../../../../modules/tx/types";
 import { appConnect } from "../../../../store";
+import { nonNullable } from "../../../../utils/nonNullable";
+import { withParams } from "../../../../utils/withParams";
 import { Button, EButtonLayout } from "../../../shared/buttons";
 import { EHeadingSize, Heading } from "../../../shared/Heading";
 import { EtherscanAddressLink, ExternalLink } from "../../../shared/links";
@@ -37,7 +44,7 @@ interface IStateProps {
 }
 
 interface IDispatchProps {
-  onAccept: () => any;
+  onAccept: () => void;
 }
 
 type IProps = IStateProps & IDispatchProps;
@@ -122,27 +129,38 @@ const SetEtoDateSummary = compose<IProps, {}>(
   setDisplayName("SetEtoDateSummary"),
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: state => {
-      const additionalData = selectTxAdditionalData<ETxSenderType.ETO_SET_DATE>(state)!;
+      const additionalData = nonNullable(selectTxAdditionalData<ETxSenderType.ETO_SET_DATE>(state));
 
       const minDuration = selectIssuerEtoDateToWhitelistMinDuration(state);
       const changeableTill = moment(additionalData.newStartDate).subtract(minDuration, "seconds");
 
-      const eto = selectIssuerEtoWithCompanyAndContract(state)!;
-      const ipfsUrl = "https://ipfs.io/ipfs/";
-      const termsDoc: any = find(eto.documents, [
-        "documentType",
-        EEtoDocumentType.SIGNED_TERMSHEET,
-      ]);
-      const offeringDoc: any = find(eto.documents, [
-        "documentType",
-        EEtoDocumentType.APPROVED_INVESTOR_OFFERING_DOCUMENT,
-      ]);
-      const offeringAgreementIPFSLink = offeringDoc && ipfsUrl + (offeringDoc.ipfsHash as string);
-      const termsAgreementIPFSLink = termsDoc && ipfsUrl + (termsDoc.ipfsHash as string);
+      const eto = nonNullable(selectIssuerEtoWithCompanyAndContract(state));
+      const termsDoc = nonNullable(
+        find<TEtoDocumentTemplates>(eto.documents, [
+          "documentType",
+          EEtoDocumentType.SIGNED_TERMSHEET,
+        ]),
+      );
+      const offeringDoc = nonNullable(
+        find<TEtoDocumentTemplates>(eto.documents, [
+          "documentType",
+          EEtoDocumentType.APPROVED_INVESTOR_OFFERING_DOCUMENT,
+        ]),
+      );
+      const offeringAgreementIPFSLink = withParams(externalRoutes.ipfsDocument, {
+        ipfsHash: offeringDoc.ipfsHash,
+      });
+      const termsAgreementIPFSLink = withParams(externalRoutes.ipfsDocument, {
+        ipfsHash: termsDoc.ipfsHash,
+      });
+
+      if (!isOnChain(eto)) {
+        throw new InvalidETOStateError(eto.state, EEtoState.ON_CHAIN);
+      }
 
       return {
-        etoTermsAddress: eto.contract!.etoTermsAddress,
-        equityTokenAddress: eto.contract!.equityTokenAddress,
+        etoTermsAddress: eto.contract.etoTermsAddress,
+        equityTokenAddress: eto.contract.equityTokenAddress,
         etoCommitmentAddress: eto.etoId,
         additionalData,
         offeringAgreementIPFSLink,

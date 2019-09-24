@@ -231,11 +231,6 @@ export const loginWithLightWallet = (email: string, password: string) => {
   lightWalletTypeLoginInfo(email, password);
 };
 
-export const acceptWallet = () => {
-  cy.get(tid("access-light-wallet-password-input")).type(DEFAULT_PASSWORD);
-  cy.get(tid("access-light-wallet-confirm")).awaitedClick();
-};
-
 export const etoFixtureByName = (name: string) => {
   const etoAddress = Object.keys(ETO_FIXTURES).find(a => ETO_FIXTURES[a].name === name);
   if (etoAddress) {

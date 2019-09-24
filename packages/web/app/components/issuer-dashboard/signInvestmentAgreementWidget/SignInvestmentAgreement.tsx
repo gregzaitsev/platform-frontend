@@ -39,6 +39,7 @@ interface IExternalProps {
 
 export const WaitingForNominee: React.FunctionComponent<IExternalProps> = ({ columnSpan }) => (
   <DashboardWidget
+    data-test-id="dashboard-wait-for-nominee-to-sign-isha-widget"
     title={<FormattedMessage id="download-agreement-widget.wait-for-nominee-to-sign" />}
     text={<FormattedMessage id="download-agreement-widget.wait-for-nominee-to-sign-text" />}
     columnSpan={columnSpan}
@@ -60,6 +61,7 @@ export const WaitingToBeSigned: React.FunctionComponent<IWaitingToBeSigned & IEx
   columnSpan,
 }) => (
   <DashboardCenteredWidget
+    data-test-id="dashboard-sign-isha-on-chain-widget"
     title={<FormattedMessage id="download-agreement-widget.sign-on-ethereum" />}
     text={
       signedInvestmentAgreementUrl === null ? (
@@ -71,7 +73,7 @@ export const WaitingToBeSigned: React.FunctionComponent<IWaitingToBeSigned & IEx
     columnSpan={columnSpan}
   >
     <ButtonArrowRight
-      data-test-id="eto-dashboard-submit-proposal"
+      data-test-id="dashboard-sign-isha-on-chain-widget.sign"
       onClick={() => signInvestmentAgreement(etoId, ipfsHash)}
     >
       <FormattedMessage id="download-agreement-widget.sign-on-ethereum" />

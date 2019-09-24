@@ -2,7 +2,7 @@ import BigNumber from "bignumber.js";
 
 import { etoPublicViewByIdLinkLegacy } from "../../components/appRouteUtils";
 import {
-  acceptWallet,
+  confirmAccessModal,
   etoFixtureAddressByName,
   getLockedWalletEthAmount,
   parseAmount,
@@ -33,7 +33,7 @@ describe("Refund", () => {
 
       cy.get(tid("modals.tx-sender.user-refund-flow.summary.accept")).click();
 
-      acceptWallet();
+      confirmAccessModal();
 
       cy.get(tid("modals.shared.tx-success.modal"));
 

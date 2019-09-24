@@ -47,15 +47,23 @@ export const UploadInvestmentAgreementLayout: React.FunctionComponent<
   IUploadComponentStateProps & IDispatchProps & IExternalProps
 > = ({ downloadAgreementTemplate, agreementTemplate, columnSpan }) => (
   <DashboardCenteredWidget
+    data-test-id="dashboard-upload-signed-isha-widget"
     title={<FormattedMessage id="download-agreement-widget.signing-title" />}
     text={<FormattedMessage id="download-agreement-widget.signing-text" />}
     columnSpan={columnSpan}
   >
     <ButtonGroup>
-      <ButtonArrowRight onClick={() => downloadAgreementTemplate(agreementTemplate)}>
+      <ButtonArrowRight
+        onClick={() => downloadAgreementTemplate(agreementTemplate)}
+        data-test-id="dashboard-upload-signed-isha-widget.download-investment-summary"
+      >
         <FormattedMessage id="download-agreement-widget.download-investment-summary" />
       </ButtonArrowRight>
-      <ButtonLink to={appRoutes.documents} component={ButtonArrowRight}>
+      <ButtonLink
+        to={appRoutes.documents}
+        component={ButtonArrowRight}
+        data-test-id="dashboard-upload-signed-isha-widget.upload-signed-isha"
+      >
         <FormattedMessage id="download-agreement-widget.download-and-sign" />
       </ButtonLink>
     </ButtonGroup>

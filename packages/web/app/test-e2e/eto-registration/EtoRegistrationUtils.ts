@@ -4,11 +4,10 @@ import { etoRegisterRoutes } from "../../components/eto/registration/routes";
 import { TPartialCompanyEtoData } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { toCamelCase, toSnakeCase } from "../../utils/transformObjectKeys";
 import { withParams } from "../../utils/withParams";
-import { acceptWallet } from "../utils";
+import { confirmAccessModal } from "../utils";
 import { assertIssuerDashboard } from "../utils/assertions";
 import { cyPromise } from "../utils/cyPromise";
 import { checkForm, fillForm, TFormFixture, TFormFixtureExpectedValues } from "../utils/forms";
-import { confirmAccessModal } from "../utils/index";
 import { goToIssuerDashboard } from "../utils/navigation";
 import { tid } from "../utils/selectors";
 import { createUser, makeAuthenticatedCall } from "../utils/userHelpers";
@@ -25,7 +24,7 @@ export const submitProposal = () => {
   goToIssuerDashboard();
 
   cy.get(tid("eto-dashboard-submit-proposal")).click();
-  acceptWallet();
+  confirmAccessModal();
 
   cy.get(tid("eto-state-pending")).should("exist");
 };
@@ -35,7 +34,7 @@ export const submitPreview = () => {
 
   cy.get(tid("eto-dashboard-publish-eto")).click();
 
-  acceptWallet();
+  confirmAccessModal();
 
   cy.get(tid("eto-dashboard-publish-eto")).should("not.exist");
 };
@@ -222,6 +221,36 @@ export const assertUploadISHAStep = () => {
   cy.get(tid("dashboard-upload-investment-memorandum-widget")).should("not.exist");
 
   cy.get(tid("dashboard-upload-isha-widget")).should("exist");
+};
+
+export const assertUploadSignedISHAStep = () => {
+  cy.get(tid("eto-state-3")).should("exist");
+  cy.get(tid("eto-dashboard-sign-you-isha")).should("exist");
+
+  cy.get(tid("dashboard-upload-signed-isha-widget")).should("exist");
+
+  // Sign ISHA should not exist yet
+  cy.get(tid("dashboard-sign-isha-on-chain-widget")).should("not.exist");
+};
+
+export const assertSignISHAStep = () => {
+  cy.get(tid("eto-state-3")).should("exist");
+  cy.get(tid("eto-dashboard-sign-you-isha")).should("exist");
+
+  cy.get(tid("dashboard-sign-isha-on-chain-widget")).should("exist");
+
+  // Upload signed ISHA widget should not exist anymore
+  cy.get(tid("dashboard-upload-signed-isha-widget")).should("not.exist");
+};
+
+export const assertWaitForNomineeToSignISHAStep = () => {
+  cy.get(tid("eto-state-3")).should("exist");
+  cy.get(tid("eto-dashboard-sign-you-isha")).should("exist");
+
+  cy.get(tid("dashboard-wait-for-nominee-to-sign-isha-widget")).should("exist");
+
+  // Sign ISHA widget should not exist anymore
+  cy.get(tid("dashboard-sign-isha-on-chain-widget")).should("not.exist");
 };
 
 export const assertWaitingForSmartContractsStep = () => {
