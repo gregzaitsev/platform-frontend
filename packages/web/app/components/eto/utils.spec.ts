@@ -262,6 +262,38 @@ describe("generate shareholders", () => {
     const companyShares = 500;
     const data = [
       {
+        fullName: "shareholder1",
+        shareCapital: 50,
+      },
+      {
+        fullName: "shareholder2",
+        shareCapital: 250,
+      },
+      {
+        fullName: "shareholder3",
+        shareCapital: 200,
+      },
+    ];
+    const expectedOutput: TShareholder[] = [
+      {
+        fullName: "shareholder2",
+        percentageOfShares: 50,
+      },
+      {
+        fullName: "shareholder3",
+        percentageOfShares: 40,
+      },
+      {
+        fullName: "shareholder1",
+        percentageOfShares: 10,
+      },
+    ];
+    expect(generateShareholders(data, companyShares)).to.deep.eq(expectedOutput);
+  });
+  it("converts shareholder shares to percentage from company shares and adds an 'other' entry if shares don't sum up to 100%", () => {
+    const companyShares = 500;
+    const data = [
+      {
         fullName: "shareholder2",
         shareCapital: 200,
       },
