@@ -6,7 +6,7 @@ import { ITxData } from "../../../../lib/web3/types";
 import { IAppState } from "../../../../store";
 import { compareBigNumbers } from "../../../../utils/BigNumberUtils";
 import { actions } from "../../../actions";
-import { selectEtoById, selectEtoWithCompanyAndContractById } from "../../../eto/selectors";
+import { selectEtoWithCompanyAndContractById } from "../../../eto/selectors";
 import { TEtoWithCompanyAndContract } from "../../../eto/types";
 import { selectStandardGasPriceWithOverHead } from "../../../gas/selectors";
 import { EInvestmentType } from "../../../investment-flow/reducer";
@@ -26,22 +26,18 @@ import { selectEtherTokenBalance } from "../../../wallet/selectors";
 import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
 import { selectTxGasCostEthUlps } from "../../sender/selectors";
 import { ETxSenderType } from "../../types";
-import { selectMaximumInvestment } from "./selectors";
 
 export const INVESTMENT_GAS_AMOUNT = "600000";
 
 function* getEtherTokenTransaction(
   { contractsService }: TGlobalDependencies,
   etoId: string,
+  investAmountUlps: string,
 ): Iterator<any> {
   const etherTokenBalance = yield select(selectEtherTokenBalance);
-  const investAmount = yield select((state: IAppState) => state.investmentFlow.ethValueUlps || "0");
-  const investAmountUlps = yield select(selectMaximumInvestment);
-
   if (!etherTokenBalance) {
     throw new Error("No ether Token Balance");
   }
-
   if (compareBigNumbers(etherTokenBalance, investAmountUlps) >= 0) {
     // transaction can be fully covered by etherTokens
 
@@ -54,32 +50,35 @@ function* getEtherTokenTransaction(
     return { data: txInput, to: contractsService.etherToken.address };
   } else {
     // fill up etherToken with ether from wallet
-    const ethVal = new BigNumber(investAmount);
+    const ethVal = new BigNumber(investAmountUlps);
     const value = ethVal.sub(etherTokenBalance);
     const txCall = contractsService.etherToken.depositAndTransferTx(etoId, ethVal, [""]).getData();
 
-    return { value: value.toString(), data: txCall, to: contractsService.etherToken.address };
+    return {
+      value: value.toFixed(0, BigNumber.ROUND_DOWN),
+      data: txCall,
+      to: contractsService.etherToken.address,
+    };
   }
 }
 
-export function* generateInvestmentTransaction({
-  contractsService,
-  web3Manager,
-}: TGlobalDependencies): any {
+export function* generateInvestmentTransaction(
+  { contractsService, web3Manager }: TGlobalDependencies,
+  {
+    investmentType,
+    etoId,
+    investAmountUlps,
+  }: { investmentType: EInvestmentType; etoId: string; investAmountUlps: BigNumber },
+): any {
   const from: string = yield select(selectEthereumAddressWithChecksum);
   const gasPrice: string = yield select(selectStandardGasPriceWithOverHead);
-
-  const investmentState = yield select((state: IAppState) => state.investmentFlow);
-  const { etoId } = yield select((state: IAppState) => selectEtoById(state, investmentState.etoId));
-
   let data;
   let to;
   let value;
-  const investAmountUlps = yield select(selectMaximumInvestment);
 
-  switch (investmentState.investmentType) {
+  switch (investmentType) {
     case EInvestmentType.Eth:
-      ({ value, data } = yield neuCall(getEtherTokenTransaction, etoId));
+      ({ value, data } = yield neuCall(getEtherTokenTransaction, etoId, investAmountUlps));
       to = contractsService.etherToken.address;
       break;
     case EInvestmentType.NEur:
@@ -104,7 +103,6 @@ export function* generateInvestmentTransaction({
     value: value || "0",
     gasPrice,
   };
-
   const gas = yield web3Manager.estimateGasWithOverhead(transaction);
 
   return { ...transaction, gas };

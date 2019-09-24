@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import { fork, put, select } from "redux-saga/effects";
 
 import { ETxValidationMessages } from "../../../components/translatedMessages/messages";
@@ -5,6 +6,7 @@ import { createMessage } from "../../../components/translatedMessages/utils";
 import { TGlobalDependencies } from "../../../di/setupBindings";
 import { ITxData } from "../../../lib/web3/types";
 import { NotEnoughEtherForGasError } from "../../../lib/web3/Web3Adapter";
+import { IAppState } from "../../../store";
 import {
   compareBigNumbers,
   multiplyBigNumbers,
@@ -14,13 +16,22 @@ import { actions, TAction } from "../../actions";
 import { neuCall, neuTakeLatestUntil } from "../../sagasUtils";
 import { selectEtherBalance } from "../../wallet/selectors";
 import { generateInvestmentTransaction } from "../transactions/investment/sagas";
-import { ETxSenderType, IInvestmentDraftType } from "../types";
+import { selectMaximumInvestment } from "../transactions/investment/selectors";
+import { ETxSenderType } from "../types";
 import { EValidationState } from "./reducer";
 import { txValidateWithdraw } from "./withdraw/sagas";
 
-export function* txValidateDefault(txDraft: IInvestmentDraftType): Iterator<any> {
+export function* txValidateInvestment(): Iterator<any> {
   try {
-    const generatedTxDetails = yield neuCall(generateInvestmentTransaction, txDraft);
+    const investFlow = yield select((state: IAppState) => state.investmentFlow);
+    const investAmountUlps = yield select(selectMaximumInvestment);
+
+    const generatedTxDetails = yield neuCall(generateInvestmentTransaction, {
+      investmentType: investFlow.investmentType,
+      etoId: investFlow.etoId,
+      investAmountUlps: new BigNumber(investAmountUlps),
+    });
+
     yield validateGas(generatedTxDetails);
 
     yield put(actions.txValidator.setValidationState(EValidationState.VALIDATION_OK));
@@ -47,7 +58,7 @@ export function* txValidateSaga(
         validationGenerator = txValidateWithdraw(action.payload);
         break;
       case ETxSenderType.INVEST:
-        validationGenerator = txValidateDefault(action.payload);
+        validationGenerator = txValidateInvestment();
         break;
     }
 

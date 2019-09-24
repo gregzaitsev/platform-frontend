@@ -13,6 +13,7 @@ import { extractNumber } from "../../utils/StringUtils";
 import { actions, TAction } from "../actions";
 import { selectEtoById, selectEtoOnChainStateById } from "../eto/selectors";
 import { EETOStateOnChain } from "../eto/types";
+import { selectStandardGasPriceWithOverHead } from "../gas/selectors";
 import { loadComputedContributionFromContract } from "../investor-portfolio/sagas";
 import {
   selectCalculatedContribution,
@@ -22,10 +23,11 @@ import {
 import { neuCall } from "../sagasUtils";
 import { selectEtherPriceEur, selectEurPriceEther } from "../shared/tokenPrice/selectors";
 import { selectTxGasCostEthUlps, selectTxSenderModalOpened } from "../tx/sender/selectors";
+import { INVESTMENT_GAS_AMOUNT } from "../tx/transactions/investment/sagas";
 import { ETxSenderType } from "../tx/types";
 import { txValidateSaga } from "../tx/validator/sagas";
 import {
-  selectEtherBalance,
+  selectLiquidEtherBalance,
   selectLiquidEuroTokenBalance,
   selectLockedEtherBalance,
   selectLockedEuroTokenBalance,
@@ -86,6 +88,7 @@ function* computeAndSetCurrencies(value: string, currency: ECurrency): any {
 }
 
 function* investEntireBalance(): any {
+  yield setTransactionWithPresetGas();
   const state: IAppState = yield select();
 
   const type = selectInvestmentType(state);
@@ -109,7 +112,7 @@ function* investEntireBalance(): any {
 
     case EInvestmentType.Eth:
       const gasCostEth = selectTxGasCostEthUlps(state);
-      balance = selectEtherBalance(state);
+      balance = selectLiquidEtherBalance(state);
       balance = subtractBigNumbers([balance, gasCostEth]);
       yield computeAndSetCurrencies(balance, ECurrency.ETH);
       break;
@@ -135,8 +138,9 @@ function validateInvestment(state: IAppState): EInvestmentErrorState | undefined
 
   if (investmentFlow.investmentType === EInvestmentType.Eth) {
     const gasPrice = selectTxGasCostEthUlps(state);
-    debugger;
-    if (compareBigNumbers(addBigNumbers([etherValue, gasPrice]), selectEtherBalance(state)) > 0) {
+    if (
+      compareBigNumbers(addBigNumbers([etherValue, gasPrice]), selectLiquidEtherBalance(state)) > 0
+    ) {
       return EInvestmentErrorState.ExceedsWalletBalance;
     }
   }
@@ -190,7 +194,11 @@ function* validateAndCalculateInputs({ contractsService }: TGlobalDependencies):
       yield put(actions.investorEtoTicket.setCalculatedContribution(eto.etoId, contribution));
 
       state = yield select();
-      yield put(actions.investmentFlow.setErrorState(validateInvestment(state)));
+      const validation = validateInvestment(state);
+
+      if (validation) {
+        return yield put(actions.investmentFlow.setErrorState(validation));
+      }
 
       const txData: ITxData = yield neuCall(
         txValidateSaga,
@@ -271,6 +279,22 @@ function* recalculateCurrencies(): any {
   } else if (eurVal) {
     yield computeAndSetCurrencies(eurVal, curr);
   }
+}
+
+function* setTransactionWithPresetGas(): any {
+  const gasPrice = yield select(selectStandardGasPriceWithOverHead);
+
+  yield put(
+    actions.txSender.setTransactionData({
+      gas: INVESTMENT_GAS_AMOUNT,
+      value: "",
+      to: "",
+      from: "",
+      gasPrice,
+    }),
+    // This sets all other irrelevant values into false values.
+    // TODO: Refactor the whole transaction flow into a simpler flow that doesn't relay on txData
+  );
 }
 
 function* resetTxDataAndValidations(): any {

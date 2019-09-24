@@ -261,7 +261,7 @@ function* sendTxSubSaga({ web3Manager }: TGlobalDependencies): any {
       throw new InvalidChangeIdError();
     }
 
-    throw new UnknownEthNodeError();
+    throw new UnknownEthNodeError(error);
   }
 }
 
