@@ -6,6 +6,17 @@ export type TConversionAndValidationSpec<Data> = {
   conversionFn: (data: Data) => unknown;
 };
 
+type TTransformationSpec<T> = {
+  [key: string]: (
+    validatorFields: { [field in keyof T]: Yup.Schema<any> },
+    key: string,
+  ) => { [field in keyof T]: Yup.Schema<any> };
+};
+
+export type ObjectSchema<T> = Yup.ObjectSchema<T> & {
+  fields: { [field in keyof T]: Yup.Schema<T[field]> };
+};
+
 export const validateForm = (validator: Yup.Schema<any>, data: any, strict: boolean) => {
   try {
     validator.validateSync(data, { abortEarly: false, strict });
@@ -41,17 +52,6 @@ export const convertAndValidatePipeline = <Data extends {}>(
       return result;
     }
   }, undefined);
-};
-
-type TTransformationSpec<T> = {
-  [key: string]: (
-    validatorFields: { [field in keyof T]: Yup.Schema<any> },
-    key: string,
-  ) => { [field in keyof T]: Yup.Schema<any> };
-};
-
-export type ObjectSchema<T> = Yup.ObjectSchema<T> & {
-  fields: { [field in keyof T]: Yup.Schema<T[field]> };
 };
 
 export const replaceValidatorWith = (newValidator: Yup.Schema<unknown>) => <T>(

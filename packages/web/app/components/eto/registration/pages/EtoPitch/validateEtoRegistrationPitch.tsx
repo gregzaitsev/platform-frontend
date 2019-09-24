@@ -2,7 +2,7 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import * as Yup from "yup";
 
-import { TPartialCompanyEtoData } from "../../../../../lib/api/eto/EtoApi.interfaces.unsafe";
+import { EtoPitchType, TPartialCompanyEtoData } from "../../../../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { percentage } from "../../../../../lib/api/util/customSchemas.unsafe";
 import {
   convertAndValidatePipeline,
@@ -17,27 +17,31 @@ import {
   removeEmptyKeyValueFields,
   setEmptyKeyValueFieldsUndefined,
 } from "../../../utils";
+import { fromFormState } from "./connectEtoRegistrationPitch";
 
-type TEtoCapitalListSchema = {
-  percent: Yup.NumberSchema;
-  description: Yup.StringSchema;
+const HUNDRED_PERCENT = 1; //backend stores it as a fraction 0..1
+const MIN_KEY_VALUE_ARRAY_LENGTH = 1;
+
+type TEtoCapitalList = {
+  percent: number;
+  description: string;
 };
 
-const EtoCapitalListRequired = Yup.object().shape({
+const EtoCapitalListRequired = Yup.object<TEtoCapitalList>().shape({
   percent: percentage.required(),
   description: Yup.string().required(),
 });
 
-const EtoCapitalListNotRequired = Yup.object().shape({
+const EtoCapitalListNotRequired = Yup.object<TEtoCapitalList>().shape({
   percent: percentage.notRequired(),
   description: Yup.string().notRequired(),
 });
 
-const EtoCapitalListValidator = Yup.lazy((value: TEtoCapitalListSchema) => {
+const EtoCapitalListValidator = Yup.lazy((value: TEtoCapitalList) => {
   if (value && (value["percent"] !== undefined || value["description"] !== undefined)) {
-    return EtoCapitalListRequired as Yup.ObjectSchema<TEtoCapitalListSchema>;
+    return EtoCapitalListRequired;
   } else {
-    return EtoCapitalListNotRequired as Yup.ObjectSchema<TEtoCapitalListSchema>;
+    return EtoCapitalListNotRequired;
   }
 });
 
@@ -49,7 +53,7 @@ const validator = Yup.object().shape({
   useOfCapital: Yup.string().required(),
   useOfCapitalList: Yup.array()
     .of(EtoCapitalListValidator)
-    .min(1, <FormattedMessage id="form.field.error.array.at-least-one-entry-required" />)
+    .min(MIN_KEY_VALUE_ARRAY_LENGTH, <FormattedMessage id="form.field.error.array.at-least-one-entry-required" />)
     .required(<FormattedMessage id="form.field.error.array.at-least-one-entry-required" />),
   customerGroup: Yup.string(),
   sellingProposition: Yup.string(),
@@ -68,9 +72,9 @@ const percentConversionSpec = [
 ];
 
 const amountOfCapitalListValidator = Yup.number()
-  .min(1, <FormattedMessage id="form.field.error.allocation-of-100-percents-of-funds" />)
   .required(<FormattedMessage id="form.field.error.allocation-of-100-percents-of-funds" />)
-  .max(1, <FormattedMessage id="form.field.error.cannot-be-more-than-100-percent" />);
+  .min(HUNDRED_PERCENT, <FormattedMessage id="form.field.error.allocation-of-100-percents-of-funds" />)
+  .max(HUNDRED_PERCENT, <FormattedMessage id="form.field.error.cannot-be-more-than-100-percent" />);
 
 const validatorConversionSpec = {
   useOfCapitalList: replaceValidatorWith(amountOfCapitalListValidator),
@@ -109,4 +113,5 @@ export const etoPitchValidationFn = convertAndValidatePipeline([
     validator: transformValidator(validatorConversionSpec)(validator),
     conversionFn: conversion2,
   },
+  {validator: EtoPitchType.toYup(),conversionFn:convert(fromFormState) }
 ]);

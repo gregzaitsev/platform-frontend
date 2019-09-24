@@ -1,5 +1,4 @@
 import { FormikValues } from "formik";
-import * as React from "react";
 import { compose, setDisplayName, withProps } from "recompose";
 
 import { TPartialCompanyEtoData } from "../../../../../lib/api/eto/EtoApi.interfaces.unsafe";
@@ -20,7 +19,7 @@ import {
   parseStringToFloat,
   removeEmptyKeyValueFields,
 } from "../../../utils";
-import { etoPitchValidationFn } from "./validateEtoPitch";
+import { etoPitchValidationFn } from "./validateEtoRegistrationPitch";
 
 type TDispatchProps = {
   saveData: (values: TPartialCompanyEtoData) => void;
@@ -48,11 +47,18 @@ const connectEtoRegistrationPitch = (
   compose<TComponentProps & TDispatchProps, {}>(
     setDisplayName(EEtoFormTypes.ProductVision),
     appConnect<TStateProps, TDispatchProps>({
-      stateToProps: s => ({
-        loadingData: selectIssuerEtoLoading(s),
-        savingData: selectIssuerEtoSaving(s),
-        stateValues: selectIssuerCompany(s) as TPartialCompanyEtoData,
-      }),
+      stateToProps: s => {
+        const stateValues = selectIssuerCompany(s);
+        if(stateValues !== undefined){
+          return ({
+            loadingData: selectIssuerEtoLoading(s),
+            savingData: selectIssuerEtoSaving(s),
+            stateValues
+          })
+        } else {
+          throw new Error("issuer company cannot be undefined at this point!")
+        }
+      },
       dispatchToProps: dispatch => ({
         saveData: (company: TPartialCompanyEtoData) => {
           const convertedCompany = convert(fromFormState)(company);
@@ -72,7 +78,7 @@ const toFormState = {
   ],
 };
 
-const fromFormState = {
+export const fromFormState = {
   useOfCapitalList: [
     removeEmptyKeyValueFields(),
     convertInArray({ percent: [parseStringToFloat(), convertPercentageToFraction()] }),

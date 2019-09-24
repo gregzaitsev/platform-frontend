@@ -41,7 +41,7 @@ const convertField = (input: any, f: any) => {
   }
 };
 
-export const convertInArray = (conversionSpec: any) => (data: any[]) => {
+export const convertInArray = (conversionSpec: any) => (data: {}[]) => {
   if (Array.isArray(data)) {
     return data.map(element => convert(conversionSpec)(element));
   } else {
@@ -49,15 +49,17 @@ export const convertInArray = (conversionSpec: any) => (data: any[]) => {
   }
 };
 
-const findNonEmptyKeyValueField = (data: ICompoundField | undefined) => {
-  if (data) {
-    const keys = Object.keys(data);
+const findNonEmptyKeyValueField = (data: ICompoundField | undefined) =>
+  data
+    ? Object.keys(data).reduce((acc: boolean, key: string) => {
+        if (data[key] !== undefined) {
+          return true
+        } else {
+          return acc
+        }
+      }, false)
+    : false;
 
-    return data[keys[0]] !== undefined || data[keys[1]] !== undefined;
-  }
-
-  return undefined;
-};
 
 //removes data left from empty key-value fields, e.g. {key:undefined,value:undefined}
 export const removeEmptyKeyValueFields = () => (data: ICompoundField[] | undefined) => {
@@ -117,7 +119,7 @@ export function parseStringToFloat(): (data: TParseStringToFloatData) => number 
 export function parseStringToFloat(
   options: TParseStringToFloatOptions,
 ): (data: TParseStringToFloatData) => string | number | undefined;
-/* tslint:disable */
+/* tslint:disable:typedef */
 export function parseStringToFloat(options?: TParseStringToFloatOptions) {
   return (data: TParseStringToFloatData): number | undefined | string => {
     const result = typeof data === "string" ? parseFloat(data) : data;
@@ -128,7 +130,7 @@ export function parseStringToFloat(options?: TParseStringToFloatOptions) {
     }
   };
 }
-/* tslint:enable */
+/* tslint:enable:typedef */
 
 export const parseStringToInteger = () => (data: string | number | undefined) => {
   if (typeof data === "string") {

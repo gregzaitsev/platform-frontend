@@ -12,19 +12,24 @@ import {
 import { EtoFormBase } from "../../EtoFormBase";
 import { Section } from "../../Shared";
 import { TDispatchProps } from "../EtoVotingRights/EtoVotingRights";
-import { connectEtoRegistrationPitch, TComponentProps } from "./connectEtoPitch";
+import { connectEtoRegistrationPitch, TComponentProps } from "./connectEtoRegistrationPitch";
 
 import * as styles from "../../Shared.module.scss";
 
 const distributionSuggestions = ["Development", "Other"];
 
-const EtoRegistrationPitchComponent = (props: TComponentProps & TDispatchProps) => (
+const EtoRegistrationPitchComponent = ({
+  validationFn,
+  initialValues,
+  saveData,
+  savingData
+}: TComponentProps & TDispatchProps) => (
   <EtoFormBase
     title={<FormattedMessage id="eto.form-progress-widget.company-information.product-vision" />}
     validationSchema={EtoPitchType.toYup()}
-    validate={props.validationFn}
-    initialValues={props.initialValues}
-    onSubmit={props.saveData}
+    validate={validationFn}
+    initialValues={initialValues}
+    onSubmit={saveData}
   >
     <Section>
       <FormTextArea
@@ -145,7 +150,7 @@ const EtoRegistrationPitchComponent = (props: TComponentProps & TDispatchProps) 
       <Button
         layout={EButtonLayout.PRIMARY}
         type="submit"
-        isLoading={props.savingData}
+        isLoading={savingData}
         data-test-id="eto-registration-product-vision-submit"
       >
         <FormattedMessage id="eto.form.product-vision.save" />

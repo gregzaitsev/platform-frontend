@@ -7,12 +7,16 @@ import { actions } from "../../../../../modules/actions";
 import { selectIssuerCompany } from "../../../../../modules/eto-flow/selectors";
 import { EEtoFormTypes } from "../../../../../modules/eto-flow/types";
 import { appConnect } from "../../../../../store";
-import { convert } from "../../../utils";
 import {
-  fromFormState,
+  convert,
+  convertInArray,
+  convertNumberToString, parseStringToFloat,
+  parseStringToInteger,
+  removeEmptyKeyValueFields
+} from "../../../utils";
+import {
   legalInformationValidationFn,
-  toFormState,
-} from "./validateLelgalInformation";
+} from "./validateLegalInformation";
 
 type TStateProps = {
   loadingData: boolean;
@@ -34,6 +38,24 @@ type TWithProps = {
 };
 
 export type TComponentProps = TStateProps & TDispatchProps & TExternalProps & TWithProps;
+
+export const toFormState = {
+  useOfCapitalList: [convertInArray({ shareCapital: convertNumberToString() })],
+
+  companyShareCapital: convertNumberToString(),
+  numberOfFounders: convertNumberToString(),
+  lastFundingSizeEur: convertNumberToString(),
+};
+
+export const fromFormState = {
+  shareholders: [
+    removeEmptyKeyValueFields(),
+    convertInArray({ shareCapital: parseStringToInteger() }),
+  ],
+  companyShareCapital: parseStringToInteger(),
+  lastFundingSizeEur: parseStringToFloat(),
+  numberOfFounders: parseStringToInteger(),
+};
 
 const connectEtoRegistrationLegalInformation = (
   WrappedComponent: React.FunctionComponent<TComponentProps>,

@@ -11,15 +11,17 @@ import {
   parseStringToFloat,
   removeEmptyField,
   removeEmptyKeyValueField,
-  removeEmptyKeyValueFields,
+  removeEmptyKeyValueFields, setEmptyKeyValueFieldsUndefined,
 } from "./utils";
 
-describe("removeEmptyKeyValueField", () => {
+describe.only("removeEmptyKeyValueField", () => {
   it("removes empty key-value fields", () => {
     const badInput = { a: undefined };
-    const goodInput = { a: 1, b: 2 };
+    const goodInput = { a: 1, b: undefined };
+    const veryBadInput = undefined;
     expect(removeEmptyKeyValueField()(badInput)).to.be.undefined;
     expect(removeEmptyKeyValueField()(goodInput)).to.deep.equal(goodInput);
+    expect(removeEmptyKeyValueField()(veryBadInput)).to.be.undefined;
   });
 });
 
@@ -32,6 +34,15 @@ describe("removeEmptyKeyValueFields", () => {
   it("returns undefined if resulting array is empty", () => {
     const input = [{ a: undefined, b: undefined }, { a: undefined }];
     expect(removeEmptyKeyValueFields()(input)).to.be.undefined;
+  });
+});
+
+describe("setEmptyKeyValueFieldsUndefined", () => {
+  it("iterates over an array of key-value objects and sets the empty ones to undefined. " +
+    "This is used when manually patching formik validations to keep the array lengths unchanged",
+    () => {
+    const input = [{ a: 1, b: 2 }, { a: undefined }];
+    expect(setEmptyKeyValueFieldsUndefined()(input)).to.have.length(2);
   });
 });
 
@@ -55,7 +66,7 @@ describe("applyDefaults", () => {
   });
 });
 
-describe("xconvert", () => {
+describe("convert", () => {
   const bla2fufu = (input: any) => (input === "bla" ? "fufu" : input);
   const fufu2pfui = (input: any) => (input === "fufu" ? "pfui" : input);
 

@@ -8,51 +8,33 @@ import { convertAndValidatePipeline } from "../../../../shared/forms/utils";
 import {
   convert,
   convertInArray,
-  convertNumberToString,
   parseStringToFloat,
-  parseStringToInteger,
   removeEmptyKeyValueFields,
   setEmptyKeyValueFieldsUndefined,
 } from "../../../utils";
+import { fromFormState } from "./connectLegalInformation";
+import { EtoLegalInformationType } from "../../../../../lib/api/eto/EtoApi.interfaces.unsafe";
 
-type TShareholdersListSchema = {
+type TShareholdersList = {
   fullName: string;
   shareCapital: number;
 };
 
-export const toFormState = {
-  useOfCapitalList: [convertInArray({ shareCapital: convertNumberToString() })],
-
-  companyShareCapital: convertNumberToString(),
-  numberOfFounders: convertNumberToString(),
-  lastFundingSizeEur: convertNumberToString(),
-};
-
-export const fromFormState = {
-  shareholders: [
-    removeEmptyKeyValueFields(),
-    convertInArray({ shareCapital: parseStringToInteger() }),
-  ],
-  companyShareCapital: parseStringToInteger(),
-  lastFundingSizeEur: parseStringToFloat(),
-  numberOfFounders: parseStringToInteger(),
-};
-
-const ShareholdersListRequired = Yup.object().shape({
+const ShareholdersListRequired = Yup.object<TShareholdersList>().shape({
   fullName: Yup.string().required(),
   shareCapital: Yup.number().required(),
 });
 
-const ShareholdersListNotRequired = Yup.object().shape({
+const ShareholdersListNotRequired = Yup.object<TShareholdersList>().shape({
   fullName: Yup.string().notRequired(),
   shareCapital: Yup.number().notRequired(),
 });
 
-const ShareholdersListValidator = Yup.lazy((value: TShareholdersListSchema) => {
+const ShareholdersListValidator = Yup.lazy((value: TShareholdersList) => {
   if (value && (value["fullName"] !== undefined || value["shareCapital"] !== undefined)) {
-    return ShareholdersListRequired as Yup.ObjectSchema<TShareholdersListSchema>;
+    return ShareholdersListRequired;
   } else {
-    return ShareholdersListNotRequired as Yup.ObjectSchema<TShareholdersListSchema>;
+    return ShareholdersListNotRequired;
   }
 });
 
@@ -98,4 +80,5 @@ const conversionSpec1 = {
 export const legalInformationValidationFn = convertAndValidatePipeline([
   { validator, conversionFn: convert(conversionSpec0) },
   { validator, conversionFn: convert(conversionSpec1) },
+  { validator:EtoLegalInformationType.toYup(), conversionFn: convert(fromFormState) },
 ]);
