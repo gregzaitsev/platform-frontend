@@ -14,7 +14,7 @@ export const isPledgeAboveMinimum = (minPledge: number): TestOptions => ({
     createMessage(ValidationMessage.VALIDATION_MIN_PLEDGE, minPledge),
   ) as string,
   test: function(this: TestContext, value: string): boolean {
-    return isValidNumber(value) && new BigNumber(value).comparedTo(minPledge.toString()) === 1;
+    return isValidNumber(value) && new BigNumber(value).greaterThanOrEqualTo(minPledge.toString());
   },
 });
 
@@ -26,7 +26,7 @@ export const isPledgeNotAboveMaximum = (maxPledge?: number): TestOptions => ({
   test: function(this: TestContext, value: string): boolean {
     return (
       isValidNumber(value) &&
-      new BigNumber(value).comparedTo(maxPledge ? maxPledge.toString() : Infinity) <= 0
+      new BigNumber(value).lessThanOrEqualTo(maxPledge ? maxPledge.toString() : Infinity)
     );
   },
 });

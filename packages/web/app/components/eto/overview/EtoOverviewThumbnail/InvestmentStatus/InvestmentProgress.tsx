@@ -2,10 +2,6 @@ import * as cn from "classnames";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
-import {
-  getCurrentInvestmentProgressPercentage,
-  getInvestmentCalculatedPercentage,
-} from "../../../../../lib/api/eto/EtoUtils";
 import { TEtoWithCompanyAndContract } from "../../../../../modules/eto/types";
 import { TTranslatedString } from "../../../../../types";
 import { normalize } from "../../../../../utils/Number.utils";
@@ -13,6 +9,10 @@ import {
   PercentageIndicatorBar,
   TProgressBarProps,
 } from "../../../../shared/PercentageIndicatorBar";
+import {
+  getCurrentInvestmentProgressPercentage,
+  getInvestmentCalculatedPercentage,
+} from "../..//utils";
 
 import * as styles from "./InvestmentProgress.module.scss";
 

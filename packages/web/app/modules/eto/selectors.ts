@@ -25,7 +25,7 @@ import { getEtoSubState } from "./utils";
 const selectEtoState = (state: IAppState) => state.eto;
 
 const selectEtoPreviewCode = (state: IAppState, etoId: string) => {
-  const eto = find(eto => eto!.etoId === etoId, state.eto.etos);
+  const eto = find(e => e!.etoId === etoId, state.eto.etos);
 
   if (eto) {
     return eto.previewCode;
@@ -35,7 +35,7 @@ const selectEtoPreviewCode = (state: IAppState, etoId: string) => {
 };
 
 export const selectEtoTokenName = (state: IAppState, etoId: string) => {
-  const eto = find(eto => eto!.etoId === etoId, state.eto.etos);
+  const eto = find(e => e!.etoId === etoId, state.eto.etos);
 
   if (eto) {
     return eto.equityTokenName;

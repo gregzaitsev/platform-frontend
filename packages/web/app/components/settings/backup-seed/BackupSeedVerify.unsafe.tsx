@@ -36,10 +36,10 @@ export interface IBackupSeedVerifyState {
 }
 
 // here it's good enough
-const getRandomNumbers = (numbers: number, range: number): number[] => {
+const getRandomNumbers = (numbers: number, upTo: number): number[] => {
   const arr = [];
   while (arr.length < numbers) {
-    const randomNumber = Math.floor(Math.random() * range);
+    const randomNumber = Math.floor(Math.random() * upTo);
     if (arr.indexOf(randomNumber) > -1) continue;
     arr[arr.length] = randomNumber;
   }
