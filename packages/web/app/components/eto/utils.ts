@@ -6,6 +6,8 @@ import { invariant } from "../../utils/invariant";
 import { formatFlexiPrecision } from "../../utils/Number.utils";
 import { TShareholder } from "./public-view/LegalInformationWidget";
 
+const HUNDRED_PERCENT = new BigNumber(100);
+
 export interface ICompoundField {
   [x: string]: string | number | undefined;
 }
@@ -210,20 +212,21 @@ export const generateShareholders = (
         shareholder: TEtoLegalShareholderTypeNarrowed,
         index: number,
       ) => {
-        if (acc.totalPercentage.lessThan(100)) {
+        if (acc.totalPercentage.lessThan(HUNDRED_PERCENT)) {
           const shareCapitalPercentage = new BigNumber(
             ((shareholder.shareCapital * 100) / companyShares).toString(),
           ).round(2, 4);
 
-          const totalPercentage = acc.totalPercentage.add(shareCapitalPercentage);
+          const currentTotalPercentage = acc.totalPercentage.add(shareCapitalPercentage);
 
-          // the last member of array that makes totalPercentage <= 100
+          // the last member of array that makes currentTotalPercentage <= 100
           // gets the rest of (100% - shares) to account for the rounding errors,
           // all the following members are not included in the result
           const shareCapitalPercentageCorrected =
-            index !== shareholdersData.length - 1 && totalPercentage.lessThanOrEqualTo(100)
+            index !== shareholdersData.length - 1 &&
+            currentTotalPercentage.lessThanOrEqualTo(HUNDRED_PERCENT)
               ? shareCapitalPercentage
-              : new BigNumber(100).sub(acc.totalPercentage);
+              : HUNDRED_PERCENT.sub(acc.totalPercentage);
 
           if (shareCapitalPercentageCorrected.greaterThan(0)) {
             acc.shareholders.push({
@@ -232,7 +235,7 @@ export const generateShareholders = (
             });
           }
 
-          acc.totalPercentage = totalPercentage;
+          acc.totalPercentage = currentTotalPercentage;
         }
         return acc;
       },
