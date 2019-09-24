@@ -1,4 +1,3 @@
-import * as cn from "classnames";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { branch, renderComponent, renderNothing } from "recompose";
@@ -17,11 +16,11 @@ import { onEnterAction } from "../../../utils/OnEnterAction";
 import { investmentAgreementNotSigned } from "../../documents/utils";
 import { EColumnSpan } from "../../layouts/Container";
 import { ButtonArrowRight } from "../../shared/buttons/Button";
-import { EHeadingSize, Heading } from "../../shared/Heading";
+import {
+  DashboardCenteredWidget,
+  DashboardWidget,
+} from "../../shared/dashboard-widget/DashboardWidget";
 import { LoadingIndicator } from "../../shared/loading-indicator/LoadingIndicator";
-import { Panel } from "../../shared/Panel";
-
-import * as styles from "../../eto/EtoContentWidget.module.scss";
 
 interface IDispatchProps {
   signInvestmentAgreement: (etoId: string, agreementHash: string) => void;
@@ -39,16 +38,11 @@ interface IExternalProps {
 }
 
 export const WaitingForNominee: React.FunctionComponent<IExternalProps> = ({ columnSpan }) => (
-  <Panel columnSpan={columnSpan}>
-    <Heading size={EHeadingSize.SMALL} level={4}>
-      <FormattedMessage id="download-agreement-widget.wait-for-nominee-to-sign" />
-    </Heading>
-    <div className={styles.content}>
-      <p className={cn(styles.text, "pt-2")}>
-        <FormattedMessage id="download-agreement-widget.wait-for-nominee-to-sign-text" />
-      </p>
-    </div>
-  </Panel>
+  <DashboardWidget
+    title={<FormattedMessage id="download-agreement-widget.wait-for-nominee-to-sign" />}
+    text={<FormattedMessage id="download-agreement-widget.wait-for-nominee-to-sign-text" />}
+    columnSpan={columnSpan}
+  />
 );
 
 interface IWaitingToBeSigned {
@@ -65,26 +59,24 @@ export const WaitingToBeSigned: React.FunctionComponent<IWaitingToBeSigned & IEx
   signInvestmentAgreement,
   columnSpan,
 }) => (
-  <Panel columnSpan={columnSpan}>
-    <Heading size={EHeadingSize.SMALL} level={4}>
+  <DashboardCenteredWidget
+    title={<FormattedMessage id="download-agreement-widget.sign-on-ethereum" />}
+    text={
+      signedInvestmentAgreementUrl === null ? (
+        <FormattedMessage id="download-agreement-widget.sign-on-ethereum-text" />
+      ) : (
+        <FormattedMessage id="download-agreement-widget.sign-again-text" />
+      )
+    }
+    columnSpan={columnSpan}
+  >
+    <ButtonArrowRight
+      data-test-id="eto-dashboard-submit-proposal"
+      onClick={() => signInvestmentAgreement(etoId, ipfsHash)}
+    >
       <FormattedMessage id="download-agreement-widget.sign-on-ethereum" />
-    </Heading>
-    <div className={styles.content}>
-      <p className={cn(styles.text, "pt-2")}>
-        {signedInvestmentAgreementUrl === null ? (
-          <FormattedMessage id="download-agreement-widget.sign-on-ethereum-text" />
-        ) : (
-          <FormattedMessage id="download-agreement-widget.sign-again-text" />
-        )}
-      </p>
-      <ButtonArrowRight
-        data-test-id="eto-dashboard-submit-proposal"
-        onClick={() => signInvestmentAgreement(etoId, ipfsHash)}
-      >
-        <FormattedMessage id="download-agreement-widget.sign-on-ethereum" />
-      </ButtonArrowRight>
-    </div>
-  </Panel>
+    </ButtonArrowRight>
+  </DashboardCenteredWidget>
 );
 
 export const SignInvestmentAgreementLayout: React.FunctionComponent<

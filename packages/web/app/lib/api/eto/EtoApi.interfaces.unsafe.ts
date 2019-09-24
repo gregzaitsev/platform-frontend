@@ -419,14 +419,14 @@ export const EtoInvestmentTermsType = YupTS.object({
   newShareNominalValue: YupTS.number().enhance((v: StringSchema) =>
     v.min(MIN_NEW_SHARE_NOMINAL_VALUE),
   ),
-  newShareNominalValueEur: YupTS.number().enhance(v =>
-    v
+  newShareNominalValueEur: YupTS.number().enhance(validator =>
+    validator
       .min(MIN_NEW_SHARE_NOMINAL_VALUE)
       .when(
         ["shareCapitalCurrencyCode", "newShareNominalValue"],
         (currencyCode: string, newShareNominalValue: string) => {
           if (currencyCode === "EUR") {
-            return v.test(
+            return validator.test(
               "match",
               getMessageTranslation(
                 createMessage(ValidationMessage.VALIDATION_FIELDS_SHOULD_MATCH, [
@@ -434,7 +434,7 @@ export const EtoInvestmentTermsType = YupTS.object({
                   "Share nominal value in EUR",
                 ]),
               ),
-              v => v === newShareNominalValue,
+              value => value === newShareNominalValue,
             );
           } else {
             return;

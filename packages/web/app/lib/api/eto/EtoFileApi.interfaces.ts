@@ -1,3 +1,4 @@
+import { Dictionary } from "../../../types";
 import { EtoStateToCamelcase } from "./EtoApi.interfaces.unsafe";
 
 type fileStates = "canReplace" | "locked" | "readOnly";
@@ -55,8 +56,8 @@ type TComplextFileInfo = "canDeleteInStates" | "canUploadInStates";
 
 type TSimpleFileInfo = "generatedTypes" | "uploadableTypes";
 
-export type TStateInfo = { [key in TSimpleFileInfo]: EEtoDocumentType[] } &
-  { [key in TComplextFileInfo]: { [key in EtoStateToCamelcase]: EEtoDocumentType[] } };
+export type TStateInfo = Dictionary<EEtoDocumentType[], TSimpleFileInfo> &
+  Dictionary<Dictionary<EEtoDocumentType[], EtoStateToCamelcase>, TComplextFileInfo>;
 
 export interface IEtoFilesInfo {
   productTemplates: TEtoDocumentTemplates;

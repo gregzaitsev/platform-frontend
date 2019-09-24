@@ -87,9 +87,9 @@ export function updateArrayItem<T extends { id?: string }>(
   item?: T,
 ): ReadonlyArray<T> {
   if (!id) return array; // no changes
-  if (id && !item) return filter(array, item => item.id !== id); // delete item
+  if (id && !item) return filter(array, i => i.id !== id); // delete item
   if (id && item) {
-    const index = findIndex(array, item => item.id === id);
+    const index = findIndex(array, i => i.id === id);
     if (index === -1) return [...array, item]; // append
 
     return [...array.slice(0, index), item, ...array.slice(index + 1)];

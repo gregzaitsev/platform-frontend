@@ -8,14 +8,14 @@ import { WalletLedgerNotSupported } from "./WalletLedgerNotSupportedComponent";
 
 interface IWalletLedgerStateProps {
   isConnectionEstablished: boolean;
-  isSupportingLedger: boolean;
+  isLedgerSupported: boolean;
 }
 
 export const WalletLedgerComponent: React.FunctionComponent<IWalletLedgerStateProps> = ({
   isConnectionEstablished,
-  isSupportingLedger,
+  isLedgerSupported,
 }) => {
-  if (!isSupportingLedger) {
+  if (!isLedgerSupported) {
     return <WalletLedgerNotSupported />;
   } else if (isConnectionEstablished) {
     return <WalletLedgerChooser />;
@@ -27,6 +27,6 @@ export const WalletLedgerComponent: React.FunctionComponent<IWalletLedgerStatePr
 export const WalletLedger = appConnect<IWalletLedgerStateProps>({
   stateToProps: state => ({
     isConnectionEstablished: state.ledgerWizardState.isConnectionEstablished,
-    isSupportingLedger: isSupportingLedger(state.browser),
+    isLedgerSupported: isSupportingLedger(state.browser),
   }),
 })(WalletLedgerComponent);
