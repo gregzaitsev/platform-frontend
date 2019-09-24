@@ -22,7 +22,7 @@ const EtoRegistrationPitchComponent = ({
   validationFn,
   initialValues,
   saveData,
-  savingData
+  savingData,
 }: TComponentProps & TDispatchProps) => (
   <EtoFormBase
     title={<FormattedMessage id="eto.form-progress-widget.company-information.product-vision" />}

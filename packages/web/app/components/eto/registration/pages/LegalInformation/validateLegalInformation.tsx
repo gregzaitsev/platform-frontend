@@ -3,6 +3,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import * as Yup from "yup";
 
 import { MIN_COMPANY_SHARE_CAPITAL } from "../../../../../config/constants";
+import { EtoLegalInformationType } from "../../../../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { currencyCodeSchema, dateSchema } from "../../../../../lib/api/util/customSchemas.unsafe";
 import { convertAndValidatePipeline } from "../../../../shared/forms/utils";
 import {
@@ -10,10 +11,8 @@ import {
   convertInArray,
   parseStringToFloat,
   removeEmptyKeyValueFields,
-  setEmptyKeyValueFieldsUndefined,
 } from "../../../utils";
-import { fromFormState } from "./connectLegalInformation";
-import { EtoLegalInformationType } from "../../../../../lib/api/eto/EtoApi.interfaces.unsafe";
+import { fromFormState } from "./legalInformationFormStateConverters";
 
 type TShareholdersList = {
   fullName: string;
@@ -57,17 +56,9 @@ const validator = Yup.object().shape({
   shareCapitalCurrencyCode: currencyCodeSchema(Yup.string()), //todo write an extension method with Yup.addMethod
   shareholders: Yup.array()
     .of(ShareholdersListValidator)
-    .min(1, <FormattedMessage id="form.field.error.array.at-least-one-entry-required" />)
-    .required(<FormattedMessage id="form.field.error.array.at-least-one-entry-required" />),
+    .required(<FormattedMessage id="form.field.error.array.at-least-one-entry-required" />)
+    .min(1, <FormattedMessage id="form.field.error.array.at-least-one-entry-required" />),
 });
-
-const conversionSpec0 = {
-  ...fromFormState,
-  shareholders: [
-    setEmptyKeyValueFieldsUndefined(),
-    convertInArray({ shareCapital: parseStringToFloat({ passThroughInvalidData: true }) }),
-  ],
-};
 
 const conversionSpec1 = {
   ...fromFormState,
@@ -78,7 +69,6 @@ const conversionSpec1 = {
 };
 
 export const legalInformationValidationFn = convertAndValidatePipeline([
-  { validator, conversionFn: convert(conversionSpec0) },
   { validator, conversionFn: convert(conversionSpec1) },
-  { validator:EtoLegalInformationType.toYup(), conversionFn: convert(fromFormState) },
+  { validator: EtoLegalInformationType.toYup(), conversionFn: convert(fromFormState) },
 ]);

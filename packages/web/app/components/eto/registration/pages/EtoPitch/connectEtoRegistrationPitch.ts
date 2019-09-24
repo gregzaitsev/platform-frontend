@@ -10,15 +10,8 @@ import {
 } from "../../../../../modules/eto-flow/selectors";
 import { EEtoFormTypes } from "../../../../../modules/eto-flow/types";
 import { appConnect } from "../../../../../store";
-import {
-  convert,
-  convertFractionToPercentage,
-  convertInArray,
-  convertNumberToString,
-  convertPercentageToFraction,
-  parseStringToFloat,
-  removeEmptyKeyValueFields,
-} from "../../../utils";
+import { convert } from "../../../utils";
+import { fromFormState, toFormState } from "./etoRegistrationPitchFormStateConverters";
 import { etoPitchValidationFn } from "./validateEtoRegistrationPitch";
 
 type TDispatchProps = {
@@ -49,14 +42,14 @@ const connectEtoRegistrationPitch = (
     appConnect<TStateProps, TDispatchProps>({
       stateToProps: s => {
         const stateValues = selectIssuerCompany(s);
-        if(stateValues !== undefined){
-          return ({
+        if (stateValues !== undefined) {
+          return {
             loadingData: selectIssuerEtoLoading(s),
             savingData: selectIssuerEtoSaving(s),
-            stateValues
-          })
+            stateValues,
+          };
         } else {
-          throw new Error("issuer company cannot be undefined at this point!")
+          throw new Error("issuer company cannot be undefined at this point!");
         }
       },
       dispatchToProps: dispatch => ({
@@ -71,18 +64,5 @@ const connectEtoRegistrationPitch = (
       validationFn: (values: FormikValues) => etoPitchValidationFn(values),
     })),
   )(WrappedComponent);
-
-const toFormState = {
-  useOfCapitalList: [
-    convertInArray({ percent: [convertFractionToPercentage(), convertNumberToString()] }),
-  ],
-};
-
-export const fromFormState = {
-  useOfCapitalList: [
-    removeEmptyKeyValueFields(),
-    convertInArray({ percent: [parseStringToFloat(), convertPercentageToFraction()] }),
-  ],
-};
 
 export { connectEtoRegistrationPitch };

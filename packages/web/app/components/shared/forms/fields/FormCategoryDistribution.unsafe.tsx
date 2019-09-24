@@ -135,6 +135,12 @@ class ArrayOfKeyValueFieldsBase extends React.Component<
     index: number,
   ) => {
     e.preventDefault();
+    if (!Array.isArray(this.props.formik.errors[this.props.name])) {
+      // formik expects errors[this.props.name] to be an array of errors
+      // and crashes if it's an single error, which might be the case
+      // if we validate the length of key-value-array
+      this.props.formik.errors[this.props.name] = undefined;
+    }
     arrayHelpers.remove(index);
   };
 

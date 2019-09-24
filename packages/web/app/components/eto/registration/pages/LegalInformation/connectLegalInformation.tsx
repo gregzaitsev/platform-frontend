@@ -4,19 +4,16 @@ import { compose, setDisplayName, withProps } from "recompose";
 
 import { TPartialCompanyEtoData } from "../../../../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { actions } from "../../../../../modules/actions";
-import { selectIssuerCompany } from "../../../../../modules/eto-flow/selectors";
+import {
+  selectIssuerCompany,
+  selectIssuerEtoLoading,
+  selectIssuerEtoSaving,
+} from "../../../../../modules/eto-flow/selectors";
 import { EEtoFormTypes } from "../../../../../modules/eto-flow/types";
 import { appConnect } from "../../../../../store";
-import {
-  convert,
-  convertInArray,
-  convertNumberToString, parseStringToFloat,
-  parseStringToInteger,
-  removeEmptyKeyValueFields
-} from "../../../utils";
-import {
-  legalInformationValidationFn,
-} from "./validateLegalInformation";
+import { convert } from "../../../utils";
+import { fromFormState, toFormState } from "./legalInformationFormStateConverters";
+import { legalInformationValidationFn } from "./validateLegalInformation";
 
 type TStateProps = {
   loadingData: boolean;
@@ -39,35 +36,24 @@ type TWithProps = {
 
 export type TComponentProps = TStateProps & TDispatchProps & TExternalProps & TWithProps;
 
-export const toFormState = {
-  useOfCapitalList: [convertInArray({ shareCapital: convertNumberToString() })],
-
-  companyShareCapital: convertNumberToString(),
-  numberOfFounders: convertNumberToString(),
-  lastFundingSizeEur: convertNumberToString(),
-};
-
-export const fromFormState = {
-  shareholders: [
-    removeEmptyKeyValueFields(),
-    convertInArray({ shareCapital: parseStringToInteger() }),
-  ],
-  companyShareCapital: parseStringToInteger(),
-  lastFundingSizeEur: parseStringToFloat(),
-  numberOfFounders: parseStringToInteger(),
-};
-
 const connectEtoRegistrationLegalInformation = (
   WrappedComponent: React.FunctionComponent<TComponentProps>,
 ) =>
   compose<TComponentProps, TExternalProps>(
     setDisplayName(EEtoFormTypes.LegalInformation),
     appConnect<TStateProps, TDispatchProps>({
-      stateToProps: state => ({
-        loadingData: state.etoIssuer.loading,
-        savingData: state.etoIssuer.saving,
-        company: selectIssuerCompany(state) as TPartialCompanyEtoData,
-      }),
+      stateToProps: state => {
+        const company = selectIssuerCompany(state);
+        if (company !== undefined) {
+          return {
+            loadingData: selectIssuerEtoLoading(state),
+            savingData: selectIssuerEtoSaving(state),
+            company,
+          };
+        } else {
+          throw new Error("company data cannot be undefined at this point");
+        }
+      },
       dispatchToProps: dispatch => ({
         saveData: (company: TPartialCompanyEtoData) => {
           const convertedCompany = convert(fromFormState)(company);

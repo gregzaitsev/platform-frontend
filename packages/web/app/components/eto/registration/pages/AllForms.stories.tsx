@@ -9,11 +9,11 @@ import { Panel } from "../../../shared/Panel";
 import { EtoRegistrationCompanyInformationComponent } from "./CompanyInformation";
 import { EtoEquityTokenInfoComponent } from "./EtoEquityTokenInfo";
 import { EtoRegistrationMediaComponent } from "./EtoMedia";
+import { EtoRegistrationPitchComponent } from "./EtoPitch/EtoRegistrationPitch";
 import { EtoVotingRightsComponent } from "./EtoVotingRights/EtoVotingRights";
 import { EtoRegistrationKeyIndividualsComponent } from "./KeyIndividuals";
 import { EtoRegistrationLegalInformationComponent } from "./LegalInformation/LegalInformation";
 import { EtoRegistrationRiskAssessmentComponent } from "./RiskAssessment";
-import { EtoRegistrationPitchComponent } from "./EtoPitch/EtoRegistrationPitch";
 
 const eto = {};
 const company = {};

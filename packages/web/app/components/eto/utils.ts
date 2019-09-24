@@ -53,27 +53,17 @@ const findNonEmptyKeyValueField = (data: ICompoundField | undefined) =>
   data
     ? Object.keys(data).reduce((acc: boolean, key: string) => {
         if (data[key] !== undefined) {
-          return true
+          return true;
         } else {
-          return acc
+          return acc;
         }
       }, false)
     : false;
-
 
 //removes data left from empty key-value fields, e.g. {key:undefined,value:undefined}
 export const removeEmptyKeyValueFields = () => (data: ICompoundField[] | undefined) => {
   if (data !== undefined && data !== null) {
     const cleanData = data.filter(field => findNonEmptyKeyValueField(field));
-    return cleanData.length ? cleanData : undefined;
-  } else {
-    return undefined;
-  }
-};
-
-export const setEmptyKeyValueFieldsUndefined = () => (data: ICompoundField[] | undefined) => {
-  if (data !== undefined && data !== null) {
-    const cleanData = data.map(field => (findNonEmptyKeyValueField(field) ? field : undefined));
     return cleanData.length ? cleanData : undefined;
   } else {
     return undefined;
@@ -89,7 +79,7 @@ type TConvertPercentageToFractionOptions = { passThroughInvalidData: true };
 export const convertPercentageToFraction = (options?: TConvertPercentageToFractionOptions) => (
   data: number | undefined,
 ) => {
-  const parseFn = (data: number) => parseFloat((data / 100).toPrecision(4));
+  const parseFn = (number: number) => parseFloat((number / 100).toPrecision(4));
 
   if (options && options.passThroughInvalidData) {
     return typeof data === "number" && Number.isFinite(data) ? parseFn(data) : data;

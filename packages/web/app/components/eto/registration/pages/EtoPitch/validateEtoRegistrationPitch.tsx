@@ -2,7 +2,10 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import * as Yup from "yup";
 
-import { EtoPitchType, TPartialCompanyEtoData } from "../../../../../lib/api/eto/EtoApi.interfaces.unsafe";
+import {
+  EtoPitchType,
+  TPartialCompanyEtoData,
+} from "../../../../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { percentage } from "../../../../../lib/api/util/customSchemas.unsafe";
 import {
   convertAndValidatePipeline,
@@ -15,11 +18,10 @@ import {
   convertPercentageToFraction,
   parseStringToFloat,
   removeEmptyKeyValueFields,
-  setEmptyKeyValueFieldsUndefined,
 } from "../../../utils";
-import { fromFormState } from "./connectEtoRegistrationPitch";
+import { fromFormState } from "./etoRegistrationPitchFormStateConverters";
 
-const HUNDRED_PERCENT = 1; //backend stores it as a fraction 0..1
+const HUNDRED_PERCENT = 1; //backend stores percentage as a fraction 0..1
 const MIN_KEY_VALUE_ARRAY_LENGTH = 1;
 
 type TEtoCapitalList = {
@@ -53,7 +55,10 @@ const validator = Yup.object().shape({
   useOfCapital: Yup.string().required(),
   useOfCapitalList: Yup.array()
     .of(EtoCapitalListValidator)
-    .min(MIN_KEY_VALUE_ARRAY_LENGTH, <FormattedMessage id="form.field.error.array.at-least-one-entry-required" />)
+    .min(
+      MIN_KEY_VALUE_ARRAY_LENGTH,
+      <FormattedMessage id="form.field.error.array.at-least-one-entry-required" />,
+    )
     .required(<FormattedMessage id="form.field.error.array.at-least-one-entry-required" />),
   customerGroup: Yup.string(),
   sellingProposition: Yup.string(),
@@ -73,18 +78,14 @@ const percentConversionSpec = [
 
 const amountOfCapitalListValidator = Yup.number()
   .required(<FormattedMessage id="form.field.error.allocation-of-100-percents-of-funds" />)
-  .min(HUNDRED_PERCENT, <FormattedMessage id="form.field.error.allocation-of-100-percents-of-funds" />)
+  .min(
+    HUNDRED_PERCENT,
+    <FormattedMessage id="form.field.error.allocation-of-100-percents-of-funds" />,
+  )
   .max(HUNDRED_PERCENT, <FormattedMessage id="form.field.error.cannot-be-more-than-100-percent" />);
 
 const validatorConversionSpec = {
   useOfCapitalList: replaceValidatorWith(amountOfCapitalListValidator),
-};
-
-const conversionSpec0 = {
-  useOfCapitalList: [
-    setEmptyKeyValueFieldsUndefined(),
-    convertInArray({ percent: percentConversionSpec }),
-  ],
 };
 
 const conversionSpec1 = {
@@ -107,11 +108,10 @@ const conversion2 = (data: TPartialCompanyEtoData) => {
 };
 
 export const etoPitchValidationFn = convertAndValidatePipeline([
-  { validator, conversionFn: convert(conversionSpec0) },
   { validator, conversionFn: convert(conversionSpec1) },
   {
     validator: transformValidator(validatorConversionSpec)(validator),
     conversionFn: conversion2,
   },
-  {validator: EtoPitchType.toYup(),conversionFn:convert(fromFormState) }
+  { validator: EtoPitchType.toYup(), conversionFn: convert(fromFormState) },
 ]);
