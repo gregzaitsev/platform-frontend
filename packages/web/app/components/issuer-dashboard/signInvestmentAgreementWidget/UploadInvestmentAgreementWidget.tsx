@@ -1,4 +1,3 @@
-import * as cn from "classnames";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { branch, renderComponent, renderNothing } from "recompose";
@@ -17,18 +16,16 @@ import { appConnect } from "../../../store";
 import { appRoutes } from "../../appRoutes";
 import { EColumnSpan } from "../../layouts/Container";
 import { ButtonArrowRight, ButtonGroup, ButtonLink } from "../../shared/buttons";
-import { DashboardLinkWidget } from "../../shared/dashboard-link-widget/DashboardLinkWidget";
+import {
+  DashboardCenteredWidget,
+  DashboardLinkWidget,
+} from "../../shared/dashboard-widget/DashboardWidget";
 import { createErrorBoundary } from "../../shared/errorBoundary/ErrorBoundary.unsafe";
 import { ErrorBoundaryPanel } from "../../shared/errorBoundary/ErrorBoundaryPanel";
-import { EHeadingSize, Heading } from "../../shared/Heading";
-import { Panel } from "../../shared/Panel";
 import { SignInvestmentAgreement } from "./SignInvestmentAgreement";
-
-import * as styles from "../../eto/EtoContentWidget.module.scss";
 
 interface IDispatchProps {
   downloadAgreementTemplate: (agreementTemplate: IEtoDocument) => void;
-  goToWallet: () => void;
 }
 
 interface IStateProps {
@@ -46,14 +43,10 @@ interface IExternalProps {
   columnSpan?: EColumnSpan;
 }
 
-interface IEtoCompletedWidgetProps {
-  goToWallet: () => void;
-}
-
 export const UploadInvestmentAgreementLayout: React.FunctionComponent<
   IUploadComponentStateProps & IDispatchProps & IExternalProps
 > = ({ downloadAgreementTemplate, agreementTemplate, columnSpan }) => (
-  <DashboardLinkWidget
+  <DashboardCenteredWidget
     title={<FormattedMessage id="download-agreement-widget.signing-title" />}
     text={<FormattedMessage id="download-agreement-widget.signing-text" />}
     columnSpan={columnSpan}
@@ -66,25 +59,17 @@ export const UploadInvestmentAgreementLayout: React.FunctionComponent<
         <FormattedMessage id="download-agreement-widget.download-and-sign" />
       </ButtonLink>
     </ButtonGroup>
-  </DashboardLinkWidget>
+  </DashboardCenteredWidget>
 );
 
-export const EtoCompletedWidgetLayout: React.ComponentType<
-  IEtoCompletedWidgetProps & IExternalProps
-> = ({ goToWallet, columnSpan }) => (
-  <Panel columnSpan={columnSpan}>
-    <Heading size={EHeadingSize.SMALL} level={4}>
-      <FormattedMessage id="download-agreement-widget.success-title" />
-    </Heading>
-    <div className={styles.content}>
-      <p className={cn(styles.text, "pt-2")}>
-        <FormattedMessage id="download-agreement-widget.success-text" />
-      </p>
-      <ButtonArrowRight data-test-id="eto-dashboard-success-go-to-wallet" onClick={goToWallet}>
-        <FormattedMessage id="download-agreement-widget.go-to-wallet" />
-      </ButtonArrowRight>
-    </div>
-  </Panel>
+export const EtoCompletedWidgetLayout: React.ComponentType<IExternalProps> = ({ columnSpan }) => (
+  <DashboardLinkWidget
+    title={<FormattedMessage id="download-agreement-widget.success-title" />}
+    text={<FormattedMessage id="download-agreement-widget.success-text" />}
+    columnSpan={columnSpan}
+    to={appRoutes.wallet}
+    buttonText={<FormattedMessage id="download-agreement-widget.go-to-wallet" />}
+  />
 );
 
 export const UploadInvestmentAgreement = compose<React.FunctionComponent<IExternalProps>>(
@@ -106,7 +91,6 @@ export const UploadInvestmentAgreement = compose<React.FunctionComponent<IExtern
     dispatchToProps: dispatch => ({
       downloadAgreementTemplate: (agreementTemplate: IEtoDocument) =>
         dispatch(actions.etoDocuments.generateTemplate(agreementTemplate)),
-      goToWallet: () => dispatch(actions.routing.goToWallet()),
     }),
   }),
   branch<IStateProps | null>(props => props === null, renderNothing),
