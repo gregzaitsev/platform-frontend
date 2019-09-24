@@ -22,6 +22,7 @@ export enum EEtoStep {
   LINK_NOMINEE = "link_nominee",
   ETO_SUSPENDED_FROM_ON_CHAIN = "eto_suspended",
   FILL_INFORMATION_ABOUT_ETO = "fill_information_about_eto",
+  SIGN_YOUR_ISHA = "sign_your_isha_agreement",
 }
 
 // TODO: This can be moved fully to redux selector
@@ -127,6 +128,10 @@ export const selectEtoStep = (
       }
 
       return EEtoStep.WAIT_FOR_NOMINEE_AGREEMENTS;
+    }
+
+    if (etoOnChainState === EETOStateOnChain.Signing) {
+      return EEtoStep.SIGN_YOUR_ISHA;
     }
 
     return EEtoStep.FUNDRAISING_IS_LIVE;

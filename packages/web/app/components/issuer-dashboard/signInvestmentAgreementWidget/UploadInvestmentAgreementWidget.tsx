@@ -14,8 +14,10 @@ import {
 import { selectEtoOnChainState } from "../../../modules/eto/selectors";
 import { EETOStateOnChain } from "../../../modules/eto/types";
 import { appConnect } from "../../../store";
+import { appRoutes } from "../../appRoutes";
 import { EColumnSpan } from "../../layouts/Container";
-import { ButtonArrowRight } from "../../shared/buttons/Button";
+import { ButtonArrowRight, ButtonGroup, ButtonLink } from "../../shared/buttons";
+import { DashboardLinkWidget } from "../../shared/dashboard-link-widget/DashboardLinkWidget";
 import { createErrorBoundary } from "../../shared/errorBoundary/ErrorBoundary.unsafe";
 import { ErrorBoundaryPanel } from "../../shared/errorBoundary/ErrorBoundaryPanel";
 import { EHeadingSize, Heading } from "../../shared/Heading";
@@ -51,22 +53,20 @@ interface IEtoCompletedWidgetProps {
 export const UploadInvestmentAgreementLayout: React.FunctionComponent<
   IUploadComponentStateProps & IDispatchProps & IExternalProps
 > = ({ downloadAgreementTemplate, agreementTemplate, columnSpan }) => (
-  <Panel columnSpan={columnSpan}>
-    <Heading size={EHeadingSize.SMALL} level={4}>
-      <FormattedMessage id="download-agreement-widget.signing-title" />
-    </Heading>
-    <div className={styles.content}>
-      <p className={cn(styles.text, "pt-2")}>
-        <FormattedMessage id="download-agreement-widget.signing-text" />
-      </p>
-      <ButtonArrowRight
-        data-test-id="eto-dashboard-submit-proposal"
-        onClick={() => downloadAgreementTemplate(agreementTemplate)}
-      >
-        <FormattedMessage id="download-agreement-widget.download-and-sign" />
+  <DashboardLinkWidget
+    title={<FormattedMessage id="download-agreement-widget.signing-title" />}
+    text={<FormattedMessage id="download-agreement-widget.signing-text" />}
+    columnSpan={columnSpan}
+  >
+    <ButtonGroup>
+      <ButtonArrowRight onClick={() => downloadAgreementTemplate(agreementTemplate)}>
+        <FormattedMessage id="download-agreement-widget.download-investment-summary" />
       </ButtonArrowRight>
-    </div>
-  </Panel>
+      <ButtonLink to={appRoutes.documents} component={ButtonArrowRight}>
+        <FormattedMessage id="download-agreement-widget.download-and-sign" />
+      </ButtonLink>
+    </ButtonGroup>
+  </DashboardLinkWidget>
 );
 
 export const EtoCompletedWidgetLayout: React.ComponentType<
