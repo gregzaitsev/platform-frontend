@@ -1,5 +1,4 @@
 import BigNumber from "bignumber.js";
-import * as cn from "classnames";
 import * as React from "react";
 import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 import { branch, renderComponent } from "recompose";
@@ -22,6 +21,7 @@ import { onEnterAction } from "../../../utils/OnEnterAction";
 import { onLeaveAction } from "../../../utils/OnLeaveAction";
 import { EColumnSpan } from "../../layouts/Container";
 import { ButtonArrowRight } from "../../shared/buttons/index";
+import { DashboardWidget } from "../../shared/dashboard-widget/DashboardWidget";
 import { Document } from "../../shared/Document";
 import { DocumentTemplateButton } from "../../shared/DocumentLink";
 import { createErrorBoundary } from "../../shared/errorBoundary/ErrorBoundary.unsafe";
@@ -31,7 +31,7 @@ import { ECurrency, ENumberInputFormat, ENumberOutputFormat } from "../../shared
 import { LoadingIndicator } from "../../shared/loading-indicator/index";
 import { Panel } from "../../shared/Panel";
 
-import * as styles from "../../eto/EtoContentWidget.module.scss";
+import * as styles from "./BookBuildingWidget.module.scss";
 
 interface IDispatchProps {
   startBookBuilding: (etoId: string) => void;
@@ -81,18 +81,16 @@ const BookBuildingStats = ({ bookBuildingStats, maxPledges, downloadCSV }: IBook
       <span className={styles.label}>
         <FormattedMessage id="shared-component.eto-overview.amount-backed" />
       </span>
-      <span className={styles.value}>
-        <Money
-          value={bookBuildingStats.pledgedAmount}
-          inputFormat={ENumberInputFormat.FLOAT}
-          valueType={ECurrency.EUR}
-          outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
-        />
-      </span>
+      <Money
+        value={bookBuildingStats.pledgedAmount}
+        inputFormat={ENumberInputFormat.FLOAT}
+        valueType={ECurrency.EUR}
+        outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
+      />
       <span className={styles.label}>
         <FormattedMessage id="shared-component.eto-overview.investors-backed" />
       </span>
-      <span className={styles.value} data-test-id="eto-bookbuilding-investors-backed">
+      <span data-test-id="eto-bookbuilding-investors-backed">
         {maxPledges !== null ? (
           <FormattedMessage
             id="settings.book-building-stats-widget.number-of-pledges"
@@ -120,30 +118,27 @@ const BookBuildingWidgetLayout: React.FunctionComponent<ILayoutProps> = ({
   canEnableBookbuilding,
   columnSpan,
 }) => (
-  <WidgetPanel columnSpan={columnSpan} headerText={headerText}>
-    <div className={styles.content}>
-      <p className={cn(styles.text)}>
-        {canEnableBookbuilding ? (
-          text
-        ) : (
-          <FormattedMessage id="eto-bookbuilding-widget.button-disabled" />
-        )}
-      </p>
-      {children}
+  <DashboardWidget
+    title={headerText}
+    text={
+      canEnableBookbuilding ? (
+        text
+      ) : (
+        <FormattedMessage id="eto-bookbuilding-widget.button-disabled" />
+      )
+    }
+    columnSpan={columnSpan}
+  >
+    {children}
 
-      {canEnableBookbuilding && (
-        <div className={styles.widgetButton}>
-          <ButtonArrowRight
-            onClick={onClick}
-            data-test-id="eto-flow-start-bookbuilding"
-            innerClassName={styles.buttonOverride}
-          >
-            {buttonText}
-          </ButtonArrowRight>
-        </div>
-      )}
-    </div>
-  </WidgetPanel>
+    {canEnableBookbuilding && (
+      <div className="m-auto">
+        <ButtonArrowRight onClick={onClick} data-test-id="eto-flow-start-bookbuilding">
+          {buttonText}
+        </ButtonArrowRight>
+      </div>
+    )}
+  </DashboardWidget>
 );
 
 export const BookBuildingWidgetComponent: React.FunctionComponent<IProps> = ({

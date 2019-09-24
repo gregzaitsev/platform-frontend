@@ -33,7 +33,7 @@ export const findMax = (schema: any) => findSchemaConstraint("max", schema);
  */
 export const makeAllRequired = (schema: ObjectSchema<any>): ObjectSchema<any> => {
   const oldFields: { [key: string]: MixedSchema } = (schema as any).fields;
-  const newFields = mapValues(schema => schema.required(), oldFields);
+  const newFields = mapValues(s => s.required(), oldFields);
   return object(newFields);
 };
 
