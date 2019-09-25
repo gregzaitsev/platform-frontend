@@ -22,10 +22,10 @@ import {
   selectIssuerEtoDocuments,
   selectIssuerEtoId,
   selectIssuerEtoOfferingDocumentType,
+  selectIssuerEtoOnChainState,
   selectIssuerEtoState,
   userHasKycAndEmailVerified,
 } from "../../../modules/eto-flow/selectors";
-import { selectEtoOnChainStateById } from "../../../modules/eto/selectors";
 import { EETOStateOnChain } from "../../../modules/eto/types";
 import { selectPendingDownloads } from "../../../modules/immutable-file/selectors";
 import { selectAreTherePendingTxs } from "../../../modules/tx/monitor/selectors";
@@ -100,9 +100,9 @@ const Documents = compose<TComponentProps, {}>(
     renderComponent(LoadingIndicator),
   ),
   appConnect<TStateProps, TDispatchProps, { etoId: string }>({
-    stateToProps: (state, ownProps) => ({
+    stateToProps: state => ({
       etoState: selectIssuerEtoState(state)!,
-      onChainState: selectEtoOnChainStateById(state, ownProps.etoId)!,
+      onChainState: selectIssuerEtoOnChainState(state)!,
       etoTemplates: selectFilteredIssuerEtoTemplatesArray(state),
       etoDocuments: selectIssuerEtoDocuments(state)!,
       documentsDownloading: selectEtoDocumentsDownloading(state.etoDocuments),

@@ -270,6 +270,16 @@ export const selectPreEtoStartDateFromContract = (state: IAppState) => {
   return undefined;
 };
 
+export const selectIssuerEtoOnChainState = (state: IAppState) => {
+  const eto = selectIssuerEtoWithCompanyAndContract(state);
+
+  if (eto && isOnChain(eto)) {
+    return eto.contract.timedState;
+  }
+
+  return undefined;
+};
+
 export const selectPreEtoStartDate = (state: IAppState) =>
   selectNewPreEtoStartDate(state) || selectPreEtoStartDateFromContract(state);
 
