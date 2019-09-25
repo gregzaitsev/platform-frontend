@@ -189,7 +189,7 @@ export function* etoSignInvestmentAgreementSaga(
   } catch (e) {
     logger.info("Signing investment agreement was cancelled", e);
   } finally {
-    yield put(actions.etoFlow.loadIssuerStep());
+    yield put(actions.etoFlow.loadSignedInvestmentAgreement(action.payload.etoId));
   }
 }
 
