@@ -1,5 +1,6 @@
 import { expect } from "chai";
 
+import { TShareholder } from "./public-view/LegalInformationWidget";
 import {
   applyDefaults,
   convert,
@@ -8,6 +9,7 @@ import {
   convertNumberToString,
   convertPercentageToFraction,
   convertToPrecision,
+  generateShareholders,
   parseStringToFloat,
   removeEmptyField,
   removeEmptyKeyValueField,
@@ -247,5 +249,137 @@ describe("convertInArray", () => {
     };
 
     expect(convert(data, conversionSpec)).to.be.deep.equal(expectedOutput);
+  });
+});
+
+describe("generate shareholders", () => {
+  it("returns an empty array if input is undefined", () => {
+    const companyShares = 500;
+    const expectedOutput: TShareholder[] = [];
+    expect(generateShareholders(undefined, companyShares)).to.deep.eq(expectedOutput);
+  });
+  it("converts shareholder shares to percentage from company shares and sorts array", () => {
+    const companyShares = 500;
+    const data = [
+      {
+        fullName: "shareholder1",
+        shareCapital: 50,
+      },
+      {
+        fullName: "shareholder2",
+        shareCapital: 250,
+      },
+      {
+        fullName: "shareholder3",
+        shareCapital: 200,
+      },
+    ];
+    const expectedOutput: TShareholder[] = [
+      {
+        fullName: "shareholder2",
+        percentageOfShares: 50,
+      },
+      {
+        fullName: "shareholder3",
+        percentageOfShares: 40,
+      },
+      {
+        fullName: "shareholder1",
+        percentageOfShares: 10,
+      },
+    ];
+    expect(generateShareholders(data, companyShares)).to.deep.eq(expectedOutput);
+  });
+  it("converts shareholder shares to percentage from company shares and adds an 'other' entry if shares don't sum up to 100%", () => {
+    const companyShares = 500;
+    const data = [
+      {
+        fullName: "shareholder2",
+        shareCapital: 200,
+      },
+      {
+        fullName: "shareholder1",
+        shareCapital: 123,
+      },
+    ];
+    const expectedOutput: TShareholder[] = [
+      {
+        fullName: "shareholder2",
+        percentageOfShares: 40,
+      },
+      {
+        fullName: "Others",
+        percentageOfShares: 35.4,
+      },
+      {
+        fullName: "shareholder1",
+        percentageOfShares: 24.6,
+      },
+    ];
+    expect(generateShareholders(data, companyShares)).to.deep.eq(expectedOutput);
+  });
+  it("rounds the percentages and assigns the rest of the 100% shares to an 'other' entry ", () => {
+    const companyShares = 100;
+    const data = [
+      {
+        fullName: "shareholder2",
+        shareCapital: 80.45,
+      },
+      {
+        fullName: "shareholder1",
+        shareCapital: 19.45,
+      },
+    ];
+    const expectedOutput: TShareholder[] = [
+      {
+        fullName: "shareholder2",
+        percentageOfShares: 80.45,
+      },
+      {
+        fullName: "shareholder1",
+        percentageOfShares: 19.45,
+      },
+      {
+        fullName: "Others",
+        percentageOfShares: 0.1,
+      },
+    ];
+    expect(generateShareholders(data, companyShares)).to.deep.eq(expectedOutput);
+  });
+  it("removes the last entry if the percentage is less than 0 due to rounding errors", () => {
+    const companyShares = 100;
+    const data = [
+      {
+        fullName: "shareholder1",
+        shareCapital: 19.554,
+      },
+      {
+        fullName: "shareholder2",
+        shareCapital: 79.5544,
+      },
+      {
+        fullName: "shareholder3",
+        shareCapital: 0.92,
+      },
+      {
+        fullName: "others",
+        shareCapital: 0.021,
+      },
+    ];
+    const expectedOutput: TShareholder[] = [
+      {
+        fullName: "shareholder2",
+        percentageOfShares: 79.55,
+      },
+      {
+        fullName: "shareholder1",
+        percentageOfShares: 19.55,
+      },
+      {
+        fullName: "shareholder3",
+        percentageOfShares: 0.9,
+      },
+    ];
+    expect(generateShareholders(data, companyShares)).to.deep.eq(expectedOutput);
   });
 });

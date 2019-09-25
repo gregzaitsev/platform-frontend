@@ -47,11 +47,16 @@ export interface IKycIndividualData extends IKycPerson {
   isHighIncome?: boolean;
 }
 
+const KycIndividualDataShape =
+  process.env.NF_DISABLE_HIGH_INCOME === "1"
+    ? { isUsCitizen }
+    : {
+        isUsCitizen,
+        isHighIncome: Yup.bool(),
+      };
+
 export const KycIndividualDataSchema = KycPersonSchema.concat(
-  Yup.object().shape({
-    isUsCitizen,
-    isHighIncome: Yup.bool(),
-  }),
+  Yup.object().shape(KycIndividualDataShape),
 );
 
 export const KycIndividualDataSchemaRequired = makeAllRequired(KycIndividualDataSchema);
