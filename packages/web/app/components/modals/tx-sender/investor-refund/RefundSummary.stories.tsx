@@ -24,6 +24,7 @@ const additionalData: TAdditionalDataByType<typeof ETxSenderType.INVESTOR_REFUND
   tokenSymbol: "FT",
   amountEth: Q18.mul(150).toString(),
   amountEurUlps: "0",
+  companyName: "Storybook Ltd.",
 };
 
 const additionalDataNEur: TAdditionalDataByType<typeof ETxSenderType.INVESTOR_REFUND> = {
@@ -32,19 +33,31 @@ const additionalDataNEur: TAdditionalDataByType<typeof ETxSenderType.INVESTOR_RE
   amountEurUlps: Q18.mul(150).toString(),
 };
 
+const bothAdditionalData: TAdditionalDataByType<typeof ETxSenderType.INVESTOR_REFUND> = {
+  ...additionalData,
+  amountEurUlps: Q18.mul(150).toString(),
+};
+
 storiesOf("Refund/Summary", module)
   .addDecorator(withModalBody())
-  .add("default", () => (
+  .add("only ETH", () => (
     <RefundSummaryLayout
       txData={txData}
       onAccept={() => action("CONFIRM")}
       additionalData={additionalData}
     />
   ))
-  .add("with nEur", () => (
+  .add("only nEur", () => (
     <RefundSummaryLayout
       txData={txData}
       onAccept={() => action("CONFIRM")}
       additionalData={additionalDataNEur}
+    />
+  ))
+  .add("both nEUR and ETH", () => (
+    <RefundSummaryLayout
+      txData={txData}
+      onAccept={() => action("CONFIRM")}
+      additionalData={bothAdditionalData}
     />
   ));

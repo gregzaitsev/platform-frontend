@@ -322,8 +322,10 @@ export const parseAmount = (amount: string) => new BigNumber(amount.replace(/\s|
 /**
  * Get eth wallet balance
  */
-export const getWalletEthAmount = () => {
-  goToWallet();
+export const getWalletEthAmount = (navigate: boolean = true) => {
+  if (navigate) {
+    goToWallet();
+  }
 
   return cy
     .get(tid("wallet-balance.ether.balance-values.large-value"))

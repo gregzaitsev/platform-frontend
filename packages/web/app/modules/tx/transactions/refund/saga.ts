@@ -70,6 +70,7 @@ export function* startRefundGenerator(_: TGlobalDependencies, etoId: string): It
       tokenSymbol: etoData.equityTokenSymbol,
       amountEth: investorTicket.amountEth.toString(),
       amountEurUlps: investorTicket.amountEurUlps.toString(),
+      companyName: etoData.company.brandName,
     }),
   );
 }
