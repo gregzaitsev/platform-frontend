@@ -129,7 +129,7 @@ function* txSendProcess(
     yield neuRepeatIf("TX_SENDER_CHANGE", "TX_SENDER_ACCEPT", transactionFlowGenerator, extraParam);
     const txData = yield select(selectTxDetails);
     // Check if gas amount is correct
-    yield validateGas(txData);
+    yield neuCall(validateGas, txData);
 
     // accept transaction on wallet
     yield call(connectWallet);
@@ -198,7 +198,7 @@ function* sendTxSubSaga({ web3Manager }: TGlobalDependencies): any {
   }
 
   try {
-    yield validateGas(txData);
+    yield neuCall(validateGas, txData);
 
     const txHash: string = yield web3Manager.sendTransaction(txData);
 

@@ -6,6 +6,7 @@ import { TGlobalDependencies } from "../../../di/setupBindings";
 import { ITxData } from "../../../lib/web3/types";
 import { NotEnoughEtherForGasError } from "../../../lib/web3/Web3Adapter";
 import {
+  addBigNumbers,
   compareBigNumbers,
   multiplyBigNumbers,
   subtractBigNumbers,
@@ -21,7 +22,7 @@ import { txValidateWithdraw } from "./withdraw/sagas";
 export function* txValidateDefault(txDraft: IInvestmentDraftType): Iterator<any> {
   try {
     const generatedTxDetails = yield neuCall(generateInvestmentTransaction, txDraft);
-    yield validateGas(generatedTxDetails);
+    yield neuCall(validateGas, generatedTxDetails);
 
     yield put(actions.txValidator.setValidationState(EValidationState.VALIDATION_OK));
     return generatedTxDetails;
@@ -63,14 +64,22 @@ export function* txValidateSaga(
   }
 }
 
-export function* validateGas(txDetails: ITxData): any {
+export function* validateGas({ apiUserService }: TGlobalDependencies, txDetails: ITxData): any {
   const maxEtherUlps = yield select(selectEtherBalance);
 
   const costUlps = multiplyBigNumbers([txDetails.gasPrice, txDetails.gas]);
   const valueUlps = subtractBigNumbers([maxEtherUlps, costUlps]);
 
   if (compareBigNumbers(txDetails.value, valueUlps) > 0) {
-    throw new NotEnoughEtherForGasError("Not enough Ether to pay the Gas for this transaction");
+    const {
+      gasStipend,
+    } = yield apiUserService.getGasStipend(/* txDetails <----- UNCOMMENT WHEN READY*/);
+    
+    const etherWithStipend = addBigNumbers([gasStipend, maxEtherUlps]);
+    const valueUlpsWithStipend = subtractBigNumbers([etherWithStipend, costUlps]);
+    if (compareBigNumbers(txDetails.value, valueUlpsWithStipend) > 0) {
+      throw new NotEnoughEtherForGasError("Not enough Ether to pay the Gas for this transaction");
+    }
   }
 }
 
