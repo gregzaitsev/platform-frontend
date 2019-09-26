@@ -25,7 +25,7 @@ export const applyDefaults = (data: any, defaults: any) => {
 };
 
 /**** DATA CONVERSION FUNCTIONS ****/
-export const convert = (conversionSpec: any) => (data: any) => {
+export const convert = (conversionSpec: { [key: string]: unknown }) => (data: any) => {
   if (data) {
     const dataCopy = cloneDeep(data);
     Object.keys(conversionSpec).forEach(key => {
