@@ -94,10 +94,13 @@ export const nomineeRequestsToArray = (requests: TNomineeRequestStorage): INomin
     .sort(compareByDate);
 };
 
-export const nomineeIsEligibleToSignAgreement = (nomineeEto: TEtoWithCompanyAndContract) =>
+export const nomineeIsEligibleToSignTHAOrRAA = (nomineeEto: TEtoWithCompanyAndContract) =>
   isOnChain(nomineeEto) &&
   nomineeEto.contract.timedState === EETOStateOnChain.Setup &&
   nomineeEto.contract.startOfStates[EETOStateOnChain.Whitelist] === undefined;
+
+export const nomineeIsEligibleToSignISHA = (nomineeEto: TEtoWithCompanyAndContract) =>
+  isOnChain(nomineeEto) && nomineeEto.contract.timedState === EETOStateOnChain.Signing;
 
 // TODO: Move to redux selector
 export const getNomineeTaskStep = (
@@ -105,6 +108,7 @@ export const getNomineeTaskStep = (
   nomineeEto: TEtoWithCompanyAndContract | undefined,
   isBankAccountVerified: boolean,
   documentsStatus: TOfferingAgreementsStatus | undefined,
+  isISHASignedByNominee: boolean | undefined,
 ): ENomineeTask | undefined => {
   if (!verificationIsComplete) {
     return ENomineeTask.ACCOUNT_SETUP;
@@ -116,18 +120,29 @@ export const getNomineeTaskStep = (
     return undefined;
   } else if (
     documentsStatus[EAgreementType.THA] !== EEtoAgreementStatus.DONE &&
-    nomineeIsEligibleToSignAgreement(nomineeEto)
+    nomineeIsEligibleToSignTHAOrRAA(nomineeEto)
   ) {
     return ENomineeTask.ACCEPT_THA;
   } else if (
     documentsStatus[EAgreementType.THA] === EEtoAgreementStatus.DONE &&
     documentsStatus[EAgreementType.RAAA] !== EEtoAgreementStatus.DONE &&
-    nomineeIsEligibleToSignAgreement(nomineeEto)
+    nomineeIsEligibleToSignTHAOrRAA(nomineeEto)
   ) {
     return ENomineeTask.ACCEPT_RAAA;
-  } else {
-    return ENomineeTask.NONE;
+  } else if (
+    documentsStatus[EAgreementType.ISHA] !== EEtoAgreementStatus.DONE &&
+    nomineeIsEligibleToSignISHA(nomineeEto)
+  ) {
+    if (isISHASignedByNominee === undefined) {
+      return undefined;
+    }
+
+    if (isISHASignedByNominee) {
+      return ENomineeTask.ACCEPT_ISHA;
+    }
   }
+
+  return ENomineeTask.NONE;
 };
 
 export const getActiveEtoPreviewCodeFromQueryString = (query: string) => {

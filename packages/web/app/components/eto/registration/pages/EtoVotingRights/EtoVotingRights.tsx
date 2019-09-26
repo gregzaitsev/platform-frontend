@@ -282,7 +282,7 @@ const EtoVotingRightsComponent: React.FunctionComponent<
             </div>
 
             <div className="form-group">
-              <FormFieldLabel name="hasGeneralInformationRights">
+              <FormFieldLabel name="hasDividendRights">
                 <FormattedMessage id="eto.form.section.token-holders-rights.has-dividend-rights" />
               </FormFieldLabel>
               <FormStaticRadioButton

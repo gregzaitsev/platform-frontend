@@ -144,7 +144,12 @@ const EtoAccordionElements: React.FunctionComponent<{ eto: TEtoWithCompanyAndCon
                       data={{
                         datasets: [
                           {
-                            data: useOfCapitalList.map(d => d && d.percent) as number[],
+                            data: useOfCapitalList.reduce((acc: number[], d) => {
+                              if (d && d.percent) {
+                                acc.push(d.percent * 100);
+                              }
+                              return acc;
+                            }, []),
                             backgroundColor: useOfCapitalList.map(
                               (_, i: number) => CHART_COLORS[i],
                             ),

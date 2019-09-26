@@ -542,6 +542,27 @@ function* loadAgreementStatus(
   }
 }
 
+function* loadISHAStatus(
+  { logger }: TGlobalDependencies,
+  eto: TEtoWithCompanyAndContract,
+): Iterator<any> {
+  try {
+    if (!isOnChain(eto)) {
+      return EEtoAgreementStatus.NOT_DONE;
+    }
+
+    // if eto state is after `Signing` then ISHA agreement was already signed
+    if (eto.contract.timedState > EETOStateOnChain.Signing) {
+      return EEtoAgreementStatus.DONE;
+    }
+
+    return EEtoAgreementStatus.NOT_DONE;
+  } catch (e) {
+    logger.error(`Could not fetch ISHA document status`, e);
+    return EEtoAgreementStatus.ERROR;
+  }
+}
+
 function* loadAgreementsStatus(
   _: TGlobalDependencies,
   { payload }: TActionFromCreator<typeof actions.eto.loadEtoAgreementsStatus>,
@@ -549,9 +570,24 @@ function* loadAgreementsStatus(
   const statuses: Dictionary<EEtoAgreementStatus, EAgreementType> = yield all({
     [EAgreementType.THA]: neuCall(loadAgreementStatus, EAgreementType.THA, payload.eto),
     [EAgreementType.RAAA]: neuCall(loadAgreementStatus, EAgreementType.RAAA, payload.eto),
+    [EAgreementType.ISHA]: neuCall(loadISHAStatus, payload.eto),
   });
 
   yield put(actions.eto.setAgreementsStatus(payload.eto.previewCode, statuses));
+}
+
+export function* loadInvestmentAgreement(
+  { contractsService }: TGlobalDependencies,
+  action: TActionFromCreator<typeof actions.eto.loadSignedInvestmentAgreement>,
+): Iterator<any> {
+  const contract: ETOCommitment = yield contractsService.getETOCommitmentContract(
+    action.payload.eto.etoId,
+  );
+  const url: string = yield contract.signedInvestmentAgreementUrl;
+
+  const parsedUrl = url === "" ? undefined : url;
+
+  yield put(actions.eto.setInvestmentAgreementHash(action.payload.eto.previewCode, parsedUrl));
 }
 
 export function* etoSagas(): Iterator<any> {
@@ -563,6 +599,8 @@ export function* etoSagas(): Iterator<any> {
 
   yield fork(neuTakeEvery, actions.eto.downloadEtoDocument, downloadDocument);
   yield fork(neuTakeEvery, actions.eto.downloadEtoTemplateByType, downloadTemplateByType);
+
+  yield fork(neuTakeLatest, actions.eto.loadSignedInvestmentAgreement, loadInvestmentAgreement);
 
   yield fork(neuTakeLatest, actions.eto.verifyEtoAccess, verifyEtoAccess);
   yield fork(neuTakeLatest, actions.eto.ensureEtoJurisdiction, ensureEtoJurisdiction);

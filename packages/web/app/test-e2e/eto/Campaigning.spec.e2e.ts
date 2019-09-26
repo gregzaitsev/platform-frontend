@@ -60,7 +60,7 @@ describe("Eto campaigning state", () => {
           kyc: "business",
         }).then(() => {
           cy.visit(etoPublicViewByIdLinkLegacy(ETO_ID));
-
+          cy.wait(5000); //let the store get the ETO data, otherwise this place is flaky
           cy.get(tid("eto-bookbuilding-remaining-slots"))
             .then($element => Number($element.text()))
             .as("remainingSlots");

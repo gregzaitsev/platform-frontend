@@ -4,7 +4,6 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
 import { EEtoState } from "../../../../lib/api/eto/EtoApi.interfaces.unsafe";
-import { getCurrentInvestmentProgressPercentage } from "../../../../lib/api/eto/EtoUtils";
 import {
   EETOStateOnChain,
   EEtoSubState,
@@ -18,6 +17,7 @@ import {
   ENumberOutputFormat,
 } from "../../../shared/formatters/utils";
 import { CounterWidget } from "../EtoOverviewStatus/CounterWidget";
+import { getCurrentInvestmentProgressPercentage } from "../utils";
 import { InvestmentStatus } from "./InvestmentStatus/InvestmentStatus";
 import { Whitelist } from "./Whitelist/Whitelist";
 

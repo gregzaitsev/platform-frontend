@@ -173,13 +173,15 @@ const KYCForm = injectIntlHelpers<IProps & IKycIndividualData>(
         name="isUsCitizen"
         data-test-id="kyc-personal-start-is-us-citizen"
       />
-      <FormSelectField
-        values={HIGH_INCOME_VALUES}
-        label={formatIntlMessage("kyc.personal.high-income")}
-        name="isHighIncome"
-        extraMessage={<FormattedMessage id={"kyc.personal.income.disclaimer"} />}
-        data-test-id="kyc-personal-start-has-high-income"
-      />
+      {process.env.NF_DISABLE_HIGH_INCOME !== "1" && (
+        <FormSelectField
+          values={HIGH_INCOME_VALUES}
+          label={formatIntlMessage("kyc.personal.high-income")}
+          name="isHighIncome"
+          extraMessage={<FormattedMessage id={"kyc.personal.income.disclaimer"} />}
+          data-test-id="kyc-personal-start-has-high-income"
+        />
+      )}
       <div className="p-4 text-center">
         <Button
           type="submit"

@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { TTranslatedString } from "../../../../types";
+import { TDataTestId, TTranslatedString } from "../../../../types";
 import { SuccessTick } from "../../../shared/SuccessTick";
 
 import * as styles from "./Message.module.scss";
@@ -11,8 +11,13 @@ interface IExternalProps {
   summary?: TTranslatedString;
 }
 
-const Message: React.FunctionComponent<IExternalProps> = ({ showTick = true, title, summary }) => (
-  <section className={styles.widget}>
+const Message: React.FunctionComponent<IExternalProps & TDataTestId> = ({
+  showTick = true,
+  title,
+  summary,
+  "data-test-id": dataTestId,
+}) => (
+  <section className={styles.widget} data-test-id={dataTestId}>
     {showTick && <SuccessTick />}
     <header className={styles.message}>
       {title && <h5>{title}</h5>}

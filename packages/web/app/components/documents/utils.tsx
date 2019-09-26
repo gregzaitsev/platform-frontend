@@ -181,8 +181,8 @@ export const hashFromIpfsLink = (ipfsLink: string): string => {
 };
 
 export const investmentAgreementNotSigned = (
-  signedInvestmentAgreementUrl: null | string,
+  signedInvestmentAgreementUrl: undefined | string,
   ipfsHash: string,
 ) =>
-  signedInvestmentAgreementUrl === null ||
+  signedInvestmentAgreementUrl === undefined ||
   signedInvestmentAgreementUrl !== ipfsLinkFromHash(ipfsHash);
