@@ -24,7 +24,7 @@
     "contract-artifacts:update": "node ./scripts/getShasFromHealthCheck.js",
     "deploy-storybook": "storybook-to-ghpages --out=storybook-static",
     "format": "prettier --list-different '**/*.{ts,tsx,js,json,md,gql}'",
-    "format:fix": "prettier --write '**/*.{ts,tsx,js,json,md,gql}'",
+    "format:fix": "prettier --write '**/*.{ts,tsx,js,json,md,gql}' --loglevel warn",
     "intl:extract": "./scripts/extract-intl-messages.sh",
     "intl:extract:check": "./scripts/extract-intl-messages.sh --check",
     "lint": "yarn format && yarn tslint && yarn sasslint && yarn tsc && yarn intl:extract:check",

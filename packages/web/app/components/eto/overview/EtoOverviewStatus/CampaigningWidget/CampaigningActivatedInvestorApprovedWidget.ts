@@ -42,6 +42,7 @@ interface IWithProps {
 type TLocalStateProps = {
   consentToRevealEmail: boolean;
   formState: CampaigningFormState;
+  pledge?: IPledge;
 };
 
 type TLocalStateHandlersProps = {
@@ -64,11 +65,15 @@ const CampaigningActivatedInvestorApprovedWidget = compose<
       },
     }),
   }),
-  withStateHandlers<TLocalStateProps, TLocalStateHandlersProps>(
-    {
+  withStateHandlers<
+    TLocalStateProps,
+    TLocalStateHandlersProps,
+    TLocalStateProps & TLocalStateHandlersProps
+  >(
+    ({ pledge }: TLocalStateProps) => ({
       consentToRevealEmail: false,
-      formState: CampaigningFormState.EDIT,
-    },
+      formState: pledge ? CampaigningFormState.VIEW : CampaigningFormState.EDIT,
+    }),
     {
       changeConsentToRevealEmail: () => (consentToRevealEmail: boolean) => ({
         consentToRevealEmail,
