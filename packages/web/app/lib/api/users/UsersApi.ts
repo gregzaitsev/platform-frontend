@@ -6,6 +6,7 @@ import { ILogger } from "../../dependencies/logger";
 import { IHttpClient } from "../client/IHttpClient";
 import {
   emailStatus,
+  GasStipendValidator,
   IEmailStatus,
   IUser,
   IUserInput,
@@ -183,5 +184,14 @@ export class UsersApi {
       baseUrl: USER_API_ROOT,
       url: `/pending_transactions/me/${txHash}`,
     });
+  }
+
+  public async getGasStipend(): Promise<number> {
+    return (await this.httpClient.post<number>({
+      baseUrl: USER_API_ROOT,
+      url: `/transaction/gas_stipend`,
+      body: {},
+      responseSchema: GasStipendValidator,
+    })).body;
   }
 }

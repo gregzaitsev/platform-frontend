@@ -216,7 +216,7 @@ export class LightWalletConnector {
       engine.addProvider(web3Provider);
       engine.addProvider(
         new RpcSubprovider({
-          rpcUrl: this.web3Config.rpcUrl,
+          rpcUrl: this.web3Config.backendRpcUrl,
         }),
       );
       engine.start();

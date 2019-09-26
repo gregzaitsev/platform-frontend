@@ -42,6 +42,9 @@ export interface IUserInput {
 export interface IVerifyEmailUser {
   verificationCode: string;
 }
+export const GasStipendValidator = Yup.object()
+  .shape({ gasStipend: Yup.number().required() })
+  .required();
 
 export const UserValidator = Yup.object()
   .shape({

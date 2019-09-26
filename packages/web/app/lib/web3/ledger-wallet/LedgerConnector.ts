@@ -49,7 +49,7 @@ export class LedgerWalletConnector {
     try {
       const { ledgerWeb3, ledgerInstance } = await createWeb3WithLedgerProvider(
         networkId,
-        this.web3Config.rpcUrl,
+        this.web3Config.backendRpcUrl,
         this.getTransport,
         derivationPath,
       );

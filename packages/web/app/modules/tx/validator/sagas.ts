@@ -74,7 +74,7 @@ export function* validateGas({ apiUserService }: TGlobalDependencies, txDetails:
     const {
       gasStipend,
     } = yield apiUserService.getGasStipend(/* txDetails <----- UNCOMMENT WHEN READY*/);
-    
+
     const etherWithStipend = addBigNumbers([gasStipend, maxEtherUlps]);
     const valueUlpsWithStipend = subtractBigNumbers([etherWithStipend, costUlps]);
     if (compareBigNumbers(txDetails.value, valueUlpsWithStipend) > 0) {
