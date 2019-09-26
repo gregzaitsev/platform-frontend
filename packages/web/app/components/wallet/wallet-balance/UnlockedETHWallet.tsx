@@ -58,13 +58,13 @@ export const UnlockedETHWallet: React.FunctionComponent<
         data-test-id="wallet-balance.ether"
         actions={[
           {
-            name: <FormattedMessage id="shared-component.account-balance.withdraw" />,
+            name: <FormattedMessage id="shared-component.account-balance.send" />,
             onClick: withdrawEth,
             disabled: process.env.NF_WITHDRAW_ENABLED !== "1" || isZero(ethAmount),
             "data-test-id": "wallet.eth.withdraw.button",
           },
           {
-            name: <FormattedMessage id="shared-component.account-balance.deposit" />,
+            name: <FormattedMessage id="shared-component.account-balance.receive" />,
             onClick: depositEth,
             disabled: process.env.NF_WITHDRAW_ENABLED !== "1",
             "data-test-id": "wallet.eth.transfer.button",

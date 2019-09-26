@@ -6,11 +6,14 @@ import { compose } from "redux";
 import { IEtoDocument } from "../../../lib/api/eto/EtoFileApi.interfaces";
 import { actions } from "../../../modules/actions";
 import {
-  selectInvestmentAgreementLoading,
-  selectIssuerEtoId,
-  selectSignedInvestmentAgreementUrl,
+  selectIssuerEtoWithCompanyAndContract,
   selectUploadedInvestmentAgreement,
 } from "../../../modules/eto-flow/selectors";
+import {
+  selectInvestmentAgreementLoading,
+  selectSignedInvestmentAgreementHash,
+} from "../../../modules/eto/selectors";
+import { TEtoWithCompanyAndContract } from "../../../modules/eto/types";
 import { appConnect } from "../../../store";
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { investmentAgreementNotSigned } from "../../documents/utils";
@@ -27,10 +30,10 @@ interface IDispatchProps {
 }
 
 interface IStateProps {
-  etoId: string;
+  eto: TEtoWithCompanyAndContract;
   uploadedAgreement: IEtoDocument;
   signedInvestmentAgreementUrlLoading: boolean;
-  signedInvestmentAgreementUrl: string | null;
+  signedInvestmentAgreementUrl: string | undefined;
 }
 
 interface IExternalProps {
@@ -46,14 +49,14 @@ export const WaitingForNominee: React.FunctionComponent<IExternalProps> = ({ col
 );
 
 interface IWaitingToBeSigned {
-  etoId: string;
+  eto: TEtoWithCompanyAndContract;
   ipfsHash: string;
-  signedInvestmentAgreementUrl: null | string;
+  signedInvestmentAgreementUrl: undefined | string;
   signInvestmentAgreement: (etoId: string, ipfsHash: string) => void;
 }
 
 export const WaitingToBeSigned: React.FunctionComponent<IWaitingToBeSigned & IExternalProps> = ({
-  etoId,
+  eto,
   ipfsHash,
   signedInvestmentAgreementUrl,
   signInvestmentAgreement,
@@ -72,7 +75,7 @@ export const WaitingToBeSigned: React.FunctionComponent<IWaitingToBeSigned & IEx
   >
     <ButtonArrowRight
       data-test-id="eto-dashboard-submit-proposal"
-      onClick={() => signInvestmentAgreement(etoId, ipfsHash)}
+      onClick={() => signInvestmentAgreement(eto.etoId, ipfsHash)}
     >
       <FormattedMessage id="download-agreement-widget.sign-on-ethereum" />
     </ButtonArrowRight>
@@ -82,7 +85,7 @@ export const WaitingToBeSigned: React.FunctionComponent<IWaitingToBeSigned & IEx
 export const SignInvestmentAgreementLayout: React.FunctionComponent<
   IStateProps & IDispatchProps & IExternalProps
 > = ({
-  etoId,
+  eto,
   signedInvestmentAgreementUrl,
   uploadedAgreement,
   signInvestmentAgreement,
@@ -90,7 +93,7 @@ export const SignInvestmentAgreementLayout: React.FunctionComponent<
 }) =>
   investmentAgreementNotSigned(signedInvestmentAgreementUrl, uploadedAgreement.ipfsHash) ? (
     <WaitingToBeSigned
-      etoId={etoId}
+      eto={eto}
       ipfsHash={uploadedAgreement.ipfsHash}
       signedInvestmentAgreementUrl={signedInvestmentAgreementUrl}
       signInvestmentAgreement={signInvestmentAgreement}
@@ -105,15 +108,18 @@ export const SignInvestmentAgreement = compose<React.FunctionComponent<IExternal
     stateToProps: state => {
       const uploadedAgreement = selectUploadedInvestmentAgreement(state);
 
-      const etoId = selectIssuerEtoId(state);
+      const eto = selectIssuerEtoWithCompanyAndContract(state);
       // there is another widget showing up if there's no agreement uploaded,
       // so uploadedAgreement=== null is not a valid case
-      if (etoId && uploadedAgreement) {
+      if (eto && uploadedAgreement) {
         return {
-          etoId,
+          eto,
           uploadedAgreement,
-          signedInvestmentAgreementUrlLoading: selectInvestmentAgreementLoading(state),
-          signedInvestmentAgreementUrl: selectSignedInvestmentAgreementUrl(state),
+          signedInvestmentAgreementUrlLoading: selectInvestmentAgreementLoading(
+            state,
+            eto.previewCode,
+          ),
+          signedInvestmentAgreementUrl: selectSignedInvestmentAgreementHash(state, eto.previewCode),
         };
       } else {
         return null;
@@ -127,7 +133,7 @@ export const SignInvestmentAgreement = compose<React.FunctionComponent<IExternal
   branch<IStateProps | null>(props => props === null, renderNothing),
   onEnterAction<IStateProps>({
     actionCreator: (dispatch, props) =>
-      dispatch(actions.etoFlow.loadSignedInvestmentAgreement(props.etoId)),
+      dispatch(actions.eto.loadSignedInvestmentAgreement(props.eto)),
   }),
   branch<IStateProps>(
     props => props.signedInvestmentAgreementUrlLoading,

@@ -216,3 +216,31 @@ export const selectAgreementsStatus = createSelector(
   (etoState: DeepReadonly<IEtoState>, previewCode: string) =>
     etoState.offeringAgreementsStatus[previewCode],
 );
+
+export const selectInvestmentAgreement = (state: IAppState, previewCode: string) => {
+  const eto = selectEtoState(state);
+
+  return eto.signedInvestmentAgreements[previewCode];
+};
+
+export const selectInvestmentAgreementLoading = createSelector(
+  selectInvestmentAgreement,
+  agreement => {
+    if (agreement) {
+      return agreement.isLoading;
+    }
+
+    return false;
+  },
+);
+
+export const selectSignedInvestmentAgreementHash = createSelector(
+  selectInvestmentAgreement,
+  agreement => {
+    if (agreement) {
+      return agreement.url;
+    }
+
+    return undefined;
+  },
+);
