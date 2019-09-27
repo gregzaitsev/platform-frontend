@@ -153,7 +153,7 @@ const selectStepComponent = (props: IEtoStep) => {
     case EEtoStep.SIGN_YOUR_ISHA:
       return (
         <DashboardHeading
-          title={<FormattedMessage id="eto-dashboard.sign-your_isha" />}
+          title={<FormattedMessage id="eto-dashboard.sign-your-isha" />}
           data-test-id="eto-dashboard-sign-you-isha"
         />
       );

@@ -31,6 +31,7 @@ import { selectPendingDownloads } from "../../../modules/immutable-file/selector
 import { selectAreTherePendingTxs } from "../../../modules/tx/monitor/selectors";
 import { appConnect } from "../../../store";
 import { DeepReadonly } from "../../../types";
+import { nonNullable } from "../../../utils/nonNullable";
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { withContainer } from "../../../utils/withContainer.unsafe";
 import { withMetaTags } from "../../../utils/withMetaTags.unsafe";
@@ -101,15 +102,15 @@ const Documents = compose<TComponentProps, {}>(
   ),
   appConnect<TStateProps, TDispatchProps, { etoId: string }>({
     stateToProps: state => ({
-      etoState: selectIssuerEtoState(state)!,
-      onChainState: selectIssuerEtoOnChainState(state)!,
+      etoState: nonNullable(selectIssuerEtoState(state)),
+      onChainState: nonNullable(selectIssuerEtoOnChainState(state)),
       etoTemplates: selectFilteredIssuerEtoTemplatesArray(state),
-      etoDocuments: selectIssuerEtoDocuments(state)!,
+      etoDocuments: nonNullable(selectIssuerEtoDocuments(state)),
       documentsDownloading: selectEtoDocumentsDownloading(state.etoDocuments),
       documentsUploading: selectEtoDocumentsUploading(state.etoDocuments),
       transactionPending: selectAreTherePendingTxs(state),
       documentsGenerated: selectPendingDownloads(state),
-      offeringDocumentType: selectIssuerEtoOfferingDocumentType(state)!,
+      offeringDocumentType: nonNullable(selectIssuerEtoOfferingDocumentType(state)),
     }),
     dispatchToProps: dispatch => ({
       generateTemplate: document => dispatch(actions.etoDocuments.generateTemplate(document)),
