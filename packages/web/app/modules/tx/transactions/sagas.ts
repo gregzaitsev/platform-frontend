@@ -178,7 +178,10 @@ export function* neurRedeemSaga({ logger }: TGlobalDependencies): Iterator<any> 
   }
 }
 
-export function* etoSignInvestmentAgreementSaga({ logger }: TGlobalDependencies): Iterator<any> {
+export function* etoSignInvestmentAgreementSaga(
+  { logger }: TGlobalDependencies,
+  action: TActionFromCreator<typeof actions.etoFlow.signInvestmentAgreement>,
+): Iterator<any> {
   try {
     yield txSendSaga({
       type: ETxSenderType.SIGN_INVESTMENT_AGREEMENT,
@@ -188,7 +191,7 @@ export function* etoSignInvestmentAgreementSaga({ logger }: TGlobalDependencies)
   } catch (e) {
     logger.info("Signing investment agreement was cancelled", e);
   } finally {
-    yield put(actions.etoFlow.loadSignedInvestmentAgreement(action.payload.etoId));
+    yield put(actions.eto.loadSignedInvestmentAgreement(action.payload.eto));
   }
 }
 

@@ -12,14 +12,17 @@ import {
   TEtoDocumentTemplates,
   TStateInfo,
 } from "../../lib/api/eto/EtoFileApi.interfaces";
+import { nonNullable } from "../../utils/nonNullable";
 import { actions, TActionFromCreator } from "../actions";
 import { ensurePermissionsArePresentAndRunEffect } from "../auth/jwt/sagas";
 import { loadIssuerEto } from "../eto-flow/sagas";
 import {
+  selectIssuerEto,
   selectIssuerEtoDocuments,
   selectIssuerEtoId,
   selectIssuerEtoProduct,
 } from "../eto-flow/selectors";
+import { TEtoWithCompanyAndContract } from "../eto/types";
 import { downloadLink } from "../immutable-file/utils";
 import { neuCall, neuTakeEvery } from "../sagasUtils";
 import { selectEthereumAddressWithChecksum } from "../web3/selectors";
@@ -220,10 +223,10 @@ function* uploadEtoFile(
   } finally {
     yield neuCall(loadIssuerEto);
     if (documentType === EEtoDocumentType.INVESTMENT_AND_SHAREHOLDER_AGREEMENT) {
-      const etoId = yield select(selectIssuerEtoId);
-      const etoDocuments: TEtoDocumentTemplates = yield select(selectIssuerEtoDocuments);
-      const uploadResult = Object.values(etoDocuments).find(d => d.documentType === documentType)!;
-      yield put(actions.etoFlow.signInvestmentAgreement(etoId, uploadResult.ipfsHash));
+      const eto: TEtoWithCompanyAndContract = yield nonNullable(select(selectIssuerEto));
+
+      const uploadResult = Object.values(eto.documents).find(d => d.documentType === documentType)!;
+      yield put(actions.etoFlow.signInvestmentAgreement(eto, uploadResult.ipfsHash));
     }
     yield put(actions.etoDocuments.etoUploadDocumentFinish(documentType));
   }
