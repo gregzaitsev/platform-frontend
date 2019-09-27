@@ -53,14 +53,14 @@ export const calculateWhitelistingState = ({
   investorsCount,
 }: TcalculateWhitelistingState) => {
   //TODO this should be put in line with api after API's canEnableBookbuilding after limit is reached gets fixed by Marcin
-  if (whitelistingIsActive) {
+  if (bookbuildingLimitReached) {
+    return EWhitelistingState.LIMIT_REACHED;
+  } else if (whitelistingIsActive) {
     return EWhitelistingState.ACTIVE;
   } else if (!whitelistingIsActive && !canEnableBookbuilding && investorsCount > 0) {
     return EWhitelistingState.STOPPED;
   } else if (!whitelistingIsActive && !canEnableBookbuilding && investorsCount === 0) {
     return EWhitelistingState.NOT_ACTIVE;
-  } else if (bookbuildingLimitReached) {
-    return EWhitelistingState.LIMIT_REACHED;
   } else if (
     !whitelistingIsActive &&
     canEnableBookbuilding &&
