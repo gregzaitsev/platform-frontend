@@ -32,11 +32,11 @@ export const submitProposal = () => {
 export const submitPreview = () => {
   goToIssuerDashboard();
 
-  cy.get(tid("eto-dashboard-publish-eto")).click();
+  cy.get(tid("eto-dashboard-publish-eto-widget.publish")).click();
 
   confirmAccessModal();
 
-  cy.get(tid("eto-dashboard-publish-eto")).should("not.exist");
+  cy.get(tid("eto-dashboard-publish-eto-widget")).should("not.exist");
 };
 
 export const goToSection = (section: string) => {
@@ -163,6 +163,13 @@ export const assertUploadSignedTermsheetStep = () => {
   cy.get(tid("eto-dashboard-upload-signed-termsheet")).should("exist");
 
   cy.get(tid("dashboard-upload-termsheet-widget")).should("exist");
+};
+
+export const assertPublishListingPage = () => {
+  cy.get(tid("eto-state-preview")).should("exist");
+  cy.get(tid("eto-dashboard-publish-listing")).should("exist");
+
+  cy.get(tid("eto-dashboard-publish-eto-widget")).should("exist");
 };
 
 export const assertLinkNomineeStep = () => {

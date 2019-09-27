@@ -245,12 +245,6 @@ export const selectUploadedInvestmentAgreement = (
   );
 };
 
-export const selectInvestmentAgreementLoading = (state: DeepReadonly<IAppState>): boolean =>
-  state.etoIssuer.signedInvestmentAgreementUrlLoading;
-
-export const selectSignedInvestmentAgreementUrl = (state: DeepReadonly<IAppState>): string | null =>
-  state.etoIssuer.signedInvestmentAgreementUrl;
-
 export const userHasKycAndEmailVerified = (state: IAppState) =>
   selectKycRequestStatus(state) === EKycRequestStatus.ACCEPTED &&
   selectIsUserEmailVerified(state.auth);

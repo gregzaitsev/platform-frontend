@@ -5,7 +5,6 @@ import * as Yup from "yup";
 import {
   EtoCompanyInformationType,
   EtoEquityTokenInfoType,
-  ETOInvestmentAndEtoTermsDataType,
   EtoInvestmentTermsType,
   EtoKeyIndividualsType,
   EtoLegalInformationType,
@@ -134,17 +133,23 @@ export const calculateMarketingEtoData = getFormFractionDoneCalculator(
   },
 );
 
-export const calculateInvestmentAndEtoTermsEtoData = getFormFractionDoneCalculator(
-  ETOInvestmentAndEtoTermsDataType.toYup(),
-  { ignore: true },
-);
-
 export const calculateVotingRightsEtoData = getFormFractionDoneCalculator(
   EtoVotingRightsType.toYup(),
   {
     ignore: true,
   },
 );
+
+export const calculateEtoInvestmentTermsData = getFormFractionDoneCalculator(
+  EtoInvestmentTermsType.toYup(),
+  {
+    ignore: true,
+  },
+);
+
+export const calculateEtoTermsData = getFormFractionDoneCalculator(getEtoTermsSchema().toYup(), {
+  ignore: true,
+});
 
 export function getFormFractionDoneCalculator(
   validator: Yup.Schema<any>,
