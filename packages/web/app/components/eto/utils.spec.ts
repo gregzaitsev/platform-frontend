@@ -312,7 +312,7 @@ describe("generate shareholders", () => {
   it("returns an empty array if input is undefined", () => {
     const companyShares = 500;
     const expectedOutput: TShareholder[] = [];
-    expect(generateShareholders(undefined, companyShares)).to.deep.eq(expectedOutput);
+    expect(generateShareholders(undefined as any, companyShares)).to.deep.eq(expectedOutput);
   });
   it("converts shareholder shares to percentage from company shares and sorts array", () => {
     const companyShares = 500;

@@ -12,6 +12,7 @@ import { ArrayOfKeyValueFields } from "../../../../shared/forms/fields/FormCateg
 import { FormField } from "../../../../shared/forms/fields/FormField";
 import { FormFieldDate } from "../../../../shared/forms/fields/FormFieldDate";
 import { FormFieldError } from "../../../../shared/forms/fields/FormFieldError";
+import { FormFieldLabel } from "../../../../shared/forms/fields/FormFieldLabel";
 import { FormMaskedNumberInput } from "../../../../shared/forms/fields/FormMaskedNumberInput";
 import { FormSelectField } from "../../../../shared/forms/fields/FormSelectField";
 import { FormTextArea } from "../../../../shared/forms/fields/FormTextArea";
@@ -120,9 +121,10 @@ const EtoRegistrationLegalInformationComponent: React.FunctionComponent<TCompone
         label={<FormattedMessage id="eto.form.legal-information.share-capital-currency-code" />}
         name="shareCapitalCurrencyCode"
       />
-      <FormHighlightGroup
-        title={<FormattedMessage id="eto.form.legal-information.shareholder-structure" />}
-      >
+      <FormHighlightGroup>
+        <FormFieldLabel name="shareholders">
+          <FormattedMessage id="eto.form.legal-information.shareholder-structure" />
+        </FormFieldLabel>
         <ArrayOfKeyValueFields
           name="shareholders"
           valuePlaceholder={"Share capital"}

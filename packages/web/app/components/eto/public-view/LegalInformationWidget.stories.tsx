@@ -2,6 +2,7 @@ import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
 import { testCompany } from "../../../../test/fixtures";
+import { TCompanyEtoData } from "../../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { LegalInformationWidget } from "./LegalInformationWidget";
 
 const emptyShareholders = {
@@ -19,5 +20,7 @@ const moreThanSix = {
 
 storiesOf("ETO/PublicView/LegalInformationWidget", module)
   .add("default", () => <LegalInformationWidget companyData={testCompany} />)
-  .add("empty shareholders", () => <LegalInformationWidget companyData={emptyShareholders} />)
+  .add("empty shareholders", () => (
+    <LegalInformationWidget companyData={(emptyShareholders as unknown) as TCompanyEtoData} />
+  ))
   .add("more than 6 shareholders", () => <LegalInformationWidget companyData={moreThanSix} />);

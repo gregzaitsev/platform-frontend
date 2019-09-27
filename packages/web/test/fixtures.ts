@@ -74,7 +74,7 @@ export const testCompany: TCompanyEtoData = {
   riskThirdPartySharesFinancing: undefined,
   roadmap: undefined,
   targetMarketAndIndustry: undefined,
-  useOfCapital: undefined,
+  useOfCapital: "all for nothing",
   advisors: {
     members: [
       {

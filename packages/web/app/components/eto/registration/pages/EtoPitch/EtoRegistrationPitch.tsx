@@ -7,6 +7,7 @@ import { FormHighlightGroup } from "../../../../shared/forms/FormHighlightGroup"
 import {
   ArrayOfKeyValueFields,
   FormFieldError,
+  FormFieldLabel,
   FormTextArea,
 } from "../../../../shared/forms/index";
 import { EtoFormBase } from "../../EtoFormBase";
@@ -103,7 +104,11 @@ const EtoRegistrationPitchComponent = ({
         name="keyBenefitsForInvestors"
         isWysiwyg={true}
       />
-      <FormHighlightGroup title={<FormattedMessage id="eto.form.product-vision.use-of-capital" />}>
+      <FormHighlightGroup>
+        <FormFieldLabel name="useOfCapital">
+          <FormattedMessage id="eto.form.product-vision.use-of-capital" />
+        </FormFieldLabel>
+
         <FormTextArea name="useOfCapital" placeholder="Detail" disabled={false} isWysiwyg={true} />
         <ArrayOfKeyValueFields
           name="useOfCapitalList"

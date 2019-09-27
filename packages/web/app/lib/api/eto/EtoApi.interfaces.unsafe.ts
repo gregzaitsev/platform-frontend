@@ -73,8 +73,8 @@ export const EtoPitchType = YupTS.object({
   productVision: YupTS.wysiwygString().optional(),
   inspiration: YupTS.wysiwygString().optional(),
   roadmap: YupTS.wysiwygString().optional(),
-  useOfCapital: YupTS.wysiwygString().optional(),
-  useOfCapitalList: YupTS.array(EtoCapitalListType).optional(),
+  useOfCapital: YupTS.wysiwygString(),
+  useOfCapitalList: YupTS.array(EtoCapitalListType),
   customerGroup: YupTS.wysiwygString().optional(),
   sellingProposition: YupTS.wysiwygString().optional(),
   marketingApproach: YupTS.wysiwygString().optional(),
@@ -173,7 +173,7 @@ export const EtoLegalInformationType = YupTS.object({
   lastFundingSizeEur: YupTS.number().optional(),
   companyShareCapital: YupTS.number().enhance(v => v.min(MIN_COMPANY_SHARE_CAPITAL)),
   shareCapitalCurrencyCode: CurrencyCodeType,
-  shareholders: YupTS.array(EtoLegalShareholderType.optional()).optional(),
+  shareholders: YupTS.array(EtoLegalShareholderType),
 });
 type TEtoLegalData = YupTS.TypeOf<typeof EtoLegalInformationType>;
 
