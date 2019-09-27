@@ -1125,7 +1125,7 @@
   "settings.modal.icbm-wallet-balance.title.balance": "Your ICBM wallet balance",
   "settings.modal.icbm-wallet-balance.title.migrate": "ICBM wallet Migration Tool",
   "settings.modal.icbm-wallet-balance.warning-message": "Please finalize your verification process before starting the wallet migration procedures",
-  "settings.publish-eto.description": "Since you’ve completed all marketing information about your company, you can now publish your listing page. After clicking the “publish” button our team will contact you to coordinate the date of going live. This publication will allow you to start your fundraising. You will be able to edit the marketing content any time during the listing period. You can also skip this step and configure your investment terms before publishing.",
+  "settings.publish-eto.description": "Since you’ve completed all marketing information about your company, you can now publish your listing page. After clicking the “publish” button our team will contact you to coordinate the date of going live. This publication will allow you to start your fundraising. You will be able to edit the marketing content any time during the listing period. You can also skip this step and start configuring your investment terms in the last three forms before publishing.",
   "settings.publish-eto.header": "Publish your listing page",
   "settings.publish-eto.publish": "Publish",
   "settings.security-settings.title": "My Profile",

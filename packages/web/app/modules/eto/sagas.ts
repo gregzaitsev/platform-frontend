@@ -135,19 +135,22 @@ function* loadEto(
 
 export function* loadEtoContract(
   { contractsService, logger }: TGlobalDependencies,
-  eto: TEtoDataWithCompany,
+  { etoId, previewCode, state }: TEtoDataWithCompany,
 ): Iterator<any> {
-  if (eto.state !== EEtoState.ON_CHAIN) {
-    logger.error("Invalid eto state", new InvalidETOStateError(eto.state, EEtoState.ON_CHAIN), {
-      etoId: eto.etoId,
+  if (state !== EEtoState.ON_CHAIN) {
+    logger.error("Invalid eto state", new InvalidETOStateError(state, EEtoState.ON_CHAIN), {
+      etoId: etoId,
     });
     return;
   }
 
   try {
-    const etoContract: ETOCommitment = yield contractsService.getETOCommitmentContract(eto.etoId);
+    const etoContract: ETOCommitment = yield contractsService.getETOCommitmentContract(etoId);
+
     const etherTokenContract: EtherToken = contractsService.etherToken;
     const euroTokenContract: EuroToken = contractsService.euroToken;
+
+    yield put(actions.bookBuilding.loadPledge(etoId));
 
     // fetch eto contracts state with 'all' to improve performance
     const [
@@ -169,7 +172,7 @@ export function* loadEtoContract(
     ]);
 
     yield put(
-      actions.eto.setEtoDataFromContract(eto.previewCode, {
+      actions.eto.setEtoDataFromContract(previewCode, {
         equityTokenAddress,
         etoTermsAddress,
         timedState: timedStateRaw.toNumber(),
@@ -182,7 +185,7 @@ export function* loadEtoContract(
       }),
     );
   } catch (e) {
-    logger.error("ETO contract data could not be loaded", e, { etoId: eto.etoId });
+    logger.error("ETO contract data could not be loaded", e, { etoId: etoId });
 
     // rethrow original error so it can be handled by caller saga
     throw e;

@@ -25,7 +25,8 @@ import {
   userHasKycAndEmailVerified,
 } from "../../modules/eto-flow/selectors";
 import {
-  calculateInvestmentAndEtoTermsEtoData,
+  calculateEtoInvestmentTermsData,
+  calculateEtoTermsData,
   calculateMarketingEtoData,
   calculateVotingRightsEtoData,
 } from "../../modules/eto-flow/utils";
@@ -346,18 +347,24 @@ const EtoDashboard = compose<React.FunctionComponent>(
   withContainer(Layout),
   withProps<IComputedProps, IStateProps>(props => {
     const marketingFormsProgress = calculateMarketingEtoData(props.combinedEtoCompanyData);
-    const etoInvestmentAndEtoTermsFormsProgress = calculateInvestmentAndEtoTermsEtoData(
+    const etoTermsFormProgress = calculateEtoTermsData(props.combinedEtoCompanyData);
+    const investmentTermsFormProgress = calculateEtoInvestmentTermsData(
       props.combinedEtoCompanyData,
     );
     const etoVotingRightsFormProgress = calculateVotingRightsEtoData(props.combinedEtoCompanyData);
 
     const shouldViewEtoSettings = marketingFormsProgress >= SUBMIT_PROPOSAL_THRESHOLD;
 
-    const isInvestmentAndEtoTermsFilledWithAllRequired =
-      etoInvestmentAndEtoTermsFormsProgress >= SUBMIT_PROPOSAL_THRESHOLD;
+    const isInvestmentFilledWithAllRequired =
+      investmentTermsFormProgress >= SUBMIT_PROPOSAL_THRESHOLD;
+
+    const isEtoTermsFilledWithAllRequired = etoTermsFormProgress >= SUBMIT_PROPOSAL_THRESHOLD;
 
     const isVotingRightsFilledWithAllRequired =
       etoVotingRightsFormProgress >= SUBMIT_PROPOSAL_THRESHOLD;
+
+    const isInvestmentAndEtoTermsFilledWithAllRequired =
+      isInvestmentFilledWithAllRequired && isEtoTermsFilledWithAllRequired;
 
     const shouldViewSubmissionSection =
       isInvestmentAndEtoTermsFilledWithAllRequired && isVotingRightsFilledWithAllRequired;
@@ -375,21 +382,22 @@ const EtoDashboard = compose<React.FunctionComponent>(
       shouldViewSubmissionSection,
       shouldViewMarketingSubmissionSection,
       etoStep: props.eto
-        ? selectEtoStep(
+        ? selectEtoStep({
             isVerificationSectionDone,
-            props.eto.state,
-            isOnChain(props.eto) ? props.eto.contract.timedState : undefined,
             shouldViewEtoSettings,
-            props.isMarketingDataVisibleInPreview,
-            props.isTermSheetSubmitted,
             isVotingRightsFilledWithAllRequired,
-            isInvestmentAndEtoTermsFilledWithAllRequired,
-            props.isOfferingDocumentSubmitted,
-            props.isISHASubmitted,
-            !!props.eto.nominee,
-            props.areAgreementsSignedByNominee,
-            props.preEtoStartDate,
-          )
+            isEtoTermsFilledWithAllRequired,
+            isInvestmentFilledWithAllRequired,
+            etoState: props.eto.state,
+            etoOnChainState: isOnChain(props.eto) ? props.eto.contract.timedState : undefined,
+            isMarketingDataVisibleInPreview: props.isMarketingDataVisibleInPreview,
+            isTermSheetSubmitted: props.isTermSheetSubmitted,
+            isOfferingDocumentSubmitted: props.isOfferingDocumentSubmitted,
+            isISHASubmitted: props.isISHASubmitted,
+            isNomineeLinked: !!props.eto.nominee,
+            areAgreementsSignedByNominee: props.areAgreementsSignedByNominee,
+            preEtoStartDate: props.preEtoStartDate,
+          })
         : EEtoStep.VERIFICATION,
     };
   }),
