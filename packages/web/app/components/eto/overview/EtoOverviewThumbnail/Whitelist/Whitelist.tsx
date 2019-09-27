@@ -52,12 +52,7 @@ const WhitelistLayout: React.FunctionComponent<IProps> = ({
           />
 
           <p className={styles.info}>
-            {eto.subState === EEtoSubState.WHITELISTING_LIMIT_REACHED && (
-              <FormattedMessage id="eto-overview-thumbnail.whitelist.is-closed" />
-            )}
-            {eto.subState === EEtoSubState.WHITELISTING && (
-              <FormattedMessage id="eto-overview-thumbnail.whitelist.is-open" />
-            )}
+            <FormattedMessage id="eto-overview-thumbnail.whitelist.is-closed" />
           </p>
         </>
       );
