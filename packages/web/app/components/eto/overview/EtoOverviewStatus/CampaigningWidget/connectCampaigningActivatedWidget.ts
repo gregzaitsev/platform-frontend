@@ -2,7 +2,6 @@ import { branch, compose, renderComponent, setDisplayName, withProps } from "rec
 
 import { TEtoInvestmentCalculatedValues } from "../../../../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { IPledge } from "../../../../../lib/api/eto/EtoPledgeApi.interfaces.unsafe";
-import { actions } from "../../../../../modules/actions";
 import { selectIsInvestor, selectIsVerifiedInvestor } from "../../../../../modules/auth/selectors";
 import {
   selectInvestorCount,
@@ -15,7 +14,6 @@ import {
 } from "../../../../../modules/bookbuilding-flow/utils";
 import { EETOStateOnChain } from "../../../../../modules/eto/types";
 import { appConnect } from "../../../../../store";
-import { onEnterAction } from "../../../../../utils/OnEnterAction";
 import { LoadingIndicator } from "../../../../shared/loading-indicator/LoadingIndicator";
 
 interface IExternalProps {
@@ -71,15 +69,6 @@ const connectCampaigningActivatedWidget = (
         investorsCount: selectInvestorCount(state, props.etoId),
         pledge: selectMyPledge(state, props.etoId),
       }),
-    }),
-    onEnterAction<IExternalProps & IStateProps>({
-      actionCreator: (dispatch, props) => {
-        dispatch(actions.bookBuilding.loadBookBuildingStats(props.etoId));
-
-        if (props.isInvestor && props.isVerifiedInvestor) {
-          dispatch(actions.bookBuilding.loadPledge(props.etoId));
-        }
-      },
     }),
     withProps<IWithProps, IStateProps & IExternalProps>(
       ({

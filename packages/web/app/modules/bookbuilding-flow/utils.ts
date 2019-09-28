@@ -7,6 +7,8 @@ import {
   ValidationMessage,
 } from "../../components/translatedMessages/messages";
 import { createMessage } from "../../components/translatedMessages/utils";
+import { EEtoState } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
+import { EETOStateOnChain } from "../eto/types";
 
 export enum EWhitelistingState {
   ACTIVE = "active",
@@ -33,6 +35,15 @@ export const isPledgeAboveMinimum = (minPledge: number): TestOptions => ({
   },
 });
 
+export const shouldLoadPledgeData = (
+  etoState: EEtoState,
+  onChainState?: EETOStateOnChain,
+): boolean =>
+  !!(
+    [EEtoState.LISTED, EEtoState.PROSPECTUS_APPROVED, EEtoState.ON_CHAIN].indexOf(etoState) >= 0 &&
+    (onChainState === undefined || onChainState < EETOStateOnChain.Claim)
+  );
+
 export const isPledgeNotAboveMaximum = (maxPledge?: number): TestOptions => ({
   name: "minAmount",
   message: getMessageTranslation(
@@ -53,14 +64,14 @@ export const calculateWhitelistingState = ({
   investorsCount,
 }: TcalculateWhitelistingState) => {
   //TODO this should be put in line with api after API's canEnableBookbuilding after limit is reached gets fixed by Marcin
-  if (whitelistingIsActive) {
+  if (bookbuildingLimitReached) {
+    return EWhitelistingState.LIMIT_REACHED;
+  } else if (whitelistingIsActive) {
     return EWhitelistingState.ACTIVE;
   } else if (!whitelistingIsActive && !canEnableBookbuilding && investorsCount > 0) {
     return EWhitelistingState.STOPPED;
   } else if (!whitelistingIsActive && !canEnableBookbuilding && investorsCount === 0) {
     return EWhitelistingState.NOT_ACTIVE;
-  } else if (bookbuildingLimitReached) {
-    return EWhitelistingState.LIMIT_REACHED;
   } else if (
     !whitelistingIsActive &&
     canEnableBookbuilding &&

@@ -138,12 +138,12 @@ export const getEtoSubState = ({
 
       const isInvestorsLimitReached = investorCount >= eto.maxPledges;
 
-      if (eto.isBookbuilding) {
-        return EEtoSubState.WHITELISTING;
-      }
-
       if (isInvestorsLimitReached) {
         return EEtoSubState.WHITELISTING_LIMIT_REACHED;
+      }
+
+      if (eto.isBookbuilding) {
+        return EEtoSubState.WHITELISTING;
       }
 
       return EEtoSubState.CAMPAIGNING;

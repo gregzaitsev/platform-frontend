@@ -1,24 +1,24 @@
 import * as React from "react";
 import { compose } from "recompose";
 
-import { selectIsAuthorized } from "../../../../modules/auth/selectors";
-import { selectEtoOnChainStateById } from "../../../../modules/eto/selectors";
-import { EETOStateOnChain, TEtoWithCompanyAndContract } from "../../../../modules/eto/types";
+import { selectIsAuthorized } from "../../../../../modules/auth/selectors";
+import { selectEtoOnChainStateById } from "../../../../../modules/eto/selectors";
+import { EETOStateOnChain, TEtoWithCompanyAndContract } from "../../../../../modules/eto/types";
 import {
   selectInitialMaxCapExceeded,
   selectIsEligibleToPreEto,
-} from "../../../../modules/investor-portfolio/selectors";
-import { appConnect } from "../../../../store";
-import { withContainer } from "../../../../utils/withContainer.unsafe";
-import { CampaigningActivatedWidget } from "./CampaigningWidget/CampaigningActivatedWidget";
-import { ClaimWidget } from "./ClaimRefundWidget/ClaimWidget";
-import { RefundWidget } from "./ClaimRefundWidget/RefundWidget";
-import { CounterWidget } from "./CounterWidget";
-import { EtoMaxCapExceededWidget } from "./EtoMaxCapExceeded";
-import { InvestmentWidget } from "./InvestmentWidget/InvestmentWidget";
-import { RegisterNowWidget } from "./RegisterNowWidget";
+} from "../../../../../modules/investor-portfolio/selectors";
+import { appConnect } from "../../../../../store";
+import { withContainer } from "../../../../../utils/withContainer.unsafe";
+import { CampaigningActivatedWidget } from "../CampaigningWidget/CampaigningActivatedWidget";
+import { ClaimWidget } from "../ClaimRefundWidget/ClaimWidget";
+import { RefundWidget } from "../ClaimRefundWidget/RefundWidget";
+import { CounterWidget } from "../CounterWidget";
+import { EtoMaxCapExceededWidget } from "../EtoMaxCapExceeded";
+import { InvestmentWidget } from "../InvestmentWidget/InvestmentWidget";
+import { RegisterNowWidget } from "../RegisterNowWidget";
 
-import * as styles from "./EtoOverviewStatus.module.scss";
+import * as styles from "../EtoOverviewStatus.module.scss";
 
 interface IExternalProps {
   eto: TEtoWithCompanyAndContract;
