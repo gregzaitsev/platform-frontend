@@ -530,11 +530,6 @@ export const EtoMarketingDataType = YupTS.object({
   ...EtoRiskAssessmentType.shape,
 });
 
-export const ETOInvestmentAndEtoTermsDataType = YupTS.object({
-  ...EtoInvestmentTermsType.shape,
-  ...getEtoTermsSchema().shape,
-});
-
 export type TNomineeRequestResponse = {
   state: "pending" | "approved" | "rejected";
   nomineeId: string;

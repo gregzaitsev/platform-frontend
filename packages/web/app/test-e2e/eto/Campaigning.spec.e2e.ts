@@ -111,38 +111,4 @@ describe("Eto campaigning state", () => {
       }),
     );
   });
-
-  it("should allow to change pledge by investor", () => {
-    const ETO_ID = etoFixtureAddressByName("ETOInSetupState");
-
-    loginFixtureAccount("INV_ETH_EUR_ICBM_M_HAS_KYC", {
-      kyc: "business",
-    }).then(() => {
-      cy.visit(etoPublicViewByIdLinkLegacy(ETO_ID));
-
-      const amount = "200";
-      fillForm({
-        amount,
-        "eto-bookbuilding-commit": {
-          type: "submit",
-        },
-      });
-      confirmAccessModal();
-      cy.get(`${tid("campaigning-your-commitment")} ${tid("value")}`).should("contain", amount);
-      cy.get(tid("campaigning-your-commitment-change")).click();
-
-      const newAmount = "160";
-      fillForm({
-        amount: newAmount,
-        "eto-bookbuilding-commit": {
-          type: "submit",
-        },
-      });
-      cy.get(`${tid("campaigning-your-commitment")} ${tid("value")}`).should("contain", newAmount);
-
-      cy.get(tid("campaigning-your-commitment-delete")).click();
-
-      cy.get(tid("campaigning-your-commitment")).should("not.exist");
-    });
-  });
 });

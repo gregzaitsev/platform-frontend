@@ -24,6 +24,23 @@ export enum EEtoStep {
   FILL_INFORMATION_ABOUT_ETO = "fill_information_about_eto",
 }
 
+type TEtoStepArgs = {
+  isVerificationSectionDone: boolean;
+  etoState: EEtoState;
+  etoOnChainState: EETOStateOnChain | undefined;
+  shouldViewEtoSettings: boolean;
+  isMarketingDataVisibleInPreview: EEtoMarketingDataVisibleInPreview | undefined;
+  isTermSheetSubmitted: boolean | undefined;
+  isVotingRightsFilledWithAllRequired: boolean;
+  isInvestmentFilledWithAllRequired: boolean;
+  isEtoTermsFilledWithAllRequired: boolean;
+  isOfferingDocumentSubmitted: boolean | undefined;
+  isISHASubmitted: boolean | undefined;
+  isNomineeLinked: boolean;
+  areAgreementsSignedByNominee: boolean | undefined;
+  preEtoStartDate: Date | undefined;
+};
+
 // TODO: This can be moved fully to redux selector
 /**
  * Calculate current eto state
@@ -31,28 +48,31 @@ export enum EEtoStep {
  * @note Even when eto is in specific state in some cases it's still possible to access previous steps actions
  * (for e.g. publish marketing listing action is available until offer is fully published
  */
-export const selectEtoStep = (
-  isVerificationSectionDone: boolean,
-  etoState: EEtoState,
-  etoOnChainState: EETOStateOnChain | undefined,
-  shouldViewEtoSettings: boolean,
-  isMarketingDataVisibleInPreview: EEtoMarketingDataVisibleInPreview | undefined,
-  isTermSheetSubmitted: boolean | undefined,
-  isVotingRightsFilledWithAllRequired: boolean,
-  isInvestmentAndEtoTermsFilledWithAllRequired: boolean,
-  isOfferingDocumentSubmitted: boolean | undefined,
-  isISHASubmitted: boolean | undefined,
-  isNomineeLinked: boolean,
-  areAgreementsSignedByNominee: boolean | undefined,
-  preEtoStartDate: Date | undefined,
-): EEtoStep | undefined => {
+export const selectEtoStep = ({
+  isVerificationSectionDone,
+  etoState,
+  etoOnChainState,
+  shouldViewEtoSettings,
+  isMarketingDataVisibleInPreview,
+  isTermSheetSubmitted,
+  isVotingRightsFilledWithAllRequired,
+  isInvestmentFilledWithAllRequired,
+  isEtoTermsFilledWithAllRequired,
+  isOfferingDocumentSubmitted,
+  isISHASubmitted,
+  isNomineeLinked,
+  areAgreementsSignedByNominee,
+  preEtoStartDate,
+}: TEtoStepArgs): EEtoStep | undefined => {
   if (!isVerificationSectionDone) {
     return EEtoStep.VERIFICATION;
   }
 
   if (etoState === EEtoState.PREVIEW) {
     const areEtoFormsFilledWithAllRequired =
-      isInvestmentAndEtoTermsFilledWithAllRequired && isVotingRightsFilledWithAllRequired;
+      isInvestmentFilledWithAllRequired &&
+      isEtoTermsFilledWithAllRequired &&
+      isVotingRightsFilledWithAllRequired;
 
     if (isMarketingDataVisibleInPreview === EEtoMarketingDataVisibleInPreview.VISIBILITY_PENDING) {
       return EEtoStep.LISTING_PAGE_IN_REVIEW;
@@ -78,10 +98,15 @@ export const selectEtoStep = (
     }
 
     /**
-     * When both investment and eto terms forms are filled correctly
+     * When investment and eto terms form are filled correctly
+     * Or when marketing data is visible
      * And when nominee is not linked yet
      */
-    if (isInvestmentAndEtoTermsFilledWithAllRequired && !isNomineeLinked) {
+    if (
+      (isInvestmentFilledWithAllRequired && isEtoTermsFilledWithAllRequired) ||
+      (isMarketingDataVisibleInPreview === EEtoMarketingDataVisibleInPreview.VISIBLE &&
+        !isNomineeLinked)
+    ) {
       return EEtoStep.LINK_NOMINEE;
     }
 

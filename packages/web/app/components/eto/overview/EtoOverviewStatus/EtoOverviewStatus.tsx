@@ -9,7 +9,7 @@ import { etoPublicViewLink } from "../../../appRouteUtils";
 import { Container, EColumnSpan } from "../../../layouts/Container";
 import { ETOInvestorState, ETOIssuerState } from "../../shared/ETOState";
 import { EtoStats } from "./EtoStats";
-import { EtoStatusManager } from "./EtoStatusManager";
+import { EtoStatusManager } from "./EtoStatusManager/EtoStatusManager";
 import { EtoTitle } from "./EtoTitle";
 import { TagsWidget } from "./TagsWidget";
 
