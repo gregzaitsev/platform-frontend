@@ -182,6 +182,7 @@ function* validateAndCalculateInputs({ contractsService }: TGlobalDependencies):
   // debounce validation
   yield delay(300);
 
+  yield put(actions.investmentFlow.setErrorState());
   let state: IAppState = yield select();
   const eto = selectEtoById(state, state.investmentFlow.etoId);
   const value = state.investmentFlow.euroValueUlps;
