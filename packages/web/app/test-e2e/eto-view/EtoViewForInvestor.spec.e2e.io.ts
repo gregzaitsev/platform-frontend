@@ -12,12 +12,11 @@ import {
   getFormattedNumber,
   getPercentage,
   getShortFormattedNumber,
-  getYesOrNo,
   tid,
 } from "../utils";
 import { goToEtoPreview } from "../utils/navigation";
 import { createAndLoginNewUser, getEto, loginFixtureAccount } from "../utils/userHelpers";
-import { assertEtoView } from "./EtoViewUtils";
+import { assertEtoView, getYesOrNo } from "./EtoViewUtils";
 
 const ETO_ID = etoFixtureAddressByName("ETONoStartDate");
 

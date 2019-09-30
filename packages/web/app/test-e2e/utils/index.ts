@@ -412,9 +412,6 @@ export const getShortFormattedNumber = (
 
 export const getPercentage = (value: number) => `${value * 100}%`;
 
-export const getYesOrNo = (value: any | undefined, assertion: any, returnTBAinsteadOfNo = false) =>
-  value ? (value === assertion ? "Yes" : returnTBAinsteadOfNo ? "TBA" : "No") : "TBA";
-
 // Reexport assertions so they are easy accessed through utils
 export * from "./assertions";
 export * from "./selectors";

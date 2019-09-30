@@ -136,6 +136,7 @@ const InvestmentStats: React.FunctionComponent<IInvestmentStatsProps> = ({ eto }
             />
             <br />
             <Money
+              data-test-id="investment-widget-nEur-invested"
               value={eto.contract.totalInvestment.euroTokenBalance}
               inputFormat={ENumberInputFormat.ULPS}
               outputFormat={ENumberOutputFormat.ONLY_NONZERO_DECIMALS}
@@ -150,6 +151,7 @@ const InvestmentStats: React.FunctionComponent<IInvestmentStatsProps> = ({ eto }
                   totalInvestors,
                   totalInvestorsAsString: (
                     <FormatNumber
+                      data-test-id="investment-widget-investors-invested"
                       value={totalInvestors}
                       outputFormat={ENumberOutputFormat.INTEGER}
                       inputFormat={ENumberInputFormat.FLOAT}

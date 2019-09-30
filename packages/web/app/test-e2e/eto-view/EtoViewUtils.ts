@@ -39,3 +39,6 @@ export const assertIssuerEtoView = () => {
 
   cy.get(tid("eto.public-view")).should("exist");
 };
+
+export const getYesOrNo = (value: any, assertion: any, returnTBAInsteadOfNo = false) =>
+  value ? (value === assertion ? "Yes" : returnTBAInsteadOfNo ? "TBA" : "No") : "TBA";

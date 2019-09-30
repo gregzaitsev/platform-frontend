@@ -11,7 +11,7 @@ import { tid } from "../utils/selectors";
 import { loginFixtureAccount } from "../utils/userHelpers";
 
 describe("Invest with ethereum", () => {
-  it("do", () => {
+  it("invest and check portfolio", () => {
     const PUBLIC_ETO_ID = etoFixtureAddressByName("ETOInPublicState");
 
     loginFixtureAccount("INV_EUR_ICBM_HAS_KYC_SEED", {
