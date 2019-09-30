@@ -6,7 +6,6 @@ import { createMessage } from "../../../components/translatedMessages/utils";
 import { TGlobalDependencies } from "../../../di/setupBindings";
 import { ITxData } from "../../../lib/web3/types";
 import { NotEnoughEtherForGasError } from "../../../lib/web3/Web3Adapter";
-import { IAppState } from "../../../store";
 import {
   compareBigNumbers,
   multiplyBigNumbers,
@@ -19,11 +18,12 @@ import { generateInvestmentTransaction } from "../transactions/investment/sagas"
 import { selectMaximumInvestment } from "../transactions/investment/selectors";
 import { ETxSenderType } from "../types";
 import { EValidationState } from "./reducer";
+import { selectInvestmentFLow } from "./selectors";
 import { txValidateWithdraw } from "./withdraw/sagas";
 
 export function* txValidateInvestment(): Iterator<any> {
   try {
-    const investFlow = yield select((state: IAppState) => state.investmentFlow);
+    const investFlow = yield select(selectInvestmentFLow);
     const investAmountUlps = yield select(selectMaximumInvestment);
 
     const generatedTxDetails = yield neuCall(generateInvestmentTransaction, {

@@ -42,7 +42,7 @@ describe("Invest with nEur", () => {
 
       confirmAccessModal();
 
-      cy.get(tid("investment-flow.success.title"));
+      cy.get(tid("investment-flow.success.title")).should("exist");
 
       cy.get(tid("investment-flow.success.view-your-portfolio")).click();
     });

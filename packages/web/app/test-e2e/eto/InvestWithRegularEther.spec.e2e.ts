@@ -45,7 +45,7 @@ describe("Invest with ethereum", () => {
 
     confirmAccessModal();
 
-    cy.get(tid("investment-flow.success.title"));
+    cy.get(tid("investment-flow.success.title")).should("exist");
 
     cy.get(tid("investment-flow.success.view-your-portfolio")).click();
 
@@ -63,14 +63,14 @@ describe("Invest with ethereum", () => {
   it("Invest ALL", () => {
     const PUBLIC_ETO_ID = etoFixtureAddressByName("ETOInPublicState");
 
-    const correctValue = 2;
+    const value = 2;
     createAndLoginNewUser({
       type: "investor",
       kyc: "individual",
       onlyLogin: false,
       signTosAgreement: true,
     }).then(({ address }) => {
-      sendEth("DEPLOYER", address, Q18.mul(correctValue));
+      sendEth("DEPLOYER", address, Q18.mul(value));
 
       goToDashboard();
 
@@ -92,7 +92,7 @@ describe("Invest with ethereum", () => {
 
       confirmAccessModal();
 
-      cy.get(tid("investment-flow.success.title"));
+      cy.get(tid("investment-flow.success.title")).should("exist");
 
       cy.get(tid("investment-flow.success.view-your-portfolio")).click();
 

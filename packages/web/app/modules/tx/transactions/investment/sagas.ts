@@ -69,7 +69,7 @@ export function* generateInvestmentTransaction(
     etoId,
     investAmountUlps,
   }: { investmentType: EInvestmentType; etoId: string; investAmountUlps: BigNumber },
-): any {
+): Iterator<any> {
   const from: string = yield select(selectEthereumAddressWithChecksum);
   const gasPrice: string = yield select(selectStandardGasPriceWithOverHead);
   let data;
