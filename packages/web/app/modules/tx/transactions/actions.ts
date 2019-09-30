@@ -8,7 +8,9 @@ export const txTransactionsActions = {
   /* Transaction Flows */
   startWithdrawEth: () => createSimpleAction("TRANSACTIONS_START_WITHDRAW_ETH"),
   startUpgrade: (tokenType: ETokenType) => createAction("TRANSACTIONS_START_UPGRADE", tokenType),
-  startInvestment: () => createSimpleAction("TRANSACTIONS_START_INVESTMENT"),
+  startInvestment: createActionFactory("TRANSACTIONS_START_INVESTMENT", (etoId: string) => ({
+    etoId,
+  })),
   startEtoSetDate: () => createSimpleAction("TRANSACTIONS_START_ETO_SET_DATE"),
   startUserClaim: (etoId: string) => createAction("TRANSACTIONS_START_CLAIM", etoId),
   startInvestorPayoutAccept: createActionFactory(

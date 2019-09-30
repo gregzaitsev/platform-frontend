@@ -55,7 +55,10 @@ export function* upgradeSaga({ logger }: TGlobalDependencies, action: TAction): 
   }
 }
 
-export function* investSaga({ logger }: TGlobalDependencies): any {
+export function* investSaga(
+  { logger }: TGlobalDependencies,
+  { payload }: TActionFromCreator<typeof actions.txTransactions.startInvestment>,
+): Iterator<any> {
   try {
     yield txSendSaga({
       type: ETxSenderType.INVEST,
@@ -66,6 +69,8 @@ export function* investSaga({ logger }: TGlobalDependencies): any {
     // Add clean up functions here ...
     yield onInvestmentTxModalHide();
     logger.info("Investment cancelled", e);
+  } finally {
+    yield put(actions.eto.loadEto(payload.etoId));
   }
 }
 
@@ -267,7 +272,7 @@ export function* startNomineeISHASignSaga({ logger }: TGlobalDependencies): Iter
 export const txTransactionsSagasWatcher = function*(): Iterator<any> {
   yield fork(neuTakeLatest, "TRANSACTIONS_START_WITHDRAW_ETH", withdrawSaga);
   yield fork(neuTakeLatest, "TRANSACTIONS_START_UPGRADE", upgradeSaga);
-  yield fork(neuTakeLatest, "TRANSACTIONS_START_INVESTMENT", investSaga);
+  yield fork(neuTakeLatest, actions.txTransactions.startInvestment, investSaga);
   yield fork(neuTakeLatest, "TRANSACTIONS_START_ETO_SET_DATE", etoSetDateSaga);
   yield fork(neuTakeLatest, "TRANSACTIONS_START_CLAIM", userClaimSaga);
   yield fork(neuTakeLatest, actions.txTransactions.startUnlockEtherFunds, unlockEtherFunds);

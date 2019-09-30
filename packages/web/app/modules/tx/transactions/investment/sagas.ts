@@ -144,7 +144,7 @@ export function* generateInvestmentTransaction({ contractsService }: TGlobalDepe
   }
 }
 
-export function* investmentFlowGenerator({ logger }: TGlobalDependencies): any {
+export function* investmentFlowGenerator({ logger }: TGlobalDependencies): Iterator<any> {
   yield take(actions.txSender.txSenderAcceptDraft);
 
   const etoId: string = yield select(selectInvestmentEtoId);

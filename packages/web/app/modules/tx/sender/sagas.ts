@@ -9,7 +9,6 @@ import {
 import { BrowserWalletError } from "../../../lib/web3/browser-wallet/BrowserWallet";
 import { LedgerError } from "../../../lib/web3/ledger-wallet/errors";
 import { LightError } from "../../../lib/web3/light-wallet/LightWallet";
-import { ITxData } from "../../../lib/web3/types";
 import {
   InvalidChangeIdError,
   InvalidRlpDataError,
@@ -127,6 +126,7 @@ function* txSendProcess(
     yield put(actions.txSender.txSenderShowModal({ type: transactionType }));
 
     yield neuRepeatIf("TX_SENDER_CHANGE", "TX_SENDER_ACCEPT", transactionFlowGenerator, extraParam);
+
     const txData = yield select(selectTxDetails);
     // Check if gas amount is correct
     yield validateGas(txData);
@@ -187,19 +187,18 @@ function* ensureNoPendingTx({ logger }: TGlobalDependencies): any {
 }
 
 function* sendTxSubSaga({ web3Manager }: TGlobalDependencies): any {
-  const type: ETxSenderType = yield select(selectTxType);
-  const txData: ITxData = yield select(selectTxDetails);
+  const type: ReturnType<typeof selectTxType> = yield select(selectTxType);
+  const txData: ReturnType<typeof selectTxDetails> = yield select(selectTxDetails);
+
+  if (!txData || !type) {
+    throw new Error("Tx data is not defined");
+  }
+
   const txAdditionalData: TAdditionalDataByType<typeof type> = yield select((state: IAppState) =>
     selectTxAdditionalData<typeof type>(state),
   );
 
-  if (!txData) {
-    throw new Error("Tx data is not defined");
-  }
-
   try {
-    yield validateGas(txData);
-
     const txHash: string = yield web3Manager.sendTransaction(txData);
 
     const txTimestamp = yield neuCall(markTransactionAsPending, {

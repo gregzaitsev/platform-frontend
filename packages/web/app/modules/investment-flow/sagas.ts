@@ -215,7 +215,7 @@ function* start(action: TAction): any {
   yield put(actions.investmentFlow.resetInvestment());
   yield put(actions.investmentFlow.setEtoId(etoId));
   yield put(actions.kyc.kycLoadClientData());
-  yield put(actions.txTransactions.startInvestment());
+  yield put(actions.txTransactions.startInvestment(etoId));
   yield put(actions.investorEtoTicket.loadEtoInvestorTicket(selectEtoById(state, etoId)!));
 
   yield take("TX_SENDER_SHOW_MODAL");
