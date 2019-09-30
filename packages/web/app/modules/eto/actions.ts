@@ -6,6 +6,7 @@ import { Dictionary } from "../../types";
 import {
   IEtoContractData,
   IEtoTokenData,
+  SignedISHAStatus,
   TEtoWithCompanyAndContract,
   TOfferingAgreementsStatus,
 } from "./types";
@@ -86,5 +87,13 @@ export const etoActions = {
       previewCode,
       statuses,
     }),
+  ),
+  loadSignedInvestmentAgreement: createActionFactory(
+    "ETO_LOAD_INVESTMENT_AGREEMENT",
+    (eto: TEtoWithCompanyAndContract) => ({ eto }),
+  ),
+  setInvestmentAgreementHash: createActionFactory(
+    "ETO_SET_INVESTMENT_AGREEMENT_URL",
+    (previewCode: string, url: SignedISHAStatus["url"]) => ({ url, previewCode }),
   ),
 };

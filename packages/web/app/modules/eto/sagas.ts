@@ -28,6 +28,7 @@ import { Dictionary } from "../../types";
 import { divideBigNumbers, multiplyBigNumbers } from "../../utils/BigNumberUtils";
 import { actions, TActionFromCreator } from "../actions";
 import { selectIsUserVerified, selectUserType } from "../auth/selectors";
+import { shouldLoadPledgeData } from "../bookbuilding-flow/utils";
 import { selectMyAssets } from "../investor-portfolio/selectors";
 import { waitForKycStatus } from "../kyc/sagas";
 import { selectClientJurisdiction } from "../kyc/selectors";
@@ -43,6 +44,7 @@ import { InvalidETOStateError } from "./errors";
 import {
   selectEtoById,
   selectEtoOnChainNextStateStartDate,
+  selectEtoOnChainStateById,
   selectEtoWithCompanyAndContract,
   selectFilteredEtosByRestrictedJurisdictions,
   selectIsEtoAnOffer,
@@ -74,8 +76,16 @@ function* loadEtoPreview(
       if (userType === EUserType.INVESTOR) {
         yield put(actions.investorEtoTicket.loadEtoInvestorTicket(eto));
       }
-
       yield neuCall(loadEtoContract, eto);
+    }
+
+    // This needs to always be after loadingEtoContract step
+    const onChainState = yield select((state: IAppState) =>
+      selectEtoOnChainStateById(state, eto.etoId),
+    );
+
+    if (shouldLoadPledgeData(eto.state, onChainState)) {
+      yield put(actions.bookBuilding.loadPledge(eto.etoId));
     }
 
     yield put(actions.eto.setEto({ eto, company }));
@@ -117,6 +127,15 @@ function* loadEto(
       yield neuCall(loadEtoContract, eto);
     }
 
+    // This needs to always be after loadingEtoContract step
+    const onChainState = yield select((state: IAppState) =>
+      selectEtoOnChainStateById(state, eto.etoId),
+    );
+
+    if (shouldLoadPledgeData(eto.state, onChainState)) {
+      yield put(actions.bookBuilding.loadPledge(eto.etoId));
+    }
+
     yield put(actions.eto.setEto({ eto, company }));
   } catch (e) {
     logger.error("Could not load eto by id", e);
@@ -135,19 +154,21 @@ function* loadEto(
 
 export function* loadEtoContract(
   { contractsService, logger }: TGlobalDependencies,
-  eto: TEtoDataWithCompany,
+  { etoId, previewCode, state }: TEtoDataWithCompany,
 ): Iterator<any> {
-  if (eto.state !== EEtoState.ON_CHAIN) {
-    logger.error("Invalid eto state", new InvalidETOStateError(eto.state, EEtoState.ON_CHAIN), {
-      etoId: eto.etoId,
+  if (state !== EEtoState.ON_CHAIN) {
+    logger.error("Invalid eto state", new InvalidETOStateError(state, EEtoState.ON_CHAIN), {
+      etoId: etoId,
     });
     return;
   }
-
   try {
-    const etoContract: ETOCommitment = yield contractsService.getETOCommitmentContract(eto.etoId);
+    const etoContract: ETOCommitment = yield contractsService.getETOCommitmentContract(etoId);
+
     const etherTokenContract: EtherToken = contractsService.etherToken;
     const euroTokenContract: EuroToken = contractsService.euroToken;
+
+    yield put(actions.bookBuilding.loadPledge(etoId));
 
     // fetch eto contracts state with 'all' to improve performance
     const [
@@ -169,7 +190,7 @@ export function* loadEtoContract(
     ]);
 
     yield put(
-      actions.eto.setEtoDataFromContract(eto.previewCode, {
+      actions.eto.setEtoDataFromContract(previewCode, {
         equityTokenAddress,
         etoTermsAddress,
         timedState: timedStateRaw.toNumber(),
@@ -182,7 +203,7 @@ export function* loadEtoContract(
       }),
     );
   } catch (e) {
-    logger.error("ETO contract data could not be loaded", e, { etoId: eto.etoId });
+    logger.error("ETO contract data could not be loaded", e, { etoId: etoId });
 
     // rethrow original error so it can be handled by caller saga
     throw e;
@@ -221,16 +242,21 @@ function* calculateNextStateDelay({ logger }: TGlobalDependencies, previewCode: 
     }
 
     // if timeToNextState is negative then user and ethereum clock are not in sync
-    // in that case pool eto in two time intervals of 2 and 5 seconds
-    // if after than state time is still negative log warning message
+    // in that case poll eto 1 minute with intervals of 2seconds and then 4 minutes more with 5 seconds interval
+    // if after that state time is still negative log warning message
     const nextStateWatchCount = etoNextStateCount[previewCode];
     if (nextStateWatchCount === undefined) {
       etoNextStateCount[previewCode] = 1;
       return 2000;
     }
 
-    if (nextStateWatchCount === 1) {
-      etoNextStateCount[previewCode] = 2;
+    if (nextStateWatchCount < 30) {
+      etoNextStateCount[previewCode] = nextStateWatchCount + 1;
+      return 2000;
+    }
+
+    if (nextStateWatchCount >= 30 && nextStateWatchCount < 78) {
+      etoNextStateCount[previewCode] = nextStateWatchCount + 1;
       return 5000;
     }
 
@@ -269,14 +295,15 @@ export function* delayEtoRefresh(
   yield race(strategies);
 }
 
-function* watchEto(_: TGlobalDependencies, previewCode: string): any {
+export function* watchEto(_: TGlobalDependencies, previewCode: string): any {
   const eto: TEtoWithCompanyAndContract = yield select((state: IAppState) =>
     selectEtoWithCompanyAndContract(state, previewCode),
   );
 
-  yield neuCall(delayEtoRefresh, eto);
-
-  yield put(actions.eto.loadEtoPreview(eto.previewCode));
+  while (true) {
+    yield neuCall(delayEtoRefresh, eto);
+    yield put(actions.eto.loadEtoPreview(eto.previewCode));
+  }
 }
 
 function* loadEtos({ apiEtoService, logger, notificationCenter }: TGlobalDependencies): any {
@@ -290,6 +317,13 @@ function* loadEtos({ apiEtoService, logger, notificationCenter }: TGlobalDepende
       etos
         .filter(eto => eto.state === EEtoState.ON_CHAIN)
         .map(eto => neuCall(loadEtoContract, eto)),
+    );
+
+    // Pledge can be loaded after listed state
+    yield all(
+      etos
+        .filter(eto => shouldLoadPledgeData(eto.state))
+        .map(eto => put(actions.bookBuilding.loadPledge(eto.etoId))),
     );
 
     const filteredEtosByJurisdictionRestrictions: TEtoDataWithCompany[] = yield select(
@@ -542,6 +576,27 @@ function* loadAgreementStatus(
   }
 }
 
+function* loadISHAStatus(
+  { logger }: TGlobalDependencies,
+  eto: TEtoWithCompanyAndContract,
+): Iterator<any> {
+  try {
+    if (!isOnChain(eto)) {
+      return EEtoAgreementStatus.NOT_DONE;
+    }
+
+    // if eto state is after `Signing` then ISHA agreement was already signed
+    if (eto.contract.timedState > EETOStateOnChain.Signing) {
+      return EEtoAgreementStatus.DONE;
+    }
+
+    return EEtoAgreementStatus.NOT_DONE;
+  } catch (e) {
+    logger.error(`Could not fetch ISHA document status`, e);
+    return EEtoAgreementStatus.ERROR;
+  }
+}
+
 function* loadAgreementsStatus(
   _: TGlobalDependencies,
   { payload }: TActionFromCreator<typeof actions.eto.loadEtoAgreementsStatus>,
@@ -549,9 +604,24 @@ function* loadAgreementsStatus(
   const statuses: Dictionary<EEtoAgreementStatus, EAgreementType> = yield all({
     [EAgreementType.THA]: neuCall(loadAgreementStatus, EAgreementType.THA, payload.eto),
     [EAgreementType.RAAA]: neuCall(loadAgreementStatus, EAgreementType.RAAA, payload.eto),
+    [EAgreementType.ISHA]: neuCall(loadISHAStatus, payload.eto),
   });
 
   yield put(actions.eto.setAgreementsStatus(payload.eto.previewCode, statuses));
+}
+
+export function* loadInvestmentAgreement(
+  { contractsService }: TGlobalDependencies,
+  action: TActionFromCreator<typeof actions.eto.loadSignedInvestmentAgreement>,
+): Iterator<any> {
+  const contract: ETOCommitment = yield contractsService.getETOCommitmentContract(
+    action.payload.eto.etoId,
+  );
+  const url: string = yield contract.signedInvestmentAgreementUrl;
+
+  const parsedUrl = url === "" ? undefined : url;
+
+  yield put(actions.eto.setInvestmentAgreementHash(action.payload.eto.previewCode, parsedUrl));
 }
 
 export function* etoSagas(): Iterator<any> {
@@ -563,6 +633,8 @@ export function* etoSagas(): Iterator<any> {
 
   yield fork(neuTakeEvery, actions.eto.downloadEtoDocument, downloadDocument);
   yield fork(neuTakeEvery, actions.eto.downloadEtoTemplateByType, downloadTemplateByType);
+
+  yield fork(neuTakeLatest, actions.eto.loadSignedInvestmentAgreement, loadInvestmentAgreement);
 
   yield fork(neuTakeLatest, actions.eto.verifyEtoAccess, verifyEtoAccess);
   yield fork(neuTakeLatest, actions.eto.ensureEtoJurisdiction, ensureEtoJurisdiction);

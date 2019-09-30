@@ -64,3 +64,8 @@ export enum EEtoAgreementStatus {
 }
 
 export type TOfferingAgreementsStatus = Dictionary<EEtoAgreementStatus, EAgreementType>;
+
+export type SignedISHAStatus = {
+  isLoading: boolean;
+  url: string | undefined;
+};

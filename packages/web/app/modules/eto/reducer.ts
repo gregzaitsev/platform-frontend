@@ -2,7 +2,12 @@ import { TCompanyEtoData, TEtoSpecsData } from "../../lib/api/eto/EtoApi.interfa
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
 import { actions } from "../actions";
-import { IEtoContractData, IEtoTokenData, TOfferingAgreementsStatus } from "./types";
+import {
+  IEtoContractData,
+  IEtoTokenData,
+  SignedISHAStatus,
+  TOfferingAgreementsStatus,
+} from "./types";
 
 export interface IEtoState {
   etos: { [previewCode: string]: TEtoSpecsData | undefined };
@@ -13,6 +18,7 @@ export interface IEtoState {
   etoWidgetError: boolean | undefined;
   tokenData: { [previewCode: string]: IEtoTokenData | undefined };
   offeringAgreementsStatus: { [previewCode: string]: TOfferingAgreementsStatus | undefined };
+  signedInvestmentAgreements: { [previewCode: string]: SignedISHAStatus | undefined };
 }
 
 export const etoFlowInitialState: IEtoState = {
@@ -24,6 +30,7 @@ export const etoFlowInitialState: IEtoState = {
   etoWidgetError: undefined,
   tokenData: {},
   offeringAgreementsStatus: {},
+  signedInvestmentAgreements: {},
 };
 
 export const etoReducer: AppReducer<IEtoState> = (
@@ -89,6 +96,25 @@ export const etoReducer: AppReducer<IEtoState> = (
         offeringAgreementsStatus: {
           ...state.offeringAgreementsStatus,
           [action.payload.previewCode]: action.payload.statuses,
+        },
+      };
+    case actions.eto.setInvestmentAgreementHash.getType():
+      return {
+        ...state,
+        signedInvestmentAgreements: {
+          ...state.signedInvestmentAgreements,
+          [action.payload.previewCode]: {
+            isLoading: false,
+            url: action.payload.url,
+          },
+        },
+      };
+    case actions.eto.loadSignedInvestmentAgreement.getType():
+      return {
+        ...state,
+        signedInvestmentAgreements: {
+          ...state.signedInvestmentAgreements,
+          [action.payload.eto.previewCode]: { isLoading: true, url: undefined },
         },
       };
   }

@@ -31,6 +31,7 @@ export const txTransactionsActions = {
   ),
   startNomineeTHASign: createActionFactory("TRANSACTION_START_NOMINEE_THA_SIGN"),
   startNomineeRAAASign: createActionFactory("TRANSACTION_START_NOMINEE_RAAA_SIGN"),
+  startNomineeISHASign: createActionFactory("TRANSACTION_START_NOMINEE_ISHA_SIGN"),
   // Add here new custom sagas that represent flows
 
   // Delete pending transaction

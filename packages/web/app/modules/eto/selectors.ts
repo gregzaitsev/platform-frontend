@@ -148,11 +148,11 @@ export const selectEtoOnChainNextStateStartDate = (
 ): Date | undefined => {
   const eto = selectEtoWithCompanyAndContract(state, previewCode);
 
-  if (eto) {
-    const nextState: EETOStateOnChain | undefined = eto.contract!.timedState + 1;
+  if (eto && eto.contract) {
+    const nextState: EETOStateOnChain | undefined = eto.contract.timedState + 1;
 
     if (nextState) {
-      return eto.contract!.startOfStates[nextState];
+      return eto.contract.startOfStates[nextState];
     }
   }
 
@@ -215,4 +215,32 @@ export const selectAgreementsStatus = createSelector(
   (_: IAppState, previewCode: string) => previewCode,
   (etoState: DeepReadonly<IEtoState>, previewCode: string) =>
     etoState.offeringAgreementsStatus[previewCode],
+);
+
+export const selectInvestmentAgreement = (state: IAppState, previewCode: string) => {
+  const eto = selectEtoState(state);
+
+  return eto.signedInvestmentAgreements[previewCode];
+};
+
+export const selectInvestmentAgreementLoading = createSelector(
+  selectInvestmentAgreement,
+  agreement => {
+    if (agreement) {
+      return agreement.isLoading;
+    }
+
+    return false;
+  },
+);
+
+export const selectSignedInvestmentAgreementHash = createSelector(
+  selectInvestmentAgreement,
+  agreement => {
+    if (agreement) {
+      return agreement.url;
+    }
+
+    return undefined;
+  },
 );

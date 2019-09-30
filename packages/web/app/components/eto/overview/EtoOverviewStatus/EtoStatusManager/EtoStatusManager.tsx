@@ -1,22 +1,24 @@
 import * as React from "react";
 import { compose } from "recompose";
 
-import { selectIsAuthorized } from "../../../../modules/auth/selectors";
-import { selectEtoOnChainStateById } from "../../../../modules/eto/selectors";
-import { EETOStateOnChain, TEtoWithCompanyAndContract } from "../../../../modules/eto/types";
+import { selectIsAuthorized } from "../../../../../modules/auth/selectors";
+import { selectEtoOnChainStateById } from "../../../../../modules/eto/selectors";
+import { EETOStateOnChain, TEtoWithCompanyAndContract } from "../../../../../modules/eto/types";
 import {
   selectInitialMaxCapExceeded,
   selectIsEligibleToPreEto,
-} from "../../../../modules/investor-portfolio/selectors";
-import { appConnect } from "../../../../store";
-import { CampaigningActivatedWidget } from "./CampaigningWidget/CampaigningActivatedWidget";
-import { ClaimWidget, RefundWidget } from "./ClaimRefundWidget";
-import { CounterWidget } from "./CounterWidget";
-import { EtoMaxCapExceededWidget } from "./EtoMaxCapExceeded";
-import { InvestmentWidget } from "./InvestmentWidget/InvestmentWidget";
-import { RegisterNowWidget } from "./RegisterNowWidget";
+} from "../../../../../modules/investor-portfolio/selectors";
+import { appConnect } from "../../../../../store";
+import { withContainer } from "../../../../../utils/withContainer.unsafe";
+import { CampaigningActivatedWidget } from "../CampaigningWidget/CampaigningActivatedWidget";
+import { ClaimWidget } from "../ClaimRefundWidget/ClaimWidget";
+import { RefundWidget } from "../ClaimRefundWidget/RefundWidget";
+import { CounterWidget } from "../CounterWidget";
+import { EtoMaxCapExceededWidget } from "../EtoMaxCapExceeded";
+import { InvestmentWidget } from "../InvestmentWidget/InvestmentWidget";
+import { RegisterNowWidget } from "../RegisterNowWidget";
 
-import * as styles from "./EtoOverviewStatus.module.scss";
+import * as styles from "../EtoOverviewStatus.module.scss";
 
 interface IExternalProps {
   eto: TEtoWithCompanyAndContract;
@@ -28,6 +30,10 @@ interface IStateProps {
   isEligibleToPreEto: boolean;
   maxCapExceeded: boolean;
 }
+
+const EtoStatusManagerContainer: React.FunctionComponent = ({ children }) => (
+  <div className={styles.etoDataWrapper}>{children}</div>
+);
 
 const EtoStatusComponentChooser: React.FunctionComponent<IStateProps & IExternalProps> = ({
   eto,
@@ -48,22 +54,24 @@ const EtoStatusComponentChooser: React.FunctionComponent<IStateProps & IExternal
 
   switch (timedState) {
     case EETOStateOnChain.Setup: {
-      // for not authorized
       if (isAuthorized) {
         const nextState = isEligibleToPreEto ? EETOStateOnChain.Whitelist : EETOStateOnChain.Public;
         const nextStateStartDate = eto.contract ? eto.contract.startOfStates[nextState] : undefined;
 
         return (
-          <CampaigningActivatedWidget
-            investmentCalculatedValues={eto.investmentCalculatedValues}
-            minPledge={eto.minTicketEur}
-            etoId={eto.etoId}
-            investorsLimit={eto.maxPledges}
-            nextState={nextState}
-            nextStateStartDate={nextStateStartDate}
-            isActive={eto.isBookbuilding}
-            keyQuoteFounder={eto.company.keyQuoteFounder}
-          />
+          <>
+            <CampaigningActivatedWidget
+              investmentCalculatedValues={eto.investmentCalculatedValues}
+              minPledge={eto.minTicketEur}
+              etoId={eto.etoId}
+              investorsLimit={eto.maxPledges}
+              nextState={nextState}
+              nextStateStartDate={nextStateStartDate}
+              whitelistingIsActive={eto.isBookbuilding}
+              canEnableBookbuilding={eto.canEnableBookbuilding}
+              keyQuoteFounder={eto.company.keyQuoteFounder}
+            />
+          </>
         );
       } else {
         return <RegisterNowWidget isEmbedded={isEmbedded} />;
@@ -76,7 +84,8 @@ const EtoStatusComponentChooser: React.FunctionComponent<IStateProps & IExternal
         return (
           <CounterWidget
             endDate={eto.contract!.startOfStates[EETOStateOnChain.Public]!}
-            state={EETOStateOnChain.Public}
+            awaitedState={EETOStateOnChain.Public}
+            etoId={eto.etoId}
           />
         );
       }
@@ -109,24 +118,6 @@ const EtoStatusComponentChooser: React.FunctionComponent<IStateProps & IExternal
   }
 };
 
-const EtoStatusManagerLayout: React.FunctionComponent<IStateProps & IExternalProps> = ({
-  eto,
-  isAuthorized,
-  isEligibleToPreEto,
-  maxCapExceeded,
-  isEmbedded,
-}) => (
-  <div className={styles.etoDataWrapper}>
-    <EtoStatusComponentChooser
-      isAuthorized={isAuthorized}
-      isEligibleToPreEto={isEligibleToPreEto}
-      maxCapExceeded={maxCapExceeded}
-      eto={eto}
-      isEmbedded={isEmbedded}
-    />
-  </div>
-);
-
 export const EtoStatusManager = compose<IStateProps & IExternalProps, IExternalProps>(
   appConnect<IStateProps, {}, IExternalProps>({
     stateToProps: (state, props) => ({
@@ -136,4 +127,5 @@ export const EtoStatusManager = compose<IStateProps & IExternalProps, IExternalP
       maxCapExceeded: selectInitialMaxCapExceeded(state, props.eto.etoId),
     }),
   }),
-)(EtoStatusManagerLayout);
+  withContainer(EtoStatusManagerContainer),
+)(EtoStatusComponentChooser);

@@ -22,11 +22,12 @@ export const PublishETOWidgetComponent: React.FunctionComponent<
   IDispatchProps & IExternalProps
 > = ({ publish, columnSpan }) => (
   <DashboardCenteredWidget
+    data-test-id="eto-dashboard-publish-eto-widget"
     title={<FormattedMessage id="settings.publish-eto.header" />}
     text={<FormattedMessage id="settings.publish-eto.description" />}
     columnSpan={columnSpan}
   >
-    <ButtonArrowRight data-test-id="eto-dashboard-publish-eto" onClick={publish}>
+    <ButtonArrowRight data-test-id="eto-dashboard-publish-eto-widget.publish" onClick={publish}>
       <FormattedMessage id="settings.publish-eto.publish" />
     </ButtonArrowRight>
   </DashboardCenteredWidget>

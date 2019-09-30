@@ -17,7 +17,7 @@ import { FUNDING_ROUNDS } from "../../constants";
 import { ComingSoonEtoState, ETOInvestorState, SuccessEtoState } from "../../shared/ETOState";
 import { Cover } from "./Cover";
 import { EtoCardButton, EtoCardPanelButton } from "./EtoCardPanel";
-import { EtoStatusManager, SuccessfulInfo } from "./EtoStatusManager";
+import { EtoCardStatusManager, SuccessfulInfo } from "./EtoCardStatusManager";
 
 import * as styles from "./EtoOverviewThumbnail.module.scss";
 
@@ -148,7 +148,7 @@ const EtoOverviewLayoutBase: React.FunctionComponent<TEtoProps> = ({ eto }) => (
             </div>
           </div>
 
-          <EtoStatusManager eto={eto} />
+          <EtoCardStatusManager eto={eto} />
         </>
       )}
     </section>
