@@ -19,4 +19,5 @@ export const externalRoutes = {
   imprint: "https://neufund.org/imprint",
   tos: "https://neufund.org/terms-of-use",
   privacyPolicy: "https://neufund.org/privacy-policy",
+  ipfsDocument: "https://ipfs.io/ipfs/:ipfsHash",
 };

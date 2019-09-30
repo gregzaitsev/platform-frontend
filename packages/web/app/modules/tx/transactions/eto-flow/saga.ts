@@ -13,6 +13,7 @@ import {
   selectNewPreEtoStartDate,
   selectPreEtoStartDate,
 } from "../../../eto-flow/selectors";
+import { TEtoWithCompanyAndContract } from "../../../eto/types";
 import { selectStandardGasPriceWithOverHead } from "../../../gas/selectors";
 import { neuCall } from "../../../sagasUtils";
 import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
@@ -56,20 +57,20 @@ export function* generateSetStartDateTransaction({
   return txDetails;
 }
 
-type TExtraParams = { etoId: string; agreementHash: string };
+type TExtraParams = { eto: TEtoWithCompanyAndContract; agreementHash: string };
 
 export function* generateSignInvestmentAgreementTx(
   { contractsService, web3Manager }: TGlobalDependencies,
   extraParam: TExtraParams,
 ): any {
-  const { etoId, agreementHash } = extraParam;
+  const { eto, agreementHash } = extraParam;
   const state: IAppState = yield select();
 
-  if (etoId && agreementHash) {
+  if (eto && agreementHash) {
     const userAddress: EthereumAddressWithChecksum = yield selectEthereumAddressWithChecksum(state);
     const gasPriceWithOverhead: string = yield selectStandardGasPriceWithOverHead(state);
 
-    const contract: ETOCommitment = yield contractsService.getETOCommitmentContract(etoId);
+    const contract: ETOCommitment = yield contractsService.getETOCommitmentContract(eto.etoId);
     const txData: string = yield contract
       .companySignsInvestmentAgreementTx(ipfsLinkFromHash(agreementHash))
       .getData();

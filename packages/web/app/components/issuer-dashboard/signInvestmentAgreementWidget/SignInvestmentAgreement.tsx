@@ -26,7 +26,7 @@ import {
 import { LoadingIndicator } from "../../shared/loading-indicator/LoadingIndicator";
 
 interface IDispatchProps {
-  signInvestmentAgreement: (etoId: string, agreementHash: string) => void;
+  signInvestmentAgreement: (eto: TEtoWithCompanyAndContract, agreementHash: string) => void;
 }
 
 interface IStateProps {
@@ -42,6 +42,7 @@ interface IExternalProps {
 
 export const WaitingForNominee: React.FunctionComponent<IExternalProps> = ({ columnSpan }) => (
   <DashboardWidget
+    data-test-id="dashboard-wait-for-nominee-to-sign-isha-widget"
     title={<FormattedMessage id="download-agreement-widget.wait-for-nominee-to-sign" />}
     text={<FormattedMessage id="download-agreement-widget.wait-for-nominee-to-sign-text" />}
     columnSpan={columnSpan}
@@ -52,7 +53,7 @@ interface IWaitingToBeSigned {
   eto: TEtoWithCompanyAndContract;
   ipfsHash: string;
   signedInvestmentAgreementUrl: undefined | string;
-  signInvestmentAgreement: (etoId: string, ipfsHash: string) => void;
+  signInvestmentAgreement: (eto: TEtoWithCompanyAndContract, ipfsHash: string) => void;
 }
 
 export const WaitingToBeSigned: React.FunctionComponent<IWaitingToBeSigned & IExternalProps> = ({
@@ -63,6 +64,7 @@ export const WaitingToBeSigned: React.FunctionComponent<IWaitingToBeSigned & IEx
   columnSpan,
 }) => (
   <DashboardCenteredWidget
+    data-test-id="dashboard-sign-isha-on-chain-widget"
     title={<FormattedMessage id="download-agreement-widget.sign-on-ethereum" />}
     text={
       signedInvestmentAgreementUrl === null ? (
@@ -74,8 +76,8 @@ export const WaitingToBeSigned: React.FunctionComponent<IWaitingToBeSigned & IEx
     columnSpan={columnSpan}
   >
     <ButtonArrowRight
-      data-test-id="eto-dashboard-submit-proposal"
-      onClick={() => signInvestmentAgreement(eto.etoId, ipfsHash)}
+      data-test-id="dashboard-sign-isha-on-chain-widget.sign"
+      onClick={() => signInvestmentAgreement(eto, ipfsHash)}
     >
       <FormattedMessage id="download-agreement-widget.sign-on-ethereum" />
     </ButtonArrowRight>
@@ -126,8 +128,8 @@ export const SignInvestmentAgreement = compose<React.FunctionComponent<IExternal
       }
     },
     dispatchToProps: dispatch => ({
-      signInvestmentAgreement: (etoId: string, agreementHash: string) =>
-        dispatch(actions.etoFlow.signInvestmentAgreement(etoId, agreementHash)),
+      signInvestmentAgreement: (eto: TEtoWithCompanyAndContract, agreementHash: string) =>
+        dispatch(actions.etoFlow.signInvestmentAgreement(eto, agreementHash)),
     }),
   }),
   branch<IStateProps | null>(props => props === null, renderNothing),
