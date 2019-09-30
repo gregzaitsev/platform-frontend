@@ -42,7 +42,8 @@ const EtoMaxCapExceededComponent: React.FunctionComponent<
     <div className={styles.maxCapExceeded}>
       <CounterWidget
         endDate={nextStateStartDate}
-        state={EETOStateOnChain.Public}
+        awaitedState={EETOStateOnChain.Public}
+        etoId={eto.etoId}
         alternativeText={
           <FormattedMessage id="shared-component.eto-overview.pre-eto.max-cap-reached" />
         }
