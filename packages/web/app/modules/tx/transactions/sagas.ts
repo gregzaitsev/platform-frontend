@@ -186,6 +186,7 @@ export function* etoSignInvestmentAgreementSaga(
     yield txSendSaga({
       type: ETxSenderType.SIGN_INVESTMENT_AGREEMENT,
       transactionFlowGenerator: etoSignInvestmentAgreementGenerator,
+      extraParam: action.payload,
     });
     logger.info("Signing investment agreement was successful");
   } catch (e) {

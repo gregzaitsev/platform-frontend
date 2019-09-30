@@ -47,7 +47,7 @@ type TStateProps = {
   etoTemplates: IEtoDocument[];
   etoDocuments: TEtoDocumentTemplates;
   offeringDocumentType: EOfferingDocumentType;
-  onChainState: EETOStateOnChain;
+  onChainState: EETOStateOnChain | undefined;
   documentsDownloading: { [key in EEtoDocumentType]?: boolean };
   documentsUploading: { [key in EEtoDocumentType]?: boolean };
   transactionPending: boolean;
@@ -103,7 +103,7 @@ const Documents = compose<TComponentProps, {}>(
   appConnect<TStateProps, TDispatchProps, { etoId: string }>({
     stateToProps: state => ({
       etoState: nonNullable(selectIssuerEtoState(state)),
-      onChainState: nonNullable(selectIssuerEtoOnChainState(state)),
+      onChainState: selectIssuerEtoOnChainState(state),
       etoTemplates: selectFilteredIssuerEtoTemplatesArray(state),
       etoDocuments: nonNullable(selectIssuerEtoDocuments(state)),
       documentsDownloading: selectEtoDocumentsDownloading(state.etoDocuments),
