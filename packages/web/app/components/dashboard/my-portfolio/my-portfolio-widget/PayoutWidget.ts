@@ -60,10 +60,7 @@ export const PayoutWidget = compose<{}, {}>(
     (props: IStateProps) => !props.pendingPayout && !props.availablePayout,
     renderComponent(WelcomeToNeufund),
   ),
-  branch(
-    (props: IStateProps) => !props.pendingPayout && props.availablePayout,
-    renderComponent(IncomingPayoutAvailable),
-  ),
+  branch((props: IStateProps) => props.availablePayout, renderComponent(IncomingPayoutAvailable)),
   branch(
     (props: IStateProps) => props.pendingPayout && !props.snapshotIsActual,
     renderComponent(IncomingPayoutWaiting),
