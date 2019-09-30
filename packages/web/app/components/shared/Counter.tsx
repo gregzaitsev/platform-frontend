@@ -26,7 +26,7 @@ interface IPlateProps {
   blink?: boolean;
 }
 
-const Plate: React.FunctionComponent<IPlateProps> = ({ value, label, blink = false }) => (
+const Plate: React.FunctionComponent<IPlateProps> = ({ value, label, blink = true }) => (
   <div className={styles.wrapper}>
     <div className={cn(styles.plate, { [styles.blink]: blink })}>{value}</div>
     <div className={styles.label}>{label}</div>
