@@ -5,6 +5,7 @@ import { TEtoWithCompanyAndContract } from "../../../modules/eto/types";
 import { Container, EColumnSpan, EContainerType } from "../../layouts/Container";
 import { Accordion, AccordionElement, AccordionField } from "../../shared/Accordion";
 import { ChartDoughnutLazy } from "../../shared/charts/ChartDoughnutLazy";
+import { Field } from "../../shared/Field";
 import { Panel } from "../../shared/Panel";
 import { DashboardHeading } from "../shared/DashboardHeading";
 import { CHART_COLORS } from "../shared/EtoView";
@@ -135,7 +136,11 @@ const EtoAccordionElements: React.FunctionComponent<{ eto: TEtoWithCompanyAndCon
                 <AccordionElement
                   title={<FormattedMessage id="eto.form.product-vision.use-of-capital" />}
                 >
-                  {useOfCapital && <p>{useOfCapital}</p>}
+                  {useOfCapital && (
+                    <p>
+                      <Field name="useOfCapital" value={useOfCapital} />
+                    </p>
+                  )}
 
                   {useOfCapitalList && (
                     <ChartDoughnutLazy
