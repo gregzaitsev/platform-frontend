@@ -3,8 +3,8 @@ import BigNumber from "bignumber.js";
 import { stripNumberFormatting } from "../../components/shared/formatters/utils";
 import { fillForm } from "../utils/forms";
 import {
-  acceptWallet,
   assertWallet,
+  confirmAccessModal,
   getWalletNEurAmount,
   goToWallet,
   parseAmount,
@@ -51,7 +51,7 @@ describe("Redeem NEUR", function(): void {
 
     // continue transaction
     cy.get(tid("bank-transfer.redeem-summary.continue")).click();
-    acceptWallet();
+    confirmAccessModal();
 
     // go to wallet
     cy.get(tid("bank-transfer.redeem.success.go-to-wallet")).click();

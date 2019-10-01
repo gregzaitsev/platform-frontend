@@ -50,7 +50,7 @@ const SuccessfulInfo: React.FunctionComponent<{ totalAmount: string }> = ({ tota
   </div>
 );
 
-const EtoStatusManager = ({ eto }: IExternalProps) => {
+const EtoCardStatusManager = ({ eto }: IExternalProps) => {
   const state = eto.contract ? eto.contract.timedState : eto.state;
 
   switch (state) {
@@ -63,7 +63,13 @@ const EtoStatusManager = ({ eto }: IExternalProps) => {
       const endDate = eto.contract!.startOfStates[EETOStateOnChain.Public]!;
 
       if (eto.subState === EEtoSubState.COUNTDOWN_TO_PUBLIC_SALE) {
-        return <CounterWidget endDate={endDate} state={EETOStateOnChain.Public} />;
+        return (
+          <CounterWidget
+            endDate={endDate}
+            awaitedState={EETOStateOnChain.Public}
+            etoId={eto.etoId}
+          />
+        );
       } else {
         return (
           <>
@@ -147,4 +153,4 @@ const EtoStatusManager = ({ eto }: IExternalProps) => {
   }
 };
 
-export { EtoStatusManager, SuccessfulInfo };
+export { EtoCardStatusManager, SuccessfulInfo };
