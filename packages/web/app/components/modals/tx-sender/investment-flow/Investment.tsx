@@ -190,47 +190,50 @@ export class InvestmentSelectionComponent extends React.Component<IProps, IState
             </Col>
           </Row>
           <Row>
-            <Col>
-              <MaskedNumberInput
-                name="euroValue"
-                value={this.props.euroValue}
-                storageFormat={ENumberInputFormat.ULPS}
-                valueType={ECurrency.EUR_TOKEN}
-                outputFormat={ENumberOutputFormat.FULL}
-                onChangeFn={this.props.changeEuroValue}
-                showUnits={true}
-                data-test-id="invest-modal-eur-field"
-                placeholder={`${intl.formatIntlMessage(
-                  "investment-flow.min-ticket-size",
-                )} ${minTicketEur} EUR`}
-                errorMsg={error}
-                invalid={!!error}
-                setError={this.setError}
-              />
-            </Col>
-            <Col sm="1">
-              <div className={styles.equals}>≈</div>
-            </Col>
-            <Col className={"text-right"}>
-              <MaskedNumberInput
-                name={"ethValue"}
-                valueType={ECurrency.ETH}
-                storageFormat={ENumberInputFormat.ULPS}
-                outputFormat={ENumberOutputFormat.FULL}
-                value={this.props.ethValue}
-                onChangeFn={this.props.changeEthValue}
-                placeholder={`${intl.formatIntlMessage(
-                  "investment-flow.min-ticket-size",
-                )} ${formatNumber({
-                  value: minTicketEth,
-                  inputFormat: ENumberInputFormat.FLOAT,
-                  outputFormat: ENumberOutputFormat.FULL,
-                  decimalPlaces: selectDecimalPlaces(ECurrency.ETH, ENumberOutputFormat.FULL),
-                })} ETH`}
-                data-test-id="invest-modal-eth-field"
-                showUnits={true}
-                setError={this.setError}
-              />
+            <Col className="text-right">
+              {(investmentType === EInvestmentType.NEur ||
+                investmentType === EInvestmentType.ICBMnEuro) && (
+                <MaskedNumberInput
+                  name="euroValue"
+                  value={this.props.euroValue}
+                  storageFormat={ENumberInputFormat.ULPS}
+                  valueType={ECurrency.EUR_TOKEN}
+                  outputFormat={ENumberOutputFormat.FULL}
+                  onChangeFn={this.props.changeEuroValue}
+                  showUnits={true}
+                  data-test-id="invest-modal-eur-field"
+                  placeholder={`${intl.formatIntlMessage(
+                    "investment-flow.min-ticket-size",
+                  )} ${minTicketEur} EUR`}
+                  errorMsg={error}
+                  invalid={!!error}
+                  setError={this.setError}
+                />
+              )}
+              {(investmentType === EInvestmentType.ICBMEth ||
+                investmentType === EInvestmentType.Eth) && (
+                <MaskedNumberInput
+                  name={"ethValue"}
+                  valueType={ECurrency.ETH}
+                  storageFormat={ENumberInputFormat.ULPS}
+                  outputFormat={ENumberOutputFormat.FULL}
+                  value={this.props.ethValue}
+                  onChangeFn={this.props.changeEthValue}
+                  placeholder={`${intl.formatIntlMessage(
+                    "investment-flow.min-ticket-size",
+                  )} ${formatNumber({
+                    value: minTicketEth,
+                    inputFormat: ENumberInputFormat.FLOAT,
+                    outputFormat: ENumberOutputFormat.FULL,
+                    decimalPlaces: selectDecimalPlaces(ECurrency.ETH, ENumberOutputFormat.FULL),
+                  })} ETH`}
+                  data-test-id="invest-modal-eth-field"
+                  showUnits={true}
+                  errorMsg={error}
+                  invalid={!!error}
+                  setError={this.setError}
+                />
+              )}
               <Button
                 className={styles.investAll}
                 data-test-id="invest-modal-full-balance-btn"
@@ -310,40 +313,60 @@ export class InvestmentSelectionComponent extends React.Component<IProps, IState
                 <div>
                   + <FormattedMessage id="investment-flow.estimated-gas-cost" />:{" "}
                   <span className="text-warning" data-test-id="invest-modal-gas-cost">
-                    <Money
-                      value={gasCostEuro}
-                      inputFormat={ENumberInputFormat.ULPS}
-                      outputFormat={ENumberOutputFormat.FULL}
-                      valueType={ECurrency.EUR}
-                      roundingMode={ERoundingMode.UP}
-                    />
-                    {" ≈ "}
-                    <Money
-                      value={gasCostEth}
-                      inputFormat={ENumberInputFormat.ULPS}
-                      outputFormat={ENumberOutputFormat.FULL}
-                      valueType={ECurrency.ETH}
-                      roundingMode={ERoundingMode.UP}
-                    />
+                    {(investmentType === EInvestmentType.NEur ||
+                      investmentType === EInvestmentType.ICBMnEuro) && (
+                      <>
+                        <Money
+                          value={gasCostEth}
+                          inputFormat={ENumberInputFormat.ULPS}
+                          outputFormat={ENumberOutputFormat.FULL}
+                          valueType={ECurrency.ETH}
+                          roundingMode={ERoundingMode.UP}
+                        />
+                        {" ≈ "}
+                        <Money
+                          value={gasCostEuro}
+                          inputFormat={ENumberInputFormat.ULPS}
+                          outputFormat={ENumberOutputFormat.FULL}
+                          valueType={ECurrency.EUR}
+                          roundingMode={ERoundingMode.UP}
+                        />
+                      </>
+                    )}
+                    {(investmentType === EInvestmentType.ICBMEth ||
+                      investmentType === EInvestmentType.Eth) && (
+                      <Money
+                        value={gasCostEth}
+                        inputFormat={ENumberInputFormat.ULPS}
+                        outputFormat={ENumberOutputFormat.FULL}
+                        valueType={ECurrency.ETH}
+                        roundingMode={ERoundingMode.UP}
+                      />
+                    )}
                   </span>
                 </div>
               )}
               <div>
                 <FormattedMessage id="investment-flow.total" />:{" "}
                 <span className="text-warning" data-test-id="invest-modal-total-cost">
-                  <Money
-                    value={this.calculateTotalCostIfValid(gasCostEuro, euroValue)}
-                    inputFormat={ENumberInputFormat.ULPS}
-                    valueType={ECurrency.EUR}
-                    outputFormat={ENumberOutputFormat.FULL}
-                  />
-                  {" ≈ "}
-                  <Money
-                    value={this.calculateTotalCostIfValid(gasCostEth, ethValue)}
-                    inputFormat={ENumberInputFormat.ULPS}
-                    outputFormat={ENumberOutputFormat.FULL}
-                    valueType={ECurrency.ETH}
-                  />
+                  {(investmentType === EInvestmentType.NEur ||
+                    investmentType === EInvestmentType.ICBMnEuro) && (
+                    <Money
+                      value={this.calculateTotalCostIfValid(gasCostEuro, euroValue)}
+                      inputFormat={ENumberInputFormat.ULPS}
+                      valueType={ECurrency.EUR}
+                      outputFormat={ENumberOutputFormat.FULL}
+                    />
+                  )}
+                  {(investmentType === EInvestmentType.ICBMEth ||
+                    investmentType === EInvestmentType.Eth) && (
+                    <Money
+                      value={this.calculateTotalCostIfValid(gasCostEth, ethValue)}
+                      inputFormat={ENumberInputFormat.ULPS}
+                      outputFormat={ENumberOutputFormat.FULL}
+                      valueType={ECurrency.ETH}
+                    />
+                  )}
                 </span>
               </div>
             </Col>
