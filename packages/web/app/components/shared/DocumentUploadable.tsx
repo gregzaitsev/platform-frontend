@@ -22,6 +22,7 @@ interface IUploadableDocumentTileProps {
   typedFileName: TTranslatedString;
   isFileUploaded: boolean;
   downloadDocumentStart: (documentType: EEtoDocumentType) => void;
+  startDocumentRemove: (documentType: EEtoDocumentType) => void;
   documentDownloadLinkInactive: boolean;
   busy?: boolean;
   disabled?: boolean;
@@ -36,6 +37,7 @@ export const DocumentUploadableTile: React.FunctionComponent<IUploadableDocument
   documentDownloadLinkInactive,
   busy,
   disabled,
+  startDocumentRemove,
 }) => {
   const [rejected, setRejected] = React.useState(false);
 
@@ -43,7 +45,7 @@ export const DocumentUploadableTile: React.FunctionComponent<IUploadableDocument
 
   return (
     <div data-test-id={`form.name.${documentKey}`}>
-      {isFileUploaded && !active ? (
+      {isFileUploaded ? (
         <>
           <DocumentTile
             title={typedFileName}
@@ -53,6 +55,7 @@ export const DocumentUploadableTile: React.FunctionComponent<IUploadableDocument
             busy={linkDisabled}
             downloadAction={() => downloadDocumentStart(documentKey)}
             fileName={documentKey}
+            removeAction={() => startDocumentRemove(documentKey)}
           />
         </>
       ) : (
@@ -97,10 +100,11 @@ export const DocumentUploadableTile: React.FunctionComponent<IUploadableDocument
               </p>
             </div>
           )}
+          {/* TODO: Show when ETO terms changed*/}
           {active && isFileUploaded && (
             <>
               <Button
-                data-test-id="documents.upload.previous-version"
+                data-test-id="documents-download-document"
                 onClick={() => downloadDocumentStart(documentKey)}
                 layout={EButtonLayout.INLINE}
                 size={ButtonSize.SMALL}

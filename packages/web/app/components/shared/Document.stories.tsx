@@ -63,7 +63,7 @@ storiesOf("Document", module)
       title="generated document title"
       onlyDownload={true}
       blank={false}
-      active={true}
+      active={false}
       busy={false}
       fileName="file_name"
       downloadAction={() => action("DOWNLOAD")}
@@ -76,7 +76,8 @@ storiesOf("Document", module)
         documentKey={EEtoDocumentType.INVESTMENT_AND_SHAREHOLDER_AGREEMENT}
         typedFileName={"investment agreement"}
         isFileUploaded={false}
-        downloadDocumentStart={() => {}}
+        downloadDocumentStart={() => action("DOWNLOAD")}
+        startDocumentRemove={() => action("REMOVE")}
         documentDownloadLinkInactive={false}
         busy={false}
       />
@@ -86,7 +87,8 @@ storiesOf("Document", module)
         documentKey={EEtoDocumentType.INVESTMENT_AND_SHAREHOLDER_AGREEMENT}
         typedFileName={"investment agreement"}
         isFileUploaded={false}
-        downloadDocumentStart={() => {}}
+        downloadDocumentStart={() => action("DOWNLOAD")}
+        startDocumentRemove={() => action("REMOVE")}
         documentDownloadLinkInactive={false}
         busy={false}
         disabled={true}
@@ -97,43 +99,10 @@ storiesOf("Document", module)
         documentKey={EEtoDocumentType.INVESTMENT_AND_SHAREHOLDER_AGREEMENT}
         typedFileName={"investment agreement"}
         isFileUploaded={false}
-        downloadDocumentStart={() => {}}
+        downloadDocumentStart={() => action("DOWNLOAD")}
+        startDocumentRemove={() => action("REMOVE")}
         documentDownloadLinkInactive={false}
         busy={true}
       />
     </>
-  ))
-  .add("uploadable document tile full", () => (
-    <>
-      <DocumentUploadableTile
-        active={true}
-        documentKey={EEtoDocumentType.INVESTMENT_AND_SHAREHOLDER_AGREEMENT}
-        typedFileName={"investment agreement"}
-        isFileUploaded={false}
-        downloadDocumentStart={() => {}}
-        documentDownloadLinkInactive={false}
-        busy={false}
-      />
-      <br />
-      <DocumentUploadableTile
-        active={true}
-        documentKey={EEtoDocumentType.INVESTMENT_AND_SHAREHOLDER_AGREEMENT}
-        typedFileName={"investment agreement"}
-        isFileUploaded={true}
-        downloadDocumentStart={() => {}}
-        documentDownloadLinkInactive={false}
-        busy={false}
-      />
-    </>
-  ))
-  .add("uploadable document tile full busy", () => (
-    <DocumentUploadableTile
-      active={true}
-      documentKey={EEtoDocumentType.INVESTMENT_AND_SHAREHOLDER_AGREEMENT}
-      typedFileName={"investment agreement"}
-      isFileUploaded={false}
-      downloadDocumentStart={() => {}}
-      documentDownloadLinkInactive={true}
-      busy={true}
-    />
   ));

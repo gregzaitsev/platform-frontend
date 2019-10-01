@@ -143,8 +143,11 @@ export enum EtoFlowMessage {
 
 export enum EtoDocumentsMessage {
   ETO_DOCUMENTS_CONFIRM_UPLOAD_DOCUMENT_TITLE = "etoDocumentsConfirmUploadDocumentTitle",
+  ETO_DOCUMENTS_CONFIRM_REMOVE_DOCUMENT_TITLE = "etoDocumentsConfirmRemoveDocumentTitle",
   ETO_DOCUMENTS_CONFIRM_UPLOAD_DOCUMENT_DESCRIPTION = "etoDocumentsConfirmUploadDocumentDescription",
+  ETO_DOCUMENTS_CONFIRM_REMOVE_DOCUMENT_DESCRIPTION = "etoDocumentsConfirmRemoveDocumentDescription",
   ETO_DOCUMENTS_FILE_UPLOADED = "etoDocumentsFileUploaded",
+  ETO_DOCUMENTS_FILE_REMOVED = "etoDocumentsFileRemoved",
   ETO_DOCUMENTS_FILE_EXISTS = "etoDocumentsFileExists",
   ETO_DOCUMENTS_FILE_UPLOAD_FAILED = "etoDocumentsFileUploadFailed",
   ETO_DOCUMENTS_FAILED_TO_DOWNLOAD_FILE = "etoDocumentsFailedToDownloadFile",
@@ -457,10 +460,16 @@ const getMessageTranslation = ({ messageType, messageData }: TMessage): TTransla
 
     case EtoDocumentsMessage.ETO_DOCUMENTS_CONFIRM_UPLOAD_DOCUMENT_TITLE:
       return <FormattedMessage id="eto.modal.confirm-upload-document-title" />;
+    case EtoDocumentsMessage.ETO_DOCUMENTS_CONFIRM_REMOVE_DOCUMENT_TITLE:
+      return <FormattedMessage id="eto.modal.confirm-remove-document-title" />;
     case EtoDocumentsMessage.ETO_DOCUMENTS_CONFIRM_UPLOAD_DOCUMENT_DESCRIPTION:
       return <FormattedMessage id="eto.modal.confirm-upload-document-description" />;
+    case EtoDocumentsMessage.ETO_DOCUMENTS_CONFIRM_REMOVE_DOCUMENT_DESCRIPTION:
+      return <FormattedMessage id="eto.modal.confirm-remove-document-description" />;
     case EtoDocumentsMessage.ETO_DOCUMENTS_FILE_UPLOADED:
       return <FormattedMessage id="eto.modal.file-uploaded" />;
+    case EtoDocumentsMessage.ETO_DOCUMENTS_FILE_REMOVED:
+      return <FormattedMessage id="eto.modal.file-removed" />;
     case EtoDocumentsMessage.ETO_DOCUMENTS_FILE_EXISTS:
       return <FormattedMessage id="eto.modal.file-already-exists" />;
     case EtoDocumentsMessage.ETO_DOCUMENTS_FILE_UPLOAD_FAILED:

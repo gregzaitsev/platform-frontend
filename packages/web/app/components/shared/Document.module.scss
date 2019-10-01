@@ -84,6 +84,7 @@ $loading-background: rgba($neu-charcoal-grey, .8);
       background-color: $neu-pale-grey;
       border-radius: 50%;
       padding: 6px;
+      margin-right: px-to-rem(4px);
 
       &:hover,
       &:focus {

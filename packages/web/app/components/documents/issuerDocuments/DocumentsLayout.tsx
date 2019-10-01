@@ -33,6 +33,7 @@ const DocumentsLayout: React.FunctionComponent<TComponentProps> = ({
   documentsDownloading,
   transactionPending,
   documentsGenerated,
+  startDocumentRemove,
 }) => {
   const { productTemplates, documentsStateInfo } = etoFilesData;
   const documents = renameDocuments(documentsStateInfo, onChainState);
@@ -81,6 +82,7 @@ const DocumentsLayout: React.FunctionComponent<TComponentProps> = ({
                 documentDownloadLinkInactive={
                   Boolean(documentsUploading[key]) || Boolean(documentsDownloading[key])
                 }
+                startDocumentRemove={startDocumentRemove}
               />
             ))}
         </section>

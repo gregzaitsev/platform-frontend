@@ -5,6 +5,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { ButtonIcon } from "./buttons/ButtonIcon";
 import { InlineIcon } from "./icons/InlineIcon";
 
+import * as remove from "../../assets/img/inline_icons/delete.svg";
 import * as download from "../../assets/img/inline_icons/download.svg";
 import * as spinner from "../../assets/img/inline_icons/spinner.svg";
 import * as styles from "./Document.module.scss";
@@ -24,6 +25,7 @@ interface IDocumentTileProps {
   busy?: boolean;
   fileName?: string;
   downloadAction?: () => void;
+  removeAction?: () => void;
 }
 
 export const Document: React.FunctionComponent<IDocumentProps> = ({
@@ -65,6 +67,7 @@ export const DocumentExtension: React.FunctionComponent<Pick<IDocumentProps, "ex
   return <div className={cn(styles.extension, computedExtension)}>{computedExtension}</div>;
 };
 
+// TODO: Add Uploaded timestamp when backend provides it
 export const DocumentTile: React.FunctionComponent<IDocumentProps & IDocumentTileProps> = ({
   extension,
   title,
@@ -73,7 +76,9 @@ export const DocumentTile: React.FunctionComponent<IDocumentProps & IDocumentTil
   onlyDownload,
   busy,
   fileName,
+  active,
   downloadAction,
+  removeAction,
 }) => (
   <div className={cn(styles.tile, className)}>
     {busy && (
@@ -100,12 +105,23 @@ export const DocumentTile: React.FunctionComponent<IDocumentProps & IDocumentTil
     </p>
     <div className={styles.buttons}>
       <ButtonIcon
+        data-test-id="documents-download-document"
         className={styles.buttonIcon}
         onClick={downloadAction}
         type="button"
         svgIcon={download}
         alt={<FormattedMessage id="button-icon.down" />}
       />
+      {active && (
+        <ButtonIcon
+          data-test-id="documents-remove-document"
+          className={styles.buttonIcon}
+          onClick={removeAction}
+          type="button"
+          svgIcon={remove}
+          alt={<FormattedMessage id="button-icon.down" />}
+        />
+      )}
     </div>
   </div>
 );

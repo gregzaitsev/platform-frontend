@@ -198,6 +198,19 @@ function* uploadEtoFileEffect(
   notificationCenter.info(createMessage(EtoDocumentsMessage.ETO_DOCUMENTS_FILE_UPLOADED));
 }
 
+function* removeEtoFileEffect(
+  { apiEtoFileService, notificationCenter }: TGlobalDependencies,
+  documentType: EEtoDocumentType,
+): Iterator<any> {
+  const matchingDocument = yield getDocumentOfType(documentType);
+
+  if (matchingDocument) {
+    yield apiEtoFileService.deleteSpecificEtoDocument(matchingDocument.ipfsHash);
+  }
+
+  notificationCenter.info(createMessage(EtoDocumentsMessage.ETO_DOCUMENTS_FILE_REMOVED));
+}
+
 function* uploadEtoFile(
   { notificationCenter, logger }: TGlobalDependencies,
   action: TActionFromCreator<typeof actions.etoDocuments.etoUploadDocumentStart>,
@@ -236,6 +249,33 @@ function* uploadEtoFile(
   }
 }
 
+function* removeEtoFile(
+  { notificationCenter, logger }: TGlobalDependencies,
+  action: TActionFromCreator<typeof actions.etoDocuments.etoUploadDocumentStart>,
+): Iterator<any> {
+  const { documentType } = action.payload;
+  try {
+    yield put(actions.etoDocuments.hideIpfsModal());
+
+    yield neuCall(
+      ensurePermissionsArePresentAndRunEffect,
+      neuCall(removeEtoFileEffect, documentType),
+      [EJwtPermissions.UPLOAD_IMMUTABLE_DOCUMENT],
+      createMessage(EtoDocumentsMessage.ETO_DOCUMENTS_CONFIRM_UPLOAD_DOCUMENT_TITLE),
+      createMessage(EtoDocumentsMessage.ETO_DOCUMENTS_CONFIRM_UPLOAD_DOCUMENT_DESCRIPTION),
+    );
+  } catch (e) {
+    if (e instanceof FileAlreadyExists) {
+      notificationCenter.error(createMessage(EtoDocumentsMessage.ETO_DOCUMENTS_FILE_EXISTS));
+    } else {
+      logger.error("Failed to remove ETO file data", e);
+      notificationCenter.error(createMessage(EtoDocumentsMessage.ETO_DOCUMENTS_FILE_UPLOAD_FAILED));
+    }
+  } finally {
+    yield neuCall(loadIssuerEto);
+  }
+}
+
 export function* etoDocumentsSagas(): Iterator<any> {
   yield fork(
     neuTakeEvery,
@@ -246,4 +286,5 @@ export function* etoDocumentsSagas(): Iterator<any> {
   yield fork(neuTakeEvery, actions.etoDocuments.loadFileDataStart, loadEtoFilesInfo);
   yield fork(neuTakeEvery, actions.etoDocuments.etoUploadDocumentStart, uploadEtoFile);
   yield fork(neuTakeEvery, actions.etoDocuments.downloadDocumentStart, downloadDocumentStart);
+  yield fork(neuTakeEvery, actions.etoDocuments.etoRemoveDocumentStart, removeEtoFile);
 }

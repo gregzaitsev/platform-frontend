@@ -63,9 +63,10 @@ type TGuardProps = {
 type TDispatchProps = {
   generateTemplate: (document: IEtoDocument) => void;
   startDocumentDownload: (documentType: EEtoDocumentType) => void;
+  startDocumentRemove: (documentType: EEtoDocumentType) => void;
 };
 
-type TComponentProps = {
+type TComponentProps = TDispatchProps & {
   etoState: EEtoState;
   etoTemplates: IEtoDocument[];
   etoDocuments: TEtoDocumentTemplates;
@@ -76,8 +77,6 @@ type TComponentProps = {
   transactionPending: boolean;
   documentsGenerated: { [ipfsHash: string]: boolean };
   etoFilesData: DeepReadonly<IEtoFilesInfo>;
-  generateTemplate: (document: IEtoDocument) => void;
-  startDocumentDownload: (documentType: EEtoDocumentType) => void;
 };
 
 const Documents = compose<TComponentProps, {}>(
@@ -116,6 +115,8 @@ const Documents = compose<TComponentProps, {}>(
       generateTemplate: document => dispatch(actions.etoDocuments.generateTemplate(document)),
       startDocumentDownload: documentType =>
         dispatch(actions.etoDocuments.downloadDocumentStart(documentType)),
+      startDocumentRemove: documentType =>
+        dispatch(actions.etoDocuments.etoRemoveDocumentStart(documentType)),
     }),
   }),
   withMetaTags((_, intl) => ({ title: intl.formatIntlMessage("menu.documents-page") })),
