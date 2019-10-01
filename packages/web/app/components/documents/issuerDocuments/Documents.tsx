@@ -22,15 +22,16 @@ import {
   selectIssuerEtoDocuments,
   selectIssuerEtoId,
   selectIssuerEtoOfferingDocumentType,
+  selectIssuerEtoOnChainState,
   selectIssuerEtoState,
   userHasKycAndEmailVerified,
 } from "../../../modules/eto-flow/selectors";
-import { selectEtoOnChainStateById } from "../../../modules/eto/selectors";
 import { EETOStateOnChain } from "../../../modules/eto/types";
 import { selectPendingDownloads } from "../../../modules/immutable-file/selectors";
 import { selectAreTherePendingTxs } from "../../../modules/tx/monitor/selectors";
 import { appConnect } from "../../../store";
 import { DeepReadonly } from "../../../types";
+import { nonNullable } from "../../../utils/nonNullable";
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { withContainer } from "../../../utils/withContainer.unsafe";
 import { withMetaTags } from "../../../utils/withMetaTags.unsafe";
@@ -46,7 +47,7 @@ type TStateProps = {
   etoTemplates: IEtoDocument[];
   etoDocuments: TEtoDocumentTemplates;
   offeringDocumentType: EOfferingDocumentType;
-  onChainState: EETOStateOnChain;
+  onChainState: EETOStateOnChain | undefined;
   documentsDownloading: { [key in EEtoDocumentType]?: boolean };
   documentsUploading: { [key in EEtoDocumentType]?: boolean };
   transactionPending: boolean;
@@ -100,16 +101,16 @@ const Documents = compose<TComponentProps, {}>(
     renderComponent(LoadingIndicator),
   ),
   appConnect<TStateProps, TDispatchProps, { etoId: string }>({
-    stateToProps: (state, ownProps) => ({
-      etoState: selectIssuerEtoState(state)!,
-      onChainState: selectEtoOnChainStateById(state, ownProps.etoId)!,
+    stateToProps: state => ({
+      etoState: nonNullable(selectIssuerEtoState(state)),
+      onChainState: selectIssuerEtoOnChainState(state),
       etoTemplates: selectFilteredIssuerEtoTemplatesArray(state),
-      etoDocuments: selectIssuerEtoDocuments(state)!,
+      etoDocuments: nonNullable(selectIssuerEtoDocuments(state)),
       documentsDownloading: selectEtoDocumentsDownloading(state.etoDocuments),
       documentsUploading: selectEtoDocumentsUploading(state.etoDocuments),
       transactionPending: selectAreTherePendingTxs(state),
       documentsGenerated: selectPendingDownloads(state),
-      offeringDocumentType: selectIssuerEtoOfferingDocumentType(state)!,
+      offeringDocumentType: nonNullable(selectIssuerEtoOfferingDocumentType(state)),
     }),
     dispatchToProps: dispatch => ({
       generateTemplate: document => dispatch(actions.etoDocuments.generateTemplate(document)),

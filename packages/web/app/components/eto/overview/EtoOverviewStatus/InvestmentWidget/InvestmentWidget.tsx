@@ -170,7 +170,7 @@ export const InvestmentWidget: React.FunctionComponent<IInvestmentWidgetProps> =
   eto,
   isEmbedded,
 }) => (
-  <div className={styles.investmentWidget}>
+  <div className={styles.investmentWidget} data-test-id="investment-widget">
     <InvestmentStats eto={eto} />
     <InvestNowButton eto={eto} isEmbedded={isEmbedded} />
   </div>

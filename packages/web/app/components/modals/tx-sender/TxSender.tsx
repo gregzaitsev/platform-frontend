@@ -12,7 +12,7 @@ import { LoadingIndicator } from "../../shared/loading-indicator";
 import { QuintessenceModal } from "../bank-transfer-flow/QuintessenceModal";
 import { Modal } from "../Modal";
 import { AccessWalletContainer } from "../wallet-access/AccessWalletModal";
-import { SetEtoDateSummary } from "./eto-flow/SetDateSummary.unsafe";
+import { SetEtoDateSummary } from "./eto-flow/SetDateSummary";
 import { SignInvestmentAgreementSummary } from "./eto-flow/SignInvestmentAgreementSummary";
 import { InvestmentSelection } from "./investment-flow/Investment";
 import { InvestmentSuccess } from "./investment-flow/Success";
