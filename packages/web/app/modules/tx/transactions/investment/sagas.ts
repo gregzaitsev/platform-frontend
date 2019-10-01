@@ -32,7 +32,7 @@ export const INVESTMENT_GAS_AMOUNT = "600000";
 function* getEtherTokenTransaction(
   { contractsService }: TGlobalDependencies,
   etoId: string,
-  investAmountUlps: string,
+  investAmountUlps: BigNumber,
 ): Iterator<any> {
   const etherTokenBalance = yield select(selectEtherTokenBalance);
   if (!etherTokenBalance) {

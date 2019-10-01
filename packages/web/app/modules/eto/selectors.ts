@@ -59,8 +59,16 @@ export const selectCompany = createSelector(
 export const selectEtoContract = (state: IAppState, previewCode: string) =>
   state.eto.contracts[previewCode];
 
-export const selectEtoById = (state: IAppState, etoId: string) =>
-  state.eto.etos[selectEtoPreviewCode(state, etoId)!];
+// TODO: Check why the type is inferred as `any` without explicit return type information
+export const selectEtoById = (state: IAppState, etoId: string): TEtoSpecsData | undefined => {
+  const previewCode = selectEtoPreviewCode(state, etoId);
+
+  if (previewCode) {
+    return state.eto.etos[previewCode];
+  }
+
+  return undefined;
+};
 
 export const selectEtoSubState = createCachedSelector(
   // forward eto param to combiner

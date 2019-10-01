@@ -33,7 +33,8 @@ export function ethereumNetworkIdToNetworkName(networkId: EthereumNetworkId): st
   }
 }
 
-export const isAddressValid = (value: string): boolean => !!(value && isAddress(value));
+export const isAddressValid = (value: string): value is EthereumAddress =>
+  !!(value && isAddress(value));
 
 export const doesUserHaveEnoughEther = (
   value: TBigNumberVariant,

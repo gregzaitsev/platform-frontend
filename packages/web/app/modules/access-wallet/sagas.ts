@@ -157,15 +157,15 @@ export function* connectWalletAndRunEffect(effect: Effect | Iterator<Effect>): a
 export function* accessWalletAndRunEffect(
   effect: Effect | Iterator<Effect>,
   title: TMessage,
-  message: TMessage,
-  inputLable?: TMessage,
+  message?: TMessage,
+  inputLabel?: TMessage,
 ): any {
   // guard against multiple modals
   const isSigning: boolean = yield select((s: IAppState) => selectIsSigning(s.accessWallet));
   if (isSigning) {
     throw new Error("Signing already in progress");
   }
-  yield put(actions.accessWallet.showAccessWalletModal(title, message, inputLable));
+  yield put(actions.accessWallet.showAccessWalletModal(title, message, inputLabel));
   // do required operation, or finish in case cancel button was hit
   const { result, cancel } = yield race({
     result: call(connectWalletAndRunEffect, effect),

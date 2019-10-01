@@ -154,7 +154,7 @@ function* loadEto(
 
 export function* loadEtoContract(
   { contractsService, logger }: TGlobalDependencies,
-  { etoId, previewCode, state }: TEtoDataWithCompany,
+  { etoId, previewCode, state }: TEtoSpecsData,
 ): Iterator<any> {
   if (state !== EEtoState.ON_CHAIN) {
     logger.error("Invalid eto state", new InvalidETOStateError(state, EEtoState.ON_CHAIN), {

@@ -291,7 +291,7 @@ export function* mapAnalyticsApiTransactionResponse(
 
 export function* mapAnalyticsApiTransactionsResponse(
   _: TGlobalDependencies,
-  transactions: TAnalyticsTransaction[],
+  transactions: readonly TAnalyticsTransaction[],
 ): Iterator<any> {
   const txHistoryTransactions: ReadonlyArray<TTxHistory | undefined> = yield all(
     transactions.map(tx => neuCall(mapAnalyticsApiTransactionResponse, tx)),

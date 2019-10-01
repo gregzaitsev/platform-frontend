@@ -143,7 +143,7 @@ export function* ensurePermissionsArePresentAndRunEffect(
   effect: Iterator<any>,
   permissions: Array<string> = [],
   title: TMessage,
-  message: TMessage,
+  message?: TMessage,
   inputLabel?: TMessage,
 ): Iterator<any> {
   const jwt: string = yield select(selectJwt);

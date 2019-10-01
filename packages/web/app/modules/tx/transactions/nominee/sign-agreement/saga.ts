@@ -105,6 +105,13 @@ export function* generateNomineeSignAgreementTx(
 export function* startNomineeAgreementSign(_: TGlobalDependencies): Iterator<any> {
   const transactionType: ReturnType<typeof selectTxType> = yield select(selectTxType);
 
+  if (
+    transactionType !== ETxSenderType.NOMINEE_THA_SIGN &&
+    transactionType !== ETxSenderType.NOMINEE_RAAA_SIGN
+  ) {
+    throw new Error("Invalid transaction type for nominee agreements signing");
+  }
+
   const generatedTxDetails = yield neuCall(generateNomineeSignAgreementTx, transactionType);
   yield put(actions.txSender.setTransactionData(generatedTxDetails));
 

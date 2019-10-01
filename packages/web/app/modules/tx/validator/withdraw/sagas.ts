@@ -57,7 +57,7 @@ export function* txValidateWithdraw(userInput: IWithdrawDraftType): Iterator<any
 
   try {
     if (!shouldPassSmartContractAcceptEtherTest) {
-      yield neuCall(isAddressValidAcceptsEther, modifiedUserInput);
+      yield neuCall(isAddressValidAcceptsEther, modifiedUserInput.to, modifiedUserInput.value);
     }
 
     const generatedTxDetails = yield neuCall(generateEthWithdrawTransaction, {
@@ -69,7 +69,10 @@ export function* txValidateWithdraw(userInput: IWithdrawDraftType): Iterator<any
 
     const addressNotifications: EAdditionalValidationDataNotifications[] =
       isAddressValid && !shouldPassSmartContractAcceptEtherTest
-        ? yield neuCall(txProcessAddressValidations, modifiedUserInput.to)
+        ? yield neuCall(
+            txProcessAddressValidations,
+            modifiedUserInput.to as EthereumAddressWithChecksum,
+          )
         : [];
 
     const walletNotifications: EAdditionalValidationDataNotifications[] = yield validateWalletAlmostEmpty(
@@ -133,7 +136,8 @@ export function* txValidateWithdraw(userInput: IWithdrawDraftType): Iterator<any
 
 export function* isAddressValidAcceptsEther(
   { web3Manager }: TGlobalDependencies,
-  { to, value }: IWithdrawDraftType,
+  to: string,
+  value: string,
 ): Iterator<any> {
   try {
     const etherBalance: BigNumber = yield select(selectEtherBalanceAsBigNumber);

@@ -2,6 +2,7 @@ import { isMatch } from "lodash/fp";
 import { delay } from "redux-saga";
 import {
   call,
+  CallEffectFn,
   Effect,
   fork,
   getContext,
@@ -18,6 +19,7 @@ import { TSingleOrArray } from "../types";
 import { TActionPayload, TPattern } from "./actions";
 
 type TSagaWithDeps = (deps: TGlobalDependencies, ...args: any[]) => any;
+type TSagaWithDeps2<R, T extends any[]> = (deps: TGlobalDependencies, ...args: T) => R;
 
 type TType = TSingleOrArray<TPattern>;
 
@@ -41,9 +43,13 @@ export function* neuSpawn(saga: TSagaWithDeps, ...args: any[]): Iterator<Effect>
   return yield spawn(saga, deps, args[0], args[1], args[2], args[3], args[4]);
 }
 
-export function* neuCall(saga: TSagaWithDeps, ...args: any[]): Iterator<Effect> {
+export function* neuCall<R, T extends any[] = []>(
+  saga: TSagaWithDeps2<R, T>,
+  ...args: T
+): Iterator<Effect> {
   const deps: TGlobalDependencies = yield getContext("deps");
-  return yield call(saga, deps, args[0], args[1], args[2], args[3], args[4]);
+  // TODO: remove casting after migration to redux-saga 1.*
+  return yield call(saga as CallEffectFn<any>, deps, args[0], args[1], args[2], args[3], args[4]);
 }
 
 /**

@@ -46,7 +46,7 @@ export async function setupLightWalletPromise(
   { vaultApi, lightWalletConnector, web3Manager, logger }: TGlobalDependencies,
   email: string,
   password: string,
-  seed: string,
+  seed?: string,
 ): Promise<ILightWalletMetadata> {
   try {
     const lightWalletVault = await createLightWalletVault({
@@ -139,7 +139,6 @@ export function* lightWalletRecoverWatch(
       email,
       password,
       seed,
-      userType,
     );
 
     yield put(actions.walletSelector.messageSigning());
