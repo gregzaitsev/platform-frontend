@@ -8,7 +8,6 @@ import { TGlobalDependencies } from "../../../../di/setupBindings";
 import { IdentityRegistry } from "../../../../lib/contracts/IdentityRegistry";
 import { ITxData } from "../../../../lib/web3/types";
 import { NotEnoughEtherForGasError, UserHasNoFundsError } from "../../../../lib/web3/Web3Adapter";
-import { EthereumAddressWithChecksum } from "../../../../types";
 import {
   addBigNumbers,
   compareBigNumbers,
@@ -69,10 +68,7 @@ export function* txValidateWithdraw(userInput: IWithdrawDraftType): Iterator<any
 
     const addressNotifications: EAdditionalValidationDataNotifications[] =
       isAddressValid && !shouldPassSmartContractAcceptEtherTest
-        ? yield neuCall(
-            txProcessAddressValidations,
-            modifiedUserInput.to as EthereumAddressWithChecksum,
-          )
+        ? yield neuCall(txProcessAddressValidations, modifiedUserInput.to)
         : [];
 
     const walletNotifications: EAdditionalValidationDataNotifications[] = yield validateWalletAlmostEmpty(
@@ -159,8 +155,12 @@ export function* isAddressValidAcceptsEther(
 
 export function* txProcessAddressValidations(
   { web3Manager, contractsService }: TGlobalDependencies,
-  address: EthereumAddressWithChecksum,
+  address: string,
 ): Iterator<any> {
+  if (!isAddressValid(address)) {
+    throw new Error(`Invalid ethereum address passed: ${address}`);
+  }
+
   const identityRegistry: IdentityRegistry = contractsService.identityRegistry;
 
   const { claims, transactionsCount, addressBalance, isSmartContract } = yield all({

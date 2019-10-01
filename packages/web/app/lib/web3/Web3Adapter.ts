@@ -238,7 +238,7 @@ export class Web3Adapter {
     return getBlockNumber();
   }
 
-  public isSmartContract(address: EthereumAddressWithChecksum): Promise<boolean> {
+  public isSmartContract(address: EthereumAddress): Promise<boolean> {
     // in case of missing smartcontract, code can be equal to "0x0" or "0x" depending on exact web3 implementation
     // to cover all these cases we just check against the source code length — there won't be any meaningful EVM program in less then 3 chars
     return promisify<string>(this.web3.eth.getCode)(address).then(v => v.length >= 4);

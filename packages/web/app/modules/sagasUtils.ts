@@ -33,14 +33,20 @@ export function* neuTakeEvery(type: TType, saga: TSagaWithDeps): Iterator<Effect
   yield takeEvery(type, saga, deps);
 }
 
-export function* neuFork(saga: TSagaWithDeps, ...args: any[]): Iterator<Effect> {
+export function* neuFork<R, T extends any[] = []>(
+  saga: TSagaWithDeps2<R, T>,
+  ...args: T
+): Iterator<Effect> {
   const deps: TGlobalDependencies = yield getContext("deps");
-  return yield fork(saga, deps, args[0], args[1], args[2], args[3], args[4]);
+  return yield fork(saga as CallEffectFn<any>, deps, args[0], args[1], args[2], args[3], args[4]);
 }
 
-export function* neuSpawn(saga: TSagaWithDeps, ...args: any[]): Iterator<Effect> {
+export function* neuSpawn<R, T extends any[] = []>(
+  saga: TSagaWithDeps2<R, T>,
+  ...args: T
+): Iterator<Effect> {
   const deps: TGlobalDependencies = yield getContext("deps");
-  return yield spawn(saga, deps, args[0], args[1], args[2], args[3], args[4]);
+  return yield spawn(saga as CallEffectFn<any>, deps, args[0], args[1], args[2], args[3], args[4]);
 }
 
 export function* neuCall<R, T extends any[] = []>(
@@ -48,7 +54,6 @@ export function* neuCall<R, T extends any[] = []>(
   ...args: T
 ): Iterator<Effect> {
   const deps: TGlobalDependencies = yield getContext("deps");
-  // TODO: remove casting after migration to redux-saga 1.*
   return yield call(saga as CallEffectFn<any>, deps, args[0], args[1], args[2], args[3], args[4]);
 }
 
@@ -102,14 +107,14 @@ export function* neuTakeOnly<T extends TPattern>(
  *  Executes the generator and repeats if repeatAction was dispatched. Exits when endAction
  *  is dispatched.
  */
-export function* neuRepeatIf(
+export function* neuRepeatIf<R, T extends any[] = []>(
   repeatAction: TType,
   endAction: TType,
-  generator: TSagaWithDeps,
-  ...args: any[]
+  saga: TSagaWithDeps2<R, T>,
+  ...args: T
 ): any {
   while (true) {
-    yield neuCall(generator, ...args);
+    yield neuCall(saga, ...args);
 
     const { repeat, end } = yield race({
       repeat: take(repeatAction),
@@ -127,7 +132,11 @@ export function* neuRepeatIf(
 /**
  *  Executes the generator and restarts running job if a specific actions is fired
  */
-export function* neuRestartIf(cancelAction: TType, saga: TSagaWithDeps, ...args: any[]): any {
+export function* neuRestartIf<R, T extends any[] = []>(
+  cancelAction: TType,
+  saga: TSagaWithDeps2<R, T>,
+  ...args: T
+): any {
   while (true) {
     yield race({
       task: neuCall(saga, ...args),
@@ -145,17 +154,31 @@ export function* neuThrottle(ms: number, type: TType, saga: TSagaWithDeps): Iter
   yield throttle(ms, type, saga, deps);
 }
 
-function* next(ms: number, task: any, ...args: any[]): any {
+function* next<R, T extends any[] = []>(
+  ms: number,
+  task: TSagaWithDeps2<R, T>,
+  ...args: T
+): Iterator<any> {
   yield delay(ms);
   yield neuCall(task, ...args);
 }
 
 // TODO: Add tests for debounce
-export function* neuDebounce(
+export function* neuDebounce<R, T extends any[] = []>(
   ms: number,
   pattern: TType,
-  task: TSagaWithDeps,
-  ...args: any[]
+  saga: TSagaWithDeps2<R, T>,
+  ...args: T
 ): Iterator<Effect> {
-  yield (takeLatest as any)(pattern, next, ms, task, ...args);
+  yield takeLatest(
+    pattern,
+    next,
+    ms,
+    saga as CallEffectFn<any>,
+    args[0],
+    args[1],
+    args[2],
+    args[3],
+    args[4],
+  );
 }
