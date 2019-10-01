@@ -226,7 +226,11 @@ function* uploadEtoFile(
       const eto: TEtoWithCompanyAndContract = yield nonNullable(select(selectIssuerEto));
 
       const uploadResult = Object.values(eto.documents).find(d => d.documentType === documentType)!;
-      yield put(actions.etoFlow.signInvestmentAgreement(eto, uploadResult.ipfsHash));
+
+      // If user does not sign transaction uploadResult is undefined
+      if (uploadResult) {
+        yield put(actions.etoFlow.signInvestmentAgreement(eto, uploadResult.ipfsHash));
+      }
     }
     yield put(actions.etoDocuments.etoUploadDocumentFinish(documentType));
   }

@@ -133,6 +133,13 @@ $_active-color: lighten($_hover-color, 20%);
     &:active {
       color: $_active-color;
     }
+
+    &#{$button}-neon {
+      &:disabled {
+        color: $neu-gull-gray;
+        background-color: $neu-pale-grey;
+      }
+    }
   }
 
   &-simple {

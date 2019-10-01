@@ -64,6 +64,7 @@ export interface IButtonProps extends TGeneralButton, CommonHtmlProps {
   isActive?: boolean;
   innerClassName?: string;
   textPosition?: ButtonTextPosition;
+  iconStyle?: string;
 }
 
 const Button: React.ForwardRefExoticComponent<
@@ -87,6 +88,7 @@ const Button: React.ForwardRefExoticComponent<
       isActive,
       onClick,
       "data-test-id": dataTestId,
+      iconStyle,
       ...props
     },
     ref,
@@ -116,9 +118,13 @@ const Button: React.ForwardRefExoticComponent<
           <LoadingIndicator light />
         ) : (
           <>
-            {iconPosition === EIconPosition.ICON_BEFORE && <InlineIcon svgIcon={svgIcon || ""} />}
+            {iconPosition === EIconPosition.ICON_BEFORE && (
+              <InlineIcon className={iconStyle} svgIcon={svgIcon || ""} />
+            )}
             {children}
-            {iconPosition === EIconPosition.ICON_AFTER && <InlineIcon svgIcon={svgIcon || ""} />}
+            {iconPosition === EIconPosition.ICON_AFTER && (
+              <InlineIcon className={iconStyle} svgIcon={svgIcon || ""} />
+            )}
           </>
         )}
       </div>

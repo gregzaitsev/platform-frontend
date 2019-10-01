@@ -4,7 +4,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 
 import { EEtoDocumentType } from "../../../lib/api/eto/EtoFileApi.interfaces";
 import { EtoFileIpfsModal } from "../../eto/shared/EtoFileIpfsModal";
-import { UploadableDocumentTile } from "../../shared/Document";
+import { DocumentUploadableTile } from "../../shared/DocumentUploadable";
 import { Heading } from "../../shared/Heading";
 import { ProductTemplates } from "../../shared/SingleColDocumentWidget";
 import { DocumentList } from "../DocumentList";
@@ -70,7 +70,7 @@ const DocumentsLayout: React.FunctionComponent<TComponentProps> = ({
           </h4>
           {documentsStateInfo &&
             documents.map((key: EEtoDocumentType) => (
-              <UploadableDocumentTile
+              <DocumentUploadableTile
                 key={key}
                 documentKey={key}
                 active={uploadAllowed(documentsStateInfo, etoState, key, onChainState)}

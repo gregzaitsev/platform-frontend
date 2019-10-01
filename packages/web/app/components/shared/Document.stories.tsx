@@ -1,17 +1,10 @@
+import { action } from "@storybook/addon-actions";
 import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
-import { EEtoDocumentType, TEtoFormType } from "../../lib/api/eto/EtoFileApi.interfaces";
-import { ipfsLinkFromHash } from "../documents/utils";
-import { ClickableDocumentTile, Document, DocumentTile, UploadableDocumentTile } from "./Document";
-
-const document = {
-  documentType: EEtoDocumentType.INVESTMENT_AND_SHAREHOLDER_AGREEMENT,
-  form: "asdf" as TEtoFormType,
-  ipfsHash: ipfsLinkFromHash("bla"),
-  mimeType: "bla/bla",
-  name: "document_name",
-};
+import { EEtoDocumentType } from "../../lib/api/eto/EtoFileApi.interfaces";
+import { Document, DocumentTile } from "./Document";
+import { DocumentUploadableTile } from "./DocumentUploadable";
 
 storiesOf("Document", module)
   .add("doc", () => <Document extension="doc" />)
@@ -24,6 +17,8 @@ storiesOf("Document", module)
       blank={true}
       active={false}
       busy={false}
+      fileName="file_name"
+      downloadAction={() => action("DOWNLOAD")}
     />
   ))
   .add("document tile blank, active", () => (
@@ -34,6 +29,8 @@ storiesOf("Document", module)
       blank={true}
       active={true}
       busy={false}
+      fileName="file_name"
+      downloadAction={() => action("DOWNLOAD")}
     />
   ))
   .add("document tile not blank, active", () => (
@@ -44,6 +41,8 @@ storiesOf("Document", module)
       blank={false}
       active={true}
       busy={false}
+      fileName="file_name"
+      downloadAction={() => action("DOWNLOAD")}
     />
   ))
   .add("document tile not blank, active, busy", () => (
@@ -54,47 +53,85 @@ storiesOf("Document", module)
       blank={false}
       active={true}
       busy={true}
+      fileName="file_name"
+      downloadAction={() => action("DOWNLOAD")}
     />
   ))
   .add("generated document tile", () => (
-    <ClickableDocumentTile
+    <DocumentTile
       extension="doc"
-      title="bla"
-      generateTemplate={() => {}}
-      document={document}
+      title="generated document title"
       onlyDownload={true}
-      active={true}
       blank={false}
+      active={true}
+      busy={false}
+      fileName="file_name"
+      downloadAction={() => action("DOWNLOAD")}
     />
   ))
   .add("uploadable document tile", () => (
-    <UploadableDocumentTile
+    <>
+      <DocumentUploadableTile
+        active={true}
+        documentKey={EEtoDocumentType.INVESTMENT_AND_SHAREHOLDER_AGREEMENT}
+        typedFileName={"investment agreement"}
+        isFileUploaded={false}
+        downloadDocumentStart={() => {}}
+        documentDownloadLinkInactive={false}
+        busy={false}
+      />
+      <br />
+      <DocumentUploadableTile
+        active={true}
+        documentKey={EEtoDocumentType.INVESTMENT_AND_SHAREHOLDER_AGREEMENT}
+        typedFileName={"investment agreement"}
+        isFileUploaded={false}
+        downloadDocumentStart={() => {}}
+        documentDownloadLinkInactive={false}
+        busy={false}
+        disabled={true}
+      />
+      <br />
+      <DocumentUploadableTile
+        active={true}
+        documentKey={EEtoDocumentType.INVESTMENT_AND_SHAREHOLDER_AGREEMENT}
+        typedFileName={"investment agreement"}
+        isFileUploaded={false}
+        downloadDocumentStart={() => {}}
+        documentDownloadLinkInactive={false}
+        busy={true}
+      />
+    </>
+  ))
+  .add("uploadable document tile full", () => (
+    <>
+      <DocumentUploadableTile
+        active={true}
+        documentKey={EEtoDocumentType.INVESTMENT_AND_SHAREHOLDER_AGREEMENT}
+        typedFileName={"investment agreement"}
+        isFileUploaded={false}
+        downloadDocumentStart={() => {}}
+        documentDownloadLinkInactive={false}
+        busy={false}
+      />
+      <br />
+      <DocumentUploadableTile
+        active={true}
+        documentKey={EEtoDocumentType.INVESTMENT_AND_SHAREHOLDER_AGREEMENT}
+        typedFileName={"investment agreement"}
+        isFileUploaded={true}
+        downloadDocumentStart={() => {}}
+        documentDownloadLinkInactive={false}
+        busy={false}
+      />
+    </>
+  ))
+  .add("uploadable document tile full busy", () => (
+    <DocumentUploadableTile
       active={true}
       documentKey={EEtoDocumentType.INVESTMENT_AND_SHAREHOLDER_AGREEMENT}
       typedFileName={"investment agreement"}
       isFileUploaded={false}
-      downloadDocumentStart={() => {}}
-      documentDownloadLinkInactive={false}
-      busy={false}
-    />
-  ))
-  .add("uploadable document tile full", () => (
-    <UploadableDocumentTile
-      active={true}
-      documentKey={EEtoDocumentType.INVESTMENT_AND_SHAREHOLDER_AGREEMENT}
-      typedFileName={"investment agreement"}
-      isFileUploaded={true}
-      downloadDocumentStart={() => {}}
-      documentDownloadLinkInactive={false}
-      busy={false}
-    />
-  ))
-  .add("uploadable document tile full busy", () => (
-    <UploadableDocumentTile
-      active={true}
-      documentKey={EEtoDocumentType.INVESTMENT_AND_SHAREHOLDER_AGREEMENT}
-      typedFileName={"investment agreement"}
-      isFileUploaded={true}
       downloadDocumentStart={() => {}}
       documentDownloadLinkInactive={true}
       busy={true}
