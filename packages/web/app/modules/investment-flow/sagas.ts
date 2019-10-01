@@ -13,6 +13,7 @@ import { extractNumber } from "../../utils/StringUtils";
 import { actions, TAction } from "../actions";
 import { selectEtoById, selectEtoOnChainStateById } from "../eto/selectors";
 import { EETOStateOnChain } from "../eto/types";
+import { selectStandardGasPriceWithOverHead } from "../gas/selectors";
 import { loadComputedContributionFromContract } from "../investor-portfolio/sagas";
 import {
   selectCalculatedContribution,
@@ -22,7 +23,7 @@ import {
 import { neuCall } from "../sagasUtils";
 import { selectEtherPriceEur, selectEurPriceEther } from "../shared/tokenPrice/selectors";
 import { selectTxGasCostEthUlps, selectTxSenderModalOpened } from "../tx/sender/selectors";
-import { generateInvestmentTransaction } from "../tx/transactions/investment/sagas";
+import { INVESTMENT_GAS_AMOUNT } from "../tx/transactions/investment/sagas";
 import { ETxSenderType } from "../tx/types";
 import { txValidateSaga } from "../tx/validator/sagas";
 import {
@@ -87,6 +88,7 @@ function* computeAndSetCurrencies(value: string, currency: ECurrency): any {
 }
 
 function* investEntireBalance(): any {
+  yield setTransactionWithPresetGas();
   const state: IAppState = yield select();
 
   const type = selectInvestmentType(state);
@@ -136,7 +138,6 @@ function validateInvestment(state: IAppState): EInvestmentErrorState | undefined
 
   if (investmentFlow.investmentType === EInvestmentType.Eth) {
     const gasPrice = selectTxGasCostEthUlps(state);
-
     if (
       compareBigNumbers(addBigNumbers([etherValue, gasPrice]), selectLiquidEtherBalance(state)) > 0
     ) {
@@ -181,6 +182,7 @@ function* validateAndCalculateInputs({ contractsService }: TGlobalDependencies):
   // debounce validation
   yield delay(300);
 
+  yield put(actions.investmentFlow.setErrorState());
   let state: IAppState = yield select();
   const eto = selectEtoById(state, state.investmentFlow.etoId);
   const value = state.investmentFlow.euroValueUlps;
@@ -193,7 +195,11 @@ function* validateAndCalculateInputs({ contractsService }: TGlobalDependencies):
       yield put(actions.investorEtoTicket.setCalculatedContribution(eto.etoId, contribution));
 
       state = yield select();
-      yield put(actions.investmentFlow.setErrorState(validateInvestment(state)));
+      const validation = validateInvestment(state);
+
+      if (validation) {
+        return yield put(actions.investmentFlow.setErrorState(validation));
+      }
 
       const txData: ITxData = yield neuCall(
         txValidateSaga,
@@ -276,10 +282,25 @@ function* recalculateCurrencies(): any {
   }
 }
 
+function* setTransactionWithPresetGas(): any {
+  const gasPrice = yield select(selectStandardGasPriceWithOverHead);
+
+  yield put(
+    actions.txSender.setTransactionData({
+      gas: INVESTMENT_GAS_AMOUNT,
+      value: "",
+      to: "",
+      from: "",
+      gasPrice,
+    }),
+    // This sets all other irrelevant values into false values.
+    // TODO: Refactor the whole transaction flow into a simpler flow that doesn't relay on txData
+  );
+}
+
 function* resetTxDataAndValidations(): any {
   yield put(actions.txValidator.clearValidationState());
-  const initialTxData = yield neuCall(generateInvestmentTransaction);
-  yield put(actions.txSender.setTransactionData(initialTxData));
+  yield put(actions.txSender.txSenderClearTransactionData());
 }
 
 function* stop(): any {
