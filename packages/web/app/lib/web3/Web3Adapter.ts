@@ -67,26 +67,27 @@ export class Web3Adapter {
     return sign(address, data);
   }
 
-  public async signTypedData(
+  public signTypedData(
     address: EthereumAddress | EthereumAddressWithChecksum,
     data: ITypedDataToSign[],
   ): Promise<string> {
-    const send = promisify<any>(
-      this.web3.currentProvider.sendAsync.bind(this.web3.currentProvider),
-    ); // web3 typings are not accurate here
+    return new Promise ((resolve, reject) => {
 
-    const resultData = await send({
-      method: "eth_signTypedData",
-      params: [data, address as string],
-      from: address as string,
-    });
+      this.web3.currentProvider.sendAsync({
+        method: 'eth_signTypedData',
+        params: [data, address as string],
+        from: address as string,
+      }, function (err : any, result : any) {
+        if (err) {
+          reject(err);
+        } else if (result.error) {
+          reject(result.error);
+        } else {
+          resolve(result.result);
+        }
+      })
 
-    // as some web3 providers pass error as result, promisify may not throw
-    if (resultData.error !== undefined) {
-      throw resultData.error;
-    }
-
-    return resultData.result;
+    })
   }
 
   // Gnosis extension uses wallet_signTypedData to sign ERC712 typed data
@@ -141,11 +142,26 @@ export class Web3Adapter {
     return await send(txData);
   }
 
+  private sendTxWithNonce(txData: Web3.TxData): Promise<string>{
+    return new Promise ((resolve, reject) => {
+
+      this.web3.currentProvider.sendTransaction(txData, function (err : any, result : any) {
+        if (err) {
+          reject(err);
+        } else if (result.error) {
+          reject(result.error);
+        } else {
+          resolve(result.result);
+        }
+      })
+
+    })
+  }
+
   /**
    * This will ensure that txData has nonce value.
    */
   public async sendTransaction(txData: Web3.TxData): Promise<string> {
-    const send = promisify<any>(this.web3.eth.sendTransaction.bind(this.web3.eth));
 
     // we manually add nonce value if needed
     // later it's needed by backend
@@ -157,7 +173,7 @@ export class Web3Adapter {
       txData.nonce = await getTransactionCount(txData.from);
     }
 
-    return await send(txData);
+    return await sendTxWithNonce(txData);
   }
 
   /**
