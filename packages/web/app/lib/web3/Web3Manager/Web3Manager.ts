@@ -10,7 +10,7 @@ import {
   AsyncIntervalScheduler,
   AsyncIntervalSchedulerFactoryType,
 } from "../../../utils/AsyncIntervalScheduler";
-import { promiseTimeout } from "../../../utils/promiseTimeout";
+import { promiseTimeout } from "../../../utils/Promise.utils";
 import { ILogger } from "../../dependencies/logger";
 import { LightWallet } from "../light-wallet/LightWallet";
 import { IPersonalWallet } from "../PersonalWeb3";
