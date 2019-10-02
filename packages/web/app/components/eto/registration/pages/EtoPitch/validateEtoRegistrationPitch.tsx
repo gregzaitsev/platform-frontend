@@ -7,6 +7,7 @@ import {
   TPartialCompanyEtoData,
 } from "../../../../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { percentage } from "../../../../../lib/api/util/customSchemas.unsafe";
+import { addBigNumbers } from "../../../../../utils/BigNumberUtils";
 import {
   convertAndValidatePipeline,
   replaceValidatorWith,
@@ -100,10 +101,12 @@ const conversion2 = (data: TPartialCompanyEtoData) => {
 
   if (dataCopy.useOfCapitalList) {
     dataCopy.useOfCapitalList = dataCopy.useOfCapitalList.reduce(
-      (acc: number, { percent }: { percent: number }) => (acc += percent),
+      // use big number representation to prevent floating points precision errors
+      (acc: number, { percent }: { percent: number }) => +addBigNumbers([acc, percent]),
       0,
     );
   }
+
   return dataCopy;
 };
 
