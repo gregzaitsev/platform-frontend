@@ -18,8 +18,8 @@ import { TGlobalDependencies } from "../di/setupBindings";
 import { TSingleOrArray } from "../types";
 import { TActionPayload, TPattern } from "./actions";
 
-type TSagaWithDeps = (deps: TGlobalDependencies, ...args: any[]) => any;
-type TSagaWithDeps2<R, T extends any[]> = (deps: TGlobalDependencies, ...args: T) => R;
+type TSagaWithDeps = (deps: TGlobalDependencies) => any;
+type TSagaWithDepsAndArgs<R, T extends any[]> = (deps: TGlobalDependencies, ...args: T) => R;
 
 type TType = TSingleOrArray<TPattern>;
 
@@ -34,7 +34,7 @@ export function* neuTakeEvery(type: TType, saga: TSagaWithDeps): Iterator<Effect
 }
 
 export function* neuFork<R, T extends any[] = []>(
-  saga: TSagaWithDeps2<R, T>,
+  saga: TSagaWithDepsAndArgs<R, T>,
   ...args: T
 ): Iterator<Effect> {
   const deps: TGlobalDependencies = yield getContext("deps");
@@ -42,7 +42,7 @@ export function* neuFork<R, T extends any[] = []>(
 }
 
 export function* neuSpawn<R, T extends any[] = []>(
-  saga: TSagaWithDeps2<R, T>,
+  saga: TSagaWithDepsAndArgs<R, T>,
   ...args: T
 ): Iterator<Effect> {
   const deps: TGlobalDependencies = yield getContext("deps");
@@ -50,7 +50,7 @@ export function* neuSpawn<R, T extends any[] = []>(
 }
 
 export function* neuCall<R, T extends any[] = []>(
-  saga: TSagaWithDeps2<R, T>,
+  saga: TSagaWithDepsAndArgs<R, T>,
   ...args: T
 ): Iterator<Effect> {
   const deps: TGlobalDependencies = yield getContext("deps");
@@ -110,7 +110,7 @@ export function* neuTakeOnly<T extends TPattern>(
 export function* neuRepeatIf<R, T extends any[] = []>(
   repeatAction: TType,
   endAction: TType,
-  saga: TSagaWithDeps2<R, T>,
+  saga: TSagaWithDepsAndArgs<R, T>,
   ...args: T
 ): any {
   while (true) {
@@ -134,7 +134,7 @@ export function* neuRepeatIf<R, T extends any[] = []>(
  */
 export function* neuRestartIf<R, T extends any[] = []>(
   cancelAction: TType,
-  saga: TSagaWithDeps2<R, T>,
+  saga: TSagaWithDepsAndArgs<R, T>,
   ...args: T
 ): any {
   while (true) {
@@ -156,7 +156,7 @@ export function* neuThrottle(ms: number, type: TType, saga: TSagaWithDeps): Iter
 
 function* next<R, T extends any[] = []>(
   ms: number,
-  task: TSagaWithDeps2<R, T>,
+  task: TSagaWithDepsAndArgs<R, T>,
   ...args: T
 ): Iterator<any> {
   yield delay(ms);
@@ -167,7 +167,7 @@ function* next<R, T extends any[] = []>(
 export function* neuDebounce<R, T extends any[] = []>(
   ms: number,
   pattern: TType,
-  saga: TSagaWithDeps2<R, T>,
+  saga: TSagaWithDepsAndArgs<R, T>,
   ...args: T
 ): Iterator<Effect> {
   yield takeLatest(
