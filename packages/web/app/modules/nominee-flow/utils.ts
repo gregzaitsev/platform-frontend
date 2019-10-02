@@ -114,8 +114,6 @@ export const getNomineeTaskStep = (
     return ENomineeTask.ACCOUNT_SETUP;
   } else if (nomineeEto === undefined) {
     return ENomineeTask.LINK_TO_ISSUER;
-  } else if (!isBankAccountVerified) {
-    return ENomineeTask.LINK_BANK_ACCOUNT;
   } else if (documentsStatus === undefined) {
     return undefined;
   } else if (
@@ -129,6 +127,8 @@ export const getNomineeTaskStep = (
     nomineeIsEligibleToSignTHAOrRAA(nomineeEto)
   ) {
     return ENomineeTask.ACCEPT_RAAA;
+  } else if (!isBankAccountVerified) {
+    return ENomineeTask.LINK_BANK_ACCOUNT;
   } else if (
     documentsStatus[EAgreementType.ISHA] !== EEtoAgreementStatus.DONE &&
     nomineeIsEligibleToSignISHA(nomineeEto)
