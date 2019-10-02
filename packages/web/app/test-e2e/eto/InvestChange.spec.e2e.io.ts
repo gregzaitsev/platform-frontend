@@ -18,8 +18,7 @@ describe("Invest with change", () => {
     cy.get(tid("eto-invest-now-button-" + PUBLIC_ETO_ID)).click();
 
     // select euro from icbm wallet
-    cy.wait(1000);
-
+    cy.get(tid("investment-type.selector.ICBM_NEUR")).check({ force: true });
     cy.get(tid("invest-modal-eur-field"))
       .clear()
       .type("500");
