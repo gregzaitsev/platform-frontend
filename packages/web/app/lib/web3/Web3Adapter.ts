@@ -28,6 +28,7 @@ enum TRANSACTION_STATUS {
   SUCCESS = "0x1",
 }
 
+
 /**
  * Layer on top of raw Web3js. Simplifies API for common operations. Adds promise support.
  * Note that some methods may be not supported correctly by exact implementation of your client
