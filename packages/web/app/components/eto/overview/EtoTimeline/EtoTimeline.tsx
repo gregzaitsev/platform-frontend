@@ -1,3 +1,4 @@
+import { clamp } from "lodash/fp";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { compose, pure, withHandlers, withProps } from "recompose";
@@ -58,7 +59,7 @@ const MORPHING_TIMELINE_REFUND_WIDTH =
 
 const POINTER_HEIGHT = 61;
 const POINTER_WIDTH = 26;
-const POINTER_CAMPAIGNING_POSITION = 20;
+const POINTER_CAMPAIGNING_POSITION = 35;
 const MAX_POINTER_POSITION = TIMELINE_WIDTH - 15;
 
 const MINIMUM_VALID_TIME_EPOCH = 1;
@@ -274,16 +275,20 @@ const EtoTimeline = compose<IWithProps & IWithHandlers & IExternalProps, IExtern
 
       const hasStartDate = !isNaN(preEtoStartDate);
 
-      if (!hasStartDate || now < preEtoStartDate) {
-        return POINTER_CAMPAIGNING_POSITION;
+      if (!hasStartDate) {
+        return POINTER_CAMPAIGNING_POSITION - POINTER_WIDTH;
       }
 
       const calculatedPosition =
         CAMPAIGNING_BLOCK_WIDTH +
         ((now - preEtoStartDate) / totalTimeScope) * morphingTimelineWidth;
 
-      const position =
-        calculatedPosition > MAX_POINTER_POSITION ? MAX_POINTER_POSITION : calculatedPosition;
+      // in case calculated position overflows timeline range use defaults
+      const position = clamp(
+        POINTER_CAMPAIGNING_POSITION,
+        MAX_POINTER_POSITION,
+        calculatedPosition,
+      );
 
       return position - POINTER_WIDTH;
     },

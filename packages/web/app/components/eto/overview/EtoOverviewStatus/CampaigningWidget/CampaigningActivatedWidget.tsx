@@ -45,7 +45,9 @@ const CampaigningActivatedWidgetComponent: React.FunctionComponent<TComponentPro
       return (
         <>
           <WhitelistingLimitReached pledgedAmount={pledgedAmount} investorsCount={investorsCount} />
-          {countdownDate && <CounterWidget endDate={countdownDate} state={nextState} />}
+          {countdownDate && (
+            <CounterWidget endDate={countdownDate} awaitedState={nextState} etoId={etoId} />
+          )}
         </>
       );
     case EWhitelistingState.SUSPENDED:
@@ -53,7 +55,9 @@ const CampaigningActivatedWidgetComponent: React.FunctionComponent<TComponentPro
       return (
         <>
           <WhitelistingSuspended pledgedAmount={pledgedAmount} investorsCount={investorsCount} />
-          {countdownDate && <CounterWidget endDate={countdownDate} state={nextState} />}
+          {countdownDate && (
+            <CounterWidget endDate={countdownDate} awaitedState={nextState} etoId={etoId} />
+          )}
         </>
       );
     case EWhitelistingState.NOT_ACTIVE:

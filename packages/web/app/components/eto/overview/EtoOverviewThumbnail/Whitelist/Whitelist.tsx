@@ -74,7 +74,9 @@ const WhitelistLayout: React.FunctionComponent<IProps> = ({
         throw new Error("Next state should be defined as this point");
       }
 
-      return <CounterWidget endDate={nextStateStartDate} state={nextState} />;
+      return (
+        <CounterWidget endDate={nextStateStartDate} awaitedState={nextState} etoId={eto.etoId} />
+      );
 
     default:
       throw new Error(`Campaign doesn't implement ${eto.subState} state`);

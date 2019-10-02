@@ -11,7 +11,7 @@ import {
 } from "../../../../modules/investor-portfolio/selectors";
 import { appConnect } from "../../../../store";
 import { isZero } from "../../../../utils/Number.utils";
-import { Counter } from "../../../shared/Counter.unsafe";
+import { Counter } from "../../../shared/Counter";
 import { ETheme, Money } from "../../../shared/formatters/Money";
 import {
   ECurrency,

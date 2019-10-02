@@ -231,7 +231,6 @@ export class InvestmentSelectionComponent extends React.Component<IProps, IState
                 showUnits={true}
                 setError={this.setError}
               />
-              {/*21211.4707*/}
               <Button
                 className={styles.investAll}
                 data-test-id="invest-modal-full-balance-btn"

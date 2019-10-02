@@ -148,11 +148,11 @@ export const selectEtoOnChainNextStateStartDate = (
 ): Date | undefined => {
   const eto = selectEtoWithCompanyAndContract(state, previewCode);
 
-  if (eto) {
-    const nextState: EETOStateOnChain | undefined = eto.contract!.timedState + 1;
+  if (eto && eto.contract) {
+    const nextState: EETOStateOnChain | undefined = eto.contract.timedState + 1;
 
     if (nextState) {
-      return eto.contract!.startOfStates[nextState];
+      return eto.contract.startOfStates[nextState];
     }
   }
 

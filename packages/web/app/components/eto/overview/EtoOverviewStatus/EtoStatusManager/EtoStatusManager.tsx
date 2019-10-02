@@ -84,7 +84,8 @@ const EtoStatusComponentChooser: React.FunctionComponent<IStateProps & IExternal
         return (
           <CounterWidget
             endDate={eto.contract!.startOfStates[EETOStateOnChain.Public]!}
-            state={EETOStateOnChain.Public}
+            awaitedState={EETOStateOnChain.Public}
+            etoId={eto.etoId}
           />
         );
       }

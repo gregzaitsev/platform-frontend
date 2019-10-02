@@ -211,7 +211,8 @@ class DateChooser extends React.PureComponent<IDateChooserProps, IDateChooserSta
       ? moment.utc(this.props.etoDate)
       : moment()
           .utc()
-          .add(this.defaultOffsetInMinutes, "minutes"),
+          .add(this.defaultOffsetInMinutes, "minutes")
+          .startOf("minute"),
   };
 
   closeDatePicker = () => {
