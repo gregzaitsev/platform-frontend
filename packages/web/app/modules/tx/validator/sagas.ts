@@ -21,6 +21,9 @@ import { ETxSenderType } from "../types";
 import { EValidationState } from "./reducer";
 import { selectInvestmentFLow } from "./selectors";
 import { txValidateWithdraw } from "./withdraw/sagas";
+import { selectWalletType } from "../../web3/selectors";
+import { IAppState } from "../../../store";
+import { EWalletType } from "../../web3/types";
 
 export function* txValidateInvestment(): Iterator<any> {
   try {
@@ -82,13 +85,20 @@ export function* validateGas({ apiUserService }: TGlobalDependencies, txDetails:
   const valueUlps = subtractBigNumbers([maxEtherUlps, costUlps]);
 
   if (compareBigNumbers(txDetails.value, valueUlps) > 0) {
-    const {
-      gasStipend,
-    } = yield apiUserService.getGasStipend(/* txDetails <----- UNCOMMENT WHEN READY*/);
+    const walletType = yield select((state: IAppState) => selectWalletType(state.web3));
+    if (walletType !== EWalletType.BROWSER) {
+      // @SEE https://github.com/ethereum/EIPs/blob/master/EIPS/eip-2015.md
+      // @SEE https://github.com/MetaMask/metamask-extension/issues/5101
+      const {
+        gasStipend,
+      } = yield apiUserService.getGasStipend(/* txDetails <----- UNCOMMENT WHEN READY*/);
 
-    const etherWithStipend = addBigNumbers([gasStipend, maxEtherUlps]);
-    const valueUlpsWithStipend = subtractBigNumbers([etherWithStipend, costUlps]);
-    if (compareBigNumbers(txDetails.value, valueUlpsWithStipend) > 0) {
+      const etherWithStipend = addBigNumbers([gasStipend, maxEtherUlps]);
+      const valueUlpsWithStipend = subtractBigNumbers([etherWithStipend, costUlps]);
+      if (compareBigNumbers(txDetails.value, valueUlpsWithStipend) > 0) {
+        throw new NotEnoughEtherForGasError("Not enough Ether to pay the Gas for this transaction");
+      }
+    } else {
       throw new NotEnoughEtherForGasError("Not enough Ether to pay the Gas for this transaction");
     }
   }
