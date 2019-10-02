@@ -4,7 +4,7 @@ import * as Web3 from "web3";
 
 import { makeEthereumAddressChecksummed } from "../../modules/web3/utils";
 import { EthereumAddress, EthereumAddressWithChecksum, EthereumNetworkId } from "../../types";
-import { promisify } from "../../utils/promisify";
+import { promisify } from "../../utils/Promise.utils";
 
 class Web3Error extends Error {}
 export class NeuWeb3Error extends Error {}

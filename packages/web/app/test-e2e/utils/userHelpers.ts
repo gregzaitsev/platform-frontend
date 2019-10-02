@@ -7,7 +7,7 @@ import { accountFixtureByName, removePendingExternalTransaction } from ".";
 import { TEtoDataWithCompany } from "../../lib/api/eto/EtoApi.interfaces.unsafe";
 import { OOO_TRANSACTION_TYPE, TxPendingWithMetadata } from "../../lib/api/users/interfaces";
 import { getVaultKey } from "../../modules/wallet-selector/light-wizard/utils";
-import { promisify } from "../../utils/promisify";
+import { promisify } from "../../utils/Promise.utils";
 import { toCamelCase } from "../../utils/transformObjectKeys";
 import { assertLanding } from "./assertions";
 import { getAgreementHash } from "./getAgreementHash";

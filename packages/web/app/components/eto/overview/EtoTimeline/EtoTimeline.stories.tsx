@@ -37,7 +37,7 @@ storiesOf("ETO/EtoTimeline", module)
       />
     )),
   )
-  .add("setup (whitelisting) InvalidDates", () =>
+  .add("setup (whitelisting) invalid dates", () =>
     withMockedDate(new Date(2017, 11, 20))(() => (
       <EtoTimeline
         startOfStates={{ ...startOfStates, [EETOStateOnChain.Whitelist]: undefined }}
@@ -47,7 +47,7 @@ storiesOf("ETO/EtoTimeline", module)
       />
     )),
   )
-  .add("setup (whitelisting) Very Early Timestamp", () =>
+  .add("setup (whitelisting) very early timestamp", () =>
     withMockedDate(new Date(2017, 11, 20))(() => (
       <EtoTimeline
         startOfStates={{ ...startOfStates, [EETOStateOnChain.Whitelist]: new Date(0) }}
@@ -61,6 +61,16 @@ storiesOf("ETO/EtoTimeline", module)
     withMockedDate(new Date(2017, 11, 20))(() => (
       <EtoTimeline
         startOfStates={undefined}
+        currentState={EETOStateOnChain.Setup}
+        subState={undefined}
+        state={EEtoState.ON_CHAIN}
+      />
+    )),
+  )
+  .add("setup (campaigning) with dates", () =>
+    withMockedDate(new Date(2017, 11, 20))(() => (
+      <EtoTimeline
+        startOfStates={startOfStates}
         currentState={EETOStateOnChain.Setup}
         subState={undefined}
         state={EEtoState.ON_CHAIN}
