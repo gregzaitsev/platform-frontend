@@ -28,7 +28,6 @@ enum TRANSACTION_STATUS {
   SUCCESS = "0x1",
 }
 
-
 /**
  * Layer on top of raw Web3js. Simplifies API for common operations. Adds promise support.
  * Note that some methods may be not supported correctly by exact implementation of your client
@@ -72,23 +71,29 @@ export class Web3Adapter {
     address: EthereumAddress | EthereumAddressWithChecksum,
     data: ITypedDataToSign[],
   ): Promise<string> {
-    return new Promise ((resolve, reject) => {
+    return new Promise((resolve, reject) => {
+      this.web3.currentProvider.sendAsync(
+        {
+          method: "eth_signTypedData",
+          params: [data, address as string],
 
-      this.web3.currentProvider.sendAsync({
-        method: 'eth_signTypedData',
-        params: [data, address as string],
-        from: address as string,
-      }, function (err : any, result : any) {
-        if (err) {
-          reject(err);
-        } else if (result.error) {
-          reject(result.error);
-        } else {
-          resolve(result.result);
-        }
-      })
-
-    })
+          // Ignoring ts errors here since JSONRPCRequestPayload does not contain 'from' property, see here:
+          // https://github.com/0xProject/web3-typescript-typings/blob/master/web3/index.d.ts#L142
+          // TODO: Remove this when correct typing from web3 is available
+          // @ts-ignore
+          from: address as string,
+        },
+        function(err: any, result: any): any {
+          if (err) {
+            reject(err);
+          } else if (result.error) {
+            reject(result.error);
+          } else {
+            resolve(result.result);
+          }
+        },
+      );
+    });
   }
 
   // Gnosis extension uses wallet_signTypedData to sign ERC712 typed data
@@ -143,27 +148,10 @@ export class Web3Adapter {
     return await send(txData);
   }
 
-  private sendTxWithNonce(txData: Web3.TxData): Promise<string>{
-    return new Promise ((resolve, reject) => {
-
-      this.web3.currentProvider.sendTransaction(txData, function (err : any, result : any) {
-        if (err) {
-          reject(err);
-        } else if (result.error) {
-          reject(result.error);
-        } else {
-          resolve(result.result);
-        }
-      })
-
-    })
-  }
-
   /**
    * This will ensure that txData has nonce value.
    */
   public async sendTransaction(txData: Web3.TxData): Promise<string> {
-
     // we manually add nonce value if needed
     // later it's needed by backend
     if (txData.nonce === undefined) {
@@ -174,7 +162,19 @@ export class Web3Adapter {
       txData.nonce = await getTransactionCount(txData.from);
     }
 
-    return await sendTxWithNonce(txData);
+    return new Promise((resolve, reject) => {
+      // sendTransaction DOES exist in currentProvider, but ts compplains that it does not
+      // @ts-ignore
+      this.web3.currentProvider.sendTransaction(txData, function(err: any, result: any): any {
+        if (err) {
+          reject(err);
+        } else if (result.error) {
+          reject(result.error);
+        } else {
+          resolve(result.result);
+        }
+      });
+    });
   }
 
   /**
